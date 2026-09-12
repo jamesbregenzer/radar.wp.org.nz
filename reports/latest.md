@@ -1,11 +1,11 @@
 # WP Core Radar Report
 
-Generated: 2026-09-12 04:54
+Generated: 2026-09-12 16:56
 
 ## Summary
 
 - Datasets discovered: 430
-- Unique tickets scored: 319
+- Unique tickets scored: 320
 - Outcomes loaded: 4
 - Reviews loaded: 21
 - Top opportunity limit: 50
@@ -15,7 +15,7 @@ Generated: 2026-09-12 04:54
 | Section | Count | Meaning |
 |---|---:|---|
 | Priority Targets | 12 | Highest-scoring unreviewed tickets with clear action and manageability signals. |
-| Top Opportunities | 289 | Remaining unreviewed tickets ranked by score. |
+| Top Opportunities | 290 | Remaining unreviewed tickets ranked by score. |
 | Shortlisted | 0 | Tickets manually marked as strong candidates. |
 | Watching | 6 | Tickets worth monitoring but not acting on yet. |
 | Completed / Acted On | 11 | Tickets already tested, commented on, propped, or committed. |
@@ -331,7 +331,7 @@ Generated: 2026-09-12 04:54
 - Owner: afercia
 - Keywords: has-patch has-unit-tests needs-testing
 - Created: 06/19/2026 09:30:32 AM
-- Modified: 07/13/2026 08:34:18 PM
+- Modified: 07/14/2026 04:42:20 PM
 - Why it ranked: track priority: General: Needs Testing +65, has patch +35, needs testing +30, has concrete milestone +8, has owner +6, freshness: updated within 60 days +10, ticket age: mature but not ancient +8
 - Score breakdown:
   - +65: Track Priority
@@ -1492,7 +1492,7 @@ No regressions observed during testing. Watch for commit during 7.1 cycle.
 - Milestone: Future Release
 - Keywords: good-first-bug has-patch needs-testing
 - Created: 10/22/2022 11:05:39 AM
-- Modified: 08/28/2026 05:25:51 PM
+- Modified: 09/01/2026 04:23:26 AM
 - Review status: tested
 - Review reason: Positive test result
 - Review notes: Verified checkbox renders on Network Admin → Add Site and correctly persists search engine visibility setting to newly created sites in both checked and unchecked states.
@@ -2184,7 +2184,7 @@ Posted testing results to Trac.
 | media_has_patch | 2026-09-11 | 24 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-11/media_has_patch.csv` |
 | accessibility_has_patch | 2026-09-12 | 0 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-12/accessibility_has_patch.csv` |
 | docs_needs_testing | 2026-09-12 | 0 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-12/docs_needs_testing.csv` |
-| general_needs_testing | 2026-09-12 | 261 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-12/general_needs_testing.csv` |
+| general_needs_testing | 2026-09-12 | 262 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-12/general_needs_testing.csv` |
 | good_first_bugs | 2026-09-12 | 0 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-12/good_first_bugs.csv` |
 | media_has_patch | 2026-09-12 | 24 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-12/media_has_patch.csv` |
 

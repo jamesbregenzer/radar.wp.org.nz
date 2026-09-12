@@ -1,7 +1,7 @@
 {
-  "generated": "2026-09-12T04:54:22",
+  "generated": "2026-09-12T16:56:09",
   "summary": {
-    "unique_tickets": 319,
+    "unique_tickets": 320,
     "priority_targets": 12,
     "immediate": 7,
     "strong": 5,
@@ -1290,7 +1290,7 @@
         "owner": "afercia",
         "comments": "Unknown",
         "created": "06/19/2026 09:30:32 AM",
-        "modified": "07/13/2026 08:34:18 PM",
+        "modified": "07/14/2026 04:42:20 PM",
         "keywords": "has-patch has-unit-tests needs-testing",
         "signals": [
           {
@@ -10782,6 +10782,72 @@
         "review": {}
       },
       {
+        "ticket_id": "62744",
+        "url": "https://core.trac.wordpress.org/ticket/62744",
+        "score": 123,
+        "tier_class": "standard",
+        "tier_label": "Standard",
+        "summary": "Twenty Seventeen: Quote block Appearance settings do not affect citation",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Bundled Theme",
+        "owner": "",
+        "comments": "Unknown",
+        "created": "12/27/2024 11:23:16 AM",
+        "modified": "09/12/2026 08:28:29 PM",
+        "keywords": "needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
         "ticket_id": "65626",
         "url": "https://core.trac.wordpress.org/ticket/65626",
         "score": 123,
@@ -19408,7 +19474,7 @@
         "owner": "",
         "comments": "Unknown",
         "created": "10/22/2022 11:05:39 AM",
-        "modified": "08/28/2026 05:25:51 PM",
+        "modified": "09/01/2026 04:23:26 AM",
         "keywords": "good-first-bug has-patch needs-testing",
         "signals": [
           {
