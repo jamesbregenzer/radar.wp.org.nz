@@ -1,6 +1,6 @@
 # WP Core Radar Report
 
-Generated: 2026-09-13 16:59
+Generated: 2026-09-13 23:00
 
 ## Summary
 
@@ -2188,7 +2188,7 @@ Posted testing results to Trac.
 | media_has_patch | 2026-09-12 | 24 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-12/media_has_patch.csv` |
 | accessibility_has_patch | 2026-09-13 | 0 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-13/accessibility_has_patch.csv` |
 | docs_needs_testing | 2026-09-13 | 0 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-13/docs_needs_testing.csv` |
-| general_needs_testing | 2026-09-13 | 263 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-13/general_needs_testing.csv` |
+| general_needs_testing | 2026-09-13 | 262 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-13/general_needs_testing.csv` |
 | good_first_bugs | 2026-09-13 | 0 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-13/good_first_bugs.csv` |
 | media_has_patch | 2026-09-13 | 24 | `/Users/thor/Sites/wp-core-radar/data/raw/manual/2026-09-13/media_has_patch.csv` |
 
