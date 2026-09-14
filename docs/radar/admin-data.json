@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-14T11:02:42",
+  "generated": "2026-09-14T17:03:50",
   "summary": {
     "unique_tickets": 321,
     "priority_targets": 12,
@@ -1191,7 +1191,7 @@
         "owner": "rajeshcp",
         "comments": "Unknown",
         "created": "04/09/2026 10:29:50 AM",
-        "modified": "07/15/2026 06:17:22 PM",
+        "modified": "08/01/2026 09:39:13 AM",
         "keywords": "has-patch needs-testing has-test-info has-unit-tests has-screenshots",
         "signals": [
           {
@@ -1587,7 +1587,7 @@
         "owner": "adamsilverstein",
         "comments": "Unknown",
         "created": "07/13/2026 04:28:29 PM",
-        "modified": "07/15/2026 08:36:09 PM",
+        "modified": "07/17/2026 12:55:56 PM",
         "keywords": "has-patch has-unit-tests needs-testing",
         "signals": [
           {
@@ -2797,7 +2797,7 @@
         "owner": "",
         "comments": "Unknown",
         "created": "07/15/2026 11:35:42 AM",
-        "modified": "07/15/2026 09:03:24 PM",
+        "modified": "08/11/2026 12:33:31 PM",
         "keywords": "has-patch needs-testing has-unit-tests",
         "signals": [
           {
@@ -10915,7 +10915,7 @@
         "owner": "",
         "comments": "Unknown",
         "created": "07/14/2026 10:42:44 AM",
-        "modified": "07/15/2026 06:53:59 PM",
+        "modified": "07/16/2026 09:43:07 AM",
         "keywords": "needs-testing needs-patch reporter-feedback",
         "signals": [
           {
@@ -19599,99 +19599,6 @@
         }
       },
       {
-        "ticket_id": "64902",
-        "url": "https://core.trac.wordpress.org/ticket/64902",
-        "score": 168,
-        "tier_class": "immediate",
-        "tier_label": "Immediate Review",
-        "summary": "wp_save_image() fatal error when wp_save_image_file() returns WP_Error",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Media",
-        "owner": "",
-        "comments": "Unknown",
-        "created": "03/19/2026 02:52:41 PM",
-        "modified": "07/15/2026 05:18:08 PM",
-        "keywords": "has-patch needs-testing has-test-info",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Preferred Component: Media +20",
-            "class": "component"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          },
-          {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+20",
-            "label": "Preferred Component",
-            "detail": "Media",
-            "display": "Preferred Component: Media",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {
-          "status": "tested",
-          "reason": "Positive test result",
-          "notes": "Reproduced the reported fatal error by forcing wp_save_image_file() to return a WP_Error. Verified that the patch prevents the fatal error and returns the WP_Error message as the image edit error response. No regressions observed during testing.",
-          "updated_at": "2026-06-16T18:07:20.633Z"
-        }
-      },
-      {
         "ticket_id": "63256",
         "url": "https://core.trac.wordpress.org/ticket/63256",
         "score": 162,
@@ -19915,6 +19822,88 @@
           "reason": "Verified patch behavior locally and reported results on Trac.",
           "notes": "Tested PR 11975 locally using current WordPress trunk in a local wp-env/Docker environment.\r\n\r\nSteps performed:\r\n- Uploaded a non-square image.\r\n- Set the image as the Site Icon.\r\n- Cropped and saved the Site Icon.\r\n- Verified generated site icon dimensions and attachment metadata.\r\n\r\nConfirmed generated site icon sizes are square as expected:\r\n- 270x270\r\n- 192x192\r\n- 180x180\r\n- 32x32\r\n\r\nPosted testing results to Trac.",
           "updated_at": "2026-06-15T23:07:33.995Z"
+        }
+      },
+      {
+        "ticket_id": "64902",
+        "url": "https://core.trac.wordpress.org/ticket/64902",
+        "score": 158,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "wp_save_image() fatal error when wp_save_image_file() returns WP_Error",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Media",
+        "owner": "",
+        "comments": "Unknown",
+        "created": "03/19/2026 02:52:41 PM",
+        "modified": "06/11/2026 08:42:29 PM",
+        "keywords": "has-patch needs-testing has-test-info",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Preferred Component: Media +20",
+            "class": "component"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Preferred Component",
+            "detail": "Media",
+            "display": "Preferred Component: Media",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {
+          "status": "tested",
+          "reason": "Positive test result",
+          "notes": "Reproduced the reported fatal error by forcing wp_save_image_file() to return a WP_Error. Verified that the patch prevents the fatal error and returns the WP_Error message as the image edit error response. No regressions observed during testing.",
+          "updated_at": "2026-06-16T18:07:20.633Z"
         }
       },
       {
