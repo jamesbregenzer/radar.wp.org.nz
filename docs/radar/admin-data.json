@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-14T23:04:53",
+  "generated": "2026-09-15T05:05:58",
   "summary": {
     "unique_tickets": 321,
     "priority_targets": 12,
@@ -10903,83 +10903,6 @@
         "review": {}
       },
       {
-        "ticket_id": "65626",
-        "url": "https://core.trac.wordpress.org/ticket/65626",
-        "score": 123,
-        "tier_class": "standard",
-        "tier_label": "Standard",
-        "summary": "7.0.1 9.9797 lagging at WP_Query->get_posts() on site with 16K= posts",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Database",
-        "owner": "",
-        "comments": "Unknown",
-        "created": "07/14/2026 10:42:44 AM",
-        "modified": "07/16/2026 09:43:07 AM",
-        "keywords": "needs-testing needs-patch reporter-feedback",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Reporter Feedback +10",
-            "class": "feedback"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          },
-          {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Reporter Feedback",
-            "detail": "",
-            "display": "Reporter Feedback",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
         "ticket_id": "66047",
         "url": "https://core.trac.wordpress.org/ticket/66047",
         "score": 123,
@@ -11929,6 +11852,72 @@
         "created": "06/01/2026 07:07:17 AM",
         "modified": "06/11/2026 10:45:49 PM",
         "keywords": "needs-testing reporter-feedback",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Reporter Feedback +10",
+            "class": "feedback"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+10",
+            "label": "Reporter Feedback",
+            "detail": "",
+            "display": "Reporter Feedback",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "65626",
+        "url": "https://core.trac.wordpress.org/ticket/65626",
+        "score": 113,
+        "tier_class": "standard",
+        "tier_label": "Standard",
+        "summary": "7.0.1 9.9797 lagging at WP_Query->get_posts() on site with 16K= posts",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Database",
+        "owner": "",
+        "comments": "Unknown",
+        "created": "07/14/2026 10:42:44 AM",
+        "modified": "07/15/2026 06:53:59 PM",
+        "keywords": "needs-testing needs-patch reporter-feedback",
         "signals": [
           {
             "label": "Track Priority: General: Needs Testing +65",
