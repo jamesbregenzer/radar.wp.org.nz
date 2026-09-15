@@ -1,6 +1,6 @@
 # WP Core Radar Report
 
-Generated: 2026-09-14 17:03
+Generated: 2026-09-14 23:04
 
 ## Summary
 
@@ -603,7 +603,7 @@ Generated: 2026-09-14 17:03
 - Milestone: 7.1.1
 - Keywords: needs-testing has-screenshots has-patch has-unit-tests
 - Created: 08/28/2026 11:22:23 AM
-- Modified: 08/31/2026 01:07:34 AM
+- Modified: 09/02/2026 02:50:19 PM
 - Why it ranked: track priority: General: Needs Testing +65, has patch +35, needs testing +30, has concrete milestone +8, freshness: recently updated <=14 days +20
 - Score breakdown:
   - +65: Track Priority
@@ -1514,9 +1514,9 @@ No regressions observed during testing. Watch for commit during 7.1 cycle.
 - Trac status: Reviewing
 - Milestone: 7.1
 - Owner: audrasjb
-- Keywords: has-patch has-unit-tests needs-testing
+- Keywords: has-patch has-unit-tests needs-testing has-test-info
 - Created: 04/09/2025 11:10:53 AM
-- Modified: 07/16/2026 02:39:54 AM
+- Modified: 07/30/2026 08:59:47 PM
 - Review status: tested
 - Review reason: Positive test result
 - Review notes: Applied PR #11534 locally, ran Tests_Term successfully, and verified basic category/post taxonomy workflows in wp-admin and on the front end.
