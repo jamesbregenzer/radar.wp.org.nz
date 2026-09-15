@@ -2,6 +2,7 @@
 40339,If $home_path=='wp' then WP::parse_request() will remove 'wp' from 'wp-json/wc/v1/products' in $pathinfo,new,Rewrite Rules,,defect (bug),high,Awaiting Review,4.7.3,needs-testing has-patch has-unit-tests,04/02/2017 01:32:06 PM,09/02/2026 11:25:30 PM
 7965,Database upgrade complete message should be an admin notice,new,Upgrade/Install,,enhancement,normal,Future Release,,has-patch needs-testing,10/25/2008 06:53:28 PM,04/02/2026 10:52:23 AM
 13743,Ability to choose a network default theme,reopened,Networks and Sites,,enhancement,normal,Future Release,3.0,has-patch has-screenshots needs-testing,06/06/2010 05:44:12 AM,02/03/2026 04:40:36 PM
+14060,"Misleading ""You do not have sufficient permissions to access this page.""",reviewing,Plugins,SergeyBiryukov,defect (bug),normal,7.2,3.0,has-patch has-screenshots has-test-info dev-feedback 2nd-opinion has-unit-tests early needs-testing,06/23/2010 02:46:16 PM,09/15/2026 07:41:53 PM
 15467,Multisite with separate users table,reopened,Networks and Sites,,feature request,normal,,3.0.1,needs-codex needs-testing,11/18/2010 09:09:03 AM,03/02/2024 04:55:21 PM
 15865,Make it easy to disable options / user settings,reopened,"Options, Meta APIs",,enhancement,normal,Awaiting Review,,needs-refresh needs-testing,12/17/2010 05:52:29 PM,07/27/2023 06:09:44 PM
 15955,move_uploaded_file mangles non-ascii characters on Windows platforms,accepted,Upload,SergeyBiryukov,defect (bug),normal,Awaiting Review,2.0,close needs-testing,12/22/2010 10:15:46 PM,05/14/2025 04:51:42 PM
@@ -84,7 +85,7 @@
 42281,Better Update Management for Translation files,reviewing,Upgrade/Install,audrasjb,enhancement,normal,7.2,4.8.2,has-patch has-unit-tests has-screenshots needs-testing,10/19/2017 05:48:13 PM,09/07/2026 10:43:27 AM
 42288,Validation of custom menu link,new,Menus,,defect (bug),normal,Awaiting Review,4.8.2,needs-patch needs-testing,10/20/2017 05:38:04 AM,06/14/2018 01:40:20 PM
 42329,"Customizer: interacting with text fields in a ""wide"" widget shifts child panel position in Safari.",new,Customize,,defect (bug),normal,Future Release,4.7,needs-testing,10/24/2017 11:06:54 PM,06/22/2024 08:36:23 PM
-42540,Don't move focus to the editor when switching editor mode,new,Editor,,defect (bug),normal,7.2,,has-patch needs-testing,11/14/2017 10:38:33 AM,09/15/2026 01:53:56 PM
+42540,Don't move focus to the editor when switching editor mode,assigned,Editor,afercia,defect (bug),normal,7.2,,has-test-info has-patch needs-testing,11/14/2017 10:38:33 AM,09/15/2026 08:48:45 PM
 42670,Symlinked plugin makes plugin_basename function return wrong basename,assigned,Plugins,brianhenryie,defect (bug),normal,Future Release,4.9,has-unit-tests needs-testing has-patch has-test-info dev-feedback,11/23/2017 11:36:11 AM,08/15/2026 10:51:53 AM
 42833,WordPress forces non-ssl login in described circumstance even though FORCE_SSL_ADMIN is set in wp-config,new,Administration,,defect (bug),normal,Awaiting Review,4.9.1,needs-testing,12/07/2017 07:32:39 PM,09/21/2021 06:59:07 AM
 43010,Attribute Name Escape,new,Formatting,,enhancement,normal,Awaiting Review,,needs-testing needs-unit-tests has-patch,01/02/2018 05:03:09 PM,08/21/2026 10:50:51 AM
@@ -201,7 +202,7 @@
 58871,support uca14.0.0 collation in database where available,new,Database,,enhancement,normal,Awaiting Review,6.3,has-patch has-unit-tests needs-testing needs-refresh,07/20/2023 11:36:30 PM,09/30/2025 09:03:10 AM
 59365,Deprecated notice when calling get_admin_page_title() on some dashboard pages.,new,Administration,,defect (bug),normal,,,php81 has-patch needs-testing,09/15/2023 11:35:39 AM,08/18/2026 08:18:24 AM
 59845,kritischen Fehler seit Update auf WordPress 6.4,new,Upgrade/Install,,enhancement,normal,Awaiting Review,6.4,needs-testing,11/08/2023 07:30:51 PM,11/09/2023 04:08:39 PM
-60478,Upgrade to jQuery 4.0,new,External Libraries,,task (blessed),normal,7.2,,needs-patch needs-testing early,02/08/2024 08:52:50 PM,08/01/2026 11:39:34 AM
+60478,Upgrade to jQuery 4.0,new,External Libraries,,task (blessed),normal,7.2,,needs-patch needs-testing early,02/08/2024 08:52:50 PM,09/15/2026 07:51:08 PM
 60628,Issues with avif image  imagecreatefromavif not working. Resizing not possible.,assigned,Media,adamsilverstein,defect (bug),normal,Future Release,6.5,avif has-patch has-unit-tests early reporter-feedback needs-testing,02/24/2024 12:46:16 PM,09/08/2025 01:13:55 PM
 60788,Content-Disposition support in download_url() seems broken,new,HTTP API,,defect (bug),normal,Awaiting Review,6.4.3,has-patch 2nd-opinion needs-testing needs-unit-tests,03/16/2024 01:12:30 AM,08/29/2025 12:21:16 PM
 61330,Plugin Dependencies: Refresh plugin-install.php instead of redirecting on activation,new,Upgrade/Install,,defect (bug),normal,Future Release,,has-patch needs-testing has-test-info 2nd-opinion needs-unit-tests,05/30/2024 04:49:13 PM,08/13/2026 07:47:02 AM
