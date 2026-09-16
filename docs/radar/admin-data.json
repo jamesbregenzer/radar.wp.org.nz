@@ -1,10 +1,10 @@
 {
-  "generated": "2026-09-16T11:11:16",
+  "generated": "2026-09-16T17:12:23",
   "summary": {
     "unique_tickets": 323,
     "priority_targets": 12,
-    "immediate": 6,
-    "strong": 6,
+    "immediate": 7,
+    "strong": 5,
     "watching": 98,
     "reviews_loaded": 21
   },
@@ -605,6 +605,94 @@
         "review": {}
       },
       {
+        "ticket_id": "65638",
+        "url": "https://core.trac.wordpress.org/ticket/65638",
+        "score": 166,
+        "tier_class": "immediate",
+        "tier_label": "Immediate Review",
+        "summary": "AI: Add embedding generation support to WordPress",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "AI",
+        "owner": "",
+        "comments": "Unknown",
+        "created": "07/15/2026 11:35:42 AM",
+        "modified": "09/16/2026 08:44:08 PM",
+        "keywords": "has-patch needs-testing has-unit-tests",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Has Concrete Milestone +8",
+            "class": "standard"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Has Concrete Milestone",
+            "detail": "",
+            "display": "Has Concrete Milestone",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
         "ticket_id": "42281",
         "url": "https://core.trac.wordpress.org/ticket/42281",
         "score": 164,
@@ -1021,94 +1109,6 @@
         ],
         "discovery_track": "Media Has Patch",
         "review": {}
-      },
-      {
-        "ticket_id": "63568",
-        "url": "https://core.trac.wordpress.org/ticket/63568",
-        "score": 162,
-        "tier_class": "strong",
-        "tier_label": "Strong Candidate",
-        "summary": "WP_Font_Face: Font names that contain single quotes are not wrapped in double quotes",
-        "track": "General: Needs Testing",
-        "status": "Accepted",
-        "component": "Editor",
-        "owner": "audrasjb",
-        "comments": "Unknown",
-        "created": "06/14/2025 01:01:14 PM",
-        "modified": "03/30/2026 09:24:46 AM",
-        "keywords": "has-patch has-test-info has-screenshots has-unit-tests needs-testing dev-feedback",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Dev Feedback +18",
-            "class": "feedback"
-          },
-          {
-            "label": "Has Owner +6",
-            "class": "owner"
-          },
-          {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+18",
-            "label": "Dev Feedback",
-            "detail": "",
-            "display": "Dev Feedback",
-            "polarity": "positive"
-          },
-          {
-            "points": "+6",
-            "label": "Has Owner",
-            "detail": "",
-            "display": "Has Owner",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
       }
     ],
     "top": [
@@ -1316,6 +1316,94 @@
             "detail": "Very Old Ticket",
             "display": "Ticket Age: Very Old Ticket",
             "polarity": "negative"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "63568",
+        "url": "https://core.trac.wordpress.org/ticket/63568",
+        "score": 162,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "WP_Font_Face: Font names that contain single quotes are not wrapped in double quotes",
+        "track": "General: Needs Testing",
+        "status": "Accepted",
+        "component": "Editor",
+        "owner": "audrasjb",
+        "comments": "Unknown",
+        "created": "06/14/2025 01:01:14 PM",
+        "modified": "03/30/2026 09:24:46 AM",
+        "keywords": "has-patch has-test-info has-screenshots has-unit-tests needs-testing dev-feedback",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Dev Feedback +18",
+            "class": "feedback"
+          },
+          {
+            "label": "Has Owner +6",
+            "class": "owner"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+18",
+            "label": "Dev Feedback",
+            "detail": "",
+            "display": "Dev Feedback",
+            "polarity": "positive"
+          },
+          {
+            "points": "+6",
+            "label": "Has Owner",
+            "detail": "",
+            "display": "Has Owner",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
           }
         ],
         "discovery_track": "General Needs Testing",
@@ -2665,7 +2753,7 @@
         "owner": "",
         "comments": "Unknown",
         "created": "08/20/2026 03:48:11 PM",
-        "modified": "09/01/2026 04:42:41 PM",
+        "modified": "09/07/2026 08:03:58 AM",
         "keywords": "has-patch needs-testing",
         "signals": [
           {
@@ -3063,94 +3151,6 @@
         "created": "03/26/2026 05:46:37 AM",
         "modified": "07/21/2026 07:12:09 AM",
         "keywords": "has-screenshots has-patch needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Has Concrete Milestone +8",
-            "class": "standard"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          },
-          {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Has Concrete Milestone",
-            "detail": "",
-            "display": "Has Concrete Milestone",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
-        "ticket_id": "65638",
-        "url": "https://core.trac.wordpress.org/ticket/65638",
-        "score": 156,
-        "tier_class": "strong",
-        "tier_label": "Strong Candidate",
-        "summary": "AI: Add embedding generation support to WordPress",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "AI",
-        "owner": "",
-        "comments": "Unknown",
-        "created": "07/15/2026 11:35:42 AM",
-        "modified": "08/11/2026 12:33:31 PM",
-        "keywords": "has-patch needs-testing has-unit-tests",
         "signals": [
           {
             "label": "Track Priority: General: Needs Testing +65",
@@ -10904,7 +10904,7 @@
         "owner": "",
         "comments": "Unknown",
         "created": "11/20/2025 02:14:56 PM",
-        "modified": "09/16/2026 11:10:32 AM",
+        "modified": "09/16/2026 04:24:58 PM",
         "keywords": "has-patch has-testing needs-unit-tests",
         "signals": [
           {
@@ -20396,7 +20396,7 @@
         "owner": "westonruter",
         "comments": "Unknown",
         "created": "02/23/2026 03:51:38 PM",
-        "modified": "07/17/2026 07:20:41 PM",
+        "modified": "07/20/2026 03:42:41 PM",
         "keywords": "has-patch needs-testing",
         "signals": [
           {

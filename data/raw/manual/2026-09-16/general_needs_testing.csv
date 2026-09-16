@@ -82,7 +82,7 @@
 41990,wp_add_inline_script() does not print if the handler has already processed,new,Script Loader,,defect (bug),normal,Future Release,4.5,has-patch 2nd-opinion needs-testing,09/26/2017 06:05:37 AM,04/12/2023 04:51:08 AM
 42080,get_site_url() does not always return the appropriate protocol,new,Administration,,defect (bug),normal,Awaiting Review,4.9,needs-testing,10/03/2017 10:15:15 PM,09/21/2021 05:42:11 AM
 42164,Conditional Tags not working when using ugly URL,new,Query,,defect (bug),normal,Awaiting Review,4.8.2,needs-patch needs-unit-tests needs-testing,10/10/2017 10:23:14 AM,10/10/2017 01:54:21 PM
-42281,Better Update Management for Translation files,reviewing,Upgrade/Install,audrasjb,enhancement,normal,7.2,4.8.2,has-patch has-unit-tests has-screenshots needs-testing,10/19/2017 05:48:13 PM,09/16/2026 03:21:35 PM
+42281,Better Update Management for Translation files,reviewing,Upgrade/Install,audrasjb,enhancement,normal,7.2,4.8.2,has-patch has-unit-tests has-screenshots needs-testing,10/19/2017 05:48:13 PM,09/16/2026 08:28:57 PM
 42288,Validation of custom menu link,new,Menus,,defect (bug),normal,Awaiting Review,4.8.2,needs-patch needs-testing,10/20/2017 05:38:04 AM,06/14/2018 01:40:20 PM
 42329,"Customizer: interacting with text fields in a ""wide"" widget shifts child panel position in Safari.",new,Customize,,defect (bug),normal,Future Release,4.7,needs-testing,10/24/2017 11:06:54 PM,06/22/2024 08:36:23 PM
 42540,Don't move focus to the editor when switching editor mode,assigned,Editor,afercia,defect (bug),normal,7.2,,has-test-info has-patch needs-testing,11/14/2017 10:38:33 AM,09/16/2026 01:16:11 PM
@@ -222,7 +222,7 @@
 64024,wp_die() status code Plugins component updates (parent ticket: #64009),new,Plugins,,defect (bug),normal,Awaiting Review,,has-patch needs-testing needs-test-info,09/22/2025 04:24:04 PM,11/22/2025 03:41:42 AM
 64025,wp_die() status code posts component updates (parent ticket: #64009),new,"Posts, Post Types",,enhancement,normal,Future Release,,has-patch needs-testing has-test-info,09/22/2025 04:46:04 PM,10/15/2025 02:37:09 PM
 64056,Media / REST API: Uploading non-resizable image formats (SVG) generates multiple PHP warnings,new,Media,,enhancement,normal,Awaiting Review,,has-patch needs-testing close,09/30/2025 02:27:40 PM,10/01/2025 08:28:56 AM
-64282,Erase personal data does not remove biographical info,new,Privacy,,defect (bug),normal,Awaiting Review,6.8.3,has-patch has-testing needs-unit-tests,11/20/2025 02:14:56 PM,09/16/2026 11:10:32 AM
+64282,Erase personal data does not remove biographical info,new,Privacy,,defect (bug),normal,Awaiting Review,6.8.3,has-patch has-testing needs-unit-tests,11/20/2025 02:14:56 PM,09/16/2026 04:24:58 PM
 64376,redirect_canonical() causes unnecessary 301 redirects for query string encoding variants (+ vs %20),new,Canonical,,defect (bug),normal,Future Release,,has-patch has-unit-tests needs-testing has-test-info,12/08/2025 11:00:27 AM,08/11/2026 11:13:00 AM
 64523,_do_query needs exception processing in class-wpdb.php,new,General,,defect (bug),normal,Awaiting Review,6.9,has-patch needs-testing needs-unit-tests has-pr,01/16/2026 09:40:38 PM,01/23/2026 05:36:40 AM
 64670,WP_REST_Posts_Controller::update_item() not passing parent to wp_unique_post_slug() for draft child,new,REST API,,defect (bug),normal,Awaiting Review,6.9.1,has-patch needs-testing,02/18/2026 05:35:30 PM,07/15/2026 09:56:40 AM
@@ -250,7 +250,7 @@
 65515,"ThickBox ReferenceError: imgLoader is not defined due to ""use strict"" contamination in load-scripts.php",reviewing,Script Loader,wildworks,defect (bug),normal,Future Release,7.0,has-patch has-unit-tests needs-testing reporter-feedback,06/22/2026 12:39:34 PM,08/10/2026 12:18:08 PM
 65551,Connectors: Preserve stored AI provider API key when validation is indeterminate,assigned,Editor,jorgefilipecosta,defect (bug),normal,Awaiting Review,7.0,has-patch has-unit-tests needs-testing,06/29/2026 07:24:33 AM,09/04/2026 11:55:30 AM
 65626,7.0.1 9.9797 lagging at WP_Query->get_posts() on site with 16K= posts,new,Database,,defect (bug),normal,Awaiting Review,7.0.1,needs-testing needs-patch reporter-feedback,07/14/2026 10:42:44 AM,07/16/2026 09:43:07 AM
-65638,AI: Add embedding generation support to WordPress,new,AI,,enhancement,normal,7.2,,has-patch needs-testing has-unit-tests,07/15/2026 11:35:42 AM,08/27/2026 11:19:39 AM
+65638,AI: Add embedding generation support to WordPress,new,AI,,enhancement,normal,7.2,,has-patch needs-testing has-unit-tests,07/15/2026 11:35:42 AM,09/16/2026 08:44:08 PM
 65661,Media: Enable client-side media uploads in the Media Library,new,Media,,enhancement,normal,7.2,,has-patch needs-testing has-unit-tests,07/17/2026 11:42:28 PM,09/05/2026 03:46:43 AM
 65718,Multisite: the blogname is required during site creation but can be emptied later,new,Networks and Sites,,defect (bug),normal,Future Release,,has-patch needs-testing,07/26/2026 08:31:58 PM,08/21/2026 07:10:21 AM
 65731,Changing the site timezone can immediately invalidate fresh privacy-request confirmation links,new,Privacy,,defect (bug),normal,,7.1,has-patch has-unit-tests needs-testing,07/27/2026 12:03:29 PM,07/30/2026 06:21:00 PM
