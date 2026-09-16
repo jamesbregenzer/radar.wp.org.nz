@@ -20,7 +20,7 @@
 20859,Theme Installer: Preview should be scrollable on iPad and Kindle Fire,new,Themes,,defect (bug),normal,,3.4,needs-patch needs-testing,06/06/2012 09:51:09 PM,05/05/2026 06:38:40 PM
 21546,Site Settings page is a hot mess,reopened,"Options, Meta APIs",,enhancement,normal,,3.0,needs-patch needs-testing,08/10/2012 09:44:07 PM,06/04/2019 08:43:21 PM
 21700,Problem obtaining the Feed of an archive of tag “RSS”,new,Canonical,,defect (bug),normal,,3.4.1,needs-testing needs-patch,08/27/2012 10:40:33 AM,06/04/2019 07:23:18 PM
-21989,update_option() calls sanitize_option() twice when option does not exist,accepted,"Options, Meta APIs",pbearne,defect (bug),normal,Future Release,,dev-feedback has-patch needs-testing has-unit-tests,09/25/2012 05:04:34 AM,09/15/2026 11:44:07 AM
+21989,update_option() calls sanitize_option() twice when option does not exist,accepted,"Options, Meta APIs",pbearne,defect (bug),normal,Future Release,,dev-feedback has-patch needs-testing has-unit-tests,09/25/2012 05:04:34 AM,09/16/2026 01:11:51 AM
 22041,Importer dies silently when multisite upload limit is reached,reopened,Import,,enhancement,normal,,,needs-patch needs-testing,09/28/2012 05:58:57 PM,06/04/2019 08:03:50 PM
 22330,Optimize regexes to remove protocol from URL,new,Formatting,,enhancement,normal,,3.4.2,has-patch needs-unit-tests needs-testing,10/31/2012 09:30:48 AM,07/08/2025 03:20:35 AM
 22367,"Usernames with ""@"" char are assumed email addresses, causing incorrect look-up in several places",reviewing,Users,johnjamesjacoby,defect (bug),normal,Awaiting Review,,has-patch needs-testing,11/06/2012 12:45:19 AM,08/01/2022 07:50:23 PM
