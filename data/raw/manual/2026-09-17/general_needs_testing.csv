@@ -201,7 +201,7 @@
 58871,support uca14.0.0 collation in database where available,new,Database,,enhancement,normal,Awaiting Review,6.3,has-patch has-unit-tests needs-testing needs-refresh,07/20/2023 11:36:30 PM,09/30/2025 09:03:10 AM
 59365,Deprecated notice when calling get_admin_page_title() on some dashboard pages.,new,Administration,,defect (bug),normal,,,php81 has-patch needs-testing,09/15/2023 11:35:39 AM,08/18/2026 08:18:24 AM
 59845,kritischen Fehler seit Update auf WordPress 6.4,new,Upgrade/Install,,enhancement,normal,Awaiting Review,6.4,needs-testing,11/08/2023 07:30:51 PM,11/09/2023 04:08:39 PM
-60478,Upgrade to jQuery 4.0,new,External Libraries,,task (blessed),normal,7.2,,needs-patch needs-testing early,02/08/2024 08:52:50 PM,09/15/2026 07:51:08 PM
+60478,Upgrade to jQuery 4.0,assigned,External Libraries,Clorith,task (blessed),normal,7.2,,needs-patch needs-testing early,02/08/2024 08:52:50 PM,09/18/2026 02:27:30 AM
 60628,Issues with avif image  imagecreatefromavif not working. Resizing not possible.,assigned,Media,adamsilverstein,defect (bug),normal,Future Release,6.5,avif has-patch has-unit-tests early reporter-feedback needs-testing,02/24/2024 12:46:16 PM,09/08/2025 01:13:55 PM
 60788,Content-Disposition support in download_url() seems broken,new,HTTP API,,defect (bug),normal,Awaiting Review,6.4.3,has-patch 2nd-opinion needs-testing needs-unit-tests,03/16/2024 01:12:30 AM,08/29/2025 12:21:16 PM
 61330,Plugin Dependencies: Refresh plugin-install.php instead of redirecting on activation,new,Upgrade/Install,,defect (bug),normal,Future Release,,has-patch needs-testing has-test-info 2nd-opinion needs-unit-tests,05/30/2024 04:49:13 PM,08/13/2026 07:47:02 AM
