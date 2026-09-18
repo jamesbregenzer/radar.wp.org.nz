@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-18T05:18:51",
+  "generated": "2026-09-18T11:19:55",
   "summary": {
     "unique_tickets": 323,
     "priority_targets": 12,
@@ -1982,105 +1982,6 @@
         "review": {}
       },
       {
-        "ticket_id": "65601",
-        "url": "https://core.trac.wordpress.org/ticket/65601",
-        "score": 162,
-        "tier_class": "strong",
-        "tier_label": "Strong Candidate",
-        "summary": "Install theme button icon is misaligned with button text during theme installation",
-        "track": "General: Needs Testing",
-        "status": "Assigned",
-        "component": "Administration",
-        "owner": "kosvrouvas",
-        "comments": "Unknown",
-        "created": "07/09/2026 01:56:36 PM",
-        "modified": "07/19/2026 02:43:45 PM",
-        "keywords": "has-patch needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Has Concrete Milestone +8",
-            "class": "standard"
-          },
-          {
-            "label": "Has Owner +6",
-            "class": "owner"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          },
-          {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Has Concrete Milestone",
-            "detail": "",
-            "display": "Has Concrete Milestone",
-            "polarity": "positive"
-          },
-          {
-            "points": "+6",
-            "label": "Has Owner",
-            "detail": "",
-            "display": "Has Owner",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
         "ticket_id": "65622",
         "url": "https://core.trac.wordpress.org/ticket/65622",
         "score": 162,
@@ -3006,8 +2907,8 @@
         "owner": "",
         "comments": "Unknown",
         "created": "08/28/2026 11:22:23 AM",
-        "modified": "09/03/2026 02:06:38 PM",
-        "keywords": "needs-testing has-screenshots has-patch has-unit-tests",
+        "modified": "09/08/2026 03:35:18 AM",
+        "keywords": "needs-testing has-screenshots has-patch has-unit-tests close",
         "signals": [
           {
             "label": "Track Priority: General: Needs Testing +65",
@@ -3822,6 +3723,94 @@
         "created": "06/22/2026 06:46:10 AM",
         "modified": "07/10/2026 05:59:32 PM",
         "keywords": "has-patch has-unit-tests needs-testing has-test-info 2nd-opinion",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Has Concrete Milestone +8",
+            "class": "standard"
+          },
+          {
+            "label": "Has Owner +6",
+            "class": "owner"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Has Concrete Milestone",
+            "detail": "",
+            "display": "Has Concrete Milestone",
+            "polarity": "positive"
+          },
+          {
+            "points": "+6",
+            "label": "Has Owner",
+            "detail": "",
+            "display": "Has Owner",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "65601",
+        "url": "https://core.trac.wordpress.org/ticket/65601",
+        "score": 152,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Install theme button icon is misaligned with button text during theme installation",
+        "track": "General: Needs Testing",
+        "status": "Assigned",
+        "component": "Administration",
+        "owner": "kosvrouvas",
+        "comments": "Unknown",
+        "created": "07/09/2026 01:56:36 PM",
+        "modified": "07/17/2026 11:14:40 PM",
+        "keywords": "has-patch needs-testing",
         "signals": [
           {
             "label": "Track Priority: General: Needs Testing +65",
