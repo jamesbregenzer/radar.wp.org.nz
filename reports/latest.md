@@ -1,6 +1,6 @@
 # WP Core Radar Report
 
-Generated: 2026-09-20 11:28
+Generated: 2026-09-20 17:29
 
 ## Summary
 
@@ -498,9 +498,9 @@ Generated: 2026-09-20 11:28
 - Trac status: Assigned
 - Milestone: 7.1
 - Owner: afercia
-- Keywords: has-patch has-unit-tests needs-testing
+- Keywords: has-patch has-unit-tests needs-testing has-test-info
 - Created: 06/19/2026 09:30:32 AM
-- Modified: 07/21/2026 04:52:59 PM
+- Modified: 07/23/2026 03:08:43 PM
 - Why it ranked: track priority: General: Needs Testing +65, has patch +35, needs testing +30, has concrete milestone +8, has owner +6, freshness: updated within 60 days +10, ticket age: mature but not ancient +8
 - Score breakdown:
   - +65: Track Priority
