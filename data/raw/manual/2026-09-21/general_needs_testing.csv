@@ -2,7 +2,7 @@
 40339,If $home_path=='wp' then WP::parse_request() will remove 'wp' from 'wp-json/wc/v1/products' in $pathinfo,new,Rewrite Rules,,defect (bug),high,Awaiting Review,4.7.3,needs-testing has-patch has-unit-tests,04/02/2017 01:32:06 PM,09/02/2026 11:25:30 PM
 7965,Database upgrade complete message should be an admin notice,new,Upgrade/Install,,enhancement,normal,Future Release,,has-patch needs-testing,10/25/2008 06:53:28 PM,04/02/2026 10:52:23 AM
 13743,Ability to choose a network default theme,reopened,Networks and Sites,,enhancement,normal,Future Release,3.0,has-patch has-screenshots needs-testing,06/06/2010 05:44:12 AM,02/03/2026 04:40:36 PM
-14060,"Misleading ""You do not have sufficient permissions to access this page.""",reviewing,Plugins,SergeyBiryukov,defect (bug),normal,7.2,3.0,has-patch has-screenshots has-test-info dev-feedback 2nd-opinion has-unit-tests early needs-testing,06/23/2010 02:46:16 PM,09/19/2026 03:11:31 AM
+14060,"Misleading ""You do not have sufficient permissions to access this page.""",reviewing,Plugins,SergeyBiryukov,defect (bug),normal,7.2,3.0,has-patch has-screenshots has-test-info dev-feedback 2nd-opinion has-unit-tests early needs-testing,06/23/2010 02:46:16 PM,09/21/2026 07:52:24 PM
 15467,Multisite with separate users table,reopened,Networks and Sites,,feature request,normal,,3.0.1,needs-codex needs-testing,11/18/2010 09:09:03 AM,03/02/2024 04:55:21 PM
 15865,Make it easy to disable options / user settings,reopened,"Options, Meta APIs",,enhancement,normal,Awaiting Review,,needs-refresh needs-testing,12/17/2010 05:52:29 PM,07/27/2023 06:09:44 PM
 15955,move_uploaded_file mangles non-ascii characters on Windows platforms,accepted,Upload,SergeyBiryukov,defect (bug),normal,Awaiting Review,2.0,close needs-testing,12/22/2010 10:15:46 PM,05/14/2025 04:51:42 PM
@@ -177,7 +177,7 @@
 55691,New site editor uses WP_SITEURL instead of WP_HOME,reviewing,Themes,audrasjb,defect (bug),normal,Awaiting Review,5.9,needs-testing has-patch needs-test-info reporter-feedback,05/06/2022 07:10:55 PM,05/12/2025 01:37:56 AM
 56089,Meta data of menu items not removed from wp_postmeta table after removing the menu item before being saved.,new,Menus,,defect (bug),normal,Awaiting Review,6.0,needs-test-info needs-testing,06/28/2022 04:16:22 PM,05/12/2025 01:37:57 AM
 56090,wp_update_user doesn't update user_activation_key on users with apostrophes in their email,new,Users,,defect (bug),normal,Awaiting Review,,needs-testing needs-test-info,06/28/2022 05:33:30 PM,05/12/2025 01:37:57 AM
-56320,Update mediaelement.js to the latest version,accepted,External Libraries,adamsilverstein,defect (bug),normal,7.2,,has-patch needs-testing 2nd-opinion,08/01/2022 06:20:19 PM,09/21/2026 02:56:32 AM
+56320,Update mediaelement.js to the latest version,accepted,External Libraries,adamsilverstein,defect (bug),normal,7.2,,has-patch needs-testing 2nd-opinion,08/01/2022 06:20:19 PM,09/21/2026 10:23:17 PM
 56381,WordPress creates invalid web.config -file,new,Rewrite Rules,,defect (bug),normal,Awaiting Review,6.0,needs-testing,08/15/2022 06:12:27 PM,01/04/2023 07:00:30 PM
 56615,Running `build` scripts on Windows machines produces different results,assigned,Build/Test Tools,,defect (bug),normal,Future Release,6.1,needs-testing needs-patch,09/21/2022 02:21:34 PM,03/30/2026 07:34:21 AM
 56821,meta_query late row lookup for performance improvement,new,"Options, Meta APIs",,enhancement,normal,Awaiting Review,,needs-patch needs-testing,10/13/2022 08:46:34 PM,10/14/2022 11:59:24 AM
