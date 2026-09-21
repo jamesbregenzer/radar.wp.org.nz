@@ -177,7 +177,7 @@
 55691,New site editor uses WP_SITEURL instead of WP_HOME,reviewing,Themes,audrasjb,defect (bug),normal,Awaiting Review,5.9,needs-testing has-patch needs-test-info reporter-feedback,05/06/2022 07:10:55 PM,05/12/2025 01:37:56 AM
 56089,Meta data of menu items not removed from wp_postmeta table after removing the menu item before being saved.,new,Menus,,defect (bug),normal,Awaiting Review,6.0,needs-test-info needs-testing,06/28/2022 04:16:22 PM,05/12/2025 01:37:57 AM
 56090,wp_update_user doesn't update user_activation_key on users with apostrophes in their email,new,Users,,defect (bug),normal,Awaiting Review,,needs-testing needs-test-info,06/28/2022 05:33:30 PM,05/12/2025 01:37:57 AM
-56320,Update mediaelement.js to the latest version,accepted,External Libraries,adamsilverstein,defect (bug),normal,7.2,,has-patch needs-testing 2nd-opinion,08/01/2022 06:20:19 PM,08/13/2026 07:47:02 AM
+56320,Update mediaelement.js to the latest version,accepted,External Libraries,adamsilverstein,defect (bug),normal,7.2,,has-patch needs-testing 2nd-opinion,08/01/2022 06:20:19 PM,09/21/2026 02:56:32 AM
 56381,WordPress creates invalid web.config -file,new,Rewrite Rules,,defect (bug),normal,Awaiting Review,6.0,needs-testing,08/15/2022 06:12:27 PM,01/04/2023 07:00:30 PM
 56615,Running `build` scripts on Windows machines produces different results,assigned,Build/Test Tools,,defect (bug),normal,Future Release,6.1,needs-testing needs-patch,09/21/2022 02:21:34 PM,03/30/2026 07:34:21 AM
 56821,meta_query late row lookup for performance improvement,new,"Options, Meta APIs",,enhancement,normal,Awaiting Review,,needs-patch needs-testing,10/13/2022 08:46:34 PM,10/14/2022 11:59:24 AM
