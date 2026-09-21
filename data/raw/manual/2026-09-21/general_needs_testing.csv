@@ -261,5 +261,6 @@
 65897,Surface community-contributed patterns from the Pattern Directory in the editor (opt-in),assigned,Editor,ugyensupport,enhancement,normal,Awaiting Review,,has-patch needs-testing has-unit-tests,08/17/2026 02:53:39 PM,09/17/2026 07:34:13 AM
 66075,"Name the item, or give a count, in the plugin/theme auto-update email subject lines",new,Upgrade/Install,,enhancement,normal,Awaiting Review,,has-patch needs-testing needs-unit-tests,09/09/2026 02:15:02 AM,09/18/2026 06:08:41 AM
 66084,Zoomed-out images can't be zoomed back in.,new,General,,defect (bug),normal,Awaiting Review,,needs-testing,09/10/2026 12:47:06 AM,09/10/2026 11:15:20 AM
+66142,Empty custom date/time fields are saved instead of remaining null in WordPress 7.1.1,new,Date/Time,,defect (bug),normal,Awaiting Review,7.1.1,needs-patch needs-testing,09/19/2026 12:26:47 PM,09/21/2026 04:13:13 PM
 66145,Regression in WP 7.1.1: WooCommerce product archives do not render ul.products container,new,Query,,defect (bug),normal,,7.1.1,needs-testing needs-patch,09/19/2026 03:25:24 PM,09/20/2026 11:07:32 AM
 63256,Unnecessary array_map() call in get_terms() when object_ids is not set,reviewing,Taxonomy,audrasjb,defect (bug),lowest,Future Release,4.7,has-patch has-unit-tests needs-testing has-test-info early,04/09/2025 11:10:53 AM,08/19/2026 12:56:53 PM
