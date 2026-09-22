@@ -1,11 +1,11 @@
 {
-  "generated": "2026-09-22T05:36:29",
+  "generated": "2026-09-22T11:37:40",
   "summary": {
     "unique_tickets": 329,
     "priority_targets": 12,
     "immediate": 11,
     "strong": 1,
-    "watching": 100,
+    "watching": 101,
     "reviews_loaded": 21
   },
   "groups": {
@@ -331,7 +331,7 @@
         "owner": "westonruter",
         "comments": "Unknown",
         "created": "03/21/2026 06:37:01 PM",
-        "modified": "07/23/2026 03:08:44 PM",
+        "modified": "07/24/2026 08:18:26 AM",
         "keywords": "has-patch needs-testing reporter-feedback has-test-info",
         "signals": [
           {
@@ -1068,7 +1068,7 @@
         "owner": "audrasjb",
         "comments": "Unknown",
         "created": "10/19/2017 05:48:13 PM",
-        "modified": "09/07/2026 10:43:27 AM",
+        "modified": "09/16/2026 08:28:57 PM",
         "keywords": "has-patch has-unit-tests has-screenshots needs-testing",
         "signals": [
           {
@@ -1796,8 +1796,8 @@
         "owner": "afercia",
         "comments": "Unknown",
         "created": "06/19/2026 09:30:32 AM",
-        "modified": "07/23/2026 03:08:43 PM",
-        "keywords": "has-patch has-unit-tests needs-testing has-test-info",
+        "modified": "07/24/2026 01:19:31 PM",
+        "keywords": "has-patch has-unit-tests needs-testing has-test-info changes-requested",
         "signals": [
           {
             "label": "Track Priority: General: Needs Testing +65",
@@ -3013,94 +3013,6 @@
             "label": "Dev Feedback",
             "detail": "",
             "display": "Dev Feedback",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
-        "ticket_id": "64953",
-        "url": "https://core.trac.wordpress.org/ticket/64953",
-        "score": 156,
-        "tier_class": "strong",
-        "tier_label": "Strong Candidate",
-        "summary": "The login page still shows the old color for the \u201c\u2190 Go to [Website Name]\u201d link.",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Login and Registration",
-        "owner": "",
-        "comments": "Unknown",
-        "created": "03/26/2026 05:46:37 AM",
-        "modified": "07/23/2026 03:08:43 PM",
-        "keywords": "has-screenshots has-patch needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Has Concrete Milestone +8",
-            "class": "standard"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          },
-          {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Has Concrete Milestone",
-            "detail": "",
-            "display": "Has Concrete Milestone",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
             "polarity": "positive"
           },
           {
@@ -5415,7 +5327,7 @@
         "owner": "",
         "comments": "Unknown",
         "created": "05/05/2026 09:12:28 PM",
-        "modified": "07/23/2026 02:54:53 PM",
+        "modified": "08/07/2026 01:05:37 PM",
         "keywords": "has-patch needs-unit-tests needs-testing",
         "signals": [
           {
@@ -6089,6 +6001,83 @@
             "label": "Has Owner",
             "detail": "",
             "display": "Has Owner",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "64953",
+        "url": "https://core.trac.wordpress.org/ticket/64953",
+        "score": 146,
+        "tier_class": "watching",
+        "tier_label": "Worth Watching",
+        "summary": "The login page still shows the old color for the \u201c\u2190 Go to [Website Name]\u201d link.",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Login and Registration",
+        "owner": "",
+        "comments": "Unknown",
+        "created": "03/26/2026 05:46:37 AM",
+        "modified": "07/21/2026 07:12:09 AM",
+        "keywords": "has-screenshots has-patch needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Has Concrete Milestone +8",
+            "class": "standard"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Has Concrete Milestone",
+            "detail": "",
+            "display": "Has Concrete Milestone",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
             "polarity": "positive"
           }
         ],
