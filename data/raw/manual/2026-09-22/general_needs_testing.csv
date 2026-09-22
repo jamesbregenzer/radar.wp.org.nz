@@ -177,7 +177,7 @@
 55691,New site editor uses WP_SITEURL instead of WP_HOME,reviewing,Themes,audrasjb,defect (bug),normal,Awaiting Review,5.9,needs-testing has-patch needs-test-info reporter-feedback,05/06/2022 07:10:55 PM,05/12/2025 01:37:56 AM
 56089,Meta data of menu items not removed from wp_postmeta table after removing the menu item before being saved.,new,Menus,,defect (bug),normal,Awaiting Review,6.0,needs-test-info needs-testing,06/28/2022 04:16:22 PM,05/12/2025 01:37:57 AM
 56090,wp_update_user doesn't update user_activation_key on users with apostrophes in their email,new,Users,,defect (bug),normal,Awaiting Review,,needs-testing needs-test-info,06/28/2022 05:33:30 PM,05/12/2025 01:37:57 AM
-56320,Update mediaelement.js to the latest version,accepted,External Libraries,adamsilverstein,defect (bug),normal,7.2,,has-patch needs-testing 2nd-opinion,08/01/2022 06:20:19 PM,09/21/2026 10:23:17 PM
+56320,Update mediaelement.js to the latest version,accepted,External Libraries,adamsilverstein,defect (bug),normal,7.2,,has-patch needs-testing 2nd-opinion,08/01/2022 06:20:19 PM,09/22/2026 05:58:47 PM
 56381,WordPress creates invalid web.config -file,new,Rewrite Rules,,defect (bug),normal,Awaiting Review,6.0,needs-testing,08/15/2022 06:12:27 PM,01/04/2023 07:00:30 PM
 56615,Running `build` scripts on Windows machines produces different results,assigned,Build/Test Tools,,defect (bug),normal,Future Release,6.1,needs-testing needs-patch,09/21/2022 02:21:34 PM,03/30/2026 07:34:21 AM
 56821,meta_query late row lookup for performance improvement,new,"Options, Meta APIs",,enhancement,normal,Awaiting Review,,needs-patch needs-testing,10/13/2022 08:46:34 PM,10/14/2022 11:59:24 AM
@@ -260,7 +260,7 @@
 65757,Proposal: Make the Interactivity API extensible,new,Interactivity API,,defect (bug),normal,Future Release,,has-patch needs-testing 2nd-opinion,07/29/2026 07:42:15 PM,08/31/2026 11:55:42 PM
 65897,Surface community-contributed patterns from the Pattern Directory in the editor (opt-in),assigned,Editor,ugyensupport,enhancement,normal,Awaiting Review,,has-patch needs-testing has-unit-tests,08/17/2026 02:53:39 PM,09/17/2026 07:34:13 AM
 66075,"Name the item, or give a count, in the plugin/theme auto-update email subject lines",new,Upgrade/Install,,enhancement,normal,Awaiting Review,,has-patch needs-testing has-unit-tests,09/09/2026 02:15:02 AM,09/22/2026 02:31:36 PM
-66084,Zoomed-out images can't be zoomed back in.,new,General,,defect (bug),normal,Awaiting Review,,needs-testing,09/10/2026 12:47:06 AM,09/10/2026 11:15:20 AM
+66084,Zoomed-out images can't be zoomed back in.,new,General,,defect (bug),normal,Awaiting Review,,needs-testing,09/10/2026 12:47:06 AM,09/22/2026 04:43:43 PM
 66142,Empty custom date/time fields are saved instead of remaining null in WordPress 7.1.1,new,Date/Time,,defect (bug),normal,Awaiting Review,7.1.1,needs-testing has-patch has-unit-tests,09/19/2026 12:26:47 PM,09/22/2026 01:11:43 AM
 66145,Regression in WP 7.1.1: WooCommerce product archives do not render ul.products container,new,Query,,defect (bug),normal,,7.1.1,needs-testing needs-patch,09/19/2026 03:25:24 PM,09/20/2026 11:07:32 AM
 63256,Unnecessary array_map() call in get_terms() when object_ids is not set,reviewing,Taxonomy,audrasjb,defect (bug),lowest,Future Release,4.7,has-patch has-unit-tests needs-testing has-test-info early,04/09/2025 11:10:53 AM,08/19/2026 12:56:53 PM
