@@ -1,10 +1,10 @@
 {
-  "generated": "2026-09-21T23:35:25",
+  "generated": "2026-09-22T05:36:29",
   "summary": {
     "unique_tickets": 329,
     "priority_targets": 12,
-    "immediate": 12,
-    "strong": 0,
+    "immediate": 11,
+    "strong": 1,
     "watching": 100,
     "reviews_loaded": 21
   },
@@ -1056,20 +1056,20 @@
         "review": {}
       },
       {
-        "ticket_id": "65920",
-        "url": "https://core.trac.wordpress.org/ticket/65920",
-        "score": 166,
-        "tier_class": "immediate",
-        "tier_label": "Immediate Review",
-        "summary": "Add a plugin compatibility testing workflow to catch fatals with popular plugins before release",
+        "ticket_id": "42281",
+        "url": "https://core.trac.wordpress.org/ticket/42281",
+        "score": 164,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Better Update Management for Translation files",
         "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Build/Test Tools",
-        "owner": "",
+        "status": "Reviewing",
+        "component": "Upgrade/Install",
+        "owner": "audrasjb",
         "comments": "Unknown",
-        "created": "08/20/2026 03:48:11 PM",
-        "modified": "09/07/2026 08:03:58 AM",
-        "keywords": "has-patch needs-testing",
+        "created": "10/19/2017 05:48:13 PM",
+        "modified": "09/07/2026 10:43:27 AM",
+        "keywords": "has-patch has-unit-tests has-screenshots needs-testing",
         "signals": [
           {
             "label": "Track Priority: General: Needs Testing +65",
@@ -1088,12 +1088,12 @@
             "class": "standard"
           },
           {
-            "label": "Freshness: Recently Updated <=14 Days +20",
-            "class": "freshness"
+            "label": "Has Owner +6",
+            "class": "owner"
           },
           {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
           }
         ],
         "score_breakdown": [
@@ -1126,17 +1126,17 @@
             "polarity": "positive"
           },
           {
+            "points": "+6",
+            "label": "Has Owner",
+            "detail": "",
+            "display": "Has Owner",
+            "polarity": "positive"
+          },
+          {
             "points": "+20",
             "label": "Freshness",
             "detail": "Recently Updated <=14 Days",
             "display": "Freshness: Recently Updated <=14 Days",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
             "polarity": "positive"
           }
         ],
@@ -1349,94 +1349,6 @@
             "detail": "Very Old Ticket",
             "display": "Ticket Age: Very Old Ticket",
             "polarity": "negative"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
-        "ticket_id": "42281",
-        "url": "https://core.trac.wordpress.org/ticket/42281",
-        "score": 164,
-        "tier_class": "strong",
-        "tier_label": "Strong Candidate",
-        "summary": "Better Update Management for Translation files",
-        "track": "General: Needs Testing",
-        "status": "Reviewing",
-        "component": "Upgrade/Install",
-        "owner": "audrasjb",
-        "comments": "Unknown",
-        "created": "10/19/2017 05:48:13 PM",
-        "modified": "09/07/2026 10:43:27 AM",
-        "keywords": "has-patch has-unit-tests has-screenshots needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Has Concrete Milestone +8",
-            "class": "standard"
-          },
-          {
-            "label": "Has Owner +6",
-            "class": "owner"
-          },
-          {
-            "label": "Freshness: Recently Updated <=14 Days +20",
-            "class": "freshness"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Has Concrete Milestone",
-            "detail": "",
-            "display": "Has Concrete Milestone",
-            "polarity": "positive"
-          },
-          {
-            "points": "+6",
-            "label": "Has Owner",
-            "detail": "",
-            "display": "Has Owner",
-            "polarity": "positive"
-          },
-          {
-            "points": "+20",
-            "label": "Freshness",
-            "detail": "Recently Updated <=14 Days",
-            "display": "Freshness: Recently Updated <=14 Days",
-            "polarity": "positive"
           }
         ],
         "discovery_track": "General Needs Testing",
@@ -3129,6 +3041,94 @@
         "created": "03/26/2026 05:46:37 AM",
         "modified": "07/23/2026 03:08:43 PM",
         "keywords": "has-screenshots has-patch needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Has Concrete Milestone +8",
+            "class": "standard"
+          },
+          {
+            "label": "Freshness: Updated Within 60 Days +10",
+            "class": "freshness"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Has Concrete Milestone",
+            "detail": "",
+            "display": "Has Concrete Milestone",
+            "polarity": "positive"
+          },
+          {
+            "points": "+10",
+            "label": "Freshness",
+            "detail": "Updated Within 60 Days",
+            "display": "Freshness: Updated Within 60 Days",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "65920",
+        "url": "https://core.trac.wordpress.org/ticket/65920",
+        "score": 156,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Add a plugin compatibility testing workflow to catch fatals with popular plugins before release",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Build/Test Tools",
+        "owner": "",
+        "comments": "Unknown",
+        "created": "08/20/2026 03:48:11 PM",
+        "modified": "08/20/2026 09:15:50 PM",
+        "keywords": "has-patch needs-testing",
         "signals": [
           {
             "label": "Track Priority: General: Needs Testing +65",
