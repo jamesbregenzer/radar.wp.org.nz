@@ -1,9 +1,11 @@
-const RADAR_ORIGIN = "wp-core-radar.pages.dev";
 const GITHUB_OWNER = "jamesbregenzer";
-const GITHUB_REPO = "wp-core-radar";
+const DEFAULT_GITHUB_REPO = "radar.wp.org.nz";
 const REVIEWS_PATH = "data/reviews/reviews.json";
-const ADMIN_DATA_URL = `https://${RADAR_ORIGIN}/radar/admin-data.json`;
 const ALLOWED_STATUSES = new Set(["", "shortlist", "watch", "reject", "tested", "commented", "committed"]);
+
+function githubRepo(env) {
+  return env.GITHUB_REPO || DEFAULT_GITHUB_REPO;
+}
 
 function html(body, status = 200) {
   return new Response(body, {
@@ -446,14 +448,14 @@ async function githubRequest(env, path, options = {}) {
 }
 
 async function getReviews(env) {
-  const response = await githubRequest(env, `/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${REVIEWS_PATH}`);
+  const response = await githubRequest(env, `/repos/${GITHUB_OWNER}/${githubRepo(env)}/contents/${REVIEWS_PATH}`);
   if (!response.ok) throw new Error(`GitHub read failed: ${response.status}`);
   const file = await response.json();
   return { reviews: JSON.parse(base64ToText(file.content)), sha: file.sha };
 }
 
 async function saveReviews(env, reviews, sha, ticket) {
-  const response = await githubRequest(env, `/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${REVIEWS_PATH}`, {
+  const response = await githubRequest(env, `/repos/${GITHUB_OWNER}/${githubRepo(env)}/contents/${REVIEWS_PATH}`, {
     method: "PUT",
     body: JSON.stringify({
       message: `Record review decision for #${ticket}`,
@@ -465,8 +467,10 @@ async function saveReviews(env, reviews, sha, ticket) {
   if (!response.ok) throw new Error(`GitHub write failed: ${response.status} ${await response.text()}`);
 }
 
-async function getAdminData() {
-  const response = await fetch(ADMIN_DATA_URL, { cf: { cacheTtl: 0, cacheEverything: false } });
+async function getAdminData(env) {
+  const response = await env.ASSETS.fetch(new Request("https://radar-assets.local/admin-data.json", {
+    headers: { "cache-control": "no-cache" },
+  }));
   if (!response.ok) throw new Error(`Admin data read failed: ${response.status}`);
   return response.json();
 }
@@ -710,7 +714,7 @@ async function adminPage(request, env) {
   const session = await readSession(request, env);
   if (!session) return loginPage();
 
-  const [data, reviewFile] = await Promise.all([getAdminData(), getReviews(env)]);
+  const [data, reviewFile] = await Promise.all([getAdminData(env), getReviews(env)]);
   const reviews = reviewFile.reviews || {};
   const reviewSummary = reviewStats(reviews);
   const summary = data.summary || {};
@@ -794,6 +798,23 @@ async function adminPage(request, env) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    if (url.pathname === "/health/live") {
+      return Response.json({ status: "ok", service: "radar-wp-org-nz" }, {
+        headers: { "cache-control": "no-store" },
+      });
+    }
+
+    if (url.pathname === "/health/ready") {
+      const response = await env.ASSETS.fetch(new Request("https://radar-assets.local/admin-data.json"));
+      return Response.json({
+        status: response.ok ? "ready" : "not_ready",
+        assets: response.ok,
+      }, {
+        status: response.ok ? 200 : 503,
+        headers: { "cache-control": "no-store" },
+      });
+    }
 
     // Legacy paths from the previous james.bregenzer.dev/radar setup.
     // Keep these redirects while bookmarks/search/history catch up.
@@ -911,26 +932,8 @@ export default {
       return adminPage(request, env);
     }
 
-    // Public Radar pages remain built by the wp-core-radar Pages project,
-    // but are exposed at clean routes on radar.james.bregenzer.dev.
-    const target = new URL(request.url);
-    target.hostname = RADAR_ORIGIN;
-
-    if (url.pathname === "/" || url.pathname === "") {
-      target.pathname = "/radar/";
-      return fetch(target, request);
-    }
-
-    if (url.pathname === "/contributions" || url.pathname === "/contributions/") {
-      target.pathname = "/radar/contributions/";
-      return fetch(target, request);
-    }
-
-    // Pass through static assets and any future public routes by prefixing
-    // the Radar Pages path. This keeps the display hostname clean without
-    // changing the wp-core-radar repository or data collection pipeline.
-    target.pathname = `/radar${url.pathname}`;
-    return fetch(target, request);
+    // Public pages and assets are deployed atomically with this Worker from
+    // docs/radar. There is no separate Pages origin to drift or fail over.
+    return env.ASSETS.fetch(request);
   },
 };
-

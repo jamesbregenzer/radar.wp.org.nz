@@ -110,16 +110,32 @@ def load_outcomes(path: Path = OUTCOMES_CSV) -> dict[str, str]:
     return outcomes
 
 
-def normalize_review(review: dict[str, Any]) -> dict[str, str]:
-    return {
+def normalize_review(review: dict[str, Any]) -> dict[str, Any]:
+    normalized: dict[str, Any] = {
         "status": str(review.get("status", "")).strip().lower(),
         "reason": str(review.get("reason", "")).strip(),
         "notes": str(review.get("notes", "")).strip(),
         "updated_at": str(review.get("updated_at", "")).strip(),
     }
 
+    # Props are an outcome independent of review status. Preserve this
+    # metadata whenever reviews are loaded and saved so dashboard generation
+    # cannot silently erase contribution history.
+    if review.get("received_props") is True:
+        normalized["received_props"] = True
 
-def load_reviews(path: Path = REVIEWS_JSON) -> dict[str, dict[str, str]]:
+    props_recorded_at = str(review.get("props_recorded_at", "")).strip()
+    if props_recorded_at:
+        normalized["props_recorded_at"] = props_recorded_at
+
+    changeset = str(review.get("changeset", "")).strip()
+    if changeset:
+        normalized["changeset"] = changeset
+
+    return normalized
+
+
+def load_reviews(path: Path = REVIEWS_JSON) -> dict[str, dict[str, Any]]:
     """Load human review decisions from JSON.
 
     Reviews are keyed by normalized ticket ID so the admin workflow can update
@@ -130,7 +146,7 @@ def load_reviews(path: Path = REVIEWS_JSON) -> dict[str, dict[str, str]]:
         return {}
 
     payload = json.loads(path.read_text(encoding="utf-8"))
-    reviews: dict[str, dict[str, str]] = {}
+    reviews: dict[str, dict[str, Any]] = {}
 
     for ticket, review in payload.items():
         ticket_id = normalize_ticket_id(str(ticket))
@@ -140,7 +156,7 @@ def load_reviews(path: Path = REVIEWS_JSON) -> dict[str, dict[str, str]]:
     return reviews
 
 
-def save_reviews(reviews: dict[str, dict[str, str]], path: Path = REVIEWS_JSON) -> None:
+def save_reviews(reviews: dict[str, dict[str, Any]], path: Path = REVIEWS_JSON) -> None:
     """Persist human review decisions as stable, sorted JSON."""
     path.parent.mkdir(parents=True, exist_ok=True)
 

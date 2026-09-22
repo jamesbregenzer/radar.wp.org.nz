@@ -1,0 +1,13 @@
+{
+  "name": "radar.wp.org.nz",
+  "private": true,
+  "scripts": {
+    "check:worker": "node --check cloudflare/worker-radar.js",
+    "check:python": "python3 -m unittest discover -s tests -v",
+    "check": "npm run check:worker && npm run check:python",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.38.0"
+  }
+}
