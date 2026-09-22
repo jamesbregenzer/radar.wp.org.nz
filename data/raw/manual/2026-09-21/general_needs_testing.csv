@@ -152,7 +152,7 @@
 53136,"Error with ""Add to Reusable blocks"" in WordPress 5.7.1",new,Editor,,defect (bug),normal,Future Release,5.7.1,reporter-feedback needs-testing,05/03/2021 08:10:05 AM,08/31/2021 02:06:33 PM
 53439,Updating failed. The response is not a valid JSON response.,new,Editor,,defect (bug),normal,Awaiting Review,5.7.2,2nd-opinion needs-testing,06/17/2021 10:57:16 AM,06/24/2021 11:44:00 PM
 53450,[WP_Meta_Query] Add faster LIKE based 'STARTSWITH' and 'ENDSWITH' compare modes for value query,new,Query,,enhancement,normal,Future Release,,dev-feedback has-patch has-unit-tests early early-like-actually-early needs-testing,06/18/2021 03:57:59 PM,03/03/2025 09:47:03 AM
-53529,Block based widget admin screen causes a NS_ERROR_FAILURE error in Firefox,reopened,Customize,,defect (bug),normal,Future Release,5.8,needs-testing needs-patch,06/27/2021 04:30:56 PM,06/07/2022 09:48:43 AM
+53529,Block based widget admin screen causes a NS_ERROR_FAILURE error in Firefox,reopened,Customize,,defect (bug),normal,Future Release,5.8,needs-testing needs-patch,06/27/2021 04:30:56 PM,09/21/2026 11:48:10 PM
 53552,Inactive Widgets prevent placement of new widget if `multiple` is false,new,Widgets,,defect (bug),normal,Future Release,5.8,needs-testing needs-patch needs-design,06/29/2021 04:03:42 PM,11/01/2021 10:05:49 PM
 53732,Widgets option shows blank,new,Widgets,,defect (bug),normal,Awaiting Review,5.8,reporter-feedback needs-testing,07/22/2021 08:53:02 AM,07/23/2021 11:06:23 AM
 54016,Media Library: Bulk delete elements in grid view takes very long,new,Media,,enhancement,normal,Awaiting Review,,has-patch 2nd-opinion needs-testing,08/26/2021 03:10:47 PM,04/14/2026 10:33:21 AM
@@ -259,8 +259,8 @@
 65734,Classic Editor: Support pasted WebP image URLs in TinyMCE smart paste,new,TinyMCE,,enhancement,normal,Future Release,7.1,has-patch needs-testing,07/27/2026 03:01:34 PM,08/10/2026 02:15:13 PM
 65757,Proposal: Make the Interactivity API extensible,new,Interactivity API,,defect (bug),normal,Future Release,,has-patch needs-testing 2nd-opinion,07/29/2026 07:42:15 PM,08/31/2026 11:55:42 PM
 65897,Surface community-contributed patterns from the Pattern Directory in the editor (opt-in),assigned,Editor,ugyensupport,enhancement,normal,Awaiting Review,,has-patch needs-testing has-unit-tests,08/17/2026 02:53:39 PM,09/17/2026 07:34:13 AM
-66075,"Name the item, or give a count, in the plugin/theme auto-update email subject lines",new,Upgrade/Install,,enhancement,normal,Awaiting Review,,has-patch needs-testing needs-unit-tests,09/09/2026 02:15:02 AM,09/18/2026 06:08:41 AM
+66075,"Name the item, or give a count, in the plugin/theme auto-update email subject lines",new,Upgrade/Install,,enhancement,normal,Awaiting Review,,has-patch needs-testing needs-unit-tests,09/09/2026 02:15:02 AM,09/21/2026 11:16:37 PM
 66084,Zoomed-out images can't be zoomed back in.,new,General,,defect (bug),normal,Awaiting Review,,needs-testing,09/10/2026 12:47:06 AM,09/10/2026 11:15:20 AM
-66142,Empty custom date/time fields are saved instead of remaining null in WordPress 7.1.1,new,Date/Time,,defect (bug),normal,Awaiting Review,7.1.1,needs-patch needs-testing,09/19/2026 12:26:47 PM,09/21/2026 04:13:13 PM
+66142,Empty custom date/time fields are saved instead of remaining null in WordPress 7.1.1,new,Date/Time,,defect (bug),normal,Awaiting Review,7.1.1,needs-testing has-patch has-unit-tests,09/19/2026 12:26:47 PM,09/22/2026 01:11:43 AM
 66145,Regression in WP 7.1.1: WooCommerce product archives do not render ul.products container,new,Query,,defect (bug),normal,,7.1.1,needs-testing needs-patch,09/19/2026 03:25:24 PM,09/20/2026 11:07:32 AM
 63256,Unnecessary array_map() call in get_terms() when object_ids is not set,reviewing,Taxonomy,audrasjb,defect (bug),lowest,Future Release,4.7,has-patch has-unit-tests needs-testing has-test-info early,04/09/2025 11:10:53 AM,08/19/2026 12:56:53 PM

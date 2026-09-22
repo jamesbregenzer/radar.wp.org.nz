@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-21T17:34:21",
+  "generated": "2026-09-21T23:35:25",
   "summary": {
     "unique_tickets": 329,
     "priority_targets": 12,
@@ -4416,6 +4416,72 @@
         "created": "09/09/2026 02:15:02 AM",
         "modified": "09/11/2026 05:57:56 PM",
         "keywords": "has-patch needs-testing needs-unit-tests",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "66142",
+        "url": "https://core.trac.wordpress.org/ticket/66142",
+        "score": 150,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Empty custom date/time fields are saved instead of remaining null in WordPress 7.1.1",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Date/Time",
+        "owner": "",
+        "comments": "Unknown",
+        "created": "09/19/2026 12:26:47 PM",
+        "modified": "09/22/2026 01:11:43 AM",
+        "keywords": "needs-testing has-patch has-unit-tests",
         "signals": [
           {
             "label": "Track Priority: General: Needs Testing +65",
@@ -12014,61 +12080,6 @@
         "review": {}
       },
       {
-        "ticket_id": "66142",
-        "url": "https://core.trac.wordpress.org/ticket/66142",
-        "score": 115,
-        "tier_class": "standard",
-        "tier_label": "Standard",
-        "summary": "Empty custom date/time fields are saved instead of remaining null in WordPress 7.1.1",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Date/Time",
-        "owner": "",
-        "comments": "Unknown",
-        "created": "09/19/2026 12:26:47 PM",
-        "modified": "09/21/2026 04:13:13 PM",
-        "keywords": "needs-patch needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Freshness: Recently Updated <=14 Days +20",
-            "class": "freshness"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+20",
-            "label": "Freshness",
-            "detail": "Recently Updated <=14 Days",
-            "display": "Freshness: Recently Updated <=14 Days",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
         "ticket_id": "45033",
         "url": "https://core.trac.wordpress.org/ticket/45033",
         "score": 114,
@@ -13921,6 +13932,72 @@
             "label": "Ticket Age",
             "detail": "Very Old Ticket",
             "display": "Ticket Age: Very Old Ticket",
+            "polarity": "negative"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "53529",
+        "url": "https://core.trac.wordpress.org/ticket/53529",
+        "score": 103,
+        "tier_class": "standard",
+        "tier_label": "Standard",
+        "summary": "Block based widget admin screen causes a NS_ERROR_FAILURE error in Firefox",
+        "track": "General: Needs Testing",
+        "status": "Reopened",
+        "component": "Customize",
+        "owner": "",
+        "comments": "Unknown",
+        "created": "06/27/2021 04:30:56 PM",
+        "modified": "09/21/2026 11:48:10 PM",
+        "keywords": "needs-testing needs-patch",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          },
+          {
+            "label": "Setup Complexity: Browser Specific Behavior -12",
+            "class": "complexity"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          },
+          {
+            "points": "-12",
+            "label": "Setup Complexity",
+            "detail": "Browser Specific Behavior",
+            "display": "Setup Complexity: Browser Specific Behavior",
             "polarity": "negative"
           }
         ],
@@ -19013,61 +19090,6 @@
         "created": "Unknown",
         "modified": "Unknown",
         "keywords": "needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Setup Complexity: Browser Specific Behavior -12",
-            "class": "complexity"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "-12",
-            "label": "Setup Complexity",
-            "detail": "Browser Specific Behavior",
-            "display": "Setup Complexity: Browser Specific Behavior",
-            "polarity": "negative"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
-        "ticket_id": "53529",
-        "url": "https://core.trac.wordpress.org/ticket/53529",
-        "score": 83,
-        "tier_class": "standard",
-        "tier_label": "Standard",
-        "summary": "Block based widget admin screen causes a NS_ERROR_FAILURE error in Firefox",
-        "track": "General: Needs Testing",
-        "status": "Reopened",
-        "component": "Unknown",
-        "owner": "",
-        "comments": "Unknown",
-        "created": "Unknown",
-        "modified": "Unknown",
-        "keywords": "needs-testing needs-patch",
         "signals": [
           {
             "label": "Track Priority: General: Needs Testing +65",
