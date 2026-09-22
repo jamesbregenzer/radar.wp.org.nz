@@ -7,6 +7,8 @@ Thor remains the Trac collection runtime.
 ## Invariants
 
 - Do not rename Thor's local directory: `/Users/thor/Sites/wp-core-radar`.
+- Do not rename the GitHub repository. It remains
+  `jamesbregenzer/wp-core-radar`.
 - Do not retire the current Pages project before the new Worker passes the
   controlled collection and scheduled-cycle gates.
 - Do not publish a collector snapshot unless all five enabled query exports
@@ -18,7 +20,7 @@ Thor remains the Trac collection runtime.
 
 ## Target
 
-- Repository: `jamesbregenzer/radar.wp.org.nz`
+- Repository: `jamesbregenzer/wp-core-radar`
 - Worker: `radar-wp-org-nz`
 - Canonical host: `radar.wp.org.nz`
 - Static assets: `docs/radar`, deployed atomically with the Worker
@@ -27,38 +29,36 @@ Thor remains the Trac collection runtime.
 
 ## Ordered cutover
 
-1. Merge and validate the rename-readiness change on the current repository.
+1. Merge and validate the Worker-readiness change on the current repository.
 2. Record the current main SHA, latest snapshot date, five feed row counts,
    LaunchAgent state, and recent collector logs.
-3. Rename the GitHub repository to `radar.wp.org.nz`.
-4. On Thor, change only `origin` to the renamed GitHub repository. Confirm
-   fetch, pull/rebase, authentication, and push access.
-5. Dispatch a staging Worker deployment from the exact GitHub SHA through the
+3. Confirm Thor's `origin` still points at
+   `https://github.com/jamesbregenzer/wp-core-radar.git`.
+4. Dispatch a staging Worker deployment from the exact GitHub SHA through the
    canonical Federal Eagle/Thor Cloudflare runtime. Do not create a second
    repository-specific Cloudflare credential merely for this migration.
-6. Run one controlled Thor collection and require
+5. Run one controlled Thor collection and require
    `scripts/verify-collector-snapshot.py` to pass.
-7. Verify the resulting commit, GitHub validation, deployed SHA, dashboard,
+6. Verify the resulting commit, GitHub validation, deployed SHA, dashboard,
    contributions page, admin read/write path, and both health routes.
-8. Observe two consecutive automatic six-hour Thor cycles.
-9. Attach `radar.wp.org.nz`, preserving the current Pages deployment as the
+7. Observe two consecutive automatic six-hour Thor cycles.
+8. Attach `radar.wp.org.nz`, preserving the current Pages deployment as the
    rollback target.
-10. Redirect `radar.james.bregenzer.dev` to the canonical host while preserving
+9. Redirect `radar.james.bregenzer.dev` to the canonical host while preserving
     path and query string.
-11. After a seven-day rollback window with fresh collector data, retire the
+10. After a seven-day rollback window with fresh collector data, retire the
     previous Pages deployment.
 
-## Thor remote update
+## Thor remote check
 
-Run this only after the GitHub rename:
+Run this before staging deployment:
 
 ```bash
 cd /Users/thor/Sites/wp-core-radar
-git remote set-url origin https://github.com/jamesbregenzer/radar.wp.org.nz.git
 git remote -v
 git fetch origin
 git pull --rebase origin main
 ```
 
-The GitHub rename and Thor remote change are one cutover step. The local folder
-name is intentionally excluded from that step.
+The GitHub repository and Thor local folder name are intentionally excluded from
+the hostname cutover.

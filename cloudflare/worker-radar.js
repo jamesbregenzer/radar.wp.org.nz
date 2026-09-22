@@ -1,5 +1,5 @@
 const GITHUB_OWNER = "jamesbregenzer";
-const DEFAULT_GITHUB_REPO = "radar.wp.org.nz";
+const DEFAULT_GITHUB_REPO = "wp-core-radar";
 const REVIEWS_PATH = "data/reviews/reviews.json";
 const ALLOWED_STATUSES = new Set(["", "shortlist", "watch", "reject", "tested", "commented", "committed"]);
 
