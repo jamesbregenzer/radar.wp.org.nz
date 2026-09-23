@@ -85,8 +85,9 @@ The target application hostname is `radar.wp.org.nz`, with protected Radar admin
 WP-2 isolates the current browser implementation behind a collector/result
 boundary, supplies deterministic time and explicit dataset selection, uses one
 executable scoring configuration, and gives every current renderer one
-canonical internal opportunity model. WP-3 will add versioned schemas and
-fail-closed certification; WP-5 will add the certified API/feed. GitHub remains
+canonical internal opportunity model. WP-3 adds versioned schemas and
+fail-closed certification. WP-4 adds stable structured operations and a
+fail-closed pipeline; WP-5 will add the certified API/feed. GitHub remains
 durable truth; HTTP is a projection.
 
 WP-3 adds the certified machine-data layer: strict versioned schemas,
@@ -98,6 +99,25 @@ HTTP API implementation itself.
 The proposed future repository name is `jamesbregenzer/radar.wp.org.nz`. The current repository remains `jamesbregenzer/wp-core-radar`; no rename is part of WP-1.
 
 ## Main commands
+
+The canonical WP-4 interface is `scripts/radar.py`. Every operation requires an
+explicit reference time and emits one validated `execution-result.v1` JSON
+document to stdout:
+
+```bash
+python3 scripts/radar.py validate-collection --collection-id 2026-01-15 --reference-time 2026-01-15T12:00:00Z
+python3 scripts/radar.py generate --collection-id 2026-01-15 --reference-time 2026-01-15T12:00:00Z
+python3 scripts/radar.py certify --collection-id 2026-01-15 --source-revision 0123456789abcdef0123456789abcdef01234567 --reference-time 2026-01-15T12:00:00Z
+python3 scripts/radar.py verify --reference-time 2026-01-15T12:00:00Z
+python3 scripts/radar.py publish --reference-time 2026-01-15T12:00:00Z
+python3 scripts/radar.py pipeline --skip-collect --collection-id 2026-01-15 --source-revision 0123456789abcdef0123456789abcdef01234567 --reference-time 2026-01-15T12:00:00Z
+```
+
+`publish` only returns a verified artifact/identity plan. It never authenticates,
+commits, pushes, deploys, or schedules. See
+[`docs/contracts/executor.md`](docs/contracts/executor.md).
+
+The commands below remain supported compatibility interfaces:
 
 Run the full pipeline:
 
@@ -138,7 +158,7 @@ python3 scripts/generate-report.py
 Verify the committed certified dataset without network or browser access:
 
 ```bash
-python3 scripts/certify-data.py verify
+python3 scripts/radar.py verify --reference-time 2026-01-15T12:00:00Z
 ```
 
 Record a review decision locally:
@@ -186,6 +206,8 @@ Local helper scripts may be committed when they contain no secrets and do not ex
 - `docs/WORDPRESS-AUTOMATION-PROGRAM.md` — authoritative program architecture, product boundaries, guardrails, and roadmap
 - `docs/WP-2-CORE-HARDENING.md` — WP-2 implementation record, runtime classification, and deferrals
 - `docs/WP-3-CERTIFIED-RADAR-DATA.md` — schemas, canonicalization, certification, retention, and verification
+- `docs/WP-4-STABLE-RADAR-OPERATIONS.md` — stable operation behavior, failures, and idempotency
+- `docs/contracts/executor.md` — executor-facing invocation and custody contract
 - `docs/mac-mini-collector.md` — local collection and scheduled runner workflow
 - `.github/workflows/refresh-dashboard.yml` — near-real-time dashboard refresh after review saves
 - `cloudflare/worker-radar.js` — production Worker source for public routing and protected admin UI

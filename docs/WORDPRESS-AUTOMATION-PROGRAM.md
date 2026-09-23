@@ -146,7 +146,7 @@ WordPress writes.
 3. **WP-3 Certified Radar Data** — implemented: `collection.v1`, `snapshot.v1`,
    `opportunity.v1`, `execution-result.v1`, canonical hashing/provenance, and
    fail-closed certification.
-4. **WP-4 Stable Radar Operations** — `collect`, `validate-collection`,
+4. **WP-4 Stable Radar Operations** — implemented: `collect`, `validate-collection`,
    `generate`, `certify`, `verify`, `publish`, and `pipeline` application
    entrypoints with structured results.
 5. **WP-5 Machine Feed + UI Alignment** — API/feed from certified data;
@@ -177,7 +177,6 @@ being silently treated as complete:
 - the scheduled runtime wrapper and its timestamp-only commit workaround;
 - legacy recursive archive discovery for non-certified compatibility output;
 - versioned schemas, canonical certification, and fail-closed generation (WP-3);
-- stable operational lifecycle entrypoints (WP-4); and
 - the machine feed and complete UI schema alignment (WP-5).
 
 ## WP-3 implementation record
@@ -188,6 +187,17 @@ hashing, complete multi-query opportunity provenance, fail-closed certification,
 portable execution results, one Git-backed current certified dataset, and
 offline verification. The accepted implementation details and WP-4/WP-5
 handoffs are recorded in `docs/WP-3-CERTIFIED-RADAR-DATA.md`.
+
+## WP-4 implementation record
+
+WP-4 implemented one stable application boundary for collection validation,
+generation, certification, offline verification, publication planning, and the
+fail-closed end-to-end pipeline. Every operation returns `execution-result.v1`;
+the canonical CLI prints that result as JSON and uses a nonzero exit status for
+failure. Publication identifies verified eligible artifacts but deliberately
+does not authenticate, push, deploy, or schedule work. Executor obligations and
+the precise command contract are recorded in
+`docs/WP-4-STABLE-RADAR-OPERATIONS.md` and `docs/contracts/executor.md`.
 
 ## Program guardrails
 
