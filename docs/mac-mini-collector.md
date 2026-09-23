@@ -1,27 +1,51 @@
 # Mac Mini Collector
 
-The Mac Mini is an intentional part of the WP Core Radar architecture. It is the collection/build runner because the Trac CSV export workflow is most reliable from the local browser/network environment.
+This document records the **CURRENT IMPLEMENTATION** and
+**HISTORICAL/COMPATIBILITY** details of the proven browser-assisted collector.
+The authoritative target architecture is
+`docs/WORDPRESS-AUTOMATION-PROGRAM.md`.
 
-## Responsibilities
+The local browser environment currently associated with Thor is the
+collection/build runner because hosted/server Trac CSV collection has
+historically been unreliable or blocked. This known-working path is an
+intentional compatibility constraint and must not be redesigned away.
+
+## CURRENT IMPLEMENTATION — responsibilities
 
 The Mac Mini is responsible for:
 
 1. Opening configured WordPress Trac CSV queries in Firefox.
 2. Waiting for `query.csv` to finish downloading.
 3. Importing the CSV into `data/raw/manual/YYYY-MM-DD/<query_slug>.csv`.
-4. Regenerating the Markdown report, public dashboard, and admin data export.
-5. Committing and pushing changed data/report/dashboard files to GitHub.
-6. Reconciling the latest review state during scheduled full radar runs.
+4. Removing the temporary local browser download after a successful import.
+5. Regenerating the Markdown report, public dashboard, and admin data export.
+6. Committing and pushing changed data/report/dashboard files to GitHub, which
+   becomes durable truth after publication.
+7. Reconciling the latest review state during scheduled full Radar runs.
 
 The Mac Mini creates `docs/radar/admin-data.json`, which the protected Worker admin console reads. It does not create, host, or authenticate the production `/admin/` page on `radar.james.bregenzer.dev`. Scheduled runs still reconcile review writes from GitHub with regenerated dashboard/admin data, but they are no longer the only review-sync mechanism. Review-only commits to `data/reviews/reviews.json` are also handled by GitHub Actions so the dashboard does not remain stale for up to six hours.
 
-GitHub is the source of truth after the Mac Mini pushes changes. Cloudflare Pages deploys the public dashboard from the committed `docs/` output, and the Cloudflare Worker serves the protected admin UI.
+GitHub is the durable source of truth after the collector publishes changes.
+The repository contains a Cloudflare Worker plus Static Assets target. The
+established Pages-era delivery may remain part of the live/rollback path until
+WP-6 migration is deployed and verified.
 
-## Why GitHub Actions does not collect data
+## CURRENT IMPLEMENTATION — why GitHub Actions does not collect data
 
 GitHub-hosted runners do not have the same local browser/network context as the Mac Mini. Because the Trac export flow depends on that environment, normal GitHub Actions should not replace the collector.
 
-GitHub Actions may still be useful for checks and review-only dashboard regeneration after review commits, but not as the primary collector.
+GitHub Actions may still be useful for checks and review-only dashboard regeneration after review commits, but direct hosted collection must not be described as supported unless it is independently proven.
+
+## TARGET ARCHITECTURE — collector contract
+
+WP-2 will isolate this browser implementation behind a collector/executor
+contract. Downstream validation, normalization, scoring, certification, and
+publication will consume explicit collection results rather than depend on
+Firefox, Thor, a LaunchAgent, or host paths. The browser implementation remains
+valid unless and until a replacement is proven.
+
+Thor MCP, scheduler redesign, credential custody, host provisioning, and runtime
+routing belong to Federal Eagle Operations, not Radar core.
 
 ## Main commands
 
@@ -67,7 +91,7 @@ docs/radar/admin-data.json
 
 The public dashboard includes a header link to the protected admin console. The protected admin route itself is rendered by the Cloudflare Worker, not by the static Pages output.
 
-## Scheduled runner
+## HISTORICAL/COMPATIBILITY — scheduled runner
 
 Scheduled collection should use the wrapper script:
 
@@ -89,7 +113,7 @@ The final pre-push rebase is intentional. Review-only dashboard refreshes may be
 
 The local LaunchAgent should call the wrapper rather than embedding workflow logic directly in the `.plist` file.
 
-## LaunchAgent cadence
+## HISTORICAL/COMPATIBILITY — LaunchAgent cadence
 
 The current recommended cadence is every six hours:
 
@@ -100,7 +124,7 @@ The current recommended cadence is every six hours:
 
 Use `RunAtLoad` while testing so the job runs immediately after loading. After the job is confirmed stable, `RunAtLoad` can remain enabled or be removed depending on whether immediate catch-up behavior is desired after login/restart.
 
-## Logs
+## HISTORICAL/COMPATIBILITY — logs
 
 The LaunchAgent writes logs to:
 
@@ -116,7 +140,7 @@ tail -n 100 logs/launchagent.out.log
 tail -n 100 logs/launchagent.err.log
 ```
 
-## macOS privacy note
+## HISTORICAL/COMPATIBILITY — macOS privacy note
 
 When the LaunchAgent runs outside Terminal, macOS privacy controls may prevent Python from reading files in `~/Downloads`, even when the same command works manually in Terminal.
 
@@ -134,7 +158,7 @@ then grant Full Disk Access, or at minimum Files and Folders access for Download
 
 This is a macOS permission issue, not a repository or GitHub issue. The manual run can succeed because Terminal already has access, while the LaunchAgent process does not.
 
-## Archive convention
+## CURRENT IMPLEMENTATION — archive convention
 
 Imported CSV files are archived under:
 
@@ -144,7 +168,7 @@ data/raw/manual/YYYY-MM-DD/<query_slug>.csv
 
 This makes dataset history inspectable and lets reports be regenerated from committed raw data.
 
-## Timestamp-only change guard
+## HISTORICAL/COMPATIBILITY — timestamp-only change guard
 
 The scheduled wrapper intentionally avoids commits that only update generated timestamps in report/dashboard output. This keeps the repository history useful: scheduled commits should represent fresh raw CSV data, review state changes, or meaningful dashboard/report changes, not a six-hour heartbeat.
 
@@ -158,3 +182,6 @@ reports/radar-YYYY-MM-DD.md
 ```
 
 If any raw CSV, review JSON, contribution history, or substantive dashboard/report content changes, the wrapper still commits and pushes normally.
+
+Future architecture changes require an ADR or explicit update to
+`docs/WORDPRESS-AUTOMATION-PROGRAM.md` rather than silent drift.
