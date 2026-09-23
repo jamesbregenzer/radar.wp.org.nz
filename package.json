@@ -4,7 +4,8 @@
   "scripts": {
     "check:worker": "node --check cloudflare/worker-radar.js",
     "check:python": "python3 -m unittest discover -s tests -v",
-    "check": "npm run check:worker && npm run check:python",
+    "check:certified": "python3 scripts/certify-data.py verify",
+    "check": "npm run check:worker && npm run check:python && npm run check:certified",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {

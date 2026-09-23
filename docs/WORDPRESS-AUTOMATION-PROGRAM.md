@@ -143,7 +143,7 @@ WordPress writes.
    scoring configuration; explicit dataset selection; comprehensive fixture,
    unit, and pipeline tests; stronger collection evidence; isolate runtime
    assumptions.
-3. **WP-3 Certified Radar Data** — `collection.v1`, `snapshot.v1`,
+3. **WP-3 Certified Radar Data** — implemented: `collection.v1`, `snapshot.v1`,
    `opportunity.v1`, `execution-result.v1`, canonical hashing/provenance, and
    fail-closed certification.
 4. **WP-4 Stable Radar Operations** — `collect`, `validate-collection`,
@@ -179,6 +179,15 @@ being silently treated as complete:
 - versioned schemas, canonical certification, and fail-closed generation (WP-3);
 - stable operational lifecycle entrypoints (WP-4); and
 - the machine feed and complete UI schema alignment (WP-5).
+
+## WP-3 implementation record
+
+WP-3 implemented strict versioned schemas, centralized canonical JSON,
+deterministic collection/snapshot identities, configuration and artifact
+hashing, complete multi-query opportunity provenance, fail-closed certification,
+portable execution results, one Git-backed current certified dataset, and
+offline verification. The accepted implementation details and WP-4/WP-5
+handoffs are recorded in `docs/WP-3-CERTIFIED-RADAR-DATA.md`.
 
 ## Program guardrails
 
