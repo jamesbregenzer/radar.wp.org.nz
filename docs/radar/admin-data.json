@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-23T01:06:22",
+  "generated": "2026-09-23T05:40:52",
   "summary": {
     "unique_tickets": 329,
     "priority_targets": 12,
@@ -331,7 +331,7 @@
         "owner": "westonruter",
         "comments": "Unknown",
         "created": "03/21/2026 06:37:01 PM",
-        "modified": "07/24/2026 08:18:26 AM",
+        "modified": "07/28/2026 06:20:23 AM",
         "keywords": "has-patch needs-testing reporter-feedback has-test-info",
         "signals": [
           {
@@ -11904,6 +11904,61 @@
         "review": {}
       },
       {
+        "ticket_id": "42164",
+        "url": "https://core.trac.wordpress.org/ticket/42164",
+        "score": 115,
+        "tier_class": "standard",
+        "tier_label": "Standard",
+        "summary": "Conditional Tags not working when using ugly URL",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Query",
+        "owner": "",
+        "comments": "Unknown",
+        "created": "10/10/2017 10:23:14 AM",
+        "modified": "09/23/2026 09:04:22 AM",
+        "keywords": "needs-patch needs-unit-tests needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
         "ticket_id": "54205",
         "url": "https://core.trac.wordpress.org/ticket/54205",
         "score": 115,
@@ -16890,50 +16945,6 @@
         "created": "Unknown",
         "modified": "Unknown",
         "keywords": "needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
-        "ticket_id": "42164",
-        "url": "https://core.trac.wordpress.org/ticket/42164",
-        "score": 95,
-        "tier_class": "standard",
-        "tier_label": "Standard",
-        "summary": "Conditional Tags not working when using ugly URL",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Unknown",
-        "owner": "",
-        "comments": "Unknown",
-        "created": "Unknown",
-        "modified": "Unknown",
-        "keywords": "needs-patch needs-unit-tests needs-testing",
         "signals": [
           {
             "label": "Track Priority: General: Needs Testing +65",
