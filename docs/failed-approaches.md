@@ -1,39 +1,47 @@
-# Failed Approaches
+# Failed Approaches and Constraints
 
-This file records approaches that were tried or considered and should not be repeated without a clear reason.
+This file preserves implementation history and compatibility lessons. The
+authoritative program architecture is
+`docs/WORDPRESS-AUTOMATION-PROGRAM.md`.
 
-## Reintroducing a local Python admin server
+## CURRENT IMPLEMENTATION — replacing browser-assisted collection with hosted collection
 
-An earlier local Python review-console workflow was retired after the production admin console moved into the Cloudflare Worker.
+Hosted/server collection of WordPress Trac exports has historically been
+unreliable or blocked. GitHub-hosted Actions and direct cloud HTTP collection
+are therefore not supported collector replacements today.
 
-Do not reintroduce or expose a local admin server without a clear reason. The production `/admin/` route should remain Worker-rendered, authenticated, and narrowly scoped to writing constrained review metadata to `data/reviews/reviews.json`.
+The proven collector opens configured Trac CSV searches in a browser session in
+an allowed local network environment, downloads `query.csv`, imports it into the
+raw archive, and deletes the temporary download. Preserve that implementation
+until another collector is proven. WP-2 may place it behind a contract; it must
+not redesign it away.
 
-The unsafe version of this pattern would be committing secrets, running a local write-capable admin server on a public port, exposing it through a tunnel, or deploying it as the production admin interface.
+## HISTORICAL/COMPATIBILITY — local Python admin server
 
-## Treating Radar as a Trac automation bot
+An earlier local Python review-console workflow was retired after the protected
+admin console moved into the Cloudflare Worker. Do not reintroduce a public
+local write-capable server, commit its secrets, or expose it through a tunnel.
 
-Radar is intentionally human-in-the-loop. It should not auto-comment on Trac, submit tickets, or perform contribution actions on behalf of a person.
+## PROGRAM BOUNDARY — treating Radar as a contribution bot
 
-## Keeping every raw field in the public dashboard
+Radar must not auto-comment on Trac, submit tickets, hold private contributor
+credentials, manage autonomous work queues, or perform contribution actions.
+Those responsibilities belong to the future private WordPress Contributor and
+remain subject to Eden/HWP authorization.
 
-Early dashboard versions exposed many raw columns such as component, milestone, separate keyword lists, review reason, and raw source slugs. This made the dashboard feel like a CSV export instead of a product.
+## PRESENTATION LESSON — exposing every raw field
 
-The current public dashboard intentionally keeps the table focused:
+Early dashboard versions exposed too many source columns and resembled a CSV
+export. The current public dashboard intentionally emphasizes score, tier,
+ticket, summary, track, status, discovery track, and signals. Detailed controls
+belong on protected surfaces.
 
-```text
-Score | Tier | Ticket | Summary | Track | Trac Status | Discovery Track | Signals
-```
+## HISTORICAL/COMPATIBILITY — direct GitHub Pages custom-domain publishing
 
-Detailed scoring and action controls belong in the protected admin console, not the public dashboard.
+GitHub Pages did not provide the desired routing and protected dynamic admin
+surface. The repository now contains a Cloudflare Worker plus Static Assets
+target. Deployment and hostname migration remain WP-6 work; committed target
+configuration must not be described as already deployed.
 
-## Publishing directly from a GitHub Pages custom domain
-
-GitHub Pages works for a single repository/domain mapping, but it does not preserve the desired long-term architecture where a portfolio domain can mount multiple projects cleanly.
-
-Cloudflare Worker routing is the preferred direction because it allows a dedicated host such as `radar.james.bregenzer.dev` today and can later support multiple projects under path prefixes while still supporting protected dynamic routes like `/admin/`.
-
-## Replacing the Mac Mini collector with GitHub-hosted Actions
-
-GitHub-hosted runners do not share the Mac Mini's local browser/network context. Because Trac CSV collection depends on that context, GitHub Actions should not be the primary collector.
-
-Actions may still be useful later for linting or validation after the Mac Mini pushes updates.
+Future architectural reversals or exceptions require an ADR or an explicit
+update to `docs/WORDPRESS-AUTOMATION-PROGRAM.md`.

@@ -1,138 +1,122 @@
 # WP Core Radar Architecture
 
-WP Core Radar is a deterministic, human-in-the-loop contribution intelligence workflow for WordPress Core.
+The authoritative program boundaries and roadmap live in
+`docs/WORDPRESS-AUTOMATION-PROGRAM.md`. This document describes Radar's current
+implementation and target architecture without claiming that target work is
+already complete.
 
-## System overview
+## CURRENT IMPLEMENTATION
 
 ```text
 WordPress Trac
-  ↓
-Mac Mini browser-assisted collector
-  ↓
-Archived raw CSV datasets
-  ↓
-Deterministic scoring and grouping
-  ↓
-Markdown report + public dashboard + contribution history + admin data export
-  ↓
-GitHub repository
-  ↓
-Cloudflare Pages static origin
-  ↓
-Cloudflare Worker routing and protected admin UI
+  → local Firefox browser-assisted CSV collector
+  → data/raw/manual/YYYY-MM-DD/<query_slug>.csv
+  → recursive dataset discovery, normalization, scoring, and grouping
+  → Markdown reports + dashboard + contributions + admin-data.json
+  → GitHub durable source of truth
 
 Protected admin review save
-  ↓
-data/reviews/reviews.json
-  ↓
-GitHub Action dashboard refresh
-  ↓
-docs/radar/index.html + docs/radar/admin-data.json
-  ↓
-Cloudflare Pages deploy
+  → data/reviews/reviews.json
+  → GitHub Action regeneration
+  → committed generated dashboard files
 ```
 
-The Mac Mini remains central because the CSV collection step depends on the local browser/network environment. GitHub becomes the source of truth after the Mac Mini pushes generated files. Cloudflare Pages hosts the committed static artifacts. The Cloudflare Worker exposes the project on `radar.james.bregenzer.dev`, routes public requests to the Pages origin, and renders the protected admin review console. The committed Worker source is stored at `cloudflare/worker-radar.js`; secrets still belong only in Cloudflare environment variables.
+The current collector opens configured Trac CSV searches, waits for
+`query.csv`, imports the file into the raw archive, and removes the browser
+download. It runs in an allowed local network/browser environment currently
+associated with Thor because hosted/server collection has historically been
+unreliable or blocked.
 
-Review edits are different from collection runs. They should update the dashboard quickly, but they do not need to fetch new Trac data. For that reason, review commits to `data/reviews/reviews.json` trigger a GitHub Action that regenerates the public dashboard, contribution history, and admin data export.
+`scripts/run-radar.py` currently combines collection orchestration and
+generation. `scripts/radarlib.py` recursively discovers CSV files, normalizes
+rows, and implements executable scoring. `config/scoring.yaml` documents those
+rules but is not executable configuration. Generators call `datetime.now()`
+directly, and the scheduled wrapper contains a timestamp-only commit workaround.
 
-## Route ownership
+The repository includes a Cloudflare Worker plus Static Assets target that
+serves `docs/radar` and renders the protected admin interface. The established
+live hostname remains `radar.james.bregenzer.dev` until WP-6 deployment and
+migration are independently completed and verified.
+
+### Current files and responsibilities
+
+1. `config/queries.json` defines enabled query tracks.
+2. `scripts/browser-fetch.py` opens each query in Firefox and waits for
+   `query.csv`.
+3. `scripts/import-download.py` archives the CSV and deletes the temporary
+   browser download after successful import.
+4. `scripts/verify-collector-snapshot.py` checks that every enabled query has a
+   file with a recognized ticket-ID header; it does not yet provide full
+   provenance or certification.
+5. `scripts/radarlib.py` discovers datasets, normalizes rows, loads review and
+   outcome state, scores tickets, and groups results.
+6. `scripts/generate-report.py` and `scripts/generate-dashboard.py` create the
+   committed report and UI projections.
+7. `docs/radar/admin-data.json` is a generated admin/UI payload, not a stable
+   machine API.
+8. `.github/workflows/refresh-dashboard.yml` regenerates and commits generated
+   dashboard files after review-state changes.
+9. `scripts/run-scheduled-radar.sh` contains host-specific compatibility,
+   synchronization, commit, and push behavior.
+
+### Current security and product boundaries
+
+- Public Radar output contains public Trac data and display-safe review state.
+- `/admin/` is protected and may write constrained review metadata only to
+  `data/reviews/reviews.json`.
+- Secrets belong in provider/runtime custody, never in the repository.
+- Radar has no Eden/HWP logic, private contributor credentials, autonomous work
+  queue, or WordPress public-write authority.
+- GitHub becomes durable truth after collected and generated data is published.
+
+## TARGET ARCHITECTURE
 
 ```text
-https://radar.james.bregenzer.dev/                Public, static dashboard from docs/radar/index.html
-https://radar.james.bregenzer.dev/contributions/ Public, static contribution history from docs/radar/contributions/index.html
-https://radar.james.bregenzer.dev/admin/         Protected, Worker-rendered admin UI
+Collector contract
+  → collection.v1
+  → validate-collection
+  → snapshot.v1
+  → deterministic normalize/score/rank
+  → opportunity.v1
+  → certify + verify
+  → GitHub canonical certified data
+  → dashboard/admin/report/API projections
 ```
 
-The public dashboard and contribution history page are read-only. The dashboard contains scored ticket recommendations, public Trac links, and display-safe review metadata. The contribution history page turns public-safe review decisions and recorded props outcomes into a visual record of tickets reviewed, tickets tested, props received, component focus, and recent activity.
+The browser collector remains one valid implementation of the collector
+contract. Downstream Radar logic must not depend on Firefox, a particular host,
+LaunchAgent, local paths, credential custody, or runtime routing.
 
-The production admin page is not generated by the Mac Mini and is not served as a static Pages file. The Mac Mini generates `docs/radar/admin-data.json`; the Worker renders `/admin/`, requires authentication, reads the generated admin data JSON, and writes only to `data/reviews/reviews.json` through the GitHub API, including historical props records for tickets that no longer appear in the current opportunity export.
+The target application is `radar.wp.org.nz`, with protected administration at
+`/admin/` and a future certified machine feed at `/api/v1/...`. The HTTP API is
+a projection of canonical certified GitHub data, not another authority.
 
-Admin write-back should remain narrowly scoped to `data/reviews/reviews.json`. The Worker should not become a general repository editor and should not duplicate the Python dashboard-generation logic. There is no local Python admin server in the active workflow; the production admin interface is the Worker-rendered `/admin/` route on `radar.james.bregenzer.dev`.
+Dashboard, admin, reports, and API/feed will consume one canonical normalized
+opportunity model. Certification must include canonical hashes and provenance
+and fail closed when evidence is incomplete.
 
-## Data flow
+The future private WordPress Contributor is a separate product. It consumes
+certified opportunities, independently revalidates live WordPress state, and
+routes any public contribution delivery through Eden/HWP policy. It is not part
+of this repository's Radar implementation.
 
-1. Query tracks are configured in `config/queries.json`.
-2. `scripts/browser-fetch.py` opens each configured query in Firefox and waits for `query.csv`.
-3. `scripts/import-download.py` archives the downloaded CSV under `data/raw/manual/YYYY-MM-DD/`.
-4. `scripts/radarlib.py` discovers datasets, normalizes ticket rows, loads outcomes/reviews, scores tickets, and groups workflow sections.
-5. `scripts/generate-report.py` writes `reports/latest.md` and a dated report.
-6. `scripts/generate-dashboard.py` writes `docs/radar/index.html`, `docs/radar/contributions/index.html`, and `docs/radar/admin-data.json`.
-7. Local review writes through `scripts/review-ticket.py` regenerate dashboard files immediately so workflow sections do not remain stale after a decision change.
-8. Production admin review writes commit only `data/reviews/reviews.json` through the GitHub API.
-9. The `Refresh dashboard after review update` GitHub Action regenerates `docs/radar/index.html`, `docs/radar/contributions/index.html`, and `docs/radar/admin-data.json` after review-only commits.
-10. The Mac Mini commits and pushes changed data, docs, and report files to GitHub during scheduled collection runs.
-11. Cloudflare Pages deploys the static dashboard output.
-12. The Cloudflare Worker routes public `radar.james.bregenzer.dev` requests to the Pages origin and handles `/admin/` directly.
+Federal Eagle Operations is an external dependency. Radar may define executor
+requirements, but it does not implement Thor MCP, scheduling, host provisioning,
+credentials, or runtime routing.
 
+## HISTORICAL/COMPATIBILITY
 
-## Review-sync architecture
+- The established live hostname is `radar.james.bregenzer.dev` during the
+  migration window.
+- Cloudflare Pages may remain part of the live rollback path until WP-6 proves
+  the Worker migration.
+- `/Users/thor/Sites/wp-core-radar`, its Python path, and its six-hour scheduler
+  cadence are current compatibility details documented in
+  `docs/mac-mini-collector.md`; they are not core Radar architecture.
+- Legacy raw archive layouts remain readable today because dataset discovery is
+  recursive. WP-2 will replace permissive discovery with explicit selection for
+  certified generation.
 
-Review updates are intentionally handled as a lightweight path separate from the six-hour collector:
-
-```text
-/admin/ save review
-  → Worker validates status/reason/notes or historical props metadata
-  → Worker commits data/reviews/reviews.json
-  → GitHub Action runs scripts/generate-dashboard.py
-  → Action commits docs/radar/index.html, docs/radar/contributions/index.html, and docs/radar/admin-data.json
-  → Cloudflare Pages deploys the updated dashboard
-```
-
-This keeps the dashboard accurate within the normal GitHub Actions and Cloudflare Pages deployment window while leaving the Mac Mini responsible for the heavier Trac collection workflow.
-
-The Action is path-limited to review JSON changes, so regenerated dashboard commits do not retrigger themselves.
-
-## Worker routing model
-
-The current production route uses a dedicated project hostname, while the same Worker-router pattern can later support a portfolio-style domain with project subdirectories.
-
-```text
-radar.james.bregenzer.dev/              WP Core Radar public dashboard
-radar.james.bregenzer.dev/contributions/ WP Core Radar public contribution history
-radar.james.bregenzer.dev/admin/        WP Core Radar protected admin console
-
-# Future portfolio-router option
-james.bregenzer.dev/                    Main personal site or landing page
-james.bregenzer.dev/radar/              WP Core Radar mounted under a project path
-james.bregenzer.dev/another-project/    Another independently deployed project
-```
-
-Additional projects can later be mounted at their own path prefixes and proxied to separate Cloudflare Pages, GitHub Pages, or other static origins. Dynamic or protected project routes can remain Worker-rendered where authentication, API writes, or other server-side behavior is needed.
-
-## Shared logic
-
-Core parsing, scoring, grouping, review status handling, and presentation labels belong in `scripts/radarlib.py`.
-
-Script-specific files should focus on their output format:
-
-- `generate-dashboard.py` renders the public dashboard, public contribution history page, and admin data JSON.
-- `generate-report.py` renders Markdown.
-- `run-radar.py` orchestrates collection and generation.
-
-## Security boundaries
-
-- Public static files may include public ticket data, dashboard HTML, reports, and `docs/radar/admin-data.json`.
-- Protected admin routes must be handled by the Cloudflare Worker.
-- Worker secrets must live in Cloudflare environment variables, not in this repository.
-- Review writes should be constrained to known statuses in `data/reviews/reviews.json`; props should remain a separate `received_props` outcome, not a review status.
-
-## Guardrails
-
-Radar never auto-comments on Trac and never attempts to automate contribution activity. It identifies opportunities, explains why they ranked, and leaves contribution decisions to a human reviewer.
-
-## Dataset conventions
-
-Preferred archive convention:
-
-```text
-data/raw/<source>/<YYYY-MM-DD>/<query_slug>.csv
-```
-
-Current browser-assisted imports use:
-
-```text
-data/raw/manual/YYYY-MM-DD/<query_slug>.csv
-```
-
-The discovery layer remains tolerant of older archived paths, but new imports should follow the current convention.
+Architecture changes require an ADR or explicit amendment to
+`docs/WORDPRESS-AUTOMATION-PROGRAM.md`; they must not enter through silent code
+or documentation drift.

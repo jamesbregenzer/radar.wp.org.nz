@@ -1,38 +1,39 @@
 # Vision
 
-WP Core Radar is intended to become a practical portfolio-quality contribution intelligence tool.
+`docs/WORDPRESS-AUTOMATION-PROGRAM.md` is the authoritative north-star for the
+WordPress Automation Program. This document summarizes Radar's product vision;
+it does not expand Radar's authority.
 
-The long-term goal is not to replace human judgment. The goal is to make contribution discovery faster, more explainable, and easier to repeat.
+## CURRENT IMPLEMENTATION
 
-## Product direction
+WP Core Radar is a deterministic, human-in-the-loop contribution intelligence
+tool. It collects public WordPress Core Trac CSV data through the proven local
+browser workflow, archives the source data in GitHub, explains ticket rankings,
+and generates a dashboard, contribution history, reports, and protected review
+workflow.
 
-Radar should make it easy to:
+The established live hostname remains `radar.james.bregenzer.dev` during the
+migration period.
 
-- find contribution opportunities that match available time and skill level
-- understand why a ticket ranked highly
-- avoid repeatedly reviewing tickets that have already been rejected, watched, tested, or completed
-- record props after contributor credit appears on WordPress.org
-- copy useful review context for deeper human evaluation
-- keep a visible record of contribution intent, follow-through, and outcomes
+## TARGET ARCHITECTURE
 
-## Technical direction
+Radar becomes a reliable, independently useful source of certified WordPress
+Core opportunity intelligence at `radar.wp.org.nz`. Its dashboard, admin, and
+future API/feed project one canonical opportunity model with provenance and
+health evidence.
 
-The project should remain:
+Radar does not perform autonomous contribution work. A separate private
+Federal Eagle WordPress Contributor may consume certified opportunities,
+revalidate live state, perform governed engineering work, and deliver public
+contributions only through Eden/HWP authorization.
 
-- deterministic before any AI-assisted review
-- transparent about scoring reasons
-- small enough to understand quickly
-- safe by default
-- respectful of WordPress.org resources and contribution norms
+Radar should remain deterministic, explainable, safe by default, respectful of
+WordPress.org resources, and small enough to audit. The protected admin surface
+may manage Radar review metadata; it must not control the private contributor.
 
-## Public/private split
+The target production hostname is `radar.wp.org.nz`. Repository renaming to
+`jamesbregenzer/radar.wp.org.nz` is proposed for WP-6 but is not approved or
+performed by the current architecture freeze.
 
-The public dashboard should be a polished, read-only artifact. The public contribution-history page should summarize safe review and props outcomes without exposing admin notes or write access.
-
-The admin console should remain protected because it writes review state and supports the human review workflow. The public dashboard should stay read-only, while `/admin/` should remain narrowly scoped to authenticated review metadata and historical props updates.
-
-## Portfolio domain direction
-
-`radar.james.bregenzer.dev` is the dedicated production host for WP Core Radar. The same Worker-router pattern can later be reused on `james.bregenzer.dev` if that broader portfolio domain mounts multiple projects under paths such as `/radar/`, `/darkrai/`, or `/tools/`.
-
-This lets Radar remain its own focused repository while still fitting into a broader personal portfolio architecture later.
+Architecture changes require an ADR or an explicit update to the authoritative
+program document rather than silent drift.
