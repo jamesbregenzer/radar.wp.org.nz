@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://radar.wp.org.nz/schemas/snapshot.v1.schema.json",
+  "title": "WP Core Radar snapshot.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "snapshot_id", "collection_id", "collection_sha256", "source_revision", "scoring_version", "scoring_config_sha256", "query_config_sha256", "reference_time", "schema_versions", "opportunity_count", "identity_seed_sha256", "dataset_sha256", "artifacts", "certification"],
+  "properties": {
+    "schema": {"const": "snapshot.v1"}, "version": {"const": 1},
+    "snapshot_id": {"type": "string", "pattern": "snapshot-v1-[0-9a-f]{24}"},
+    "collection_id": {"type": "string", "pattern": "collection-v1-[0-9a-f]{24}"},
+    "collection_sha256": {"type": "string", "pattern": "[0-9a-f]{64}"},
+    "source_revision": {"type": ["string", "null"]},
+    "scoring_version": {"type": "string"},
+    "scoring_config_sha256": {"type": "string", "pattern": "[0-9a-f]{64}"},
+    "query_config_sha256": {"type": "string", "pattern": "[0-9a-f]{64}"},
+    "reference_time": {"type": "string", "minLength": 19},
+    "schema_versions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "opportunity_count": {"type": "integer"},
+    "identity_seed_sha256": {"type": "string", "pattern": "[0-9a-f]{64}"},
+    "dataset_sha256": {"type": "string", "pattern": "[0-9a-f]{64}"},
+    "artifacts": {"type": "array", "minItems": 2, "items": {
+      "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+      "properties": {"path": {"type": "string"}, "sha256": {"type": "string", "pattern": "[0-9a-f]{64}"}}
+    }},
+    "certification": {"type": "object", "additionalProperties": false,
+      "required": ["state", "warnings", "errors"],
+      "properties": {
+        "state": {"enum": ["certified", "failed"]},
+        "warnings": {"type": "array", "items": {"type": "string"}},
+        "errors": {"type": "array", "items": {"type": "string"}}
+      }}
+  }
+}

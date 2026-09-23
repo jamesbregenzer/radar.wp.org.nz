@@ -35,6 +35,10 @@ class RunContext:
     def generated_display(self) -> str:
         return self.reference_time.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M")
 
+    @classmethod
+    def from_iso(cls, value: str) -> "RunContext":
+        return cls(datetime.fromisoformat(value.replace("Z", "+00:00")))
+
 
 def parse_run_time(value: str | None) -> RunContext:
     if not value:
@@ -128,9 +132,10 @@ def select_datasets(raw_dir: Path, identity: str, expected_queries: list[str], t
     artifacts: dict[str, Path] = {}
     evidence: dict[str, CollectionEvidence] = {}
     ambiguous: dict[str, tuple[Path, ...]] = {}
+    csv_files = tuple(sorted(path for path in base.iterdir() if path.is_file() and path.suffix.casefold() == ".csv")) if base.exists() else ()
 
     for slug in expected:
-        candidates = tuple(sorted(path for path in base.glob("*.csv") if path.stem.casefold() == slug.casefold()))
+        candidates = tuple(path for path in csv_files if path.stem.casefold() == slug.casefold())
         if len(candidates) > 1:
             ambiguous[slug] = candidates
         path = candidates[0] if candidates else base / f"{slug}.csv"
@@ -139,7 +144,7 @@ def select_datasets(raw_dir: Path, identity: str, expected_queries: list[str], t
             artifacts[slug] = path
 
     expected_paths = {base / f"{slug}.csv" for slug in expected}
-    unexpected = tuple(sorted(path for path in base.glob("*.csv") if path not in expected_paths)) if base.exists() else ()
+    unexpected = tuple(path for path in csv_files if path not in expected_paths and path not in {candidate for values in ambiguous.values() for candidate in values})
     return DatasetSelection(identity, expected, artifacts, evidence, unexpected, ambiguous)
 
 

@@ -89,6 +89,12 @@ canonical internal opportunity model. WP-3 will add versioned schemas and
 fail-closed certification; WP-5 will add the certified API/feed. GitHub remains
 durable truth; HTTP is a projection.
 
+WP-3 adds the certified machine-data layer: strict versioned schemas,
+deterministic canonical JSON and identities, complete source provenance,
+fail-closed certification, and offline verification. The current certified
+bundle lives in `data/certified/current/`; it is the future API's source, not an
+HTTP API implementation itself.
+
 The proposed future repository name is `jamesbregenzer/radar.wp.org.nz`. The current repository remains `jamesbregenzer/wp-core-radar`; no rename is part of WP-1.
 
 ## Main commands
@@ -127,6 +133,12 @@ Generate only the Markdown report:
 
 ```bash
 python3 scripts/generate-report.py
+```
+
+Verify the committed certified dataset without network or browser access:
+
+```bash
+python3 scripts/certify-data.py verify
 ```
 
 Record a review decision locally:
@@ -173,6 +185,7 @@ Local helper scripts may be committed when they contain no secrets and do not ex
 - `docs/architecture.md` — system architecture, routing, and boundaries
 - `docs/WORDPRESS-AUTOMATION-PROGRAM.md` — authoritative program architecture, product boundaries, guardrails, and roadmap
 - `docs/WP-2-CORE-HARDENING.md` — WP-2 implementation record, runtime classification, and deferrals
+- `docs/WP-3-CERTIFIED-RADAR-DATA.md` — schemas, canonicalization, certification, retention, and verification
 - `docs/mac-mini-collector.md` — local collection and scheduled runner workflow
 - `.github/workflows/refresh-dashboard.yml` — near-real-time dashboard refresh after review saves
 - `cloudflare/worker-radar.js` — production Worker source for public routing and protected admin UI

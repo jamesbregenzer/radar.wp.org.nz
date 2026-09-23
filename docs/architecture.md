@@ -109,6 +109,18 @@ Federal Eagle Operations is an external dependency. Radar may define executor
 requirements, but it does not implement Thor MCP, scheduling, host provisioning,
 credentials, or runtime routing.
 
+## IMPLEMENTED — WP-3 certified data
+
+An explicit complete `DatasetSelection` can now produce strict `collection.v1`,
+`opportunity.v1`, `snapshot.v1`, and `execution-result.v1` data. Centralized
+canonical JSON and deterministic IDs/hashes make the committed
+`data/certified/current/` bundle independently verifiable offline. Failed or
+incomplete certification leaves the prior current bundle unchanged.
+
+The current dashboard, report, contribution history, and admin payload remain
+compatibility projections from the WP-2 internal model. Full consumption of the
+public versioned schema and `/api/v1/...` remain WP-5 work.
+
 ## HISTORICAL/COMPATIBILITY
 
 - The established live hostname is `radar.james.bregenzer.dev` during the

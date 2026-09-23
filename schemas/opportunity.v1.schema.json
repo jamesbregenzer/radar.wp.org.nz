@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://radar.wp.org.nz/schemas/opportunity.v1.schema.json",
+  "title": "WP Core Radar opportunity.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "ticket", "discovery", "ranking", "radar_state", "provenance"],
+  "properties": {
+    "schema": {"const": "opportunity.v1"},
+    "version": {"const": 1},
+    "ticket": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "url", "summary", "component", "status", "resolution", "owner", "reporter", "type", "priority", "milestone", "wordpress_version", "keywords", "created", "modified", "comment_count"],
+      "properties": {
+        "id": {"type": "string", "pattern": "[0-9]+"},
+        "url": {"type": "string", "pattern": "https://core\\.trac\\.wordpress\\.org/ticket/[0-9]+"},
+        "summary": {"type": "string", "minLength": 1},
+        "component": {"type": ["string", "null"]}, "status": {"type": ["string", "null"]},
+        "resolution": {"type": ["string", "null"]}, "owner": {"type": ["string", "null"]},
+        "reporter": {"type": ["string", "null"]}, "type": {"type": ["string", "null"]},
+        "priority": {"type": ["string", "null"]}, "milestone": {"type": ["string", "null"]},
+        "wordpress_version": {"type": ["string", "null"]},
+        "keywords": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "created": {"type": ["string", "null"]}, "modified": {"type": ["string", "null"]},
+        "comment_count": {"type": ["integer", "null"]}
+      }
+    },
+    "discovery": {
+      "type": "object", "additionalProperties": false, "required": ["sources", "tracks"],
+      "properties": {
+        "sources": {"type": "array", "minItems": 1, "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["query_slug", "source_identity", "artifact_path", "track"],
+          "properties": {
+            "query_slug": {"type": "string"}, "source_identity": {"type": "string"},
+            "artifact_path": {"type": "string"}, "track": {"type": "string"}
+          }
+        }},
+        "tracks": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "ranking": {
+      "type": "object", "additionalProperties": false,
+      "required": ["score", "tier", "tier_label", "scoring_version", "reasons", "breakdown", "complexity_markers"],
+      "properties": {
+        "score": {"type": "integer"}, "tier": {"type": "string"}, "tier_label": {"type": "string"},
+        "scoring_version": {"type": "string"}, "reasons": {"type": "array", "items": {"type": "string"}},
+        "breakdown": {"type": "array", "items": {"type": "object", "additionalProperties": false,
+          "required": ["signal", "points"], "properties": {"signal": {"type": "string"}, "points": {"type": "integer"}}}},
+        "complexity_markers": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "radar_state": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "status": {"type": "string"}, "received_props": {"type": "boolean"},
+        "props_recorded_at": {"type": "string"}, "changeset": {"type": "string"}
+      }
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false, "required": ["collection_id", "snapshot_id"],
+      "properties": {
+        "collection_id": {"type": "string", "pattern": "collection-v1-[0-9a-f]{24}"},
+        "snapshot_id": {"type": "string", "pattern": "snapshot-v1-[0-9a-f]{24}"}
+      }
+    }
+  }
+}
