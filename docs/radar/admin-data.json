@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-23T11:41:57",
+  "generated": "2026-09-23T17:43:03",
   "summary": {
     "unique_tickets": 329,
     "priority_targets": 12,
@@ -11013,83 +11013,6 @@
         "review": {}
       },
       {
-        "ticket_id": "45910",
-        "url": "https://core.trac.wordpress.org/ticket/45910",
-        "score": 129,
-        "tier_class": "standard",
-        "tier_label": "Standard",
-        "summary": "Improve and extend focus styles for Windows High Contrast mode",
-        "track": "General: Needs Testing",
-        "status": "Assigned",
-        "component": "Administration",
-        "owner": "rcreators",
-        "comments": "Unknown",
-        "created": "01/10/2019 04:54:41 PM",
-        "modified": "09/08/2026 04:49:37 PM",
-        "keywords": "needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Has Concrete Milestone +8",
-            "class": "standard"
-          },
-          {
-            "label": "Has Owner +6",
-            "class": "owner"
-          },
-          {
-            "label": "Freshness: Recently Updated <=14 Days +20",
-            "class": "freshness"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Has Concrete Milestone",
-            "detail": "",
-            "display": "Has Concrete Milestone",
-            "polarity": "positive"
-          },
-          {
-            "points": "+6",
-            "label": "Has Owner",
-            "detail": "",
-            "display": "Has Owner",
-            "polarity": "positive"
-          },
-          {
-            "points": "+20",
-            "label": "Freshness",
-            "detail": "Recently Updated <=14 Days",
-            "display": "Freshness: Recently Updated <=14 Days",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
         "ticket_id": "60478",
         "url": "https://core.trac.wordpress.org/ticket/60478",
         "score": 129,
@@ -11820,6 +11743,83 @@
             "label": "Has Owner",
             "detail": "",
             "display": "Has Owner",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "45910",
+        "url": "https://core.trac.wordpress.org/ticket/45910",
+        "score": 119,
+        "tier_class": "standard",
+        "tier_label": "Standard",
+        "summary": "Improve and extend focus styles for Windows High Contrast mode",
+        "track": "General: Needs Testing",
+        "status": "Assigned",
+        "component": "Administration",
+        "owner": "rcreators",
+        "comments": "Unknown",
+        "created": "01/10/2019 04:54:41 PM",
+        "modified": "09/08/2026 04:49:37 PM",
+        "keywords": "needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Has Concrete Milestone +8",
+            "class": "standard"
+          },
+          {
+            "label": "Has Owner +6",
+            "class": "owner"
+          },
+          {
+            "label": "Freshness: Updated Within 60 Days +10",
+            "class": "freshness"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Has Concrete Milestone",
+            "detail": "",
+            "display": "Has Concrete Milestone",
+            "polarity": "positive"
+          },
+          {
+            "points": "+6",
+            "label": "Has Owner",
+            "detail": "",
+            "display": "Has Owner",
+            "polarity": "positive"
+          },
+          {
+            "points": "+10",
+            "label": "Freshness",
+            "detail": "Updated Within 60 Days",
+            "display": "Freshness: Updated Within 60 Days",
             "polarity": "positive"
           }
         ],
