@@ -1,6 +1,6 @@
 # WP Core Radar Report
 
-Generated: 2026-09-22 17:38
+Generated: 2026-09-22 23:39
 
 ## Summary
 
@@ -704,9 +704,9 @@ Generated: 2026-09-22 17:38
 - Component: Editor
 - Trac status: New
 - Milestone: 7.1.1
-- Keywords: needs-testing has-screenshots has-patch has-unit-tests close
+- Keywords: needs-testing has-screenshots has-patch has-unit-tests gutenberg-merge
 - Created: 08/28/2026 11:22:23 AM
-- Modified: 09/08/2026 03:35:18 AM
+- Modified: 09/08/2026 11:24:47 PM
 - Why it ranked: track priority: General: Needs Testing +65, has patch +35, needs testing +30, has concrete milestone +8, freshness: recently updated <=14 days +20
 - Score breakdown:
   - +65: Track Priority
