@@ -45,7 +45,8 @@ WP Core Radar does not auto-comment on Trac, automate contribution activity, hol
 WordPress Trac
   → Mac Mini browser-assisted collector
   → archived raw CSV datasets
-  → deterministic scoring and grouping
+  → validated collection evidence + explicit run context
+  → canonical opportunity normalization, deterministic scoring, and grouping
   → Markdown report + public dashboard + contribution history + admin data JSON
   → GitHub repository
   → current live delivery and committed Cloudflare Worker target
@@ -81,7 +82,12 @@ The protected admin console authenticates in the Worker, reads the committed `do
 
 The target application hostname is `radar.wp.org.nz`, with protected Radar administration at `/admin/` and a future certified machine-readable API/feed at `/api/v1/...`. The apex and `www` hosts will redirect to `https://wordpress.org/`; the old Radar hostname will be redirected and retired after successful migration.
 
-Radar 2.0 will isolate the current browser implementation behind a collector/executor contract, produce certified canonical data with hashes and provenance, and make dashboard, admin, reports, and API/feed consume the same normalized opportunity model. GitHub remains durable truth; HTTP is a projection.
+WP-2 isolates the current browser implementation behind a collector/result
+boundary, supplies deterministic time and explicit dataset selection, uses one
+executable scoring configuration, and gives every current renderer one
+canonical internal opportunity model. WP-3 will add versioned schemas and
+fail-closed certification; WP-5 will add the certified API/feed. GitHub remains
+durable truth; HTTP is a projection.
 
 The proposed future repository name is `jamesbregenzer/radar.wp.org.nz`. The current repository remains `jamesbregenzer/wp-core-radar`; no rename is part of WP-1.
 
@@ -97,6 +103,12 @@ Regenerate reports and dashboard files without fetching new Trac data:
 
 ```bash
 python3 scripts/run-radar.py --skip-fetch
+```
+
+For reproducible generation, supply one ISO-8601 run time to the whole pipeline:
+
+```bash
+python3 scripts/run-radar.py --skip-fetch --reference-time 2026-01-15T12:00:00Z
 ```
 
 Run one configured query:
@@ -160,6 +172,7 @@ Local helper scripts may be committed when they contain no secrets and do not ex
 
 - `docs/architecture.md` — system architecture, routing, and boundaries
 - `docs/WORDPRESS-AUTOMATION-PROGRAM.md` — authoritative program architecture, product boundaries, guardrails, and roadmap
+- `docs/WP-2-CORE-HARDENING.md` — WP-2 implementation record, runtime classification, and deferrals
 - `docs/mac-mini-collector.md` — local collection and scheduled runner workflow
 - `.github/workflows/refresh-dashboard.yml` — near-real-time dashboard refresh after review saves
 - `cloudflare/worker-radar.js` — production Worker source for public routing and protected admin UI

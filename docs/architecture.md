@@ -11,7 +11,8 @@ already complete.
 WordPress Trac
   → local Firefox browser-assisted CSV collector
   → data/raw/manual/YYYY-MM-DD/<query_slug>.csv
-  → recursive dataset discovery, normalization, scoring, and grouping
+  → explicit run context and collection evidence
+  → canonical opportunity normalization, scoring, and grouping
   → Markdown reports + dashboard + contributions + admin-data.json
   → GitHub durable source of truth
 
@@ -27,11 +28,14 @@ download. It runs in an allowed local network/browser environment currently
 associated with Thor because hosted/server collection has historically been
 unreliable or blocked.
 
-`scripts/run-radar.py` currently combines collection orchestration and
-generation. `scripts/radarlib.py` recursively discovers CSV files, normalizes
-rows, and implements executable scoring. `config/scoring.yaml` documents those
-rules but is not executable configuration. Generators call `datetime.now()`
-directly, and the scheduled wrapper contains a timestamp-only commit workaround.
+WP-2 separated collection and generation behind `scripts/pipeline.py` while
+preserving the command-line entrypoint and browser behavior. `scripts/radarlib.py`
+normalizes rows into a canonical `Opportunity` model and applies the executable
+`config/scoring.json` policy. A single explicit `RunContext` supplies time to
+scoring and generation. Recursive archive discovery remains a compatibility
+path; explicit `DatasetSelection` is available for deterministic downstream
+work. The scheduled wrapper's timestamp-only commit workaround remains a
+runtime compatibility detail pending operational migration.
 
 The repository includes a Cloudflare Worker plus Static Assets target that
 serves `docs/radar` and renders the protected admin interface. The established
@@ -45,11 +49,12 @@ migration are independently completed and verified.
    `query.csv`.
 3. `scripts/import-download.py` archives the CSV and deletes the temporary
    browser download after successful import.
-4. `scripts/verify-collector-snapshot.py` checks that every enabled query has a
-   file with a recognized ticket-ID header; it does not yet provide full
-   provenance or certification.
-5. `scripts/radarlib.py` discovers datasets, normalizes rows, loads review and
-   outcome state, scores tickets, and groups results.
+4. `scripts/radarcore.py` selects exact artifacts and records collection
+   evidence including validation state, row count, file time, and SHA-256.
+   `scripts/verify-collector-snapshot.py` remains the compatibility verifier;
+   schema certification is deferred to WP-3.
+5. `scripts/radarlib.py` normalizes rows into canonical opportunities, loads
+   review/outcome state, applies executable scoring, deduplicates, and groups.
 6. `scripts/generate-report.py` and `scripts/generate-dashboard.py` create the
    committed report and UI projections.
 7. `docs/radar/admin-data.json` is a generated admin/UI payload, not a stable
@@ -113,9 +118,9 @@ credentials, or runtime routing.
 - `/Users/thor/Sites/wp-core-radar`, its Python path, and its six-hour scheduler
   cadence are current compatibility details documented in
   `docs/mac-mini-collector.md`; they are not core Radar architecture.
-- Legacy raw archive layouts remain readable today because dataset discovery is
-  recursive. WP-2 will replace permissive discovery with explicit selection for
-  certified generation.
+- Legacy raw archive layouts remain readable through recursive compatibility
+  discovery. WP-2 added explicit selection for deterministic generation; WP-3
+  will make certified generation fail closed over selected inputs.
 
 Architecture changes require an ADR or explicit amendment to
 `docs/WORDPRESS-AUTOMATION-PROGRAM.md`; they must not enter through silent code

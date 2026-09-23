@@ -4,20 +4,26 @@
 from __future__ import annotations
 
 from collections import Counter
+import argparse
 import html
 import json
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from radarcore import DatasetSelection, RunContext, parse_run_time, select_datasets
+
 from radarlib import (
     KEYWORDS_KEYS,
+    DATA_RAW,
+    TICKET_ID_KEYS,
     STATUS_KEYS,
     SUMMARY_KEYS,
     collect_items,
     discovery_track_label,
     first_value,
     group_items,
+    load_queries,
     pretty_label,
     priority_tier,
     signal_class,
@@ -364,13 +370,14 @@ def admin_item_payload(item: dict[str, Any], duplicate_sources: dict[str, set[st
     }
 
 
-def admin_data_payload() -> dict[str, Any]:
+def admin_data_payload(context: RunContext | None = None, selection: DatasetSelection | None = None) -> dict[str, Any]:
     """Build structured data used by the protected Cloudflare Worker admin UI."""
-    ranked, duplicate_sources, summary = collect_items()
+    context = context or RunContext.now()
+    ranked, duplicate_sources, summary = collect_items(context, selection)
     groups = group_items(ranked)
 
     return {
-        "generated": datetime.now().isoformat(timespec="seconds"),
+        "generated": context.generated_iso,
         "summary": {
             "unique_tickets": len(ranked),
             "priority_targets": len(groups["priority"]),
@@ -590,10 +597,11 @@ def contribution_bar_chart(title: str, counts: Counter[str], labeler=status_labe
     return f'''<div class="chart-card"><h3>{html.escape(title)}</h3><div class="bar-list">{"".join(rows)}</div></div>'''
 
 
-def build_contributions_page() -> str:
-    ranked, duplicate_sources, summary = collect_items()
+def build_contributions_page(context: RunContext | None = None, selection: DatasetSelection | None = None) -> str:
+    context = context or RunContext.now()
+    ranked, duplicate_sources, summary = collect_items(context, selection)
     records = contribution_records(ranked, summary["reviews"])
-    generated = datetime.now().strftime("%Y-%m-%d %H:%M")
+    generated = context.generated_display
 
     status_counts = Counter(record["status"] for record in records)
     component_counts = Counter(record["component"] for record in records)
@@ -726,10 +734,11 @@ def build_contributions_page() -> str:
 </html>
 '''
 
-def build_dashboard() -> str:
-    ranked, duplicate_sources, summary = collect_items()
+def build_dashboard(context: RunContext | None = None, selection: DatasetSelection | None = None) -> str:
+    context = context or RunContext.now()
+    ranked, duplicate_sources, summary = collect_items(context, selection)
     groups = group_items(ranked)
-    generated = datetime.now().strftime("%Y-%m-%d %H:%M")
+    generated = context.generated_display
 
     immediate_count = sum(1 for item in groups["priority"] if priority_tier(item)[0] == "immediate")
     strong_count = sum(1 for item in groups["priority"] if priority_tier(item)[0] == "strong")
@@ -784,19 +793,29 @@ def build_dashboard() -> str:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--reference-time", help="ISO-8601 run time for deterministic generation")
+    parser.add_argument("--collection-id", help="Use exactly this raw collection identity (YYYY-MM-DD)")
+    args = parser.parse_args()
+    context = parse_run_time(args.reference_time)
+    selection = None
+    if args.collection_id:
+        selection = select_datasets(DATA_RAW, args.collection_id, [q["slug"] for q in load_queries()], TICKET_ID_KEYS)
+        if not selection.complete:
+            parser.error(f"collection {args.collection_id} is incomplete or invalid")
     radar_dir = Path("docs") / "radar"
     radar_dir.mkdir(parents=True, exist_ok=True)
 
     output = radar_dir / "index.html"
-    output.write_text(build_dashboard(), encoding="utf-8")
+    output.write_text(build_dashboard(context, selection), encoding="utf-8")
 
     admin_data = radar_dir / "admin-data.json"
-    admin_data.write_text(json.dumps(admin_data_payload(), indent=2) + "\n", encoding="utf-8")
+    admin_data.write_text(json.dumps(admin_data_payload(context, selection), indent=2) + "\n", encoding="utf-8")
 
     contributions_dir = radar_dir / "contributions"
     contributions_dir.mkdir(parents=True, exist_ok=True)
     contributions_output = contributions_dir / "index.html"
-    contributions_output.write_text(build_contributions_page(), encoding="utf-8")
+    contributions_output.write_text(build_contributions_page(context, selection), encoding="utf-8")
 
     print(f"Wrote {output}")
     print(f"Wrote {admin_data}")

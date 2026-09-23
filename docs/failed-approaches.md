@@ -13,7 +13,7 @@ are therefore not supported collector replacements today.
 The proven collector opens configured Trac CSV searches in a browser session in
 an allowed local network environment, downloads `query.csv`, imports it into the
 raw archive, and deletes the temporary download. Preserve that implementation
-until another collector is proven. WP-2 may place it behind a contract; it must
+until another collector is proven. WP-2 placed it behind a result boundary; it must
 not redesign it away.
 
 ## HISTORICAL/COMPATIBILITY — local Python admin server
