@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "radar-wp-org-nz",
+  "main": "cloudflare/worker-radar.js",
+  "compatibility_date": "2026-09-22",
+  "assets": {
+    "directory": "./docs/radar",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "observability": {
+    "enabled": true
+  }
+}

@@ -21,6 +21,10 @@ git pull --rebase origin main
 
 "$PYTHON_BIN" scripts/run-radar.py --continue-on-error
 
+# --continue-on-error lets all configured browser downloads run, but a partial
+# snapshot must never be committed or published as the latest Radar dataset.
+"$PYTHON_BIN" scripts/verify-collector-snapshot.py
+
 git add data docs reports
 
 if git diff --cached --quiet; then
