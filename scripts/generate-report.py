@@ -3,7 +3,9 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+import argparse
+
+from radarcore import DatasetSelection, RunContext, parse_run_time, select_datasets
 
 from radarlib import (
     COMMENTS_KEYS,
@@ -14,6 +16,8 @@ from radarlib import (
     MODIFIED_KEYS,
     OWNER_KEYS,
     REPORTS_DIR,
+    DATA_RAW,
+    TICKET_ID_KEYS,
     STATUS_KEYS,
     SUMMARY_KEYS,
     collect_items,
@@ -21,6 +25,7 @@ from radarlib import (
     first_value,
     group_items,
     load_outcomes,
+    load_queries,
     load_reviews,
     pretty_label,
     score_breakdown,
@@ -102,10 +107,11 @@ def append_section(
         append_ticket(lines, index, item, duplicate_sources)
 
 
-def build_report(limit: int = REPORT_LIMIT) -> str:
-    ranked, duplicate_sources, summary = collect_items()
+def build_report(limit: int = REPORT_LIMIT, context: RunContext | None = None, selection: DatasetSelection | None = None) -> str:
+    context = context or RunContext.now()
+    ranked, duplicate_sources, summary = collect_items(context, selection)
     groups = group_items(ranked)
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    now = context.generated_display
     outcomes = load_outcomes()
     reviews = load_reviews()
     datasets = summary["datasets"]
@@ -168,10 +174,20 @@ def build_report(limit: int = REPORT_LIMIT) -> str:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--reference-time", help="ISO-8601 run time for deterministic generation")
+    parser.add_argument("--collection-id", help="Use exactly this raw collection identity (YYYY-MM-DD)")
+    args = parser.parse_args()
+    context = parse_run_time(args.reference_time)
+    selection = None
+    if args.collection_id:
+        selection = select_datasets(DATA_RAW, args.collection_id, [q["slug"] for q in load_queries()], TICKET_ID_KEYS)
+        if not selection.complete:
+            parser.error(f"collection {args.collection_id} is incomplete or invalid")
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    report = build_report()
+    report = build_report(context=context, selection=selection)
     latest = REPORTS_DIR / "latest.md"
-    dated = REPORTS_DIR / f"radar-{datetime.now().strftime('%Y-%m-%d')}.md"
+    dated = REPORTS_DIR / f"radar-{context.collection_date}.md"
     latest.write_text(report, encoding="utf-8")
     dated.write_text(report, encoding="utf-8")
     print(f"Wrote {latest}")

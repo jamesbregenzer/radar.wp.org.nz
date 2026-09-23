@@ -27,5 +27,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
-      - name: Prove committed data can regenerate outputs
-        run: python3 scripts/run-radar.py --skip-fetch
+      - name: Prove committed data can regenerate outputs deterministically
+        run: python3 scripts/run-radar.py --skip-fetch --reference-time 2026-01-15T12:00:00Z

@@ -2,7 +2,10 @@
 
 WP Core Radar uses deterministic scoring before any human or AI-assisted review. The goal is to surface WordPress Core tickets that are likely to be actionable, useful, and aligned with repeatable contribution work.
 
-The source of truth for scoring is `score_ticket()` in `scripts/radarlib.py`. This document mirrors that implementation so the public repo is reviewable without reading the code first.
+The single executable source of truth for scoring values and thresholds is
+`config/scoring.json`. `score_ticket()` in `scripts/radarlib.py` applies that
+configuration. This document explains the policy for reviewers; tests prevent
+the executable configuration and behavior from drifting silently.
 
 ## Baseline Track Priority
 

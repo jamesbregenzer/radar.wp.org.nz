@@ -38,8 +38,8 @@ GitHub Actions may still be useful for checks and review-only dashboard regenera
 
 ## TARGET ARCHITECTURE — collector contract
 
-WP-2 will isolate this browser implementation behind a collector/executor
-contract. Downstream validation, normalization, scoring, certification, and
+WP-2 isolates this browser implementation behind a collector/result boundary.
+Downstream validation, normalization, scoring, certification, and
 publication will consume explicit collection results rather than depend on
 Firefox, Thor, a LaunchAgent, or host paths. The browser implementation remains
 valid unless and until a replacement is proven.

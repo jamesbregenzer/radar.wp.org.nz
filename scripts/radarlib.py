@@ -17,6 +17,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
+from radarcore import DatasetSelection, RunContext, load_scoring_config
+
 ROOT = Path(__file__).resolve().parents[1]
 DATA_RAW = ROOT / "data" / "raw"
 OUTCOMES_CSV = ROOT / "data" / "outcomes" / "outcomes.csv"
@@ -79,11 +81,10 @@ def parse_datetime(value: str) -> datetime | None:
         return None
 
 
-def days_since(value: str, now: datetime | None = None) -> int | None:
+def days_since(value: str, now: datetime) -> int | None:
     parsed = parse_datetime(value)
     if not parsed:
         return None
-    now = now or datetime.now(timezone.utc)
     return max(0, (now - parsed.astimezone(timezone.utc)).days)
 
 
@@ -222,8 +223,17 @@ def read_ticket_rows(dataset: Dataset) -> list[dict[str, Any]]:
     return rows
 
 
-def score_ticket(row: dict[str, Any], query_meta: dict[str, Any], outcomes: dict[str, str]) -> tuple[int, list[str]]:
-    priority = int(query_meta.get("priority", 50))
+def score_ticket(
+    row: dict[str, Any],
+    query_meta: dict[str, Any],
+    outcomes: dict[str, str],
+    reference_time: datetime,
+    scoring: dict[str, Any] | None = None,
+) -> tuple[int, list[str]]:
+    scoring = scoring or load_scoring_config()
+    p = scoring["points"]
+    t = scoring["thresholds"]
+    priority = int(query_meta.get("priority", scoring["default_query_priority"]))
     score = priority
     track_label = query_meta.get("name", query_meta.get("track", "configured track"))
     reasons: list[str] = [f"track priority: {track_label} +{priority}"]
@@ -238,70 +248,70 @@ def score_ticket(row: dict[str, Any], query_meta: dict[str, Any], outcomes: dict
     searchable = " ".join((summary, keywords, component)).lower()
 
     if "has-patch" in keywords or "has patch" in keywords:
-        score += 35
-        reasons.append("has patch +35")
+        score += p["has_patch"]
+        reasons.append(f"has patch {p['has_patch']:+d}")
     if "needs-testing" in keywords or "needs testing" in keywords:
-        score += 30
-        reasons.append("needs testing +30")
+        score += p["needs_testing"]
+        reasons.append(f"needs testing {p['needs_testing']:+d}")
     if "dev-feedback" in keywords or "dev feedback" in keywords:
-        score += 18
-        reasons.append("dev feedback +18")
+        score += p["dev_feedback"]
+        reasons.append(f"dev feedback {p['dev_feedback']:+d}")
     if "reporter-feedback" in keywords or "reporter feedback" in keywords:
-        score += 10
-        reasons.append("reporter feedback +10")
+        score += p["reporter_feedback"]
+        reasons.append(f"reporter feedback {p['reporter_feedback']:+d}")
     if "good-first-bug" in keywords or "good first bug" in keywords:
-        score += 20
-        reasons.append("good first bug +20")
+        score += p["good_first_bug"]
+        reasons.append(f"good first bug {p['good_first_bug']:+d}")
     if component == "media":
-        score += 20
-        reasons.append("preferred component: Media +20")
+        score += p["media_component"]
+        reasons.append(f"preferred component: Media {p['media_component']:+d}")
     if "accessibility" in component or "accessibility" in keywords:
-        score += 18
-        reasons.append("accessibility signal +18")
+        score += p["accessibility_signal"]
+        reasons.append(f"accessibility signal {p['accessibility_signal']:+d}")
     if milestone and milestone not in {"awaiting review", "future release"}:
-        score += 8
-        reasons.append("has concrete milestone +8")
+        score += p["concrete_milestone"]
+        reasons.append(f"has concrete milestone {p['concrete_milestone']:+d}")
     if owner and owner not in {"", "anonymous", "nobody"}:
-        score += 6
-        reasons.append("has owner +6")
+        score += p["owner_assigned"]
+        reasons.append(f"has owner {p['owner_assigned']:+d}")
     if status in {"closed", "fixed", "wontfix", "duplicate", "invalid"}:
-        score -= 100
-        reasons.append("closed/non-actionable -100")
+        score += p["closed_status"]
+        reasons.append(f"closed/non-actionable {p['closed_status']:+d}")
 
-    modified_age = days_since(first_value(row, MODIFIED_KEYS))
+    modified_age = days_since(first_value(row, MODIFIED_KEYS), reference_time)
     if modified_age is not None:
-        if modified_age <= 14:
-            score += 20
-            reasons.append("freshness: recently updated <=14 days +20")
-        elif modified_age <= 60:
-            score += 10
-            reasons.append("freshness: updated within 60 days +10")
-        elif modified_age > 730:
-            score -= 10
-            reasons.append("freshness: stale activity >2 years -10")
+        if modified_age <= t["fresh_days"]:
+            score += p["fresh"]
+            reasons.append(f"freshness: recently updated <={t['fresh_days']} days {p['fresh']:+d}")
+        elif modified_age <= t["recent_days"]:
+            score += p["recent"]
+            reasons.append(f"freshness: updated within {t['recent_days']} days {p['recent']:+d}")
+        elif modified_age > t["stale_days"]:
+            score += p["stale"]
+            reasons.append(f"freshness: stale activity >{t['stale_days']} days {p['stale']:+d}")
 
-    created_age = days_since(first_value(row, CREATED_KEYS))
+    created_age = days_since(first_value(row, CREATED_KEYS), reference_time)
     if created_age is not None:
-        if 30 <= created_age <= 730:
-            score += 8
-            reasons.append("ticket age: mature but not ancient +8")
-        elif created_age > 3650:
-            score -= 8
-            reasons.append("ticket age: very old ticket -8")
+        if t["mature_min_days"] <= created_age <= t["mature_max_days"]:
+            score += p["mature"]
+            reasons.append(f"ticket age: mature but not ancient {p['mature']:+d}")
+        elif created_age > t["very_old_days"]:
+            score += p["very_old"]
+            reasons.append(f"ticket age: very old ticket {p['very_old']:+d}")
 
     comments_raw = first_value(row, COMMENTS_KEYS)
     if comments_raw.isdigit():
         comments = int(comments_raw)
-        if 2 <= comments <= 20:
-            score += 7
-            reasons.append("momentum: healthy comment count +7")
-        elif comments > 80:
-            score -= 8
-            reasons.append("momentum: very large thread -8")
+        if t["momentum_min_comments"] <= comments <= t["momentum_max_comments"]:
+            score += p["healthy_momentum"]
+            reasons.append(f"momentum: healthy comment count {p['healthy_momentum']:+d}")
+        elif comments > t["large_thread_comments"]:
+            score += p["large_thread"]
+            reasons.append(f"momentum: very large thread {p['large_thread']:+d}")
 
     if any(term in searchable for term in ("woocommerce", "woo commerce")):
-        score -= 18
-        reasons.append("setup complexity: requires WooCommerce -18")
+        score += p["woocommerce"]
+        reasons.append(f"setup complexity: requires WooCommerce {p['woocommerce']:+d}")
     if any(
         term in searchable
         for term in (
@@ -319,36 +329,36 @@ def score_ticket(row: dict[str, Any], query_meta: dict[str, Any], outcomes: dict
             'other than "comment"',
         )
     ):
-        score -= 12
-        reasons.append("setup complexity: custom content type setup -12")
+        score += p["custom_content_type"]
+        reasons.append(f"setup complexity: custom content type setup {p['custom_content_type']:+d}")
     if any(term in searchable for term in ("avif", "imagecreatefrom", "imagemagick", "imagick", " gd ", "image library", "image libraries")):
-        score -= 18
-        reasons.append("setup complexity: specialized image library -18")
+        score += p["image_library"]
+        reasons.append(f"setup complexity: specialized image library {p['image_library']:+d}")
     if any(term in searchable for term in ("opcache", "php.ini", "php ini", "server config", "server configuration", "x-robots", "header", "headers")):
-        score -= 16
-        reasons.append("setup complexity: server/runtime configuration -16")
+        score += p["server_configuration"]
+        reasons.append(f"setup complexity: server/runtime configuration {p['server_configuration']:+d}")
     if "multisite" in searchable or "multi-site" in searchable:
-        score -= 14
-        reasons.append("setup complexity: multisite environment -14")
+        score += p["multisite"]
+        reasons.append(f"setup complexity: multisite environment {p['multisite']:+d}")
     if any(term in searchable for term in ("browser-specific", "safari", "firefox", "chrome", "edge", "webkit")):
-        score -= 12
-        reasons.append("setup complexity: browser-specific behavior -12")
+        score += p["browser_specific"]
+        reasons.append(f"setup complexity: browser-specific behavior {p['browser_specific']:+d}")
     if any(term in searchable for term in ("external api", "third-party api", "oauth", "oembed", "remote request", "external-http", "api endpoint")):
-        score -= 16
-        reasons.append("setup complexity: external service or API -16")
+        score += p["external_service"]
+        reasons.append(f"setup complexity: external service or API {p['external_service']:+d}")
 
     if ticket_id in outcomes:
         outcome = outcomes[ticket_id]
         if outcome == "props":
-            score -= 60
-            reasons.append("already produced props -60")
+            score += p["already_props"]
+            reasons.append(f"already produced props {p['already_props']:+d}")
         elif outcome == "tested":
-            score -= 20
-            reasons.append("already tested -20")
+            score += p["already_tested"]
+            reasons.append(f"already tested {p['already_tested']:+d}")
 
     if not summary:
-        score -= 10
-        reasons.append("missing summary -10")
+        score += p["missing_summary"]
+        reasons.append(f"missing summary {p['missing_summary']:+d}")
 
     return score, reasons
 
@@ -458,42 +468,65 @@ def group_items(items: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
     return groups
 
 
-def collect_items() -> tuple[list[dict[str, Any]], dict[str, set[str]], dict[str, Any]]:
+@dataclass(frozen=True)
+class Opportunity:
+    """Canonical normalized and scored opportunity used by every renderer."""
+
+    ticket_id: str
+    score: int
+    reasons: tuple[str, ...]
+    row: dict[str, Any]
+    query: dict[str, Any]
+    review: dict[str, Any] | None
+
+    def as_item(self) -> dict[str, Any]:
+        return {"ticket_id": self.ticket_id, "score": self.score, "reasons": list(self.reasons),
+                "row": self.row, "query": self.query, "review": self.review}
+
+
+def datasets_from_selection(selection: DatasetSelection) -> list[Dataset]:
+    return [
+        Dataset(path=path, query_slug=slug, collected_date=selection.identity,
+                row_count=selection.evidence[slug].row_count)
+        for slug, path in sorted(selection.artifacts.items())
+        if selection.evidence[slug].valid
+    ]
+
+
+def build_opportunities(
+    context: RunContext,
+    selection: DatasetSelection | None = None,
+    raw_dir: Path = DATA_RAW,
+) -> tuple[list[Opportunity], dict[str, set[str]], dict[str, Any]]:
     query_list = load_queries()
     query_meta = {query["slug"]: query for query in query_list}
     outcomes = load_outcomes()
     reviews = load_reviews()
-    datasets = discover_datasets()
+    datasets = datasets_from_selection(selection) if selection else discover_datasets(raw_dir)
+    scoring = load_scoring_config()
 
-    scored_by_ticket: dict[str, dict[str, Any]] = {}
+    scored_by_ticket: dict[str, Opportunity] = {}
     duplicate_sources: dict[str, set[str]] = defaultdict(set)
 
     for dataset in datasets:
         meta = query_meta.get(
             dataset.query_slug,
-            {"priority": 50, "name": dataset.query_slug, "track": dataset.query_slug},
+            {"priority": scoring["default_query_priority"], "name": dataset.query_slug, "track": dataset.query_slug},
         )
 
         for row in read_ticket_rows(dataset):
-            score, reasons = score_ticket(row, meta, outcomes)
+            score, reasons = score_ticket(row, meta, outcomes, context.reference_time, scoring)
             ticket_id = row["ticket_id"]
             duplicate_sources[ticket_id].add(dataset.query_slug)
 
-            candidate = {
-                "ticket_id": ticket_id,
-                "score": score,
-                "reasons": reasons,
-                "row": row,
-                "query": meta,
-                "review": reviews.get(ticket_id),
-            }
+            candidate = Opportunity(ticket_id, score, tuple(reasons), row, meta, reviews.get(ticket_id))
 
-            if ticket_id not in scored_by_ticket or score > scored_by_ticket[ticket_id]["score"]:
+            if ticket_id not in scored_by_ticket or score > scored_by_ticket[ticket_id].score:
                 scored_by_ticket[ticket_id] = candidate
 
     ranked = sorted(
         scored_by_ticket.values(),
-        key=lambda item: (-int(item["score"]), int(item["ticket_id"])),
+        key=lambda item: (-item.score, int(item.ticket_id)),
     )
 
     return ranked, duplicate_sources, {
@@ -501,6 +534,18 @@ def collect_items() -> tuple[list[dict[str, Any]], dict[str, set[str]], dict[str
         "outcomes": outcomes,
         "reviews": reviews,
     }
+
+
+def collect_items(
+    context: RunContext | None = None,
+    selection: DatasetSelection | None = None,
+    raw_dir: Path = DATA_RAW,
+) -> tuple[list[dict[str, Any]], dict[str, set[str]], dict[str, Any]]:
+    """Compatibility projection for existing presentation code."""
+    opportunities, duplicate_sources, summary = build_opportunities(
+        context or RunContext.now(), selection, raw_dir
+    )
+    return [opportunity.as_item() for opportunity in opportunities], duplicate_sources, summary
 
 
 # Shared presentation helpers ----------------------------------------------------

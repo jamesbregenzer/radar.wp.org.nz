@@ -76,10 +76,12 @@ logic does not depend on how collection is performed.
 
 ### Current data and application flow
 
-`scripts/run-radar.py` currently combines collection orchestration and output
-generation. Shared Python code recursively discovers archived CSV files,
-normalizes and scores tickets, and generates Markdown reports, dashboard HTML,
-contribution history, and `docs/radar/admin-data.json`.
+`scripts/run-radar.py` remains the compatibility entrypoint, while WP-2 moved
+collection and generation into separate application-layer stages. Shared Python
+code can explicitly select a collection or recursively discover archived CSV
+files for legacy output, normalizes and scores one canonical opportunity model,
+and generates Markdown reports, dashboard HTML, contribution history, and
+`docs/radar/admin-data.json`.
 
 The scheduled compatibility wrapper pulls `main`, runs the browser-assisted
 pipeline, verifies that all configured CSV exports exist with recognizable
@@ -136,7 +138,7 @@ WordPress writes.
 ## Frozen roadmap
 
 1. **WP-1 Program Freeze** — this documentation and architecture PR.
-2. **WP-2 Radar Core Hardening** — collector abstraction while preserving
+2. **WP-2 Radar Core Hardening** — implemented: collector abstraction while preserving
    browser collection; deterministic time/input handling; single executable
    scoring configuration; explicit dataset selection; comprehensive fixture,
    unit, and pipeline tests; stronger collection evidence; isolate runtime
@@ -160,30 +162,23 @@ WordPress writes.
 9. **WP-9 Shadow/evidence mode.**
 10. **WP-10 Governed contribution delivery and evidence-earned expansion.**
 
-## WP-2 deep-review backlog
+## WP-2 implementation record
 
-The following are confirmed improvement targets. They are recorded here, not
-implemented by WP-1:
+The following confirmed targets were implemented by WP-2: collector/result
+boundaries, separated collection and generation stages, explicit run time,
+executable scoring configuration, explicit dataset selection, richer artifact
+evidence, a canonical internal opportunity model, deterministic fixtures/tests,
+and CI validation. Detailed implementation and deferrals are recorded in
+`docs/WP-2-CORE-HARDENING.md`.
 
-- keep the valid browser collector but make it replaceable behind a contract;
-- separate collection from generation in `run-radar.py`;
-- extend collector verification beyond file/header presence to richer
-  provenance and evidence;
-- eliminate the two scoring sources of truth: `config/scoring.yaml` currently
-  documents rules while executable scoring lives in Python;
-- replace direct `datetime.now()` dependencies with deterministic time/input
-  handling and remove the need for timestamp-only commit workarounds;
-- replace permissive recursive CSV discovery with explicit certified dataset
-  selection;
-- make dashboard, report, admin, and API/feed use one canonical normalized
-  opportunity model;
-- prevent `admin-data.json` from becoming the stable machine API;
-- add sufficient fixture, unit, contract, and end-to-end pipeline coverage for
-  autonomous machine consumption;
-- review and harden CI/workflow behavior;
-- review generated-file churn in the review-refresh workflow; and
-- move runtime paths and scheduler details into compatibility/runtime layers
-  instead of core Radar architecture.
+The following compatibility items remain intentionally deferred rather than
+being silently treated as complete:
+
+- the scheduled runtime wrapper and its timestamp-only commit workaround;
+- legacy recursive archive discovery for non-certified compatibility output;
+- versioned schemas, canonical certification, and fail-closed generation (WP-3);
+- stable operational lifecycle entrypoints (WP-4); and
+- the machine feed and complete UI schema alignment (WP-5).
 
 ## Program guardrails
 

@@ -41,8 +41,8 @@ this runbook does not authorize it.
 
 - Preserve the browser-assisted collector and verify collection continuity
   across the migration.
-- Do not make downstream Radar logic depend on a particular executor; WP-2 will
-  introduce the collector/executor contract.
+- Do not make downstream Radar logic depend on a particular executor; WP-2
+  introduced the collector/result boundary.
 - GitHub remains canonical; HTTP surfaces are projections.
 - Do not retire the existing delivery path before the canonical Worker passes
   controlled and scheduled-cycle verification.
