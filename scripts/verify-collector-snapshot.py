@@ -4,15 +4,21 @@
 from __future__ import annotations
 
 import csv
+import argparse
+import re
 import sys
-from datetime import datetime
 
 from radarlib import DATA_RAW, TICKET_ID_KEYS, load_queries
 
 
 def main() -> int:
-    collected_date = datetime.now().strftime("%Y-%m-%d")
-    snapshot = DATA_RAW / "manual" / collected_date
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--collection-id", required=True, help="Immutable YYYY-MM-DD collection identity captured at run start.")
+    args = parser.parse_args()
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", args.collection_id):
+        parser.error("collection ID must be YYYY-MM-DD")
+
+    snapshot = DATA_RAW / "manual" / args.collection_id
     failures: list[str] = []
 
     for query in load_queries():
@@ -37,7 +43,7 @@ def main() -> int:
             print(f"- {failure}", file=sys.stderr)
         return 1
 
-    print(f"Collector snapshot {collected_date} is complete.")
+    print(f"Collector snapshot {args.collection_id} is complete.")
     return 0
 
 

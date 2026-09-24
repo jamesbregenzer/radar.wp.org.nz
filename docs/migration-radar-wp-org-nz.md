@@ -21,13 +21,12 @@ as evidence that provider-side changes have occurred.
 
 1. Merge WP-6 and record the merge SHA and all existing rollback state.
 2. Rename the GitHub repository and verify old-URL redirects, Actions, branch
-   settings, Federal Eagle Runtime GitHub App access, HQ registry identity, and
-   external remotes.
+   settings, required integration access, registries, and external remotes.
 3. Configure the Worker's explicit repository variables and existing secrets.
 4. Deploy the exact SHA without production traffic and record candidate/prior
    Worker versions.
-5. Inspect existing DNS, bind `radar.wp.org.nz`, and configure human plus
-   service-token Access policies.
+5. Inspect existing DNS, bind `radar.wp.org.nz`, and configure human plus any
+   required programmatic Access policies.
 6. Execute the documented human, machine, hash/ETag, error, and authentication
    acceptance matrix.
 7. Add the apex/`www` redirect and verify its exact destination semantics.
@@ -36,5 +35,5 @@ as evidence that provider-side changes have occurred.
    only after confirming it has no remaining domain or preview dependency.
 
 No live Trac collection is required for deployment acceptance. Do not modify
-Thor, scheduler, credentials, Cloudflare, DNS, Access, or redirects from an
+Scheduler, credentials, Cloudflare, DNS, Access, or redirects from an
 ungoverned lane.

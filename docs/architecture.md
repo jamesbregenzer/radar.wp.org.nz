@@ -1,7 +1,7 @@
 # WP Core Radar Architecture
 
-The authoritative program boundaries and roadmap live in
-`docs/WORDPRESS-AUTOMATION-PROGRAM.md`. This document describes Radar's current
+The authoritative product boundary and roadmap live in
+`docs/RADAR-PRODUCT.md`. This document describes Radar's current
 implementation and target architecture without claiming that target work is
 already complete.
 
@@ -24,9 +24,8 @@ Protected admin review save
 
 The current collector opens configured Trac CSV searches, waits for
 `query.csv`, imports the file into the raw archive, and removes the browser
-download. It runs in an allowed local network/browser environment currently
-associated with Thor because hosted/server collection has historically been
-unreliable or blocked.
+download. It runs in an allowed local network/browser environment because
+hosted/server collection has historically been unreliable or blocked.
 
 WP-2 separated collection and generation behind `scripts/pipeline.py` while
 preserving the command-line entrypoint and browser behavior. `scripts/radarlib.py`
@@ -53,7 +52,7 @@ remain external WP-6 cutover actions.
 4. `scripts/radarcore.py` selects exact artifacts and records collection
    evidence including validation state, row count, file time, and SHA-256.
    `scripts/verify-collector-snapshot.py` remains the compatibility verifier;
-   schema certification is deferred to WP-3.
+   the scheduled wrapper then invokes WP-3/WP-4 certification and verification.
 5. `scripts/radarlib.py` normalizes rows into canonical opportunities, loads
    review/outcome state, applies executable scoring, deduplicates, and groups.
 6. `scripts/generate-report.py` and `scripts/generate-dashboard.py` create the
@@ -68,11 +67,12 @@ remain external WP-6 cutover actions.
 ### Current security and product boundaries
 
 - Public Radar output contains public Trac data and display-safe review state.
-- `/admin/` is protected and may write constrained review metadata only to
-  `data/reviews/reviews.json`.
+- `/admin/` is protected and reads deployed projections without GitHub
+  credentials. Durable writes fail closed until an approved executor satisfies
+  Radar's persistence contract.
 - Secrets belong in provider/runtime custody, never in the repository.
-- Radar has no Eden/HWP logic, private contributor credentials, autonomous work
-  queue, or WordPress public-write authority.
+- Radar does not modify WordPress.org, comment on Trac, submit patches, or hold
+  WordPress.org contribution credentials.
 - GitHub becomes durable truth after collected and generated data is published.
 
 ## TARGET ARCHITECTURE
@@ -101,14 +101,10 @@ Dashboard, admin, reports, and API/feed will consume one canonical normalized
 opportunity model. Certification must include canonical hashes and provenance
 and fail closed when evidence is incomplete.
 
-The future private WordPress Contributor is a separate product. It consumes
-certified opportunities, independently revalidates live WordPress state, and
-routes any public contribution delivery through Eden/HWP policy. It is not part
-of this repository's Radar implementation.
-
-Federal Eagle Operations is an external dependency. Radar may define executor
-requirements, but it does not implement Thor MCP, scheduling, host provisioning,
-credentials, or runtime routing.
+Radar may define generic collector, persistence, and publication executor
+requirements, but it does not implement scheduling, host provisioning,
+provider credentials, or runtime routing. Consumers must independently
+revalidate live WordPress state before acting.
 
 ## IMPLEMENTED — WP-3 certified data
 
@@ -144,7 +140,7 @@ existing renderers without rescoring raw CSV.
 Human review data remains a separate mutable GitHub-backed overlay. It may
 change dashboard/admin grouping between certifications, but it never rewrites
 the immutable certified snapshot or enters the machine feed as current private
-notes. Production hostname and Access/service-token policy are specified by
+notes. Production hostname and Access policy are specified by
 WP-6 and remain provider-side cutover work.
 
 ## IMPLEMENTED — WP-6 production architecture
@@ -159,7 +155,7 @@ policy, DNS/redirect semantics, acceptance tests, rollback, and Pages-retirement
 `config/production-migration.json`.
 
 The Worker is bound at `radar.wp.org.nz` behind the human Access policy. The API
-is private by default until separately governed machine identity is provided.
+is private by default in the current production deployment.
 The historical Pages project remains rollback infrastructure. Provider-side
 redirect and legacy-host state must be verified independently of repository
 configuration.
@@ -170,13 +166,13 @@ configuration.
   rollback/redirect source.
 - Cloudflare Pages may remain part of the live rollback path until WP-6 proves
   the Worker migration.
-- `/Users/thor/Sites/wp-core-radar`, its Python path, and its six-hour scheduler
-  cadence are current compatibility details documented in
+- The local checkout path, Python path, and six-hour scheduler cadence are
+  current compatibility details documented in
   `docs/mac-mini-collector.md`; they are not core Radar architecture.
 - Legacy raw archive layouts remain readable through recursive compatibility
   discovery. WP-2 added explicit selection for deterministic generation; WP-3
   made certification fail closed over selected inputs.
 
 Architecture changes require an ADR or explicit amendment to
-`docs/WORDPRESS-AUTOMATION-PROGRAM.md`; they must not enter through silent code
+`docs/RADAR-PRODUCT.md`; they must not enter through silent code
 or documentation drift.

@@ -2,9 +2,9 @@
 
 Status: **WP-4 STABLE CONTRACT**
 
-This contract tells an external executor how to invoke Radar without moving
-runtime custody into the product. It does not implement Federal Eagle
-Operations, Thor MCP, scheduling, credentials, or host provisioning.
+This contract tells a generic external executor how to invoke Radar without
+moving runtime custody into the product. It does not implement scheduling,
+provider credentials, host provisioning, or runtime routing.
 
 ## Executor supplies
 
@@ -58,12 +58,12 @@ unverified bundle.
 
 ## Custody boundary
 
-Radar owns deterministic product logic and evidence. The executor owns process
+Radar owns deterministic product logic and evidence. A conforming executor owns process
 launch, browser availability, time/revision injection, secrets, scheduling,
 Git/provider authentication, network routing, publication side effects,
 monitoring, retention, retry policy, and any desired scheduling. Radar grants no
 WordPress contribution authority: execution capability alone does not grant
-WordPress contribution authority.
+permission to modify WordPress.org.
 
 
 ## Admin review-state requirements

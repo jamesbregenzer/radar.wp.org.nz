@@ -3,9 +3,9 @@
 Status: **IMPLEMENTED**
 
 WP-5 projects the WP-3 certified bundle through the existing Worker and aligns
-human opportunity views with that same model. It does not implement a private
-contributor, executor, deployment, domain migration, or production access
-policy.
+human opportunity views with that same model. It does not implement
+WordPress.org writes, an executor, deployment, domain migration, or production
+access policy.
 
 ## Data flow
 
@@ -49,7 +49,7 @@ review file and the review-refresh workflow regenerates UI projections only.
 ## WP-6 handoff
 
 WP-6 owns the optional repository rename decision; canonical Worker deployment
-to `radar.wp.org.nz`; Cloudflare Access policy for human surfaces; machine
-service-token policy; redirects from `wp.org.nz` and `www.wp.org.nz` to
+to `radar.wp.org.nz`; Cloudflare Access policy for human and machine surfaces;
+redirects from `wp.org.nz` and `www.wp.org.nz` to
 `https://wordpress.org/`; and redirect/retirement of the legacy Radar hostname.
 No part of that production migration is performed by WP-5.

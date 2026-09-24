@@ -3,7 +3,7 @@
 Status: **IMPLEMENTED IN WP-3**
 
 This document records the WP-3 implementation under the authoritative
-`WORDPRESS-AUTOMATION-PROGRAM.md` plan. It does not expand Radar into execution,
+`RADAR-PRODUCT.md` plan. It does not expand Radar into WordPress.org writes,
 contribution authorization, an HTTP API, or runtime orchestration.
 
 ## Canonical contracts
@@ -21,8 +21,8 @@ The public-safe contracts are strict JSON Schemas under `schemas/`:
   scheduler, credential, or executor identity.
 
 All four schemas reject unknown top-level and nested fields where the contract
-is defined. Private contributor state, Eden/HWP decisions, credentials,
-executor instructions, and contribution authorization are excluded.
+is defined. Provider credentials, executor instructions, private notes, and
+contribution authorization are excluded.
 
 ## Canonical JSON policy
 
@@ -102,7 +102,7 @@ Offline verification reads only the repository checkout. It checks schemas,
 collection completeness, deterministic collection/snapshot identities, payload
 hashes, detached manifest hash, opportunity count, provenance links, and exact
 scoring/query configuration hashes. It requires no browser, WordPress access,
-Thor, Cloudflare, Federal Eagle, or current clock.
+Cloudflare access, provider runtime, or current clock.
 
 The narrow WP-3 interface is:
 

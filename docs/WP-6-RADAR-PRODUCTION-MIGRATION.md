@@ -7,8 +7,8 @@ redirects, verification, and rollback plan. The repository rename, Worker
 deployment, `radar.wp.org.nz` binding, and human Cloudflare Access boundary are
 now in place. The machine API is private by default. Apex/`www` redirects,
 workers.dev closure, acceptance evidence, and legacy-host handling are tracked
-as explicit closeout gates. The authoritative product boundaries remain in
-`WORDPRESS-AUTOMATION-PROGRAM.md`.
+as explicit closeout gates. The authoritative product boundary remains in
+`RADAR-PRODUCT.md`.
 
 ## Target topology
 
@@ -29,10 +29,9 @@ required for dashboard or machine-feed reads.
 ## Repository rename decision and audit
 
 The codebase is ready for the proposed rename, but the rename is not performed
-by this PR. The available governed GitHub interface does not expose repository
-settings/rename, and Federal Eagle Runtime GitHub App selected-repository access
-plus the external HQ capability registry cannot be proven or updated from this
-lane. Creating a replacement repository is forbidden.
+by this PR. Repository settings, external integrations, and runtime checkout
+remotes must be verified during the governed rename. Creating a replacement
+repository is forbidden.
 
 GitHub Actions use repository-relative checkout and repository context, so the
 rename does not require workflow-specific credentials. Certified IDs and hashes
@@ -77,19 +76,18 @@ Use Access at the `radar.wp.org.nz` hostname boundary:
 
 1. a human application covering `radar.wp.org.nz/*`, allowing only James's
    verified identity;
-2. a more specific machine policy for `radar.wp.org.nz/api/v1/*`, allowing a
-   dedicated service token used by the future private contributor; and
+2. a more specific machine policy for `radar.wp.org.nz/api/v1/*`, allowing
+   provider-managed programmatic authentication when required; and
 3. no bypass policy for health or static files unless deliberately approved.
 
 Cloudflare policy specificity and evaluation order must be confirmed in the
-dashboard so the API service-token rule is not shadowed by the human rule. The
+dashboard so the API rule is not shadowed by the human rule. The
 repository data remains public-safe if Access is misconfigured: authentication
 controls access, not the secrecy model.
 
-The private executor owns `CF-Access-Client-Id` and
-`CF-Access-Client-Secret`. Store them in its secret manager, send them only over
-HTTPS, rotate by creating/replacing a token and then revoking the old token,
-and never commit them here. Radar response bodies, ETags, errors, and versioned
+Programmatic Access credentials, if enabled, belong in provider/runtime secret
+custody. They must be sent only over HTTPS, rotated and revoked outside Radar,
+and never committed here. Radar response bodies, ETags, errors, and versioned
 contracts remain unchanged behind Access.
 
 ## DNS and redirect desired state
@@ -124,10 +122,8 @@ while this rule exists. Do not activate it before acceptance.
 2. In GitHub, rename `jamesbregenzer/wp-core-radar` to
    `jamesbregenzer/radar.wp.org.nz`.
 3. Confirm the old GitHub URL redirects, Actions remain enabled, branch settings
-   remain intact, and the Federal Eagle Runtime GitHub App has selected access
-   to the renamed repository.
-4. Update the external HQ capability registry and any executor/local remotes;
-   do not edit Thor from this lane.
+   remain intact, and required repository integrations retain access.
+4. Update any external integration registry and executor/local remotes.
 5. Configure Worker variables/secrets for the renamed repository and deploy the
    exact merged SHA without binding production traffic.
 6. Capture the deployed Worker version as the candidate and retain the prior
@@ -159,7 +155,7 @@ Human checks:
 - perform a reversible review write only with an approved disposable ticket
   state; otherwise explicitly defer the write test and verify GitHub read scope.
 
-Machine checks with a dedicated service token:
+Authorized machine checks:
 
 - health is `200` and healthy, with the expected snapshot ID;
 - snapshot, collection, and opportunities bodies match committed artifact
@@ -169,7 +165,7 @@ Machine checks with a dedicated service token:
 - malformed ticket returns `400`, unknown ticket returns `404`, unsupported
   method returns `405`, and a controlled invalid fixture—not production
   data—proves the `503` fail-closed contract;
-- unauthenticated requests are rejected by Access and service-token requests
+- unauthenticated requests are rejected by Access and authorized requests
   retain the WP-5 response contract.
 
 Redirect checks:
@@ -191,7 +187,7 @@ Rollback is restoration of recorded known-good state, not fix-forward:
 - legacy Radar: disable its redirect and restore the prior Worker/Pages route;
 - repository: prefer keeping the GitHub rename because GitHub redirects the old
   URL; if rename itself causes a custody failure, rename back only after
-  recording new repository activity and coordinating HQ/App/remotes to avoid
+  recording new repository activity and coordinating integrations/remotes to avoid
   split custody.
 
 Before cutover, export or record Worker version IDs, route/custom-domain state,
@@ -210,8 +206,8 @@ the last deployment identifier, and confirm no branch-preview workflow relies
 on it.
 
 Human/governed actions remaining are: inspect Cloudflare zone/project state;
-record rollback state; rename the GitHub repository; confirm/update GitHub App
-selection and HQ registry; update external remotes; configure Worker variables
+record rollback state; rename the GitHub repository; confirm/update repository
+integrations and registries; update external remotes; configure Worker variables
 and secrets; deploy and bind the Worker; configure Access; create DNS/redirect
 rules; execute acceptance; enable the legacy redirect; and later retire Pages.
 

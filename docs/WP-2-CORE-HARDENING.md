@@ -3,8 +3,8 @@
 Status: **IMPLEMENTED IN WP-2**
 
 This document records the implementation boundary for WP-2 under the
-authoritative `WORDPRESS-AUTOMATION-PROGRAM.md` plan. It does not change the
-frozen program architecture.
+authoritative `RADAR-PRODUCT.md` plan. It does not change Radar's frozen
+product architecture.
 
 ## Core changes
 
@@ -35,9 +35,9 @@ frozen program architecture.
 | --- | --- | --- |
 | Firefox downloads `query.csv` | collector compatibility | Preserved; hidden behind the collection boundary |
 | Browser runs in an allowed local network environment | executor requirement | Expressed, not provisioned by Radar |
-| `/Users/thor/Sites/wp-core-radar` | runtime compatibility | Remains only in the legacy scheduled wrapper |
+| Local collector checkout path | runtime compatibility | Derived from the scheduled wrapper location or supplied explicitly |
 | Homebrew Python path | runtime compatibility | Remains only in the legacy scheduled wrapper |
-| LaunchAgent/six-hour schedule | Federal Eagle Operations | Unchanged and out of scope |
+| LaunchAgent/six-hour schedule | external runtime | Unchanged and out of scope |
 | GitHub publication | durable-data boundary | Remains the point at which collected data becomes durable truth |
 
 ## Intentionally deferred
@@ -49,8 +49,8 @@ frozen program architecture.
   to WP-4.
 - A public machine feed and full UI migration to a versioned opportunity schema
   belong to WP-5. `admin-data.json` remains a UI payload, not an API.
-- Runtime provisioning, scheduling, credentials, Thor MCP, and routing remain
-  Federal Eagle Operations concerns.
+- Runtime provisioning, scheduling, credentials, and routing remain external
+  runtime concerns.
 
 Architecture changes still require an ADR or an explicit amendment to the
 authoritative program plan; this implementation must not become a route for

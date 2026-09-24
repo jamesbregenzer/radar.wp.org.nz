@@ -31,9 +31,9 @@ the separate GitHub-backed review overlay. Dashboard/admin may apply that
 overlay for current human workflow; the machine feed does not mutate or replace
 the certified record when reviews change.
 
-The data is public-safe even if access controls fail. WP-6 may protect human
-surfaces with Cloudflare Access and machine routes with service tokens;
-authentication is access control, not the secrecy model. No client should infer
+The data is public-safe even if access controls fail. WP-6 protects production
+surfaces with Cloudflare Access; authentication is access control, not the
+secrecy model. No client should infer
 contribution authority from access or from an opportunity record.
 
 A consumer **MUST independently revalidate live WordPress/Trac state before

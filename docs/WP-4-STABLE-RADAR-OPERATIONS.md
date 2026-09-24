@@ -3,7 +3,7 @@
 Status: **IMPLEMENTED**
 
 This is the implementation record for roadmap item WP-4. The authoritative
-program boundaries remain in `WORDPRESS-AUTOMATION-PROGRAM.md`.
+Radar product boundary remains in `RADAR-PRODUCT.md`.
 
 ## Stable interface
 

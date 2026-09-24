@@ -52,7 +52,7 @@ No success redirect is returned and no durable mutation is implied.
 
 The external executor owns provider credentials, authorization, conflict
 handling, idempotency, durable persistence, and resulting publication identity.
-WP-6A does not implement Federal Eagle Operations or any token broker.
+WP-6A does not implement a provider runtime or token broker.
 
 ## Production implication
 

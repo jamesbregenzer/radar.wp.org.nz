@@ -2,11 +2,10 @@
 
 This document records the **CURRENT IMPLEMENTATION** and
 **HISTORICAL/COMPATIBILITY** details of the proven browser-assisted collector.
-The authoritative target architecture is
-`docs/WORDPRESS-AUTOMATION-PROGRAM.md`.
+The authoritative target architecture is `docs/RADAR-PRODUCT.md`.
 
-The local browser environment currently associated with Thor is the
-collection/build runner because hosted/server Trac CSV collection has
+The local browser environment is the collection/build runner because
+hosted/server Trac CSV collection has
 historically been unreliable or blocked. This known-working path is an
 intentional compatibility constraint and must not be redesigned away.
 
@@ -48,11 +47,11 @@ GitHub Actions may still be useful for checks and review-only dashboard regenera
 WP-2 isolates this browser implementation behind a collector/result boundary.
 Downstream validation, normalization, scoring, certification, and
 publication will consume explicit collection results rather than depend on
-Firefox, Thor, a LaunchAgent, or host paths. The browser implementation remains
+Firefox, a LaunchAgent, or host paths. The browser implementation remains
 valid unless and until a replacement is proven.
 
-Thor MCP, scheduler redesign, credential custody, host provisioning, and runtime
-routing belong to Federal Eagle Operations, not Radar core.
+Scheduler design, credential custody, host provisioning, and runtime routing
+remain external to Radar core.
 
 ## Main commands
 
@@ -78,6 +77,13 @@ Continue collecting remaining tracks if one browser fetch fails:
 
 ```bash
 python3 scripts/run-radar.py --continue-on-error
+```
+
+Direct browser-fetch diagnostics must receive the collection identity captured
+for that run; they must not derive it from the current wall clock:
+
+```bash
+python3 scripts/browser-fetch.py general_needs_testing --collection-id 2026-09-23
 ```
 
 
@@ -114,15 +120,45 @@ Scheduled collection should use the wrapper script:
 scripts/run-scheduled-radar.sh
 ```
 
-The wrapper intentionally keeps scheduling, Git synchronization, and publishing concerns outside the collector itself. It performs this sequence:
+The wrapper intentionally keeps scheduling, Git synchronization, and publishing
+concerns outside the collector itself. At startup it captures one UTC reference
+time, its `YYYY-MM-DD` collection identity, the source revision, and the enabled
+query set. Those values remain immutable for the entire run, including when the
+wall clock crosses a date boundary. It performs this sequence:
 
 1. `git pull --rebase origin main`
-2. `python3 scripts/run-radar.py`
-3. `git add data docs reports`
-4. If only generated timestamps changed, restore those generated files and skip the commit
-5. Otherwise, commit changed files with `Update radar data`
-6. `git pull --rebase origin main` again immediately before push
-7. Push to `origin/main`
+2. capture the immutable run context and required query set
+3. run canonical `radar collect` for every enabled query with that context
+4. verify the exact collection identity through the compatibility verifier
+5. run the fail-closed WP-4 pipeline with `--skip-collect` and the same context
+6. stage `data`, `docs`, and `reports`
+7. if only generated timestamps changed, restore generated files and skip the commit
+8. otherwise, commit changed files with `Update radar data`
+9. `git pull --rebase origin main` again immediately before push
+10. push to `origin/main`
+
+Collection, validation, certification, verification, generation, and
+publication planning therefore cannot split across collection dates.
+
+### Failed-run recovery
+
+The wrapper refuses to begin from a dirty worktree. If collection or any later
+pipeline stage fails, it records the frozen context, worktree status/diff, and
+available collection artifacts beneath ignored `logs/failed-runs/<run-id>/`,
+then restores tracked `data`, `docs`, and `reports` and removes only untracked
+outputs created in the attempted collection/output locations. The previous
+certified current dataset is restored, no partial data is committed, and the
+next scheduled pull is not blocked by the failed attempt.
+
+For a controlled proof that exercises the collector and complete pipeline but
+never commits or pushes, use:
+
+```bash
+RADAR_PUBLISH_MODE=validate-only scripts/run-scheduled-radar.sh
+```
+
+The wrapper retains a local evidence summary and restores the attempted
+repository changes after a successful validate-only run.
 
 The final pre-push rebase is intentional. Review-only dashboard refreshes may be committed by GitHub Actions while the longer Mac Mini collection job is running; rebasing immediately before push makes the scheduled collector more resilient to those near-real-time updates.
 
@@ -162,7 +198,7 @@ When the LaunchAgent runs outside Terminal, macOS privacy controls may prevent P
 If the log contains an error like:
 
 ```text
-PermissionError: [Errno 1] Operation not permitted: '/Users/thor/Downloads/query.csv'
+PermissionError: [Errno 1] Operation not permitted: '<collector-home>/Downloads/query.csv'
 ```
 
 then grant Full Disk Access, or at minimum Files and Folders access for Downloads, to the Python executable used by the scheduled runner:
@@ -199,4 +235,4 @@ reports/radar-YYYY-MM-DD.md
 If any raw CSV, review JSON, contribution history, or substantive dashboard/report content changes, the wrapper still commits and pushes normally.
 
 Future architecture changes require an ADR or explicit update to
-`docs/WORDPRESS-AUTOMATION-PROGRAM.md` rather than silent drift.
+`docs/RADAR-PRODUCT.md` rather than silent drift.
