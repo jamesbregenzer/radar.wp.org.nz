@@ -1,16 +1,6 @@
 const REVIEWS_PATH = "data/reviews/reviews.json";
 const ALLOWED_STATUSES = new Set(["", "shortlist", "watch", "reject", "tested", "commented", "committed"]);
 
-function githubTarget(env) {
-  const owner = String(env.GITHUB_OWNER || "").trim();
-  const repo = String(env.GITHUB_REPO || "").trim();
-  const validPart = /^[A-Za-z0-9_.-]+$/;
-  if (!validPart.test(owner) || !validPart.test(repo)) {
-    throw new Error("GITHUB_CONFIGURATION_INVALID");
-  }
-  return { owner, repo };
-}
-
 function html(body, status = 200) {
   return new Response(body, {
     status,
