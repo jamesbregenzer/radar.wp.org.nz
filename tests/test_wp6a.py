@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
 SPEC = importlib.util.spec_from_file_location("generate_dashboard", ROOT / "scripts" / "generate-dashboard.py")
 MODULE = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader
