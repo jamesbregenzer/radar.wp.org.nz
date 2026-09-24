@@ -884,7 +884,7 @@ async function adminPage(request, env) {
   `));
 }
 
-export { handleApiRequest, loadCertifiedBundle };
+export { getReviews, handleApiRequest, loadCertifiedBundle };
 
 export default {
   async fetch(request, env) {
