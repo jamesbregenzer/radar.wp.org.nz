@@ -32,14 +32,11 @@ settings/rename, and Federal Eagle Runtime GitHub App selected-repository access
 plus the external HQ capability registry cannot be proven or updated from this
 lane. Creating a replacement repository is forbidden.
 
-GitHub Actions use repository-relative checkout and `${{ github.* }}` context,
-so no workflow change is required. Certified IDs and hashes do not contain the
-repository name. API reads are repository-independent. Admin writes now require
-explicit dence | retain until cutover is recorded |
-| this document and migration runbook | migration/history | retain and update status after cutover |
-| `scripts/run-scheduled-radar.sh` path/log prefix | runtime compatibility | retain; Federal Eagle Operations owns changes |
-| `docs/WP-2-CORE-HARDENING.md` Thor path | historical/compatibility | retain |
-| local Git remotes, GitHub App selection, HQ registry | external runtime/custody | update outside this repository after rename |
+GitHub Actions use repository-relative checkout and repository context, so the
+rename does not require workflow-specific credentials. Certified IDs and hashes
+do not contain the repository name. API and admin runtime reads are
+repository-independent. Remaining historical old-name references are retained
+only where they document migration continuity or external runtime paths.
 
 Active product code, Worker routing, API schema IDs, certification, and
 generated outputs have no dependency on `wp-core-radar` or the legacy hostname.
@@ -51,12 +48,7 @@ Assets binding. It does not declare production routes or custom domains, so a
 repository command cannot silently bind or overwrite an unrelated hostname.
 The custom-domain association is a separate governed Cloudflare action.
 
-Committed non-secret variables:
-
-- `GITHUB_OWNER=jamesbregenzer`
-- `GITHUB_REPO=radar.wp.org.nz` after rename. An explicitly identified
-  pre-cutover test may override this with the historical repository name, but
-  must never be mistaken for the production target.
+The Worker has no GitHub repository variables or GitHub runtime credential.
 
 Required Worker secrets:
 
@@ -68,8 +60,8 @@ deterministic deployed `radar-review-state.v1` projection. Durable review/props
 writes are external executor requirements and fail closed while unavailable.
 
 The existing application password/session/CSRF controls remain defense in
-depth behind Cloudflare Access. Runtime GitHub access is no longer a
-Cloudflare Access token; these credentials serve different boundaries.
+depth behind Cloudflare Access. Cloudflare Access and the application password/session controls serve different
+defense-in-depth boundaries; neither grants durable review-write authority.
 
 Deploy an exact merged SHA using governed Cloudflare custody, first without a
 production hostname. `npx wrangler deploy --dry-run --outdir <temporary-dir>`
