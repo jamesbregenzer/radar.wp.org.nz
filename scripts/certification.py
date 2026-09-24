@@ -295,12 +295,15 @@ def execution_result(
     artifacts: list[dict[str, str]] | None = None,
     warnings: list[str] | None = None,
     errors: list[str] | None = None,
+    code: str = "OK",
+    stages: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     return {
         "schema": "execution-result.v1",
         "version": 1,
         "operation": operation,
         "status": status,
+        "code": code,
         "started_at": context.generated_iso,
         "completed_at": context.generated_iso,
         "reference_time": context.generated_iso,
@@ -310,6 +313,7 @@ def execution_result(
         "warnings": warnings or [],
         "errors": errors or [],
         "retry_safe": True,
+        "stage_results": stages or [],
     }
 
 
@@ -428,7 +432,7 @@ def certify(
     except Exception as error:
         result = execution_result(
             "certify", "failure", context,
-            inputs=[selection.identity], errors=[str(error)],
+            inputs=[selection.identity], errors=[str(error)], code="CERTIFICATION_FAILED",
         )
         result_errors = validate_named(result, "execution-result.v1", schemas_dir)
         if result_errors:

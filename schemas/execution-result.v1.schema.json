@@ -4,11 +4,12 @@
   "title": "WP Core Radar execution-result.v1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "version", "operation", "status", "started_at", "completed_at", "reference_time", "input_identities", "output_identities", "artifacts", "warnings", "errors", "retry_safe"],
+  "required": ["schema", "version", "operation", "status", "code", "started_at", "completed_at", "reference_time", "input_identities", "output_identities", "artifacts", "warnings", "errors", "retry_safe", "stage_results"],
   "properties": {
     "schema": {"const": "execution-result.v1"}, "version": {"const": 1},
-    "operation": {"enum": ["certify", "verify"]},
-    "status": {"enum": ["success", "failure"]},
+    "operation": {"enum": ["collect", "validate-collection", "generate", "certify", "verify", "publish", "pipeline"]},
+    "status": {"enum": ["success", "failure", "no_data_delta"]},
+    "code": {"enum": ["OK", "COLLECTION_QUERY_FAILED", "COLLECTION_INCOMPLETE", "COLLECTION_MALFORMED", "COLLECTION_AMBIGUOUS", "COLLECTION_ID_MISMATCH", "GENERATION_FAILED", "CERTIFICATION_FAILED", "VERIFICATION_FAILED", "NO_DATA_DELTA", "PUBLICATION_NOT_ELIGIBLE", "SOURCE_REVISION_INVALID", "PIPELINE_STAGE_FAILED"]},
     "started_at": {"type": "string"}, "completed_at": {"type": "string"}, "reference_time": {"type": "string"},
     "input_identities": {"type": "array", "items": {"type": "string"}},
     "output_identities": {"type": "array", "items": {"type": "string"}},
@@ -16,6 +17,14 @@
       "required": ["path", "sha256"], "properties": {"path": {"type": "string"}, "sha256": {"type": "string", "pattern": "[0-9a-f]{64}"}}}},
     "warnings": {"type": "array", "items": {"type": "string"}},
     "errors": {"type": "array", "items": {"type": "string"}},
-    "retry_safe": {"type": "boolean"}
+    "retry_safe": {"type": "boolean"},
+    "stage_results": {"type": "array", "items": {"type": "object", "additionalProperties": false,
+      "required": ["operation", "status", "code", "output_identities"],
+      "properties": {
+        "operation": {"enum": ["collect", "validate-collection", "generate", "certify", "verify", "publish", "pipeline"]},
+        "status": {"enum": ["success", "failure", "no_data_delta"]},
+        "code": {"enum": ["OK", "COLLECTION_QUERY_FAILED", "COLLECTION_INCOMPLETE", "COLLECTION_MALFORMED", "COLLECTION_AMBIGUOUS", "COLLECTION_ID_MISMATCH", "GENERATION_FAILED", "CERTIFICATION_FAILED", "VERIFICATION_FAILED", "NO_DATA_DELTA", "PUBLICATION_NOT_ELIGIBLE", "SOURCE_REVISION_INVALID", "PIPELINE_STAGE_FAILED"]},
+        "output_identities": {"type": "array", "items": {"type": "string"}}
+      }}}
   }
 }

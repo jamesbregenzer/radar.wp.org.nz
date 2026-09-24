@@ -121,6 +121,16 @@ The current dashboard, report, contribution history, and admin payload remain
 compatibility projections from the WP-2 internal model. Full consumption of the
 public versioned schema and `/api/v1/...` remain WP-5 work.
 
+## IMPLEMENTED — WP-4 stable operations
+
+`scripts/radar.py` is the canonical application entrypoint for `collect`,
+`validate-collection`, `generate`, `certify`, `verify`, `publish`, and
+`pipeline`. Every command emits a validated `execution-result.v1` JSON document,
+and the pipeline stops at the first failed stage. `publish` is a deterministic
+eligibility plan over the verified certified bundle; executors retain custody
+of Git authentication, repository writes, scheduling, and delivery. The exact
+boundary is in `docs/contracts/executor.md`.
+
 ## HISTORICAL/COMPATIBILITY
 
 - The established live hostname is `radar.james.bregenzer.dev` during the
@@ -132,7 +142,7 @@ public versioned schema and `/api/v1/...` remain WP-5 work.
   `docs/mac-mini-collector.md`; they are not core Radar architecture.
 - Legacy raw archive layouts remain readable through recursive compatibility
   discovery. WP-2 added explicit selection for deterministic generation; WP-3
-  will make certified generation fail closed over selected inputs.
+  made certification fail closed over selected inputs.
 
 Architecture changes require an ADR or explicit amendment to
 `docs/WORDPRESS-AUTOMATION-PROGRAM.md`; they must not enter through silent code

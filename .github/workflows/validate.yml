@@ -29,5 +29,7 @@ jobs:
       - run: npm run check
       - name: Prove deterministic fixture certification and offline verification
         run: python3 -m unittest tests.test_certification -v
+      - name: Prove stable operation and fail-closed pipeline contracts
+        run: python3 -m unittest tests.test_operations -v
       - name: Prove committed data can regenerate outputs deterministically
         run: python3 scripts/run-radar.py --skip-fetch --reference-time 2026-01-15T12:00:00Z
