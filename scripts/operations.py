@@ -28,7 +28,7 @@ FAILURE_CODES = {
     "COLLECTION_QUERY_FAILED", "COLLECTION_INCOMPLETE", "COLLECTION_MALFORMED",
     "COLLECTION_AMBIGUOUS", "GENERATION_FAILED", "CERTIFICATION_FAILED",
     "VERIFICATION_FAILED", "PUBLICATION_NOT_ELIGIBLE", "SOURCE_REVISION_INVALID",
-    "PIPELINE_STAGE_FAILED",
+    "PIPELINE_STAGE_FAILED", "COLLECTION_ID_MISMATCH",
 }
 
 
@@ -242,14 +242,21 @@ def pipeline_operation(
     source_revision: str,
     *,
     include_collect: bool = True,
-    selected_queries: list[str] | None = None,
     operations: dict[str, Callable[..., dict[str, Any]]] | None = None,
 ) -> dict[str, Any]:
     ops = operations or {}
     stages: list[dict[str, Any]] = []
     calls = []
     if include_collect:
-        calls.append(("collect", lambda: ops.get("collect", collect_operation)(context, selected_queries)))
+        if collection_id != context.collection_date:
+            return execution_result(
+                "pipeline", "failure", context, inputs=[collection_id],
+                errors=[f"collection ID {collection_id} does not match reference-time date {context.collection_date}"],
+                code="COLLECTION_ID_MISMATCH",
+            )
+        # Canonical collection is deliberately all-or-nothing. Query subsets are
+        # supported only by the standalone diagnostic collect operation.
+        calls.append(("collect", lambda: ops.get("collect", collect_operation)(context)))
     calls.extend([
         ("validate-collection", lambda: ops.get("validate", validate_collection_operation)(context, collection_id)),
         ("generate", lambda: ops.get("generate", generate_operation)(context, collection_id)),

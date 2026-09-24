@@ -24,6 +24,13 @@ on stdout, and exits nonzero on failure.
 Collection keeps the known-working browser workflow. WP-4 does not add cloud
 HTTP fetching, scheduling, credentials, or live collection in CI.
 
+Standalone `collect --query <slug>` is a diagnostic/manual operation and does
+not establish a complete certifiable collection attempt. A canonical pipeline
+with collection always invokes every enabled required query, requires its
+`collection-id` to equal the reference-time date, and stops if any query fails.
+Only `pipeline --skip-collect` may validate an already archived explicit
+collection.
+
 ## Determinism and idempotency
 
 The caller supplies reference time, collection identity, and source revision.
@@ -42,7 +49,7 @@ stdout stays machine-readable.
 
 Stable result codes are `OK`, `COLLECTION_QUERY_FAILED`,
 `COLLECTION_INCOMPLETE`, `COLLECTION_MALFORMED`, `COLLECTION_AMBIGUOUS`,
-`GENERATION_FAILED`, `CERTIFICATION_FAILED`, `VERIFICATION_FAILED`,
+`COLLECTION_ID_MISMATCH`, `GENERATION_FAILED`, `CERTIFICATION_FAILED`, `VERIFICATION_FAILED`,
 `NO_DATA_DELTA`, `PUBLICATION_NOT_ELIGIBLE`, `SOURCE_REVISION_INVALID`, and
 `PIPELINE_STAGE_FAILED`.
 

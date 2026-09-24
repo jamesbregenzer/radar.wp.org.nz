@@ -36,7 +36,10 @@ python3 scripts/radar.py pipeline \
 
 Without `--skip-collect`, pipeline invokes the browser-assisted collector. An
 executor must not assume that hosted/server or GitHub Actions HTTP collection
-works.
+works. In this mode, the collection ID must equal the UTC reference-time date,
+and Radar collects every enabled required query. Query subsets are available
+only through standalone `collect --query`; they are not certifiable pipeline
+collection attempts.
 
 ## Result handling
 

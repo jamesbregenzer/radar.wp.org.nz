@@ -52,6 +52,15 @@ class OperationsTests(unittest.TestCase):
         self.assertEqual([parser.parse_args(case).operation for case in cases],
                          ["collect", "validate-collection", "generate", "certify", "verify", "publish", "pipeline"])
 
+    def test_pipeline_cli_rejects_selected_query_subset(self):
+        import radar
+        with self.assertRaises(SystemExit):
+            radar.build_parser().parse_args([
+                "pipeline", "--reference-time", CONTEXT.generated_iso,
+                "--collection-id", "2026-01-15", "--source-revision", REVISION,
+                "--query", SLUGS[0],
+            ])
+
     def test_collect_all_queries_with_mock_collector(self):
         calls = []
         def collector(slug, context):
@@ -64,6 +73,12 @@ class OperationsTests(unittest.TestCase):
         self.assertTrue(all(stage["status"] == "success" for stage in value["stage_results"]))
 
     def test_collect_selected_queries(self):
+        import radar
+        parsed = radar.build_parser().parse_args([
+            "collect", "--reference-time", CONTEXT.generated_iso,
+            "--query", SLUGS[1],
+        ])
+        self.assertEqual(parsed.query, [SLUGS[1]])
         calls = []
         collect_operation(CONTEXT, [SLUGS[1]], lambda slug, context: calls.append(slug) or CollectionResult(slug, 0, selection([slug])))
         self.assertEqual(calls, [SLUGS[1]])
@@ -159,7 +174,61 @@ class OperationsTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual(len(first["stage_results"]), 5)
 
-    def test_fixture_pipeline_uses_real_validation_certification_and_verification(self):
+    def test_collecting_pipeline_invokes_every_enabled_query(self):
+        collected = []
+        stages = []
+
+        def collector(slug, context):
+            collected.append(slug)
+            return CollectionResult(slug, 0, selection([slug]))
+
+        operations = {
+            "collect": lambda context: collect_operation(context, collector=collector),
+            "validate": lambda *args: stages.append("validate") or result("validate-collection"),
+            "generate": lambda *args: result("generate"),
+            "certify": lambda *args: result("certify"),
+            "verify": lambda *args: result("verify"),
+            "publish": lambda *args: result("publish", outputs=["snapshot"]),
+        }
+        value = pipeline_operation(CONTEXT, "2026-01-15", REVISION, operations=operations)
+        self.assertEqual(value["status"], "success")
+        self.assertEqual(collected, SLUGS)
+        self.assertEqual(stages, ["validate"])
+
+    def test_stale_same_date_files_cannot_hide_required_query_failure(self):
+        calls = []
+
+        def collector(slug, context):
+            calls.append(slug)
+            # FIXTURE_RAW already contains every same-date file. One failed
+            # required query must still fail this collection attempt.
+            return CollectionResult(slug, 1 if slug == SLUGS[-1] else 0, selection([slug]))
+
+        later = []
+        operations = {
+            "collect": lambda context: collect_operation(context, collector=collector),
+            "validate": lambda *args: later.append("validate") or result("validate-collection"),
+            "generate": lambda *args: later.append("generate") or result("generate"),
+            "certify": lambda *args: later.append("certify") or result("certify"),
+        }
+        value = pipeline_operation(CONTEXT, "2026-01-15", REVISION, operations=operations)
+        self.assertEqual((value["status"], value["code"]), ("failure", "PIPELINE_STAGE_FAILED"))
+        self.assertEqual(calls, SLUGS)
+        self.assertEqual(later, [])
+        self.assertEqual(value["stage_results"][0]["code"], "COLLECTION_QUERY_FAILED")
+        self.assertEqual(validate_named(value, "execution-result.v1"), [])
+
+    def test_collecting_pipeline_rejects_collection_id_date_mismatch_before_collection(self):
+        calls = []
+        value = pipeline_operation(
+            CONTEXT, "2026-01-14", REVISION,
+            operations={"collect": lambda context: calls.append("collect") or result("collect")},
+        )
+        self.assertEqual((value["status"], value["code"]), ("failure", "COLLECTION_ID_MISMATCH"))
+        self.assertEqual(calls, [])
+        self.assertEqual(validate_named(value, "execution-result.v1"), [])
+
+    def test_skip_collect_fixture_pipeline_uses_archived_complete_collection(self):
         with tempfile.TemporaryDirectory() as directory:
             current = Path(directory) / "current"
             operations = {

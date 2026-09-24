@@ -61,7 +61,6 @@ def build_parser() -> argparse.ArgumentParser:
     pipeline.add_argument("--collection-id", required=True)
     pipeline.add_argument("--source-revision", required=True)
     pipeline.add_argument("--skip-collect", action="store_true", help="Use an already archived collection")
-    pipeline.add_argument("--query", action="append", help="Configured query slug; repeatable")
     return parser
 
 
@@ -80,7 +79,7 @@ def dispatch(args: argparse.Namespace) -> dict:
     if args.operation == "publish":
         return publish_operation(context, args.input, args.published_snapshot_id)
     return pipeline_operation(context, args.collection_id, args.source_revision,
-                              include_collect=not args.skip_collect, selected_queries=args.query)
+                              include_collect=not args.skip_collect)
 
 
 def main(argv: Sequence[str] | None = None) -> int:

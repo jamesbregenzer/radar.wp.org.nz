@@ -9,7 +9,7 @@
     "schema": {"const": "execution-result.v1"}, "version": {"const": 1},
     "operation": {"enum": ["collect", "validate-collection", "generate", "certify", "verify", "publish", "pipeline"]},
     "status": {"enum": ["success", "failure", "no_data_delta"]},
-    "code": {"enum": ["OK", "COLLECTION_QUERY_FAILED", "COLLECTION_INCOMPLETE", "COLLECTION_MALFORMED", "COLLECTION_AMBIGUOUS", "GENERATION_FAILED", "CERTIFICATION_FAILED", "VERIFICATION_FAILED", "NO_DATA_DELTA", "PUBLICATION_NOT_ELIGIBLE", "SOURCE_REVISION_INVALID", "PIPELINE_STAGE_FAILED"]},
+    "code": {"enum": ["OK", "COLLECTION_QUERY_FAILED", "COLLECTION_INCOMPLETE", "COLLECTION_MALFORMED", "COLLECTION_AMBIGUOUS", "COLLECTION_ID_MISMATCH", "GENERATION_FAILED", "CERTIFICATION_FAILED", "VERIFICATION_FAILED", "NO_DATA_DELTA", "PUBLICATION_NOT_ELIGIBLE", "SOURCE_REVISION_INVALID", "PIPELINE_STAGE_FAILED"]},
     "started_at": {"type": "string"}, "completed_at": {"type": "string"}, "reference_time": {"type": "string"},
     "input_identities": {"type": "array", "items": {"type": "string"}},
     "output_identities": {"type": "array", "items": {"type": "string"}},
@@ -23,7 +23,7 @@
       "properties": {
         "operation": {"enum": ["collect", "validate-collection", "generate", "certify", "verify", "publish", "pipeline"]},
         "status": {"enum": ["success", "failure", "no_data_delta"]},
-        "code": {"enum": ["OK", "COLLECTION_QUERY_FAILED", "COLLECTION_INCOMPLETE", "COLLECTION_MALFORMED", "COLLECTION_AMBIGUOUS", "GENERATION_FAILED", "CERTIFICATION_FAILED", "VERIFICATION_FAILED", "NO_DATA_DELTA", "PUBLICATION_NOT_ELIGIBLE", "SOURCE_REVISION_INVALID", "PIPELINE_STAGE_FAILED"]},
+        "code": {"enum": ["OK", "COLLECTION_QUERY_FAILED", "COLLECTION_INCOMPLETE", "COLLECTION_MALFORMED", "COLLECTION_AMBIGUOUS", "COLLECTION_ID_MISMATCH", "GENERATION_FAILED", "CERTIFICATION_FAILED", "VERIFICATION_FAILED", "NO_DATA_DELTA", "PUBLICATION_NOT_ELIGIBLE", "SOURCE_REVISION_INVALID", "PIPELINE_STAGE_FAILED"]},
         "output_identities": {"type": "array", "items": {"type": "string"}}
       }}}
   }
