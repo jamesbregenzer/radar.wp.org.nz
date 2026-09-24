@@ -82,11 +82,24 @@ tested/commented/watch counts, props received, component focus, activity by
 month, and recent review activity. It does not expose admin authentication,
 secrets, or private notes.
 
-## Protected admin write path
+## Protected admin read and write boundary
 
-The production `/admin/` console is rendered by the Cloudflare Worker. It authenticates the user, loads generated ticket data from `docs/radar/admin-data.json`, and writes review decisions and historical props records to `data/reviews/reviews.json` through the GitHub API.
+The production `/admin/` console is rendered by the Cloudflare Worker. After
+Cloudflare Access and the retained application login, it loads generated ticket
+data from `docs/radar/admin-data.json` and the public-safe review overlay from
+`docs/radar/review-state.json`. Rendering makes no GitHub API request and needs
+no GitHub credential.
 
-The Worker does not regenerate dashboard files itself. When `data/reviews/reviews.json` changes on `main`, `.github/workflows/refresh-dashboard.yml` runs `scripts/generate-dashboard.py` and commits regenerated `docs/radar/index.html`, `docs/radar/contributions/index.html`, and `docs/radar/admin-data.json`. This keeps workflow sections like Shortlisted, Watching, Completed / Acted On, and Rejected current shortly after review saves.
+The Worker does not persist review or props changes. Its controls state that
+persistence is unavailable, and authenticated write requests return HTTP 503
+with `EXECUTOR_UNAVAILABLE`. No success response or local-only durable-looking
+state is created. Future writes must satisfy `PERSIST_REVIEW_DECISION` or
+`RECORD_PROPS_OUTCOME` through the portable executor contract.
+
+When an approved source changes `data/reviews/reviews.json` on `main`,
+`.github/workflows/refresh-dashboard.yml` runs `scripts/generate-dashboard.py`
+and commits regenerated projections. This behavior does not grant the Worker
+repository-write authority.
 
 Local review writes through `scripts/review-ticket.py` also regenerate dashboard files immediately so review grouping stays in sync during manual maintenance.
 

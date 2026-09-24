@@ -19,8 +19,9 @@ The authoritative architecture, product boundaries, and frozen roadmap for the
 broader WordPress Automation Program are in
 [`docs/WORDPRESS-AUTOMATION-PROGRAM.md`](docs/WORDPRESS-AUTOMATION-PROGRAM.md).
 
-**Canonical production target:** `https://radar.wp.org.nz/` (binding and
-production acceptance remain governed WP-6 cutover actions)
+**Canonical production hostname:** `https://radar.wp.org.nz/`, protected by
+Cloudflare Access. The machine API is private by default until a future
+executor receives a separately governed machine identity.
 
 It collects public ticket data from WordPress Trac, archives raw CSV exports,
 scores opportunities with explainable rules including freshness and activity
@@ -215,15 +216,16 @@ The local review command updates `data/reviews/reviews.json` directly and regene
 
 ## Review workflow
 
-After cutover, normal review decisions should be made in the protected
-Cloudflare Worker admin console at `https://radar.wp.org.nz/admin/`. During the
-controlled migration window, use only the currently verified production admin
-URL. Props are not a review decision; they are recorded through the separate
-**Record props** workflow after contributor credit appears on WordPress.org.
+The protected Cloudflare Worker admin console is available at
+`https://radar.wp.org.nz/admin/` for credential-free deployed reads. Durable
+review and props persistence is currently unavailable and its controls are
+clearly marked read-only. Props are not a review decision; once the executor
+contract is implemented, they remain a separate outcome recorded after
+contributor credit appears on WordPress.org.
 Historical props can be recorded even when a ticket no longer appears in the
 current Trac CSV exports.
 
-For local-only maintenance or recovery work, `scripts/review-ticket.py` can update `data/reviews/reviews.json` directly. The local script regenerates dashboard files immediately by default. If a review is saved through the production admin console, GitHub Actions performs that regeneration after the review commit lands on `main`.
+For local-only maintenance or recovery work, `scripts/review-ticket.py` can update `data/reviews/reviews.json` directly. The local script regenerates dashboard files immediately by default. Production admin write requests fail closed with `EXECUTOR_UNAVAILABLE`; they do not create local-only state or trigger regeneration.
 
 ## Outputs
 
@@ -239,8 +241,8 @@ For local-only maintenance or recovery work, `scripts/review-ticket.py` can upda
 
 ## CURRENT IMPLEMENTATION — deployment and security boundaries
 
-The canonical target is `https://radar.wp.org.nz/`. Cloudflare Pages may remain
-a rollback dependency until the Worker migration is proven; repository code has
+The canonical production hostname is `https://radar.wp.org.nz/`. The historical
+Cloudflare Pages project remains an explicit rollback path; repository code has
 no Pages-origin dependency. The contribution history page is served at
 `/contributions/` on the same host and follows the human Access policy.
 
@@ -257,7 +259,7 @@ The canonical repository after the governed rename is
 `jamesbregenzer/radar.wp.org.nz`. The Worker does not require repository
 identity or GitHub credentials at runtime.
 
-The Worker should remain narrowly scoped. It may read the generated admin data JSON and update `data/reviews/reviews.json`; it should not become a general-purpose repository editor. Review-save dashboard regeneration belongs in GitHub Actions, not in the Worker.
+The Worker remains narrowly scoped to deployed projections and application authentication. It does not edit repository files. Future persistence must satisfy the executor contract without adding provider credentials to Radar's runtime.
 
 Local helper scripts may be committed when they contain no secrets and do not expose a public service. Secrets, passwords, API tokens, and Cloudflare Worker environment variables must never be committed.
 

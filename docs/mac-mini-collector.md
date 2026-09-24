@@ -83,9 +83,14 @@ python3 scripts/run-radar.py --continue-on-error
 
 ## Review-only dashboard refreshes
 
-Review decisions saved from the protected Worker admin console are committed directly to `data/reviews/reviews.json` by the Cloudflare Worker. Those commits trigger `.github/workflows/refresh-dashboard.yml`, which runs `scripts/generate-dashboard.py` and commits regenerated dashboard files.
+The protected Worker admin console reads the deployed safe review projection
+without GitHub credentials. It does not commit review decisions. Durable write
+requests fail closed until an approved executor satisfies Radar's persistence
+contract.
 
-That Action is expected to keep the Radar dashboard and admin grouping accurate shortly after review saves. The Mac Mini remains the source of fresh Trac data and still regenerates dashboard files during full collection runs.
+When an approved source changes `data/reviews/reviews.json`, the refresh Action
+regenerates dashboard files. The Mac Mini remains the source of fresh Trac data
+and still regenerates dashboard files during full collection runs.
 
 ## Generated dashboard files
 
