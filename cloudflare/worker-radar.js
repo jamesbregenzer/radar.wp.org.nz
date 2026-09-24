@@ -17,6 +17,106 @@ function html(body, status = 200) {
   });
 }
 
+function apiError(status, code, message) {
+  return Response.json({ schema: "radar-error.v1", version: 1, status: "error", code, message }, {
+    status,
+    headers: { "cache-control": "no-store" },
+  });
+}
+
+async function assetText(env, path) {
+  const response = await env.ASSETS.fetch(new Request(`https://radar-assets.local${path}`));
+  if (!response.ok) throw new Error("CERTIFIED_BUNDLE_MISSING");
+  return response.text();
+}
+
+async function loadCertifiedBundle(env) {
+  const [snapshotText, collectionText, opportunitiesText, checksumText] = await Promise.all([
+    assetText(env, "/api/v1/snapshot.json"),
+    assetText(env, "/api/v1/collection.json"),
+    assetText(env, "/api/v1/opportunities.json"),
+    assetText(env, "/api/v1/snapshot.sha256"),
+  ]);
+  let snapshot;
+  let collection;
+  let opportunities;
+  try {
+    snapshot = JSON.parse(snapshotText);
+    collection = JSON.parse(collectionText);
+    opportunities = JSON.parse(opportunitiesText);
+  } catch {
+    throw new Error("CERTIFIED_BUNDLE_MALFORMED");
+  }
+  const snapshotSha = await sha256Hex(snapshotText);
+  const collectionSha = await sha256Hex(collectionText);
+  const opportunitiesSha = await sha256Hex(opportunitiesText);
+  const expectedManifestSha = checksumText.trim().split(/\s+/)[0];
+  const valid = snapshot.schema === "snapshot.v1"
+    && collection.schema === "collection.v1"
+    && opportunities.schema === "opportunity-set.v1"
+    && snapshot.certification?.state === "certified"
+    && snapshotSha === expectedManifestSha
+    && collectionSha === snapshot.collection_sha256
+    && opportunitiesSha === snapshot.dataset_sha256
+    && collection.collection_id === snapshot.collection_id
+    && opportunities.collection_id === snapshot.collection_id
+    && opportunities.snapshot_id === snapshot.snapshot_id
+    && opportunities.opportunities?.length === snapshot.opportunity_count;
+  if (!valid) throw new Error("CERTIFIED_BUNDLE_INVALID");
+  return { snapshot, collection, opportunities, snapshotText, collectionText, opportunitiesText,
+    hashes: { snapshot: snapshotSha, collection: collectionSha, opportunities: opportunitiesSha } };
+}
+
+function apiJson(request, body, etagHash, snapshotId, status = 200) {
+  const etag = `"sha256:${etagHash}"`;
+  if (request.headers.get("if-none-match") === etag) {
+    return new Response(null, { status: 304, headers: { etag, "cache-control": "public, max-age=300, must-revalidate", "x-radar-snapshot-id": snapshotId } });
+  }
+  return new Response(request.method === "HEAD" ? null : body, {
+    status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "public, max-age=300, must-revalidate",
+      etag,
+      "x-radar-snapshot-id": snapshotId,
+    },
+  });
+}
+
+async function handleApiRequest(request, env) {
+  const url = new URL(request.url);
+  if (!url.pathname.startsWith("/api/v1/")) return null;
+  if (!new Set(["GET", "HEAD"]).has(request.method)) return apiError(405, "METHOD_NOT_ALLOWED", "Only GET and HEAD are supported.");
+  let bundle;
+  try {
+    bundle = await loadCertifiedBundle(env);
+  } catch (error) {
+    return apiError(503, error.message || "CERTIFIED_BUNDLE_INVALID", "No valid certified Radar snapshot is available.");
+  }
+  const { snapshot, collection, opportunities, hashes } = bundle;
+  if (url.pathname === "/api/v1/health") {
+    const health = JSON.stringify({ schema: "radar-health.v1", version: 1, status: "healthy",
+      snapshot_id: snapshot.snapshot_id, collection_id: snapshot.collection_id,
+      certification_state: snapshot.certification.state, reference_time: snapshot.reference_time,
+      opportunity_count: snapshot.opportunity_count, scoring_version: snapshot.scoring_version,
+      source_revision: snapshot.source_revision, dataset_sha256: snapshot.dataset_sha256,
+      warnings: snapshot.certification.warnings || [] }) + "\n";
+    return apiJson(request, health, await sha256Hex(health), snapshot.snapshot_id);
+  }
+  if (url.pathname === "/api/v1/snapshot") return apiJson(request, bundle.snapshotText, hashes.snapshot, snapshot.snapshot_id);
+  if (url.pathname === "/api/v1/collection") return apiJson(request, bundle.collectionText, hashes.collection, snapshot.snapshot_id);
+  if (url.pathname === "/api/v1/opportunities") return apiJson(request, bundle.opportunitiesText, hashes.opportunities, snapshot.snapshot_id);
+  const match = url.pathname.match(/^\/api\/v1\/opportunities\/([^/]+)$/);
+  if (match) {
+    if (!/^\d+$/.test(match[1])) return apiError(400, "MALFORMED_TICKET_ID", "Ticket ID must contain only digits.");
+    const record = opportunities.opportunities.find((item) => item.ticket.id === match[1]);
+    if (!record) return apiError(404, "OPPORTUNITY_NOT_FOUND", "Opportunity is not present in the current snapshot.");
+    const body = JSON.stringify(record) + "\n";
+    return apiJson(request, body, await sha256Hex(body), snapshot.snapshot_id);
+  }
+  return apiError(404, "API_ROUTE_NOT_FOUND", "API route not found.");
+}
+
 async function sha256Hex(value) {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
   return [...new Uint8Array(digest)].map((x) => x.toString(16).padStart(2, "0")).join("");
@@ -748,6 +848,7 @@ async function adminPage(request, env) {
         <div class="stat"><strong>${esc(reviewSummary.propsReceived)}</strong>Props received</div>
         <div class="stat"><strong>${esc(reviewSummary.propsRate)}%</strong>Props rate</div>
       </div>
+      ${summary.certification ? `<div class="notice"><strong>Certified snapshot:</strong> ${esc(summary.certification.snapshot_id)} · ${esc(summary.certification.opportunity_count)} opportunities · ${esc(summary.certification.scoring_version)} · ${esc(summary.certification.reference_time)}</div>` : ""}
       ${(url.pathname === "/admin/props" || ticketNotInRadar) ? renderPropsDrawer(session, activeTicket || url.searchParams.get("ticket") || "") : ""}
       ${renderSection("Priority Targets", groups.priority || [], session, reviews, activeTicket)}
       ${renderSection("Shortlisted", groups.shortlist || [], session, reviews, activeTicket)}
@@ -795,9 +896,14 @@ async function adminPage(request, env) {
   `));
 }
 
+export { handleApiRequest, loadCertifiedBundle };
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    const apiResponse = await handleApiRequest(request, env);
+    if (apiResponse) return apiResponse;
 
     if (url.pathname === "/health/live") {
       return Response.json({ status: "ok", service: "radar-wp-org-nz" }, {

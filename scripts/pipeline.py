@@ -40,7 +40,7 @@ def collect_query(query_slug: str, context: RunContext, runner: Runner = subproc
 
 def generate_presentations(context: RunContext, runner: Runner = subprocess_runner, collection_id: str | None = None) -> int:
     value = context.generated_iso
-    for script in ("scripts/generate-report.py", "scripts/generate-dashboard.py"):
+    for script in ("scripts/generate-report.py", "scripts/generate-dashboard.py", "scripts/generate-api.py"):
         command = [sys.executable, script, "--reference-time", value]
         if collection_id:
             command.extend(["--collection-id", collection_id])

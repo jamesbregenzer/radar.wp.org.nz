@@ -149,7 +149,7 @@ WordPress writes.
 4. **WP-4 Stable Radar Operations** — implemented: `collect`, `validate-collection`,
    `generate`, `certify`, `verify`, `publish`, and `pipeline` application
    entrypoints with structured results.
-5. **WP-5 Machine Feed + UI Alignment** — API/feed from certified data;
+5. **WP-5 Machine Feed + UI Alignment** — implemented: API/feed from certified data;
    dashboard/admin consume the same canonical opportunity model; provenance and
    health UI.
 6. **WP-6 Radar Migration** — optional repository rename to
@@ -177,7 +177,6 @@ being silently treated as complete:
 - the scheduled runtime wrapper and its timestamp-only commit workaround;
 - legacy recursive archive discovery for non-certified compatibility output;
 - versioned schemas, canonical certification, and fail-closed generation (WP-3);
-- the machine feed and complete UI schema alignment (WP-5).
 
 ## WP-3 implementation record
 
@@ -198,6 +197,16 @@ failure. Publication identifies verified eligible artifacts but deliberately
 does not authenticate, push, deploy, or schedule work. Executor obligations and
 the precise command contract are recorded in
 `docs/WP-4-STABLE-RADAR-OPERATIONS.md` and `docs/contracts/executor.md`.
+
+## WP-5 implementation record
+
+WP-5 made the verified certified bundle the single opportunity-intelligence
+source for the versioned HTTP feed, dashboard, protected admin projection, and
+Markdown report. The Worker verifies committed artifact hashes and identities
+before serving `/api/v1/`. Immutable snapshot state remains separate from the
+current GitHub-backed human review overlay. Endpoint and compatibility details
+are recorded in `docs/WP-5-MACHINE-FEED-UI-ALIGNMENT.md` and
+`docs/contracts/machine-feed.md`.
 
 ## Program guardrails
 

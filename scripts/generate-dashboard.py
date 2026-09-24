@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from radarcore import DatasetSelection, RunContext, parse_run_time, select_datasets
+from certifiedmodel import load_certified_projection
 
 from radarlib import (
     KEYWORDS_KEYS,
@@ -19,7 +20,6 @@ from radarlib import (
     TICKET_ID_KEYS,
     STATUS_KEYS,
     SUMMARY_KEYS,
-    collect_items,
     discovery_track_label,
     first_value,
     group_items,
@@ -34,6 +34,11 @@ from radarlib import (
 )
 
 PUBLIC_TOP_LIMIT = 50
+
+
+def opportunity_data(context: RunContext, selection: DatasetSelection | None = None):
+    """Use certified truth; ``selection`` remains a call-signature compatibility input."""
+    return load_certified_projection()
 
 
 def html_badge(label: str, css_prefix: str = "signal") -> str:
@@ -372,8 +377,8 @@ def admin_item_payload(item: dict[str, Any], duplicate_sources: dict[str, set[st
 
 def admin_data_payload(context: RunContext | None = None, selection: DatasetSelection | None = None) -> dict[str, Any]:
     """Build structured data used by the protected Cloudflare Worker admin UI."""
-    context = context or RunContext.now()
-    ranked, duplicate_sources, summary = collect_items(context, selection)
+    context = context or parse_run_time(None)
+    ranked, duplicate_sources, summary = opportunity_data(context, selection)
     groups = group_items(ranked)
 
     return {
@@ -385,6 +390,7 @@ def admin_data_payload(context: RunContext | None = None, selection: DatasetSele
             "strong": sum(1 for item in groups["priority"] if priority_tier(item)[0] == "strong"),
             "watching": sum(1 for item in groups["top"] if priority_tier(item)[0] == "watching"),
             "reviews_loaded": len(summary["reviews"]),
+            "certification": summary["certification"],
         },
         "groups": {
             name: [admin_item_payload(item, duplicate_sources) for item in items]
@@ -598,8 +604,8 @@ def contribution_bar_chart(title: str, counts: Counter[str], labeler=status_labe
 
 
 def build_contributions_page(context: RunContext | None = None, selection: DatasetSelection | None = None) -> str:
-    context = context or RunContext.now()
-    ranked, duplicate_sources, summary = collect_items(context, selection)
+    context = context or parse_run_time(None)
+    ranked, duplicate_sources, summary = opportunity_data(context, selection)
     records = contribution_records(ranked, summary["reviews"])
     generated = context.generated_display
 
@@ -735,10 +741,11 @@ def build_contributions_page(context: RunContext | None = None, selection: Datas
 '''
 
 def build_dashboard(context: RunContext | None = None, selection: DatasetSelection | None = None) -> str:
-    context = context or RunContext.now()
-    ranked, duplicate_sources, summary = collect_items(context, selection)
+    context = context or parse_run_time(None)
+    ranked, duplicate_sources, summary = opportunity_data(context, selection)
     groups = group_items(ranked)
-    generated = context.generated_display
+    certification = summary["certification"]
+    generated = certification["reference_time"]
 
     immediate_count = sum(1 for item in groups["priority"] if priority_tier(item)[0] == "immediate")
     strong_count = sum(1 for item in groups["priority"] if priority_tier(item)[0] == "strong")
@@ -775,6 +782,17 @@ def build_dashboard(context: RunContext | None = None, selection: DatasetSelecti
       <div class="card card-amber"><strong>{watching_count}</strong>Worth Watching</div>
       <div class="card"><strong>{len(summary["reviews"])}</strong>Reviews loaded</div>
     </div>
+
+    <section aria-labelledby="certification-health">
+      <h2 id="certification-health">Certified data health</h2>
+      <div class="summary">
+        <div class="card card-blue"><strong>{html.escape(certification["state"].title())}</strong>Certification</div>
+        <div class="card"><strong>{html.escape(certification["reference_time"][:10])}</strong>Certified snapshot date</div>
+        <div class="card"><strong>{html.escape(certification["scoring_version"])}</strong>Scoring version</div>
+        <div class="card"><strong>{html.escape(certification["snapshot_id"].removeprefix("snapshot-v1-")[:12])}</strong>Snapshot</div>
+      </div>
+      <p class="health-detail">Collection <code>{html.escape(certification["collection_id"])}</code> · Source <code>{html.escape((certification["source_revision"] or "unknown")[:12])}</code>{" · Warnings: " + html.escape(", ".join(certification["warnings"])) if certification["warnings"] else " · No certification warnings"}</p>
+    </section>
 
     {section_html("Priority Targets", groups["priority"], duplicate_sources)}
     {section_html("Top Opportunities", groups["top"], duplicate_sources, limit=PUBLIC_TOP_LIMIT)}

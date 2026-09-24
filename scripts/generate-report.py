@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 
 from radarcore import DatasetSelection, RunContext, parse_run_time, select_datasets
+from certifiedmodel import load_certified_projection
 
 from radarlib import (
     COMMENTS_KEYS,
@@ -20,7 +21,6 @@ from radarlib import (
     TICKET_ID_KEYS,
     STATUS_KEYS,
     SUMMARY_KEYS,
-    collect_items,
     discovery_track_label,
     first_value,
     group_items,
@@ -108,8 +108,8 @@ def append_section(
 
 
 def build_report(limit: int = REPORT_LIMIT, context: RunContext | None = None, selection: DatasetSelection | None = None) -> str:
-    context = context or RunContext.now()
-    ranked, duplicate_sources, summary = collect_items(context, selection)
+    context = context or parse_run_time(None)
+    ranked, duplicate_sources, summary = load_certified_projection()
     groups = group_items(ranked)
     now = context.generated_display
     outcomes = load_outcomes()
@@ -128,6 +128,9 @@ def build_report(limit: int = REPORT_LIMIT, context: RunContext | None = None, s
     lines.append(f"- Outcomes loaded: {len(outcomes)}")
     lines.append(f"- Reviews loaded: {len(reviews)}")
     lines.append(f"- Top opportunity limit: {limit}")
+    lines.append(f"- Certified snapshot: {summary['certification']['snapshot_id']}")
+    lines.append(f"- Certified collection: {summary['certification']['collection_id']}")
+    lines.append(f"- Scoring version: {summary['certification']['scoring_version']}")
     lines.append("")
     lines.append("## Review Workflow")
     lines.append("")

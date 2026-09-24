@@ -144,6 +144,9 @@ def generation_artifact_paths(context: RunContext) -> list[Path]:
         ROOT / "reports/latest.md", ROOT / f"reports/radar-{context.collection_date}.md",
         ROOT / "docs/radar/index.html", ROOT / "docs/radar/admin-data.json",
         ROOT / "docs/radar/contributions/index.html",
+        ROOT / "docs/radar/api/v1/health.json", ROOT / "docs/radar/api/v1/snapshot.json",
+        ROOT / "docs/radar/api/v1/collection.json", ROOT / "docs/radar/api/v1/opportunities.json",
+        ROOT / "docs/radar/api/v1/snapshot.sha256",
     ]
 
 
@@ -259,9 +262,10 @@ def pipeline_operation(
         calls.append(("collect", lambda: ops.get("collect", collect_operation)(context)))
     calls.extend([
         ("validate-collection", lambda: ops.get("validate", validate_collection_operation)(context, collection_id)),
-        ("generate", lambda: ops.get("generate", generate_operation)(context, collection_id)),
         ("certify", lambda: ops.get("certify", certify_operation)(context, collection_id, source_revision)),
         ("verify", lambda: ops.get("verify", verify_operation)(context)),
+        # WP-5 projections must read the newly verified certified snapshot.
+        ("generate", lambda: ops.get("generate", generate_operation)(context, collection_id)),
         ("publish", lambda: ops.get("publish", publish_operation)(context)),
     ])
     outputs: list[str] = []

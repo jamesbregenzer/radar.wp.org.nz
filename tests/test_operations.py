@@ -247,10 +247,10 @@ class OperationsTests(unittest.TestCase):
             self.assertEqual(first, second)
             self.assertEqual(first["status"], "success")
             self.assertEqual([stage["operation"] for stage in first["stage_results"]],
-                             ["validate-collection", "generate", "certify", "verify", "publish"])
+                             ["validate-collection", "certify", "verify", "generate", "publish"])
 
     def test_pipeline_stops_after_each_failure(self):
-        stage_names = ["validate", "generate", "certify", "verify", "publish"]
+        stage_names = ["validate", "certify", "verify", "generate", "publish"]
         operation_names = {"validate": "validate-collection", "generate": "generate", "certify": "certify", "verify": "verify", "publish": "publish"}
         for failure_index, failure_name in enumerate(stage_names):
             calls = []

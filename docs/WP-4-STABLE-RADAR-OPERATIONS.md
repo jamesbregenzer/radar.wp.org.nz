@@ -58,6 +58,10 @@ reports compact results for stages that actually ran. Certification retains
 the prior current bundle on failure. Publication always verifies first and is
 ineligible if verification fails.
 
+WP-5 refined canonical composition so certification and verification precede
+generation of certified HTTP/UI/report projections. The operation contracts are
+unchanged; the ordering prevents projections from observing the prior snapshot.
+
 ## Publication boundary
 
 Publication is deliberately a plan, not a side effect. It returns the verified
