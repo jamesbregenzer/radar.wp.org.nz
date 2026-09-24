@@ -90,6 +90,7 @@ def remove_previous_downloads() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("query_slug", help="Enabled query slug from config/queries.json.")
+    parser.add_argument("--collection-id", required=True, help="Immutable collection identity captured at run start.")
     parser.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT_SECONDS)
     parser.add_argument("--browser", default="Firefox")
     parser.add_argument("--keep-browser-open", action="store_true")
@@ -110,7 +111,13 @@ def main() -> int:
     try:
         downloaded = wait_for_download(args.timeout)
         print(f"Downloaded {downloaded}")
-        subprocess.run([sys.executable, str(ROOT / "scripts" / "import-download.py"), args.query_slug, "--source", str(downloaded)], check=True)
+        subprocess.run([
+            sys.executable,
+            str(ROOT / "scripts" / "import-download.py"),
+            args.query_slug,
+            "--source", str(downloaded),
+            "--collection-id", args.collection_id,
+        ], check=True)
         downloaded.unlink(missing_ok=True)
         print("Removed downloaded query.csv")
     except Exception as error:

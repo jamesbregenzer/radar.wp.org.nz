@@ -83,11 +83,13 @@ files for legacy output, normalizes and scores one canonical opportunity model,
 and generates Markdown reports, dashboard HTML, contribution history, and
 `docs/radar/admin-data.json`.
 
-The scheduled compatibility wrapper pulls `main`, runs the browser-assisted
-pipeline, verifies that all configured CSV exports exist with recognizable
-headers, stages generated changes, suppresses timestamp-only commits, rebases,
-and pushes. These host paths and scheduler mechanics are compatibility/runtime
-details, not the target core architecture.
+The scheduled compatibility wrapper pulls `main`, captures one immutable run
+context, runs the browser-assisted collector and canonical fail-closed pipeline
+with that context, stages generated changes, suppresses timestamp-only commits,
+rebases, and pushes. Failed attempts retain ignored local evidence and restore
+repository outputs so partial artifacts cannot block the next pull. These host
+paths and scheduler mechanics are compatibility/runtime details, not the target
+core architecture.
 
 The repository contains a migration-ready Cloudflare Worker plus Static Assets
 configuration. The legacy hostname remains an external rollback/redirect

@@ -53,7 +53,7 @@ remain external WP-6 cutover actions.
 4. `scripts/radarcore.py` selects exact artifacts and records collection
    evidence including validation state, row count, file time, and SHA-256.
    `scripts/verify-collector-snapshot.py` remains the compatibility verifier;
-   schema certification is deferred to WP-3.
+   the scheduled wrapper then invokes WP-3/WP-4 certification and verification.
 5. `scripts/radarlib.py` normalizes rows into canonical opportunities, loads
    review/outcome state, applies executable scoring, deduplicates, and groups.
 6. `scripts/generate-report.py` and `scripts/generate-dashboard.py` create the
@@ -68,8 +68,9 @@ remain external WP-6 cutover actions.
 ### Current security and product boundaries
 
 - Public Radar output contains public Trac data and display-safe review state.
-- `/admin/` is protected and may write constrained review metadata only to
-  `data/reviews/reviews.json`.
+- `/admin/` is protected and reads deployed projections without GitHub
+  credentials. Durable writes fail closed until an approved executor satisfies
+  Radar's persistence contract.
 - Secrets belong in provider/runtime custody, never in the repository.
 - Radar has no Eden/HWP logic, private contributor credentials, autonomous work
   queue, or WordPress public-write authority.

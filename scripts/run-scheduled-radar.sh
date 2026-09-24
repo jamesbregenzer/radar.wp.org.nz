@@ -1,9 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO_DIR="/Users/thor/Sites/wp-core-radar"
+REPO_DIR="${RADAR_REPO_DIR:-/Users/thor/Sites/wp-core-radar}"
 LOG_PREFIX="[wp-core-radar]"
-PYTHON_BIN="/usr/local/opt/python@3.14/bin/python3.14"
+PYTHON_BIN="${RADAR_PYTHON_BIN:-/usr/local/opt/python@3.14/bin/python3.14}"
+PUBLISH_MODE="${RADAR_PUBLISH_MODE:-publish}"
 
 # LaunchAgents run with a minimal PATH. Put the Homebrew Python 3.14 bin
 # directory first so child scripts use the same runtime as this wrapper instead
@@ -17,13 +18,105 @@ echo "$LOG_PREFIX Starting scheduled radar update at $(date)"
 echo "$LOG_PREFIX Using Python: $("$PYTHON_BIN" --version 2>&1)"
 echo "$LOG_PREFIX PATH: $PATH"
 
+if [[ "$PUBLISH_MODE" != "publish" && "$PUBLISH_MODE" != "validate-only" ]]; then
+  echo "$LOG_PREFIX Invalid RADAR_PUBLISH_MODE: $PUBLISH_MODE" >&2
+  exit 2
+fi
+
+if [[ -n "$(git status --porcelain)" ]]; then
+  echo "$LOG_PREFIX Worktree is not clean before collection; refusing to pull or collect." >&2
+  git status --short >&2
+  exit 1
+fi
+
 git pull --rebase origin main
 
-"$PYTHON_BIN" scripts/run-radar.py --continue-on-error
+# Freeze one immutable context before any browser is opened. Every collection,
+# validation, certification, generation, and publication-planning command below
+# receives these exact values even if the wall clock crosses midnight.
+REFERENCE_TIME="${RADAR_REFERENCE_TIME:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
+COLLECTION_ID="${REFERENCE_TIME:0:10}"
+SOURCE_REVISION="$(git rev-parse HEAD)"
+RUN_ID="${REFERENCE_TIME//[:]/-}"
+FAILURE_DIR="$REPO_DIR/logs/failed-runs/$RUN_ID"
+REQUIRED_QUERIES="$(PYTHONPATH="$REPO_DIR/scripts" "$PYTHON_BIN" - <<'PY'
+from radarlib import load_queries
+print(",".join(str(query["slug"]) for query in load_queries()))
+PY
+)"
 
-# --continue-on-error lets all configured browser downloads run, but a partial
-# snapshot must never be committed or published as the latest Radar dataset.
-"$PYTHON_BIN" scripts/verify-collector-snapshot.py
+echo "$LOG_PREFIX Run context: reference_time=$REFERENCE_TIME collection_id=$COLLECTION_ID source_revision=$SOURCE_REVISION"
+echo "$LOG_PREFIX Required queries: $REQUIRED_QUERIES"
+
+cleanup_attempt_changes() {
+  git restore --staged --worktree -- data 2>/dev/null || true
+  git restore --staged --worktree -- docs 2>/dev/null || true
+  git restore --staged --worktree -- reports 2>/dev/null || true
+  git clean -fd -- "data/raw/manual/$COLLECTION_ID" data/certified/current docs/radar reports >/dev/null 2>&1 || true
+}
+
+preserve_failure_evidence() {
+  mkdir -p "$FAILURE_DIR"
+  git status --short > "$FAILURE_DIR/git-status.txt" || true
+  git diff --binary > "$FAILURE_DIR/worktree.patch" || true
+  if [[ -d "data/raw/manual/$COLLECTION_ID" ]]; then
+    cp -R "data/raw/manual/$COLLECTION_ID" "$FAILURE_DIR/collection-artifacts"
+  fi
+  printf '%s\n' \
+    "reference_time=$REFERENCE_TIME" \
+    "collection_id=$COLLECTION_ID" \
+    "source_revision=$SOURCE_REVISION" \
+    "required_queries=$REQUIRED_QUERIES" \
+    > "$FAILURE_DIR/run-context.txt"
+  echo "$LOG_PREFIX Failure evidence retained at $FAILURE_DIR" >&2
+}
+
+on_exit() {
+  status=$?
+  trap - EXIT
+  if [[ $status -ne 0 ]]; then
+    preserve_failure_evidence
+    if [[ -d "$(git rev-parse --git-path rebase-merge)" || -d "$(git rev-parse --git-path rebase-apply)" ]]; then
+      git rebase --abort 2>/dev/null || true
+    fi
+    cleanup_attempt_changes
+    echo "$LOG_PREFIX Failed run changes were removed; the previous certified dataset remains intact." >&2
+  fi
+  exit "$status"
+}
+trap on_exit EXIT
+
+"$PYTHON_BIN" scripts/radar.py collect \
+  --reference-time "$REFERENCE_TIME"
+
+# The compatibility verifier and the canonical fail-closed pipeline both use
+# the exact collection identity frozen above. The pipeline revalidates all
+# required queries before certification.
+"$PYTHON_BIN" scripts/verify-collector-snapshot.py \
+  --collection-id "$COLLECTION_ID"
+
+"$PYTHON_BIN" scripts/radar.py pipeline \
+  --skip-collect \
+  --reference-time "$REFERENCE_TIME" \
+  --collection-id "$COLLECTION_ID" \
+  --source-revision "$SOURCE_REVISION"
+
+if [[ "$PUBLISH_MODE" == "validate-only" ]]; then
+  mkdir -p "$FAILURE_DIR"
+  git status --short > "$FAILURE_DIR/git-status.txt"
+  git diff --stat > "$FAILURE_DIR/worktree-stat.txt"
+  printf '%s\n' \
+    "reference_time=$REFERENCE_TIME" \
+    "collection_id=$COLLECTION_ID" \
+    "source_revision=$SOURCE_REVISION" \
+    "required_queries=$REQUIRED_QUERIES" \
+    "result=validated-not-published" \
+    > "$FAILURE_DIR/run-context.txt"
+  cleanup_attempt_changes
+  trap - EXIT
+  echo "$LOG_PREFIX Controlled run validated successfully; no commit or push was performed."
+  exit 0
+fi
 
 git add data docs reports
 
@@ -124,4 +217,5 @@ git pull --rebase origin main
 git push origin main
 echo "$LOG_PREFIX Pushed radar update."
 
+trap - EXIT
 echo "$LOG_PREFIX Finished scheduled radar update at $(date)"

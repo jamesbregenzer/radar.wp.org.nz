@@ -33,7 +33,13 @@ def subprocess_runner(command: list[str]) -> int:
 
 
 def collect_query(query_slug: str, context: RunContext, runner: Runner = subprocess_runner) -> CollectionResult:
-    code = runner([sys.executable, "scripts/browser-fetch.py", query_slug])
+    code = runner([
+        sys.executable,
+        "scripts/browser-fetch.py",
+        query_slug,
+        "--collection-id",
+        context.collection_date,
+    ])
     selection = select_datasets(DATA_RAW, context.collection_date, [query_slug], TICKET_ID_KEYS)
     return CollectionResult(query_slug, code, selection)
 

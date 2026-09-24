@@ -71,6 +71,13 @@ Admin write intent
 
 The local browser environment currently associated with Thor is the collection/build runner because hosted/server Trac collection has historically been unreliable or blocked. It opens configured Trac CSV searches in Firefox, downloads `query.csv`, imports it into the raw archive, and removes the temporary download. This proven browser-assisted collection path must be preserved until a replacement is proven.
 
+The scheduled wrapper freezes one reference time, collection identity, source
+revision, and required query set before collection begins. Browser imports and
+every downstream fail-closed stage receive that same context, so crossing a UTC
+date boundary cannot split one collection across archive identities. Failed
+attempts retain ignored local evidence and restore attempted repository changes
+before the next scheduled pull.
+
 After publication, GitHub is Radar's durable source of truth. The repository
 contains the migration-ready Cloudflare Worker plus Static Assets target. The
 legacy hostname remains a rollback/redirect concern until the governed WP-6
