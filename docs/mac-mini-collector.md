@@ -23,7 +23,14 @@ The Mac Mini is responsible for:
    becomes durable truth after publication.
 7. Reconciling the latest review state during scheduled full Radar runs.
 
-The Mac Mini creates `docs/radar/admin-data.json`, which the protected Worker admin console reads. It does not create, host, or authenticate the production `/admin/` page on `radar.james.bregenzer.dev`. Scheduled runs still reconcile review writes from GitHub with regenerated dashboard/admin data, but they are no longer the only review-sync mechanism. Review-only commits to `data/reviews/reviews.json` are also handled by GitHub Actions so the dashboard does not remain stale for up to six hours.
+The Mac Mini creates `docs/radar/admin-data.json`, which the protected Worker
+admin console reads. It does not create, host, authenticate, or migrate the
+production `/admin/` page. Scheduled runs still reconcile review writes from
+GitHub with regenerated dashboard/admin data, but they are no longer the only
+review-sync mechanism. Review-only commits to `data/reviews/reviews.json` are
+also handled by GitHub Actions so the dashboard does not remain stale for up to
+six hours. Repository paths and remotes in this document are
+**HISTORICAL/COMPATIBILITY runtime concerns** owned outside WP-6.
 
 GitHub is the durable source of truth after the collector publishes changes.
 The repository contains a Cloudflare Worker plus Static Assets target. The
@@ -78,18 +85,21 @@ python3 scripts/run-radar.py --continue-on-error
 
 Review decisions saved from the protected Worker admin console are committed directly to `data/reviews/reviews.json` by the Cloudflare Worker. Those commits trigger `.github/workflows/refresh-dashboard.yml`, which runs `scripts/generate-dashboard.py` and commits regenerated dashboard files.
 
-That Action is expected to keep the public dashboard and admin grouping accurate shortly after review saves. The Mac Mini remains the source of fresh Trac data and still regenerates dashboard files during full collection runs.
+That Action is expected to keep the Radar dashboard and admin grouping accurate shortly after review saves. The Mac Mini remains the source of fresh Trac data and still regenerates dashboard files during full collection runs.
 
 ## Generated dashboard files
 
-The dashboard generation step writes both the public dashboard and the data payload consumed by the protected Worker admin console:
+The dashboard generation step writes both the static dashboard asset and the data payload consumed by the protected Worker admin console:
 
 ```text
 docs/radar/index.html
 docs/radar/admin-data.json
 ```
 
-The public dashboard includes a header link to the protected admin console. The protected admin route itself is rendered by the Cloudflare Worker, not by the static Pages output.
+The Radar dashboard includes a header link to the protected admin console. The
+protected admin route itself is rendered by the Cloudflare Worker, not by the
+static asset bundle. References to Pages in older operational material are
+historical/rollback context, not an active product dependency.
 
 ## HISTORICAL/COMPATIBILITY — scheduled runner
 

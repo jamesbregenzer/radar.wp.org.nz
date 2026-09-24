@@ -89,10 +89,9 @@ headers, stages generated changes, suppresses timestamp-only commits, rebases,
 and pushes. These host paths and scheduler mechanics are compatibility/runtime
 details, not the target core architecture.
 
-The repository contains a Cloudflare Worker plus Static Assets target
-configuration. The established live hostname remains
-`radar.james.bregenzer.dev` until the WP-6 migration is independently deployed
-and verified.
+The repository contains a migration-ready Cloudflare Worker plus Static Assets
+configuration. The legacy hostname remains an external rollback/redirect
+concern until the WP-6 cutover is independently deployed and verified.
 
 ### Durable truth
 
@@ -116,10 +115,10 @@ stable public machine API and must not become one accidentally.
 | `www.wp.org.nz` | Future redirect to `https://wordpress.org/` |
 | `radar.james.bregenzer.dev` | Redirected and retired after successful migration |
 
-`jamesbregenzer/radar.wp.org.nz` is the proposed future repository name,
-consistent with production-hostname naming conventions. The repository remains
-`jamesbregenzer/wp-core-radar` unless and until WP-6 explicitly approves and
-performs that optional rename.
+`jamesbregenzer/radar.wp.org.nz` is the approved target repository name,
+consistent with production-hostname naming conventions. WP-6 prepares the
+repository for the rename; the external GitHub settings action remains pending
+until governed custody dependencies are verified.
 
 ### Radar 2.0 boundaries
 
@@ -152,10 +151,12 @@ WordPress writes.
 5. **WP-5 Machine Feed + UI Alignment** — implemented: API/feed from certified data;
    dashboard/admin consume the same canonical opportunity model; provenance and
    health UI.
-6. **WP-6 Radar Migration** — optional repository rename to
-   `radar.wp.org.nz`; deploy the canonical Worker; migrate to
-   `radar.wp.org.nz`; protect appropriate surfaces; redirect apex and `www` to
-   WordPress.org; redirect and retire the old Radar hostname.
+6. **WP-6 Radar Migration** — repository implementation complete and
+   migration-ready: explicit portable repository targeting, canonical Worker
+   build, target topology, Access/service-token policy, DNS/redirect plan,
+   acceptance, rollback, and external handoff. Repository rename, production
+   deployment, DNS, Access, redirects, and Pages retirement remain governed
+   cutover actions outside the PR.
 7. **WP-7 Private Contributor Contract.**
 8. **WP-8 Private Contributor Implementation** — initially patch testing and
    reproduction.
@@ -207,6 +208,17 @@ before serving `/api/v1/`. Immutable snapshot state remains separate from the
 current GitHub-backed human review overlay. Endpoint and compatibility details
 are recorded in `docs/WP-5-MACHINE-FEED-UI-ALIGNMENT.md` and
 `docs/contracts/machine-feed.md`.
+
+## WP-6 implementation record
+
+WP-6 removes the admin Worker's implicit dependency on the historical
+repository name and freezes a testable production-migration contract for
+`radar.wp.org.nz`. It documents exact Cloudflare, Access, DNS, redirect,
+acceptance, rollback, Pages-retirement, and Federal Eagle/HQ handoffs. The
+repository rename and every provider mutation remain pending because the
+available governed interfaces cannot prove end-to-end custody or perform the
+required Cloudflare changes. Details are in
+`docs/WP-6-RADAR-PRODUCTION-MIGRATION.md`.
 
 ## Program guardrails
 

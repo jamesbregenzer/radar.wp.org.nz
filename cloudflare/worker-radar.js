@@ -1,10 +1,14 @@
-const GITHUB_OWNER = "jamesbregenzer";
-const DEFAULT_GITHUB_REPO = "wp-core-radar";
 const REVIEWS_PATH = "data/reviews/reviews.json";
 const ALLOWED_STATUSES = new Set(["", "shortlist", "watch", "reject", "tested", "commented", "committed"]);
 
-function githubRepo(env) {
-  return env.GITHUB_REPO || DEFAULT_GITHUB_REPO;
+function githubTarget(env) {
+  const owner = String(env.GITHUB_OWNER || "").trim();
+  const repo = String(env.GITHUB_REPO || "").trim();
+  const validPart = /^[A-Za-z0-9_.-]+$/;
+  if (!validPart.test(owner) || !validPart.test(repo)) {
+    throw new Error("GITHUB_CONFIGURATION_INVALID");
+  }
+  return { owner, repo };
 }
 
 function html(body, status = 200) {
@@ -527,7 +531,7 @@ function loginPage(error = "") {
         </form>
 
         <p class="login-footer">
-          <a href="/">← Back to public dashboard</a>
+          <a href="/">← Back to Radar dashboard</a>
         </p>
       </section>
     </main>
@@ -541,21 +545,23 @@ async function githubRequest(env, path, options = {}) {
       accept: "application/vnd.github+json",
       authorization: `Bearer ${env.GITHUB_TOKEN}`,
       "x-github-api-version": "2022-11-28",
-      "user-agent": "wp-core-radar-admin",
+      "user-agent": "radar-wp-org-nz-admin",
       ...(options.headers || {}),
     },
   });
 }
 
 async function getReviews(env) {
-  const response = await githubRequest(env, `/repos/${GITHUB_OWNER}/${githubRepo(env)}/contents/${REVIEWS_PATH}`);
+  const { owner, repo } = githubTarget(env);
+  const response = await githubRequest(env, `/repos/${owner}/${repo}/contents/${REVIEWS_PATH}`);
   if (!response.ok) throw new Error(`GitHub read failed: ${response.status}`);
   const file = await response.json();
   return { reviews: JSON.parse(base64ToText(file.content)), sha: file.sha };
 }
 
 async function saveReviews(env, reviews, sha, ticket) {
-  const response = await githubRequest(env, `/repos/${GITHUB_OWNER}/${githubRepo(env)}/contents/${REVIEWS_PATH}`, {
+  const { owner, repo } = githubTarget(env);
+  const response = await githubRequest(env, `/repos/${owner}/${repo}/contents/${REVIEWS_PATH}`, {
     method: "PUT",
     body: JSON.stringify({
       message: `Record review decision for #${ticket}`,
@@ -830,7 +836,7 @@ async function adminPage(request, env) {
       <h1>WP Core Radar Admin</h1>
       <p>Protected review console. Writes are restricted to ${esc(REVIEWS_PATH)}.</p>
       <nav class="topnav" aria-label="Admin navigation">
-        <a class="nav-pill nav-pill-dashboard" href="/">Public dashboard</a>
+        <a class="nav-pill nav-pill-dashboard" href="/">Radar dashboard</a>
         <a class="nav-pill" href="/admin/props">Record props</a>
         <a class="nav-pill nav-pill-secondary nav-pill-signout" href="/admin/logout">Sign out</a>
       </nav>
@@ -896,7 +902,7 @@ async function adminPage(request, env) {
   `));
 }
 
-export { handleApiRequest, loadCertifiedBundle };
+export { githubTarget, handleApiRequest, loadCertifiedBundle };
 
 export default {
   async fetch(request, env) {

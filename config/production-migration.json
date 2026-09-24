@@ -1,0 +1,34 @@
+{
+  "schema": "radar-production-migration.v1",
+  "repository": {
+    "current": "jamesbregenzer/wp-core-radar",
+    "target": "jamesbregenzer/radar.wp.org.nz"
+  },
+  "worker": {
+    "name": "radar-wp-org-nz",
+    "assets_directory": "./docs/radar",
+    "canonical_hostname": "radar.wp.org.nz"
+  },
+  "redirects": [
+    {
+      "source_hosts": ["wp.org.nz", "www.wp.org.nz"],
+      "destination": "https://wordpress.org/",
+      "status": 301,
+      "preserve_path": false,
+      "preserve_query": false
+    },
+    {
+      "source_hosts": ["radar.james.bregenzer.dev"],
+      "destination_origin": "https://radar.wp.org.nz",
+      "status": 301,
+      "preserve_path": true,
+      "preserve_query": true,
+      "enable_after_acceptance": true
+    }
+  ],
+  "access": {
+    "human_paths": ["/*"],
+    "machine_paths": ["/api/v1/*"],
+    "machine_authentication": "cloudflare-access-service-token"
+  }
+}

@@ -2,14 +2,15 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import worker, { handleApiRequest } from "../cloudflare/worker-radar.js";
+import worker, { githubTarget, handleApiRequest } from "../cloudflare/worker-radar.js";
 
 const root = new URL("../docs/radar/", import.meta.url);
 
 function assets(overrides = {}) {
   return {
     async fetch(request) {
-      const path = new URL(request.url).pathname;
+      const requestedPath = new URL(request.url).pathname;
+      const path = requestedPath.endsWith("/") ? `${requestedPath}index.html` : requestedPath;
       if (Object.hasOwn(overrides, path)) return new Response(overrides[path]);
       try {
         return new Response(await readFile(new URL(`.${path}`, root)), { status: 200 });
@@ -127,6 +128,18 @@ test("existing static asset fallback remains intact", async () => {
   assert.equal(await response.text(), "static");
 });
 
+test("root serves the committed Radar dashboard asset", async () => {
+  const response = await worker.fetch(new Request("https://radar.wp.org.nz/"), { ASSETS: assets() });
+  assert.equal(response.status, 200);
+  assert.match(await response.text(), /WP Core Radar/);
+});
+
+test("contributions route serves the committed static asset", async () => {
+  const response = await worker.fetch(new Request("https://radar.wp.org.nz/contributions/"), { ASSETS: assets() });
+  assert.equal(response.status, 200);
+  assert.match(await response.text(), /WP Core Radar Contributions/);
+});
+
 test("existing admin route remains protected", async () => {
   const response = await worker.fetch(new Request("https://radar.example/admin/"), { ASSETS: assets() });
   assert.equal(response.status, 200);
@@ -140,4 +153,21 @@ test("unauthenticated admin writes remain blocked", async () => {
   }), { ASSETS: assets() });
   assert.equal(response.status, 200);
   assert.match(await response.text(), /Protected Console/);
+});
+
+test("admin GitHub target is explicit and repository-name portable", () => {
+  assert.deepEqual(githubTarget({
+    GITHUB_OWNER: "jamesbregenzer",
+    GITHUB_REPO: "radar.wp.org.nz",
+  }), { owner: "jamesbregenzer", repo: "radar.wp.org.nz" });
+  assert.deepEqual(githubTarget({
+    GITHUB_OWNER: "jamesbregenzer",
+    GITHUB_REPO: "wp-core-radar",
+  }), { owner: "jamesbregenzer", repo: "wp-core-radar" });
+});
+
+test("admin GitHub target fails closed when missing or malformed", () => {
+  assert.throws(() => githubTarget({}), /GITHUB_CONFIGURATION_INVALID/);
+  assert.throws(() => githubTarget({ GITHUB_OWNER: "jamesbregenzer", GITHUB_REPO: "bad/repo" }),
+    /GITHUB_CONFIGURATION_INVALID/);
 });

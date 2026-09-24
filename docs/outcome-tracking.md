@@ -66,15 +66,21 @@ The review data file should remain constrained metadata only. It should not beco
 
 Because the repository is public, review notes should be written as publishable metadata. Do not store secrets, private credentials, or sensitive personal notes in `data/reviews/reviews.json`.
 
-## Public contribution history
+## Public-safe contribution history
 
-Review decisions also power a public contribution history page generated at:
+Review decisions also power a public-safe contribution history page generated at:
 
 ```text
 docs/radar/contributions/index.html
 ```
 
-This static page is served at `/contributions/` on `radar.james.bregenzer.dev` and is intentionally public. It summarizes public-safe review metadata only: total reviewed tickets, tested/commented/watch counts, props received, component focus, activity by month, and recent review activity. It does not expose admin authentication, secrets, or private notes.
+This static page is served at `/contributions/` on the Radar application host.
+Under the WP-6 production policy it sits behind the human Cloudflare Access
+boundary, although its content remains public-safe if accidentally exposed. It
+summarizes display-safe review metadata only: total reviewed tickets,
+tested/commented/watch counts, props received, component focus, activity by
+month, and recent review activity. It does not expose admin authentication,
+secrets, or private notes.
 
 ## Protected admin write path
 
