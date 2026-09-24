@@ -131,6 +131,20 @@ eligibility plan over the verified certified bundle; executors retain custody
 of Git authentication, repository writes, scheduling, and delivery. The exact
 boundary is in `docs/contracts/executor.md`.
 
+## IMPLEMENTED — WP-5 machine feed and aligned projections
+
+The Worker projects the committed, verified `data/certified/current/` bundle at
+`/api/v1/`. Generated Static Assets are byte-preserving copies or deterministic
+derivatives; the Worker checks manifest, dataset, collection, and identity
+relationships before returning healthy data. Dashboard, admin data, and reports
+use `scripts/certifiedmodel.py` to adapt the same `opportunity.v1` records for
+existing renderers without rescoring raw CSV.
+
+Human review data remains a separate mutable GitHub-backed overlay. It may
+change dashboard/admin grouping between certifications, but it never rewrites
+the immutable certified snapshot or enters the machine feed as current private
+notes. Production hostname and Access/service-token policy remain WP-6 work.
+
 ## HISTORICAL/COMPATIBILITY
 
 - The established live hostname is `radar.james.bregenzer.dev` during the

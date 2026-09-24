@@ -1,11 +1,13 @@
 {
   "name": "radar.wp.org.nz",
   "private": true,
+  "type": "module",
   "scripts": {
     "check:worker": "node --check cloudflare/worker-radar.js",
+    "check:worker-api": "node --test tests/test-worker.mjs",
     "check:python": "python3 -m unittest discover -s tests -v",
     "check:certified": "python3 scripts/certify-data.py verify",
-    "check": "npm run check:worker && npm run check:python && npm run check:certified",
+    "check": "npm run check:worker && npm run check:worker-api && npm run check:python && npm run check:certified",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {

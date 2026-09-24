@@ -31,5 +31,9 @@ jobs:
         run: python3 -m unittest tests.test_certification -v
       - name: Prove stable operation and fail-closed pipeline contracts
         run: python3 -m unittest tests.test_operations -v
+      - name: Prove certified feed and UI alignment contracts
+        run: python3 -m unittest tests.test_wp5 -v
+      - name: Prove Worker API projection and integrity behavior
+        run: node --test tests/test-worker.mjs
       - name: Prove committed data can regenerate outputs deterministically
         run: python3 scripts/run-radar.py --skip-fetch --reference-time 2026-01-15T12:00:00Z

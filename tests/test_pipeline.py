@@ -30,8 +30,9 @@ class PipelineTests(unittest.TestCase):
         context = RunContext(datetime(2026, 1, 15, 12, 0, tzinfo=timezone.utc))
         result = generate_presentations(context, lambda command: commands.append(command) or 0)
         self.assertEqual(result, 0)
-        self.assertEqual(len(commands), 2)
+        self.assertEqual(len(commands), 3)
         self.assertEqual(commands[0][-1], commands[1][-1])
+        self.assertEqual(commands[1][-1], commands[2][-1])
 
     def test_generation_stops_on_failure(self):
         commands = []

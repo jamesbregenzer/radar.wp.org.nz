@@ -96,6 +96,18 @@ fail-closed certification, and offline verification. The current certified
 bundle lives in `data/certified/current/`; it is the future API's source, not an
 HTTP API implementation itself.
 
+WP-5 adds the Worker-projected certified machine interface:
+
+- `GET /api/v1/health`
+- `GET /api/v1/snapshot`
+- `GET /api/v1/collection`
+- `GET /api/v1/opportunities`
+- `GET /api/v1/opportunities/{ticket_id}`
+
+The feed, dashboard, protected admin projection, and report use the verified
+certified opportunity model. GitHub remains durable truth; HTTP is a cached
+projection. See [`docs/contracts/machine-feed.md`](docs/contracts/machine-feed.md).
+
 The proposed future repository name is `jamesbregenzer/radar.wp.org.nz`. The current repository remains `jamesbregenzer/wp-core-radar`; no rename is part of WP-1.
 
 ## Main commands
@@ -207,7 +219,9 @@ Local helper scripts may be committed when they contain no secrets and do not ex
 - `docs/WP-2-CORE-HARDENING.md` — WP-2 implementation record, runtime classification, and deferrals
 - `docs/WP-3-CERTIFIED-RADAR-DATA.md` — schemas, canonicalization, certification, retention, and verification
 - `docs/WP-4-STABLE-RADAR-OPERATIONS.md` — stable operation behavior, failures, and idempotency
+- `docs/WP-5-MACHINE-FEED-UI-ALIGNMENT.md` — feed/UI implementation and WP-6 handoff
 - `docs/contracts/executor.md` — executor-facing invocation and custody contract
+- `docs/contracts/machine-feed.md` — frozen `/api/v1/` consumer contract
 - `docs/mac-mini-collector.md` — local collection and scheduled runner workflow
 - `.github/workflows/refresh-dashboard.yml` — near-real-time dashboard refresh after review saves
 - `cloudflare/worker-radar.js` — production Worker source for public routing and protected admin UI
