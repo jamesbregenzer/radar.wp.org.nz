@@ -343,6 +343,35 @@ def dashboard_css() -> str:
     """
 
 
+def safe_review_projection(review: dict[str, Any] | None) -> dict[str, Any]:
+    """Return deployed operator-safe review state.
+
+    Free-form review notes are intentionally excluded from deployed Static Assets.
+    GitHub remains durable truth for the complete review record.
+    """
+    review = review or {}
+    safe: dict[str, Any] = {}
+    for key in ("status", "reason", "updated_at", "props_recorded_at", "changeset"):
+        value = str(review.get(key, "")).strip()
+        if value:
+            safe[key] = value
+    if review.get("received_props") is True:
+        safe["received_props"] = True
+    return safe
+
+
+def review_state_payload(reviews: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Build deterministic credential-free runtime review projection."""
+    return {
+        "schema": "radar-review-state.v1",
+        "version": 1,
+        "reviews": {
+            ticket: safe_review_projection(review)
+            for ticket, review in sorted(reviews.items(), key=lambda item: int(item[0]))
+        },
+    }
+
+
 def admin_item_payload(item: dict[str, Any], duplicate_sources: dict[str, set[str]]) -> dict[str, Any]:
     """Return compact structured ticket data for the protected admin UI."""
     row = item["row"]
@@ -371,7 +400,7 @@ def admin_item_payload(item: dict[str, Any], duplicate_sources: dict[str, set[st
         ],
         "score_breakdown": score_breakdown(item["reasons"]),
         "discovery_track": discovery_track_label(duplicate_sources[ticket_id]),
-        "review": item.get("review") or {},
+        "review": safe_review_projection(item.get("review")),
     }
 
 
@@ -449,7 +478,7 @@ def contribution_records(
                 "tier_label": tier_label,
                 "status": status,
                 "reason": str(review.get("reason", "")),
-                "notes": str(review.get("notes", "")),
+                "notes": "",
                 "received_props": received_props,
                 "props_recorded_at": str(review.get("props_recorded_at", "")),
                 "changeset": str(review.get("changeset", "")),
@@ -828,7 +857,12 @@ def main() -> int:
     output.write_text(build_dashboard(context, selection), encoding="utf-8")
 
     admin_data = radar_dir / "admin-data.json"
-    admin_data.write_text(json.dumps(admin_data_payload(context, selection), indent=2) + "\n", encoding="utf-8")
+    admin_payload = admin_data_payload(context, selection)
+    admin_data.write_text(json.dumps(admin_payload, indent=2) + "\n", encoding="utf-8")
+
+    review_state = radar_dir / "review-state.json"
+    _, _, summary = opportunity_data(context, selection)
+    review_state.write_text(json.dumps(review_state_payload(summary["reviews"]), indent=2) + "\n", encoding="utf-8")
 
     contributions_dir = radar_dir / "contributions"
     contributions_dir.mkdir(parents=True, exist_ok=True)
@@ -837,6 +871,7 @@ def main() -> int:
 
     print(f"Wrote {output}")
     print(f"Wrote {admin_data}")
+    print(f"Wrote {review_state}")
     print(f"Wrote {contributions_output}")
     return 0
 

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://radar.wp.org.nz/schemas/review-state.v1.schema.json",
+  "title": "WP Core Radar deployed review-state projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "reviews"],
+  "properties": {
+    "schema": {"const": "radar-review-state.v1"},
+    "version": {"const": 1},
+    "reviews": {
+      "type": "object",
+      "patternProperties": {
+        "^[0-9]+$": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status": {"type": "string"},
+            "reason": {"type": "string"},
+            "updated_at": {"type": "string"},
+            "received_props": {"type": "boolean"},
+            "props_recorded_at": {"type": "string"},
+            "changeset": {"type": "string"}
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

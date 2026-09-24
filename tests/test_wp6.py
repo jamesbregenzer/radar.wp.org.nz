@@ -22,17 +22,16 @@ class WP6MigrationTests(unittest.TestCase):
         self.assertTrue(WRANGLER["assets"]["run_worker_first"])
         self.assertNotIn("routes", WRANGLER)
         self.assertNotIn("route", WRANGLER)
-        self.assertEqual(WRANGLER["vars"], {
-            "GITHUB_OWNER": "jamesbregenzer",
-            "GITHUB_REPO": "radar.wp.org.nz",
-        })
+        self.assertNotIn("vars", WRANGLER)
 
     def test_worker_has_no_pages_or_legacy_hostname_dependency(self):
         self.assertNotIn("pages.dev", WORKER)
         self.assertNotIn("radar.james.bregenzer.dev", WORKER)
         self.assertNotIn('DEFAULT_GITHUB_REPO', WORKER)
-        self.assertIn('env.GITHUB_REPO', WORKER)
-        self.assertIn('env.GITHUB_OWNER', WORKER)
+        self.assertNotIn('GITHUB_TOKEN', WORKER)
+        self.assertNotIn('env.GITHUB_REPO', WORKER)
+        self.assertNotIn('env.GITHUB_OWNER', WORKER)
+        self.assertIn('review-state.json', WORKER)
 
     def test_worker_routes_cover_human_and_machine_surfaces(self):
         for route in [

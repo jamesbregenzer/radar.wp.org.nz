@@ -1,16 +1,6 @@
 const REVIEWS_PATH = "data/reviews/reviews.json";
 const ALLOWED_STATUSES = new Set(["", "shortlist", "watch", "reject", "tested", "commented", "committed"]);
 
-function githubTarget(env) {
-  const owner = String(env.GITHUB_OWNER || "").trim();
-  const repo = String(env.GITHUB_REPO || "").trim();
-  const validPart = /^[A-Za-z0-9_.-]+$/;
-  if (!validPart.test(owner) || !validPart.test(repo)) {
-    throw new Error("GITHUB_CONFIGURATION_INVALID");
-  }
-  return { owner, repo };
-}
-
 function html(body, status = 200) {
   return new Response(body, {
     status,
@@ -538,39 +528,16 @@ function loginPage(error = "") {
   `));
 }
 
-async function githubRequest(env, path, options = {}) {
-  return fetch(`https://api.github.com${path}`, {
-    ...options,
-    headers: {
-      accept: "application/vnd.github+json",
-      authorization: `Bearer ${env.GITHUB_TOKEN}`,
-      "x-github-api-version": "2022-11-28",
-      "user-agent": "radar-wp-org-nz-admin",
-      ...(options.headers || {}),
-    },
-  });
-}
-
 async function getReviews(env) {
-  const { owner, repo } = githubTarget(env);
-  const response = await githubRequest(env, `/repos/${owner}/${repo}/contents/${REVIEWS_PATH}`);
-  if (!response.ok) throw new Error(`GitHub read failed: ${response.status}`);
-  const file = await response.json();
-  return { reviews: JSON.parse(base64ToText(file.content)), sha: file.sha };
-}
-
-async function saveReviews(env, reviews, sha, ticket) {
-  const { owner, repo } = githubTarget(env);
-  const response = await githubRequest(env, `/repos/${owner}/${repo}/contents/${REVIEWS_PATH}`, {
-    method: "PUT",
-    body: JSON.stringify({
-      message: `Record review decision for #${ticket}`,
-      content: textToBase64(JSON.stringify(reviews, null, 2) + "\n"),
-      sha,
-      branch: "main",
-    }),
-  });
-  if (!response.ok) throw new Error(`GitHub write failed: ${response.status} ${await response.text()}`);
+  const response = await env.ASSETS.fetch(new Request("https://radar-assets.local/review-state.json", {
+    headers: { "cache-control": "no-cache" },
+  }));
+  if (!response.ok) throw new Error(`Review state read failed: ${response.status}`);
+  const payload = await response.json();
+  if (payload.schema !== "radar-review-state.v1" || payload.version !== 1 || !payload.reviews) {
+    throw new Error("REVIEW_STATE_INVALID");
+  }
+  return payload.reviews;
 }
 
 async function getAdminData(env) {
@@ -579,6 +546,22 @@ async function getAdminData(env) {
   }));
   if (!response.ok) throw new Error(`Admin data read failed: ${response.status}`);
   return response.json();
+}
+
+function executorUnavailable(operation) {
+  return html(layout("Radar write unavailable", `
+    <header>
+      <h1>Radar write unavailable</h1>
+      <p>The read-only Radar admin is healthy. Durable writes require an external governed executor.</p>
+    </header>
+    <main>
+      <div class="notice">
+        <strong>EXECUTOR_UNAVAILABLE</strong>
+        <p>${esc(operation)} was not persisted. No durable review state was changed.</p>
+      </div>
+      <p><a href="/admin/">Return to Radar admin</a></p>
+    </main>
+  `), 503);
 }
 
 function statusOptions(current) {
@@ -820,8 +803,7 @@ async function adminPage(request, env) {
   const session = await readSession(request, env);
   if (!session) return loginPage();
 
-  const [data, reviewFile] = await Promise.all([getAdminData(env), getReviews(env)]);
-  const reviews = reviewFile.reviews || {};
+  const [data, reviews] = await Promise.all([getAdminData(env), getReviews(env)]);
   const reviewSummary = reviewStats(reviews);
   const summary = data.summary || {};
   const groups = data.groups || {};
@@ -902,7 +884,7 @@ async function adminPage(request, env) {
   `));
 }
 
-export { githubTarget, handleApiRequest, loadCertifiedBundle };
+export { getReviews, handleApiRequest, loadCertifiedBundle };
 
 export default {
   async fetch(request, env) {
@@ -980,27 +962,7 @@ export default {
       if (!session) return loginPage();
       const form = await request.formData();
       if (String(form.get("csrf") || "") !== session.csrf) return html("Invalid CSRF token.", 403);
-
-      const ticket = String(form.get("ticket") || "").trim();
-      const status = String(form.get("status") || "").trim();
-      const reason = String(form.get("reason") || "").trim();
-      const notes = String(form.get("notes") || "").trim();
-      if (!/^[0-9]+$/.test(ticket)) return html("Invalid ticket ID.", 400);
-      if (!ALLOWED_STATUSES.has(status) || !status) return html("Invalid status.", 400);
-
-      const { reviews, sha } = await getReviews(env);
-      reviews[ticket] = {
-        ...(reviews[ticket] || {}),
-        status,
-        reason,
-        notes,
-        updated_at: new Date().toISOString(),
-      };
-      await saveReviews(env, reviews, sha, ticket);
-      return new Response(null, {
-        status: 303,
-        headers: { location: `/admin/ticket/${ticket}?saved=${ticket}` },
-      });
+      return executorUnavailable("PERSIST_REVIEW_DECISION");
     }
 
     if (url.pathname === "/admin/props" && request.method === "POST") {
@@ -1008,36 +970,7 @@ export default {
       if (!session) return loginPage();
       const form = await request.formData();
       if (String(form.get("csrf") || "") !== session.csrf) return html("Invalid CSRF token.", 403);
-
-      const ticket = String(form.get("ticket") || "").trim();
-      const changeset = String(form.get("changeset") || "").trim();
-      const reason = String(form.get("reason") || "Props received").trim() || "Props received";
-      const notes = String(form.get("notes") || "").trim();
-
-      if (!/^[0-9]+$/.test(ticket)) return html("Invalid ticket ID.", 400);
-      if (changeset && !/^[0-9]+$/.test(changeset)) return html("Invalid changeset.", 400);
-
-      const { reviews, sha } = await getReviews(env);
-      const existing = reviews[ticket] || {};
-      const now = new Date().toISOString();
-
-      reviews[ticket] = {
-        ...existing,
-        status: existing.status && existing.status !== "props" ? existing.status : "committed",
-        reason,
-        notes: notes || existing.notes || "",
-        received_props: true,
-        props_recorded_at: existing.props_recorded_at || now,
-        updated_at: now,
-      };
-
-      if (changeset) reviews[ticket].changeset = changeset;
-
-      await saveReviews(env, reviews, sha, ticket);
-      return new Response(null, {
-        status: 303,
-        headers: { location: `/admin/props?props=${ticket}` },
-      });
+      return executorUnavailable("RECORD_PROPS_OUTCOME");
     }
 
     if (url.pathname === "/admin" || url.pathname.startsWith("/admin/")) {

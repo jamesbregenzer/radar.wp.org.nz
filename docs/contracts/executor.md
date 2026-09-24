@@ -64,3 +64,33 @@ Git/provider authentication, network routing, publication side effects,
 monitoring, retention, retry policy, and any desired scheduling. Radar grants no
 WordPress contribution authority: execution capability alone does not grant
 WordPress contribution authority.
+
+
+## Admin review-state requirements
+
+Radar admin runtime reads are credential-free. Generation publishes a
+`radar-review-state.v1` Static Asset derived from canonical
+`data/reviews/reviews.json`. The deployed projection excludes free-form
+`notes`; GitHub remains durable truth for the complete review record.
+
+The portable product defines these external write requirements without
+implementing their custody or transport:
+
+### EXECUTOR_REQUIREMENT: PERSIST_REVIEW_DECISION
+
+Input: ticket ID, status, reason, optional private notes, expected durable state
+revision when available, actor/context, and an idempotency key.
+
+Output: accepted/rejected status, resulting durable state revision,
+publication/commit identity when applicable, conflict information, and a
+structured error on failure.
+
+### EXECUTOR_REQUIREMENT: RECORD_PROPS_OUTCOME
+
+Input: ticket ID, optional changeset, reason, optional private notes, expected
+durable state revision when available, actor/context, and an idempotency key.
+
+Output: the same durable acknowledgement model as review persistence.
+
+Until an executor satisfies these requirements, Radar write attempts must
+return `EXECUTOR_UNAVAILABLE` and must never imply that persistence occurred.

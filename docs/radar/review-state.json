@@ -1,0 +1,120 @@
+{
+  "schema": "radar-review-state.v1",
+  "version": 1,
+  "reviews": {
+    "33073": {
+      "status": "watch",
+      "reason": "Needs refresh/dev feedback",
+      "updated_at": "2026-06-14T08:11:40.103Z"
+    },
+    "41081": {
+      "status": "tested",
+      "reason": "Refreshed stale patch and validated behavior against current trunk.",
+      "updated_at": "2026-06-15T21:48:04.323Z"
+    },
+    "43178": {
+      "status": "tested",
+      "reason": "Verified PR behavior in WordPress Playground.",
+      "updated_at": "2026-06-16T11:08:17.948Z"
+    },
+    "45354": {
+      "status": "watch",
+      "reason": "Awaiting PR/test stability",
+      "updated_at": "2026-06-16T18:16:01.070Z"
+    },
+    "56320": {
+      "status": "watch",
+      "reason": "Valid Core testing opportunity, but mediaelement upgrade testing is too broad for today’s easy-win queue.",
+      "updated_at": "2026-06-19T17:15:33.912Z"
+    },
+    "56886": {
+      "status": "tested",
+      "reason": "Positive test result",
+      "updated_at": "2026-06-16T18:01:22.376Z"
+    },
+    "60628": {
+      "status": "watch",
+      "reason": "Valid Media ticket, but AVIF testing depends on local image library support.",
+      "updated_at": "2026-06-17T03:14:18.844Z"
+    },
+    "63256": {
+      "status": "tested",
+      "reason": "Positive test result",
+      "updated_at": "2026-06-16T22:30:13.948Z"
+    },
+    "64707": {
+      "status": "commented",
+      "reason": "Reviewed patch, tested in Playground, submitted Trac feedback.",
+      "updated_at": "2026-06-17T01:45:15.293Z"
+    },
+    "64877": {
+      "status": "tested",
+      "reason": "Props received",
+      "updated_at": "2026-06-19T22:19:42.005Z",
+      "props_recorded_at": "2026-06-19T22:19:42.005Z",
+      "changeset": "62521",
+      "received_props": true
+    },
+    "64902": {
+      "status": "tested",
+      "reason": "Positive test result",
+      "updated_at": "2026-06-16T18:07:20.633Z"
+    },
+    "64937": {
+      "status": "committed",
+      "reason": "Props received",
+      "updated_at": "2026-06-19T22:22:51.158Z",
+      "props_recorded_at": "2026-06-19T22:22:51.158Z",
+      "changeset": "62481",
+      "received_props": true
+    },
+    "65329": {
+      "status": "tested",
+      "reason": "Positive test result",
+      "updated_at": "2026-06-16T13:53:37.124Z"
+    },
+    "65345": {
+      "status": "tested",
+      "reason": "Verified patch behavior locally and reported results on Trac.",
+      "updated_at": "2026-06-15T23:07:33.995Z"
+    },
+    "65392": {
+      "status": "watch",
+      "reason": "PR exists, but useful testing requires WooCommerce/custom comment-type setup.",
+      "updated_at": "2026-06-17T03:10:34.142Z"
+    },
+    "65397": {
+      "status": "committed",
+      "reason": "Props received",
+      "updated_at": "2026-06-19T22:21:31.662Z",
+      "props_recorded_at": "2026-06-19T22:21:31.662Z",
+      "changeset": "62494",
+      "received_props": true
+    },
+    "65417": {
+      "status": "tested",
+      "reason": "Successfully verified the patch in the linked Playground instance with multiple URL scheme variations.",
+      "updated_at": "2026-07-14T17:54:31.618Z"
+    },
+    "65419": {
+      "status": "tested",
+      "reason": "Verified Add Plugins/Add Themes tab visibility in Windows forced-colors mode.",
+      "updated_at": "2026-06-19T17:38:19.873Z"
+    },
+    "65513": {
+      "status": "commented",
+      "reason": "PR fixes the first-upload count, but delete/reset behavior still leaves a stale selectable thumbnail.",
+      "updated_at": "2026-06-22T16:55:30.056Z"
+    },
+    "65549": {
+      "status": "reject",
+      "reason": "Associated implementation appears to have already landed and the GitHub PR is closed, leaving little opportunity for meaningful testing.",
+      "updated_at": "2026-07-14T18:12:18.957Z"
+    },
+    "65623": {
+      "status": "watch",
+      "reason": "Technically testable, but requires understanding of REST API behavior and media-processing filters to provide meaningful independent verification.",
+      "updated_at": "2026-07-14T18:13:40.710Z"
+    }
+  }
+}

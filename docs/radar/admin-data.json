@@ -7784,7 +7784,7 @@
         "score": 126,
         "tier_class": "standard",
         "tier_label": "Standard",
-        "summary": "Feature Req \u2013 Media Library Grid-List",
+        "summary": "Feature Req – Media Library Grid-List",
         "track": "Media: Has Patch",
         "status": "Assigned",
         "component": "Media",
@@ -10831,7 +10831,7 @@
         "score": 105,
         "tier_class": "standard",
         "tier_label": "Standard",
-        "summary": "\u2018\u2764\u2019 in Comment Generates DB Error",
+        "summary": "‘❤’ in Comment Generates DB Error",
         "track": "General: Needs Testing",
         "status": "Reopened",
         "component": "Database",
@@ -15066,7 +15066,7 @@
         "score": 85,
         "tier_class": "standard",
         "tier_label": "Standard",
-        "summary": "When using a mobile browser (iOS 12) and the Visual Editor you won\u2019t be able to properly select/highlight text",
+        "summary": "When using a mobile browser (iOS 12) and the Visual Editor you won’t be able to properly select/highlight text",
         "track": "General: Needs Testing",
         "status": "New",
         "component": "Editor",
@@ -16991,7 +16991,7 @@
         "score": 77,
         "tier_class": "standard",
         "tier_label": "Standard",
-        "summary": "Problem obtaining the Feed of an archive of tag \u201cRSS\u201d",
+        "summary": "Problem obtaining the Feed of an archive of tag “RSS”",
         "track": "General: Needs Testing",
         "status": "New",
         "component": "Canonical",
@@ -18650,7 +18650,6 @@
         "review": {
           "status": "watch",
           "reason": "Needs refresh/dev feedback",
-          "notes": "Good candidate, but verify latest patch applies and dev feedback is addressed before testing.",
           "updated_at": "2026-06-14T08:11:40.103Z"
         }
       },
@@ -18742,8 +18741,7 @@
         "discovery_track": "General Needs Testing",
         "review": {
           "status": "watch",
-          "reason": "Valid Core testing opportunity, but mediaelement upgrade testing is too broad for today\u2019s easy-win queue.",
-          "notes": "This ticket has an active PR, patch, owner, and needs-testing, so it is a legitimate contribution candidate. However, the update touches a large external library upgrade with prior UI/icon, shortcode, and accessibility concerns, making it better suited for a focused local testing pass rather than a quick comment. No testing or Core comment left today. Revisit when there is time for shortcode audio/video testing, browser console checks, and keyboard accessibility validation.",
+          "reason": "Valid Core testing opportunity, but mediaelement upgrade testing is too broad for today’s easy-win queue.",
           "updated_at": "2026-06-19T17:15:33.912Z"
         }
       },
@@ -18814,7 +18812,6 @@
         "review": {
           "status": "watch",
           "reason": "Awaiting PR/test stability",
-          "notes": "Database index change with active PR discussion and test failures still being worked through. Worth revisiting after tests are passing and maintainers clarify whether additional performance or upgrade testing is needed.",
           "updated_at": "2026-06-16T18:16:01.070Z"
         }
       },
@@ -18918,7 +18915,6 @@
         "review": {
           "status": "watch",
           "reason": "Valid Media ticket, but AVIF testing depends on local image library support.",
-          "notes": "Ticket has a patch, unit tests, and Media component relevance, but useful testing requires an environment with working AVIF support through GD or ImageMagick. This is likely not a quick Playground ticket and may require local image-processing setup before meaningful feedback can be left. No Trac/GitHub comment left and no keywords updated.",
           "updated_at": "2026-06-17T03:14:18.844Z"
         }
       }
@@ -19002,7 +18998,6 @@
         "review": {
           "status": "tested",
           "reason": "Positive test result",
-          "notes": "Verified checkbox renders on Network Admin \u2192 Add Site and correctly persists search engine visibility setting to newly created sites in both checked and unchecked states.",
           "updated_at": "2026-06-16T18:01:22.376Z"
         }
       },
@@ -19084,7 +19079,6 @@
         "review": {
           "status": "tested",
           "reason": "Positive test result",
-          "notes": "Reproduced the reported fatal error by forcing wp_save_image_file() to return a WP_Error. Verified that the patch prevents the fatal error and returns the WP_Error message as the image edit error response. No regressions observed during testing.",
           "updated_at": "2026-06-16T18:07:20.633Z"
         }
       },
@@ -19166,7 +19160,6 @@
         "review": {
           "status": "tested",
           "reason": "Refreshed stale patch and validated behavior against current trunk.",
-          "notes": "Reproduced issue in Twenty Twenty-One Widgets screen. Original attachment did not apply cleanly in local current-trunk environment. Refreshed patch uploaded to Trac as 41081-refresh.patch. Verified expected behavior for no menu selected, empty menu selected, and populated menu selected.",
           "updated_at": "2026-06-15T21:48:04.323Z"
         }
       },
@@ -19259,7 +19252,6 @@
         "review": {
           "status": "tested",
           "reason": "Positive test result",
-          "notes": "Applied PR #11534 locally, ran Tests_Term successfully, and verified basic category/post taxonomy workflows in wp-admin and on the front end.",
           "updated_at": "2026-06-16T22:30:13.948Z"
         }
       },
@@ -19374,7 +19366,6 @@
         "review": {
           "status": "commented",
           "reason": "Reviewed patch, tested in Playground, submitted Trac feedback.",
-          "notes": "Reviewed Trac ticket and PR #12185. Confirmed understanding of issue: Site Health incorrectly reports OPcache unavailable when configured in file-cache-only mode. Tested Playground environment and observed no regressions. Submitted review comment on Trac noting patch appears reasonable and low risk.",
           "updated_at": "2026-06-17T01:45:15.293Z"
         }
       }
