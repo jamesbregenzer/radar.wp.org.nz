@@ -1,8 +1,7 @@
 # Failed Approaches and Constraints
 
 This file preserves implementation history and compatibility lessons. The
-authoritative program architecture is
-`docs/WORDPRESS-AUTOMATION-PROGRAM.md`.
+authoritative Radar product architecture is `docs/RADAR-PRODUCT.md`.
 
 ## CURRENT IMPLEMENTATION — replacing browser-assisted collection with hosted collection
 
@@ -22,12 +21,11 @@ An earlier local Python review-console workflow was retired after the protected
 admin console moved into the Cloudflare Worker. Do not reintroduce a public
 local write-capable server, commit its secrets, or expose it through a tunnel.
 
-## PROGRAM BOUNDARY — treating Radar as a contribution bot
+## PRODUCT BOUNDARY — treating Radar as a contribution bot
 
-Radar must not auto-comment on Trac, submit tickets, hold private contributor
-credentials, manage autonomous work queues, or perform contribution actions.
-Those responsibilities belong to the future private WordPress Contributor and
-remain subject to Eden/HWP authorization.
+Radar must not auto-comment on Trac, submit tickets or patches, hold
+WordPress.org contribution credentials, or perform contribution actions. Its
+output is discovery intelligence, not contribution authorization.
 
 ## PRESENTATION LESSON — exposing every raw field
 
@@ -44,4 +42,4 @@ target. Deployment and hostname migration remain WP-6 work; committed target
 configuration must not be described as already deployed.
 
 Future architectural reversals or exceptions require an ADR or an explicit
-update to `docs/WORDPRESS-AUTOMATION-PROGRAM.md`.
+update to `docs/RADAR-PRODUCT.md`.

@@ -2,11 +2,10 @@
 
 This document records the **CURRENT IMPLEMENTATION** and
 **HISTORICAL/COMPATIBILITY** details of the proven browser-assisted collector.
-The authoritative target architecture is
-`docs/WORDPRESS-AUTOMATION-PROGRAM.md`.
+The authoritative target architecture is `docs/RADAR-PRODUCT.md`.
 
-The local browser environment currently associated with Thor is the
-collection/build runner because hosted/server Trac CSV collection has
+The local browser environment is the collection/build runner because
+hosted/server Trac CSV collection has
 historically been unreliable or blocked. This known-working path is an
 intentional compatibility constraint and must not be redesigned away.
 
@@ -48,11 +47,11 @@ GitHub Actions may still be useful for checks and review-only dashboard regenera
 WP-2 isolates this browser implementation behind a collector/result boundary.
 Downstream validation, normalization, scoring, certification, and
 publication will consume explicit collection results rather than depend on
-Firefox, Thor, a LaunchAgent, or host paths. The browser implementation remains
+Firefox, a LaunchAgent, or host paths. The browser implementation remains
 valid unless and until a replacement is proven.
 
-Thor MCP, scheduler redesign, credential custody, host provisioning, and runtime
-routing belong to Federal Eagle Operations, not Radar core.
+Scheduler design, credential custody, host provisioning, and runtime routing
+remain external to Radar core.
 
 ## Main commands
 
@@ -199,7 +198,7 @@ When the LaunchAgent runs outside Terminal, macOS privacy controls may prevent P
 If the log contains an error like:
 
 ```text
-PermissionError: [Errno 1] Operation not permitted: '/Users/thor/Downloads/query.csv'
+PermissionError: [Errno 1] Operation not permitted: '<collector-home>/Downloads/query.csv'
 ```
 
 then grant Full Disk Access, or at minimum Files and Folders access for Downloads, to the Python executable used by the scheduled runner:
@@ -236,4 +235,4 @@ reports/radar-YYYY-MM-DD.md
 If any raw CSV, review JSON, contribution history, or substantive dashboard/report content changes, the wrapper still commits and pushes normally.
 
 Future architecture changes require an ADR or explicit update to
-`docs/WORDPRESS-AUTOMATION-PROGRAM.md` rather than silent drift.
+`docs/RADAR-PRODUCT.md` rather than silent drift.

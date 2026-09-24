@@ -86,7 +86,7 @@ class CertificationTests(unittest.TestCase):
 
     def test_execution_result_unknown_field_is_rejected(self):
         result = copy.deepcopy(build_certification_bundle(fixture_selection(), CONTEXT, REVISION).result)
-        result["host"] = "thor"
+        result["host"] = "collector-host"
         self.assertTrue(any("unknown property" in error for error in validate_named(result, "execution-result.v1")))
 
     def test_complete_bundle_validates_all_records(self):

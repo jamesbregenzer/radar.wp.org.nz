@@ -116,9 +116,9 @@ test("malformed snapshot can never report healthy", async () => {
   assert.equal((await response.json()).code, "CERTIFIED_BUNDLE_MALFORMED");
 });
 
-test("private review and contributor fields are absent from feed", async () => {
+test("private review and authorization fields are absent from feed", async () => {
   const text = await (await api("/api/v1/opportunities")).text();
-  for (const forbidden of ["review notes", "Eden", "HWP", "private contributor"]) {
+  for (const forbidden of ["review notes", "private_notes", "credentials", "authorization_token"]) {
     assert.equal(text.toLowerCase().includes(forbidden.toLowerCase()), false);
   }
 });

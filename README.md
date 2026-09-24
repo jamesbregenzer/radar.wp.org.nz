@@ -13,15 +13,14 @@
 
 # WP Core Radar
 
-WP Core Radar is a deterministic, human-in-the-loop contribution discovery and prioritization workflow for WordPress Core tickets.
-
-The authoritative architecture, product boundaries, and frozen roadmap for the
-broader WordPress Automation Program are in
-[`docs/WORDPRESS-AUTOMATION-PROGRAM.md`](docs/WORDPRESS-AUTOMATION-PROGRAM.md).
+WP Core Radar is an independent public product for deterministic WordPress Core
+contribution discovery and prioritization. Its authoritative product boundary
+and architectural rules live in
+[`docs/RADAR-PRODUCT.md`](docs/RADAR-PRODUCT.md).
 
 **Canonical production hostname:** `https://radar.wp.org.nz/`, protected by
-Cloudflare Access. The machine API is private by default until a future
-executor receives a separately governed machine identity.
+Cloudflare Access. The machine API is private by default in the current
+production deployment.
 
 It collects public ticket data from WordPress Trac, archives raw CSV exports,
 scores opportunities with explainable rules including freshness and activity
@@ -44,7 +43,9 @@ WP Core Radar helps answer:
 
 ## What this project is not
 
-WP Core Radar does not auto-comment on Trac, automate contribution activity, hold private contributor credentials, manage autonomous work queues, or bypass WordPress.org access controls. A future private Federal Eagle WordPress Contributor is a separate product and is not implemented in Radar.
+WP Core Radar discovers, scores, and presents WordPress Core contribution
+opportunities. It does not modify WordPress.org, comment on Trac, submit
+patches, or hold WordPress.org contribution credentials.
 
 ## CURRENT IMPLEMENTATION
 
@@ -69,7 +70,11 @@ Admin write intent
   → durable GitHub state
 ```
 
-The local browser environment currently associated with Thor is the collection/build runner because hosted/server Trac collection has historically been unreliable or blocked. It opens configured Trac CSV searches in Firefox, downloads `query.csv`, imports it into the raw archive, and removes the temporary download. This proven browser-assisted collection path must be preserved until a replacement is proven.
+The local browser collection environment is used because hosted/server Trac
+collection has historically been unreliable or blocked. It opens configured
+Trac CSV searches in Firefox, downloads `query.csv`, imports it into the raw
+archive, and removes the temporary download. This proven browser-assisted
+collection path must be preserved until a replacement is proven.
 
 The scheduled wrapper freezes one reference time, collection identity, source
 revision, and required query set before collection begins. Browser imports and
@@ -273,7 +278,7 @@ Local helper scripts may be committed when they contain no secrets and do not ex
 ## Project docs
 
 - `docs/architecture.md` — system architecture, routing, and boundaries
-- `docs/WORDPRESS-AUTOMATION-PROGRAM.md` — authoritative program architecture, product boundaries, guardrails, and roadmap
+- `docs/RADAR-PRODUCT.md` — authoritative Radar product boundary, architecture rules, and roadmap
 - `docs/WP-2-CORE-HARDENING.md` — WP-2 implementation record, runtime classification, and deferrals
 - `docs/WP-3-CERTIFIED-RADAR-DATA.md` — schemas, canonicalization, certification, retention, and verification
 - `docs/WP-4-STABLE-RADAR-OPERATIONS.md` — stable operation behavior, failures, and idempotency

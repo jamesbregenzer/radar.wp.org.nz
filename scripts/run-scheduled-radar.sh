@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO_DIR="${RADAR_REPO_DIR:-/Users/thor/Sites/wp-core-radar}"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_DIR="${RADAR_REPO_DIR:-$(cd "$SCRIPT_DIR/.." && pwd)}"
 LOG_PREFIX="[wp-core-radar]"
 PYTHON_BIN="${RADAR_PYTHON_BIN:-/usr/local/opt/python@3.14/bin/python3.14}"
 PUBLISH_MODE="${RADAR_PUBLISH_MODE:-publish}"
