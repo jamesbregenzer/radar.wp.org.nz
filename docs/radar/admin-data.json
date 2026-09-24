@@ -1,26 +1,213 @@
 {
-  "generated": "2026-09-23T22:43:07",
+  "generated": "2026-09-24T16:50:07",
   "summary": {
-    "unique_tickets": 288,
+    "unique_tickets": 290,
     "priority_targets": 12,
-    "immediate": 6,
-    "strong": 6,
+    "immediate": 9,
+    "strong": 3,
     "watching": 67,
     "reviews_loaded": 21,
     "certification": {
-      "snapshot_id": "snapshot-v1-c000e22614d29e0e5befe91b",
-      "collection_id": "collection-v1-9b7e2cde6d7291a750dfecf6",
-      "reference_time": "2026-09-23T22:43:07",
+      "snapshot_id": "snapshot-v1-c976172b9f9c04b62aad1dc1",
+      "collection_id": "collection-v1-0c294ea7638c2570e44425f2",
+      "reference_time": "2026-09-24T16:50:07",
       "state": "certified",
-      "opportunity_count": 288,
+      "opportunity_count": 290,
       "scoring_version": "radar-scoring-v1",
-      "source_revision": "aab34cc4fbee1c33a8c4769f7d3588fc1c1765e8",
+      "source_revision": "c4020e2edd95eec0001db2e40b8d9e7337b45b99",
       "warnings": [],
-      "dataset_sha256": "ab6ee50ff698b1cf1bf833319ea575e7a61d17667c36aa6fc264fd860c7dc0db"
+      "dataset_sha256": "3491674f5b08dd09d93bb67952305078232d3902917eb1167d63c3e03e86a7bf"
     }
   },
   "groups": {
     "priority": [
+      {
+        "ticket_id": "64321",
+        "url": "https://core.trac.wordpress.org/ticket/64321",
+        "score": 197,
+        "tier_class": "immediate",
+        "tier_label": "Immediate Review",
+        "summary": "Media Library Search Field Obscured by Plugin Fields",
+        "track": "Media: Has Patch",
+        "status": "Assigned",
+        "component": "Media",
+        "owner": "afercia",
+        "comments": "",
+        "created": "11/29/2025 01:42:31 AM",
+        "modified": "09/24/2026 02:32:59 PM",
+        "keywords": "a11y-media-toolbar has-patch",
+        "signals": [
+          {
+            "label": "Track Priority: Media: Has Patch +100",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Preferred Component: Media +20",
+            "class": "component"
+          },
+          {
+            "label": "Has Concrete Milestone +8",
+            "class": "standard"
+          },
+          {
+            "label": "Has Owner +6",
+            "class": "owner"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+100",
+            "label": "Track Priority",
+            "detail": "Media: Has Patch",
+            "display": "Track Priority: Media: Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Preferred Component",
+            "detail": "Media",
+            "display": "Preferred Component: Media",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Has Concrete Milestone",
+            "detail": "",
+            "display": "Has Concrete Milestone",
+            "polarity": "positive"
+          },
+          {
+            "points": "+6",
+            "label": "Has Owner",
+            "detail": "",
+            "display": "Has Owner",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "Media Has Patch",
+        "review": {}
+      },
+      {
+        "ticket_id": "65683",
+        "url": "https://core.trac.wordpress.org/ticket/65683",
+        "score": 191,
+        "tier_class": "immediate",
+        "tier_label": "Immediate Review",
+        "summary": "Visually expose the labels of the Media Library 'List view' and 'Grid view' links",
+        "track": "Media: Has Patch",
+        "status": "New",
+        "component": "Media",
+        "owner": "",
+        "comments": "",
+        "created": "07/21/2026 09:21:17 PM",
+        "modified": "09/24/2026 02:33:55 PM",
+        "keywords": "a11y-media-toolbar a11y-visible-labels has-patch",
+        "signals": [
+          {
+            "label": "Track Priority: Media: Has Patch +100",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Preferred Component: Media +20",
+            "class": "component"
+          },
+          {
+            "label": "Has Concrete Milestone +8",
+            "class": "standard"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+100",
+            "label": "Track Priority",
+            "detail": "Media: Has Patch",
+            "display": "Track Priority: Media: Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Preferred Component",
+            "detail": "Media",
+            "display": "Preferred Component: Media",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Has Concrete Milestone",
+            "detail": "",
+            "display": "Has Concrete Milestone",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "Media Has Patch",
+        "review": {}
+      },
       {
         "ticket_id": "65661",
         "url": "https://core.trac.wordpress.org/ticket/65661",
@@ -199,6 +386,94 @@
             "label": "Has Owner",
             "detail": "",
             "display": "Has Owner",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "64480",
+        "url": "https://core.trac.wordpress.org/ticket/64480",
+        "score": 178,
+        "tier_class": "immediate",
+        "tier_label": "Immediate Review",
+        "summary": "WordPress PHP Deprecated: Implicit conversion from float 44.168",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Media",
+        "owner": "",
+        "comments": "",
+        "created": "01/07/2026 06:48:55 PM",
+        "modified": "09/24/2026 07:53:44 AM",
+        "keywords": "has-patch has-unit-tests needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Preferred Component: Media +20",
+            "class": "component"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Preferred Component",
+            "detail": "Media",
+            "display": "Preferred Component: Media",
             "polarity": "positive"
           },
           {
@@ -845,237 +1120,6 @@
         ],
         "discovery_track": "General Needs Testing",
         "review": {}
-      },
-      {
-        "ticket_id": "65897",
-        "url": "https://core.trac.wordpress.org/ticket/65897",
-        "score": 164,
-        "tier_class": "strong",
-        "tier_label": "Strong Candidate",
-        "summary": "Surface community-contributed patterns from the Pattern Directory in the editor (opt-in)",
-        "track": "General: Needs Testing",
-        "status": "Assigned",
-        "component": "Editor",
-        "owner": "ugyensupport",
-        "comments": "",
-        "created": "08/17/2026 02:53:39 PM",
-        "modified": "09/17/2026 07:34:13 AM",
-        "keywords": "has-patch has-unit-tests needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Has Owner +6",
-            "class": "owner"
-          },
-          {
-            "label": "Freshness: Recently Updated <=14 Days +20",
-            "class": "freshness"
-          },
-          {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+6",
-            "label": "Has Owner",
-            "detail": "",
-            "display": "Has Owner",
-            "polarity": "positive"
-          },
-          {
-            "points": "+20",
-            "label": "Freshness",
-            "detail": "Recently Updated <=14 Days",
-            "display": "Freshness: Recently Updated <=14 Days",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
-        "ticket_id": "66031",
-        "url": "https://core.trac.wordpress.org/ticket/66031",
-        "score": 163,
-        "tier_class": "strong",
-        "tier_label": "Strong Candidate",
-        "summary": "Excerpt panel has a z-index/layering issue in the WordPress Media Library modal.",
-        "track": "Media: Has Patch",
-        "status": "New",
-        "component": "General",
-        "owner": "",
-        "comments": "",
-        "created": "09/03/2026 07:01:51 AM",
-        "modified": "09/16/2026 09:04:44 AM",
-        "keywords": "Media Post Type has-patch",
-        "signals": [
-          {
-            "label": "Track Priority: Media: Has Patch +100",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Has Concrete Milestone +8",
-            "class": "standard"
-          },
-          {
-            "label": "Freshness: Recently Updated <=14 Days +20",
-            "class": "freshness"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+100",
-            "label": "Track Priority",
-            "detail": "Media: Has Patch",
-            "display": "Track Priority: Media: Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Has Concrete Milestone",
-            "detail": "",
-            "display": "Has Concrete Milestone",
-            "polarity": "positive"
-          },
-          {
-            "points": "+20",
-            "label": "Freshness",
-            "detail": "Recently Updated <=14 Days",
-            "display": "Freshness: Recently Updated <=14 Days",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "Media Has Patch",
-        "review": {}
-      },
-      {
-        "ticket_id": "48522",
-        "url": "https://core.trac.wordpress.org/ticket/48522",
-        "score": 160,
-        "tier_class": "strong",
-        "tier_label": "Strong Candidate",
-        "summary": "Attachment size not generated when large images uploaded",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Media",
-        "owner": "",
-        "comments": "",
-        "created": "11/07/2019 01:33:39 AM",
-        "modified": "08/27/2026 06:34:32 AM",
-        "keywords": "2nd-opinion has-patch needs-testing needs-unit-tests",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Preferred Component: Media +20",
-            "class": "component"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+20",
-            "label": "Preferred Component",
-            "detail": "Media",
-            "display": "Preferred Component: Media",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
       }
     ],
     "top": [
@@ -1289,6 +1333,160 @@
         "review": {}
       },
       {
+        "ticket_id": "65897",
+        "url": "https://core.trac.wordpress.org/ticket/65897",
+        "score": 164,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Surface community-contributed patterns from the Pattern Directory in the editor (opt-in)",
+        "track": "General: Needs Testing",
+        "status": "Assigned",
+        "component": "Editor",
+        "owner": "ugyensupport",
+        "comments": "",
+        "created": "08/17/2026 02:53:39 PM",
+        "modified": "09/17/2026 07:34:13 AM",
+        "keywords": "has-patch has-unit-tests needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Has Owner +6",
+            "class": "owner"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+6",
+            "label": "Has Owner",
+            "detail": "",
+            "display": "Has Owner",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "66031",
+        "url": "https://core.trac.wordpress.org/ticket/66031",
+        "score": 163,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Excerpt panel has a z-index/layering issue in the WordPress Media Library modal.",
+        "track": "Media: Has Patch",
+        "status": "New",
+        "component": "General",
+        "owner": "",
+        "comments": "",
+        "created": "09/03/2026 07:01:51 AM",
+        "modified": "09/16/2026 09:04:44 AM",
+        "keywords": "Media Post Type has-patch",
+        "signals": [
+          {
+            "label": "Track Priority: Media: Has Patch +100",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Has Concrete Milestone +8",
+            "class": "standard"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+100",
+            "label": "Track Priority",
+            "detail": "Media: Has Patch",
+            "display": "Track Priority: Media: Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Has Concrete Milestone",
+            "detail": "",
+            "display": "Has Concrete Milestone",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "Media Has Patch",
+        "review": {}
+      },
+      {
         "ticket_id": "40370",
         "url": "https://core.trac.wordpress.org/ticket/40370",
         "score": 160,
@@ -1371,6 +1569,83 @@
             "detail": "Stale Activity >730 Days",
             "display": "Freshness: Stale Activity >730 Days",
             "polarity": "negative"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "48522",
+        "url": "https://core.trac.wordpress.org/ticket/48522",
+        "score": 160,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Attachment size not generated when large images uploaded",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Media",
+        "owner": "",
+        "comments": "",
+        "created": "11/07/2019 01:33:39 AM",
+        "modified": "08/27/2026 06:34:32 AM",
+        "keywords": "2nd-opinion has-patch needs-testing needs-unit-tests",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Preferred Component: Media +20",
+            "class": "component"
+          },
+          {
+            "label": "Freshness: Updated Within 60 Days +10",
+            "class": "freshness"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Preferred Component",
+            "detail": "Media",
+            "display": "Preferred Component: Media",
+            "polarity": "positive"
+          },
+          {
+            "points": "+10",
+            "label": "Freshness",
+            "detail": "Updated Within 60 Days",
+            "display": "Freshness: Updated Within 60 Days",
+            "polarity": "positive"
           }
         ],
         "discovery_track": "General Needs Testing",
@@ -2228,6 +2503,72 @@
             "label": "Ticket Age",
             "detail": "Mature But Not Ancient",
             "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "40241",
+        "url": "https://core.trac.wordpress.org/ticket/40241",
+        "score": 150,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Showing wrong Core current version on the update page.",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Upgrade/Install",
+        "owner": "",
+        "comments": "",
+        "created": "03/23/2017 03:47:43 PM",
+        "modified": "09/24/2026 03:03:01 AM",
+        "keywords": "has-patch needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
             "polarity": "positive"
           }
         ],
@@ -7784,7 +8125,7 @@
         "score": 126,
         "tier_class": "standard",
         "tier_label": "Standard",
-        "summary": "Feature Req – Media Library Grid-List",
+        "summary": "Feature Req \u2013 Media Library Grid-List",
         "track": "Media: Has Patch",
         "status": "Assigned",
         "component": "Media",
@@ -8432,72 +8773,6 @@
             "label": "Ticket Age",
             "detail": "Very Old Ticket",
             "display": "Ticket Age: Very Old Ticket",
-            "polarity": "negative"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
-        "ticket_id": "40241",
-        "url": "https://core.trac.wordpress.org/ticket/40241",
-        "score": 120,
-        "tier_class": "standard",
-        "tier_label": "Standard",
-        "summary": "Showing wrong Core current version on the update page.",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Upgrade/Install",
-        "owner": "",
-        "comments": "",
-        "created": "03/23/2017 03:47:43 PM",
-        "modified": "12/06/2023 08:43:34 PM",
-        "keywords": "has-patch needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Freshness: Stale Activity >730 Days -10",
-            "class": "freshness"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "-10",
-            "label": "Freshness",
-            "detail": "Stale Activity >730 Days",
-            "display": "Freshness: Stale Activity >730 Days",
             "polarity": "negative"
           }
         ],
@@ -9880,61 +10155,6 @@
         "review": {}
       },
       {
-        "ticket_id": "66084",
-        "url": "https://core.trac.wordpress.org/ticket/66084",
-        "score": 115,
-        "tier_class": "standard",
-        "tier_label": "Standard",
-        "summary": "Zoomed-out images can't be zoomed back in.",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "General",
-        "owner": "",
-        "comments": "",
-        "created": "09/10/2026 12:47:06 AM",
-        "modified": "09/22/2026 04:43:43 PM",
-        "keywords": "needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Freshness: Recently Updated <=14 Days +20",
-            "class": "freshness"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+20",
-            "label": "Freshness",
-            "detail": "Recently Updated <=14 Days",
-            "display": "Freshness: Recently Updated <=14 Days",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
         "ticket_id": "45033",
         "url": "https://core.trac.wordpress.org/ticket/45033",
         "score": 114,
@@ -10831,7 +11051,7 @@
         "score": 105,
         "tier_class": "standard",
         "tier_label": "Standard",
-        "summary": "‘❤’ in Comment Generates DB Error",
+        "summary": "\u2018\u2764\u2019 in Comment Generates DB Error",
         "track": "General: Needs Testing",
         "status": "Reopened",
         "component": "Database",
@@ -15066,7 +15286,7 @@
         "score": 85,
         "tier_class": "standard",
         "tier_label": "Standard",
-        "summary": "When using a mobile browser (iOS 12) and the Visual Editor you won’t be able to properly select/highlight text",
+        "summary": "When using a mobile browser (iOS 12) and the Visual Editor you won\u2019t be able to properly select/highlight text",
         "track": "General: Needs Testing",
         "status": "New",
         "component": "Editor",
@@ -16991,7 +17211,7 @@
         "score": 77,
         "tier_class": "standard",
         "tier_label": "Standard",
-        "summary": "Problem obtaining the Feed of an archive of tag “RSS”",
+        "summary": "Problem obtaining the Feed of an archive of tag \u201cRSS\u201d",
         "track": "General: Needs Testing",
         "status": "New",
         "component": "Canonical",
@@ -18741,7 +18961,7 @@
         "discovery_track": "General Needs Testing",
         "review": {
           "status": "watch",
-          "reason": "Valid Core testing opportunity, but mediaelement upgrade testing is too broad for today’s easy-win queue.",
+          "reason": "Valid Core testing opportunity, but mediaelement upgrade testing is too broad for today\u2019s easy-win queue.",
           "updated_at": "2026-06-19T17:15:33.912Z"
         }
       },
