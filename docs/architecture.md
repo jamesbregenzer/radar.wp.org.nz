@@ -147,19 +147,22 @@ the immutable certified snapshot or enters the machine feed as current private
 notes. Production hostname and Access/service-token policy are specified by
 WP-6 and remain provider-side cutover work.
 
-## IMPLEMENTED — WP-6 repository migration readiness
+## IMPLEMENTED — WP-6 production architecture
 
-The Worker admin GitHub target is explicit through `GITHUB_OWNER` and
-`GITHUB_REPO`; there is no implicit old-name fallback. `wrangler.jsonc` names
-the durable Worker and Static Assets directory but intentionally declares no
-production route or custom-domain binding. The target topology, repository
-rename boundary, Cloudflare Access/service-token policy, DNS/redirect semantics,
-acceptance tests, rollback, and Pages-retirement gates are frozen in
+The canonical repository is `jamesbregenzer/radar.wp.org.nz`. The Worker has no
+GitHub repository setting or credential because dashboard, API, and admin reads
+come from deployed projections. `wrangler.jsonc` names the durable Worker and
+Static Assets directory; the canonical hostname binding and Cloudflare Access
+policy remain provider-owned configuration. The target topology, machine-access
+policy, DNS/redirect semantics, acceptance tests, rollback, and Pages-retirement gates are frozen in
 `docs/WP-6-RADAR-PRODUCTION-MIGRATION.md` and
 `config/production-migration.json`.
 
-Provider-side repository rename, Worker deployment, custom-domain binding,
-Access, DNS, redirect, and Pages mutations are not represented as completed.
+The Worker is bound at `radar.wp.org.nz` behind the human Access policy. The API
+is private by default until separately governed machine identity is provided.
+The historical Pages project remains rollback infrastructure. Provider-side
+redirect and legacy-host state must be verified independently of repository
+configuration.
 
 ## HISTORICAL/COMPATIBILITY
 

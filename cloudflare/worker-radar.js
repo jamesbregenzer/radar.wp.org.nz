@@ -1,4 +1,3 @@
-const REVIEWS_PATH = "data/reviews/reviews.json";
 const ALLOWED_STATUSES = new Set(["", "shortlist", "watch", "reject", "tested", "commented", "committed"]);
 
 function html(body, status = 200) {
@@ -621,7 +620,7 @@ function renderPropsDrawer(session, ticket = "") {
               <input name="reason" maxlength="160" value="Props received" placeholder="Props received">
               <label>Notes <span class="muted">(optional)</span></label>
               <textarea name="notes" maxlength="1000" placeholder="Add contribution details or profile/SVN context..."></textarea>
-              <button type="submit">Record props</button>
+              <button type="submit" disabled title="Durable persistence is not currently available.">Record props (persistence unavailable)</button>
             </form>
           </div>
         </div>
@@ -744,7 +743,7 @@ function renderTicketDrawer(item, session, reviews) {
                 <label>Review notes</label>
                 <textarea name="notes" maxlength="1000" placeholder="Add notes about this ticket...">${esc(review.notes || "")}</textarea>
                 ${hasReceivedProps(review) ? `<p class="muted">🏆 Props received${review.props_recorded_at ? ` on ${esc(review.props_recorded_at.slice(0, 10))}` : ""}.</p>` : `<p class="muted"><a href="/admin/props?ticket=${ticket}">Record props for this ticket</a> after contributor credit appears on WordPress.org.</p>`}
-                <button type="submit">Save review</button>
+                <button type="submit" disabled title="Durable persistence is not currently available.">Save review (persistence unavailable)</button>
               </form>
             </div>
           </div>
@@ -816,7 +815,7 @@ async function adminPage(request, env) {
   return html(layout("WP Core Radar Admin", `
     <header>
       <h1>WP Core Radar Admin</h1>
-      <p>Protected review console. Writes are restricted to ${esc(REVIEWS_PATH)}.</p>
+      <p>Protected review console. Opportunity and review data are deployed read-only projections.</p>
       <nav class="topnav" aria-label="Admin navigation">
         <a class="nav-pill nav-pill-dashboard" href="/">Radar dashboard</a>
         <a class="nav-pill" href="/admin/props">Record props</a>
@@ -824,6 +823,7 @@ async function adminPage(request, env) {
       </nav>
     </header>
     <main>
+      <div class="notice"><strong>Read-only mode:</strong> Durable review and props persistence is not currently available. No local-only state will be saved.</div>
       ${notice ? `<div class="notice"><strong>${esc(notice)}</strong></div>` : ""}
       ${ticketNotInRadar ? `<div class="notice"><strong>Ticket #${esc(activeTicket)} is not in the current Radar opportunity data.</strong> Use the historical props drawer if this ticket received contributor credit.</div>` : ""}
       <div class="summary">

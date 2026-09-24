@@ -213,11 +213,11 @@ are recorded in `docs/WP-5-MACHINE-FEED-UI-ALIGNMENT.md` and
 
 WP-6 removes the admin Worker's implicit dependency on the historical
 repository name and freezes a testable production-migration contract for
-`radar.wp.org.nz`. It documents exact Cloudflare, Access, DNS, redirect,
-acceptance, rollback, Pages-retirement, and Federal Eagle/HQ handoffs. The
-repository rename and every provider mutation remain pending because the
-available governed interfaces cannot prove end-to-end custody or perform the
-required Cloudflare changes. Details are in
+`radar.wp.org.nz`. The repository is now `jamesbregenzer/radar.wp.org.nz`, and
+the canonical hostname is bound to the Worker behind Cloudflare Access. Runtime
+admin reads use deployed projections without GitHub credentials; writes remain
+fail-closed executor requirements. Apex/`www`, legacy-host, rollback, and
+provider acceptance state are recorded in
 `docs/WP-6-RADAR-PRODUCTION-MIGRATION.md`.
 
 ## Program guardrails

@@ -192,6 +192,9 @@ test("authenticated admin renders without any GitHub runtime credential", async 
   assert.equal(response.status, 200);
   const body = await response.text();
   assert.match(body, /WP Core Radar Admin/);
+  assert.match(body, /Read-only mode/);
+  assert.match(body, /persistence is not currently available/i);
+  assert.doesNotMatch(body, /Writes are restricted to data\/reviews\/reviews\.json/);
   assert.doesNotMatch(body, /GitHub read failed/);
 });
 

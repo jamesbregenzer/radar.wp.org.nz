@@ -1,12 +1,14 @@
 # WP-6 Radar Production Migration
 
-Status: **REPOSITORY MIGRATION-READY — EXTERNAL CUTOVER PENDING**
+Status: **CANONICAL WORKER BOUND — PRODUCTION CLOSEOUT IN PROGRESS**
 
-WP-6 prepares the canonical Worker, repository identity, access boundary, DNS,
-redirects, verification, and rollback plan for production. The authoritative
-product boundaries remain in `WORDPRESS-AUTOMATION-PROGRAM.md`. This change
-does not deploy Cloudflare, modify DNS or Access, rename the repository, touch
-the collector runtime, or create private-contributor credentials.
+WP-6 prepared the canonical Worker, repository identity, access boundary, DNS,
+redirects, verification, and rollback plan. The repository rename, Worker
+deployment, `radar.wp.org.nz` binding, and human Cloudflare Access boundary are
+now in place. The machine API is private by default. Apex/`www` redirects,
+workers.dev closure, acceptance evidence, and legacy-host handling are tracked
+as explicit closeout gates. The authoritative product boundaries remain in
+`WORDPRESS-AUTOMATION-PROGRAM.md`.
 
 ## Target topology
 
