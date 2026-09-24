@@ -37,10 +37,11 @@ path; explicit `DatasetSelection` is available for deterministic downstream
 work. The scheduled wrapper's timestamp-only commit workaround remains a
 runtime compatibility detail pending operational migration.
 
-The repository includes a Cloudflare Worker plus Static Assets target that
-serves `docs/radar` and renders the protected admin interface. The established
-live hostname remains `radar.james.bregenzer.dev` until WP-6 deployment and
-migration are independently completed and verified.
+The repository includes a migration-ready Cloudflare Worker plus Static Assets
+target that serves `docs/radar`, projects the certified API, and renders the
+protected admin interface. No active product request depends on a Pages origin
+or the legacy hostname. Provider-side deployment, binding, and redirect changes
+remain external WP-6 cutover actions.
 
 ### Current files and responsibilities
 
@@ -93,7 +94,7 @@ contract. Downstream Radar logic must not depend on Firefox, a particular host,
 LaunchAgent, local paths, credential custody, or runtime routing.
 
 The target application is `radar.wp.org.nz`, with protected administration at
-`/admin/` and a future certified machine feed at `/api/v1/...`. The HTTP API is
+`/admin/` and a certified machine feed at `/api/v1/...`. The HTTP API is
 a projection of canonical certified GitHub data, not another authority.
 
 Dashboard, admin, reports, and API/feed will consume one canonical normalized
@@ -143,12 +144,27 @@ existing renderers without rescoring raw CSV.
 Human review data remains a separate mutable GitHub-backed overlay. It may
 change dashboard/admin grouping between certifications, but it never rewrites
 the immutable certified snapshot or enters the machine feed as current private
-notes. Production hostname and Access/service-token policy remain WP-6 work.
+notes. Production hostname and Access/service-token policy are specified by
+WP-6 and remain provider-side cutover work.
+
+## IMPLEMENTED — WP-6 repository migration readiness
+
+The Worker admin GitHub target is explicit through `GITHUB_OWNER` and
+`GITHUB_REPO`; there is no implicit old-name fallback. `wrangler.jsonc` names
+the durable Worker and Static Assets directory but intentionally declares no
+production route or custom-domain binding. The target topology, repository
+rename boundary, Cloudflare Access/service-token policy, DNS/redirect semantics,
+acceptance tests, rollback, and Pages-retirement gates are frozen in
+`docs/WP-6-RADAR-PRODUCTION-MIGRATION.md` and
+`config/production-migration.json`.
+
+Provider-side repository rename, Worker deployment, custom-domain binding,
+Access, DNS, redirect, and Pages mutations are not represented as completed.
 
 ## HISTORICAL/COMPATIBILITY
 
-- The established live hostname is `radar.james.bregenzer.dev` during the
-  migration window.
+- The legacy hostname is retained during the migration window as the recorded
+  rollback/redirect source.
 - Cloudflare Pages may remain part of the live rollback path until WP-6 proves
   the Worker migration.
 - `/Users/thor/Sites/wp-core-radar`, its Python path, and its six-hour scheduler

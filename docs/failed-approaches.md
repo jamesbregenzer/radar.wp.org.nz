@@ -32,7 +32,7 @@ remain subject to Eden/HWP authorization.
 ## PRESENTATION LESSON — exposing every raw field
 
 Early dashboard versions exposed too many source columns and resembled a CSV
-export. The current public dashboard intentionally emphasizes score, tier,
+export. The current dashboard intentionally emphasizes score, tier,
 ticket, summary, track, status, discovery track, and signals. Detailed controls
 belong on protected surfaces.
 

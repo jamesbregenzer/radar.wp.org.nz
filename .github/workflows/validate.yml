@@ -35,5 +35,9 @@ jobs:
         run: python3 -m unittest tests.test_wp5 -v
       - name: Prove Worker API projection and integrity behavior
         run: node --test tests/test-worker.mjs
+      - name: Prove WP-6 migration configuration and portability
+        run: python3 -m unittest tests.test_wp6 -v
+      - name: Prove Worker Static Assets bundle builds without deployment
+        run: npx wrangler deploy --dry-run --outdir "$RUNNER_TEMP/radar-worker-dry-run"
       - name: Prove committed data can regenerate outputs deterministically
         run: python3 scripts/run-radar.py --skip-fetch --reference-time 2026-01-15T12:00:00Z

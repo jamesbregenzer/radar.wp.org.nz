@@ -19,9 +19,15 @@ The authoritative architecture, product boundaries, and frozen roadmap for the
 broader WordPress Automation Program are in
 [`docs/WORDPRESS-AUTOMATION-PROGRAM.md`](docs/WORDPRESS-AUTOMATION-PROGRAM.md).
 
-**Live project:** [View the WP Core Radar public dashboard](https://radar.james.bregenzer.dev/)
+**Canonical production target:** `https://radar.wp.org.nz/` (binding and
+production acceptance remain governed WP-6 cutover actions)
 
-It collects public ticket data from WordPress Trac, archives raw CSV exports, scores opportunities with explainable rules including freshness and activity momentum, and publishes a public dashboard, public contribution history page, plus a protected review console so a human contributor can decide what to test, watch, reject, or act on manually.
+It collects public ticket data from WordPress Trac, archives raw CSV exports,
+scores opportunities with explainable rules including freshness and activity
+momentum, and publishes a Radar dashboard, contribution history page, and
+protected review console so a human contributor can decide what to test, watch,
+reject, or act on manually. WP-6 places all production HTTP surfaces behind
+Cloudflare Access while keeping repository data public-safe.
 
 Freshness and ticket-age signals are calculated from Trac `Created`/`Modified` timestamps, including Trac's AM/PM CSV format. Momentum is calculated when a collected CSV includes a usable comment-count field; when Trac does not provide that field, Radar leaves momentum out instead of inventing it.
 
@@ -47,7 +53,7 @@ WordPress Trac
   → archived raw CSV datasets
   → validated collection evidence + explicit run context
   → canonical opportunity normalization, deterministic scoring, and grouping
-  → Markdown report + public dashboard + contribution history + admin data JSON
+  → Markdown report + Radar dashboard + contribution history + admin data JSON
   → GitHub repository
   → current live delivery and committed Cloudflare Worker target
 
@@ -60,27 +66,36 @@ Review saves from /admin/
 
 The local browser environment currently associated with Thor is the collection/build runner because hosted/server Trac collection has historically been unreliable or blocked. It opens configured Trac CSV searches in Firefox, downloads `query.csv`, imports it into the raw archive, and removes the temporary download. This proven browser-assisted collection path must be preserved until a replacement is proven.
 
-After publication, GitHub is Radar's durable source of truth. The repository now contains a Cloudflare Worker plus Static Assets target, but the established live hostname remains `radar.james.bregenzer.dev` until the WP-6 migration is deployed and verified. Committed target configuration must not be confused with completed production migration.
+After publication, GitHub is Radar's durable source of truth. The repository
+contains the migration-ready Cloudflare Worker plus Static Assets target. The
+legacy hostname remains a rollback/redirect concern until the governed WP-6
+cutover is deployed and accepted; committed configuration is not proof of a
+production change.
 
 The collector/build runner creates the admin **data export** at `docs/radar/admin-data.json`. It does not create or serve the protected admin page. The admin UI is rendered by the Cloudflare Worker. `admin-data.json` is a current UI payload, not a stable machine API.
 
-Review-only updates use a separate near-real-time path. When the protected admin console commits a change to `data/reviews/reviews.json`, the `Refresh dashboard after review update` GitHub Action regenerates `docs/radar/index.html`, `docs/radar/contributions/index.html`, and `docs/radar/admin-data.json` so public contribution history and admin grouping stay accurate without waiting for the next Mac Mini collection run.
+Review-only updates use a separate near-real-time path. When the protected admin console commits a change to `data/reviews/reviews.json`, the `Refresh dashboard after review update` GitHub Action regenerates `docs/radar/index.html`, `docs/radar/contributions/index.html`, and `docs/radar/admin-data.json` so contribution history and admin grouping stay accurate without waiting for the next Mac Mini collection run.
 
 ## Public and protected routes
 
 ```text
-https://radar.james.bregenzer.dev/                Public static dashboard generated into docs/radar/index.html
-https://radar.james.bregenzer.dev/contributions/ Public static contribution history generated into docs/radar/contributions/index.html
-https://radar.james.bregenzer.dev/admin/         Protected Worker-rendered admin console
+https://radar.wp.org.nz/                Protected static dashboard generated into docs/radar/index.html
+https://radar.wp.org.nz/contributions/ Protected contribution history generated into docs/radar/contributions/index.html
+https://radar.wp.org.nz/admin/         Protected Worker-rendered admin console
+https://radar.wp.org.nz/api/v1/...     Protected certified machine interface
 ```
 
-The public dashboard includes **Contributions** and **Admin Console** links in the header. Those links are generated by `scripts/generate-dashboard.py` and are routed by the Cloudflare Worker.
+The Radar dashboard includes **Contributions** and **Admin Console** links in the header. Those links are generated by `scripts/generate-dashboard.py` and are routed by the Cloudflare Worker.
 
 The protected admin console authenticates in the Worker, reads the committed `docs/radar/admin-data.json` asset, and writes constrained review metadata only to `data/reviews/reviews.json` through the GitHub API. It supports normal ticket review decisions plus a dedicated historical props workflow for tickets that are no longer present in the current opportunity export. It does not regenerate dashboard files directly. Dashboard regeneration after review saves is handled by GitHub Actions so the Worker stays narrowly scoped.
 
 ## TARGET ARCHITECTURE
 
-The target application hostname is `radar.wp.org.nz`, with protected Radar administration at `/admin/` and a future certified machine-readable API/feed at `/api/v1/...`. The apex and `www` hosts will redirect to `https://wordpress.org/`; the old Radar hostname will be redirected and retired after successful migration.
+The target application hostname is `radar.wp.org.nz`, with protected Radar
+administration at `/admin/` and the certified machine-readable API/feed at
+`/api/v1/...`. The apex and `www` hosts will redirect to
+`https://wordpress.org/`; the old Radar hostname will be redirected only after
+the canonical host passes production acceptance.
 
 WP-2 isolates the current browser implementation behind a collector/result
 boundary, supplies deterministic time and explicit dataset selection, uses one
@@ -108,7 +123,11 @@ The feed, dashboard, protected admin projection, and report use the verified
 certified opportunity model. GitHub remains durable truth; HTTP is a cached
 projection. See [`docs/contracts/machine-feed.md`](docs/contracts/machine-feed.md).
 
-The proposed future repository name is `jamesbregenzer/radar.wp.org.nz`. The current repository remains `jamesbregenzer/wp-core-radar`; no rename is part of WP-1.
+The approved target repository name is `jamesbregenzer/radar.wp.org.nz`. WP-6
+makes application code portable and migration-ready, but the current repository
+must be renamed through GitHub repository settings after the PR merges and
+after governed custody dependencies are ready. See
+[`docs/WP-6-RADAR-PRODUCTION-MIGRATION.md`](docs/WP-6-RADAR-PRODUCTION-MIGRATION.md).
 
 ## Main commands
 
@@ -155,7 +174,7 @@ Run one configured query:
 python3 scripts/run-radar.py --query general_needs_testing
 ```
 
-Generate only the public dashboard and admin data export:
+Generate only the Radar dashboard and admin data export:
 
 ```bash
 python3 scripts/generate-dashboard.py
@@ -183,14 +202,20 @@ The local review command updates `data/reviews/reviews.json` directly and regene
 
 ## Review workflow
 
-Normal review decisions should be made in the protected Cloudflare Worker admin console at `https://radar.james.bregenzer.dev/admin/`. Props are not a review decision; they are recorded through the separate **Record props** workflow after contributor credit appears on WordPress.org. Historical props can be recorded even when a ticket no longer appears in the current Trac CSV exports.
+After cutover, normal review decisions should be made in the protected
+Cloudflare Worker admin console at `https://radar.wp.org.nz/admin/`. During the
+controlled migration window, use only the currently verified production admin
+URL. Props are not a review decision; they are recorded through the separate
+**Record props** workflow after contributor credit appears on WordPress.org.
+Historical props can be recorded even when a ticket no longer appears in the
+current Trac CSV exports.
 
 For local-only maintenance or recovery work, `scripts/review-ticket.py` can update `data/reviews/reviews.json` directly. The local script regenerates dashboard files immediately by default. If a review is saved through the production admin console, GitHub Actions performs that regeneration after the review commit lands on `main`.
 
 ## Outputs
 
-- `docs/radar/index.html` is the public static dashboard.
-- `docs/radar/contributions/index.html` is the public static contribution history page.
+- `docs/radar/index.html` is the static Radar dashboard asset.
+- `docs/radar/contributions/index.html` is the static contribution history asset.
 - `docs/radar/admin-data.json` is the static data payload used by the protected Worker admin console.
 - `reports/latest.md` is the latest Markdown report.
 - `reports/radar-YYYY-MM-DD.md` is the dated Markdown report.
@@ -200,13 +225,21 @@ For local-only maintenance or recovery work, `scripts/review-ticket.py` can upda
 
 ## CURRENT IMPLEMENTATION — deployment and security boundaries
 
-The established public dashboard remains at `https://radar.james.bregenzer.dev/` during migration. Cloudflare Pages may remain a rollback dependency until the canonical Worker migration is proven. The public contribution history page is served at `/contributions/` on the same host.
+The canonical target is `https://radar.wp.org.nz/`. Cloudflare Pages may remain
+a rollback dependency until the Worker migration is proven; repository code has
+no Pages-origin dependency. The contribution history page is served at
+`/contributions/` on the same host and follows the human Access policy.
 
 The protected `/admin/` route is rendered by a Cloudflare Worker. It should use narrowly scoped secrets configured in Cloudflare, not committed to this repository:
 
 - `ADMIN_PASSWORD_HASH`
 - `SESSION_SECRET`
 - `GITHUB_TOKEN`
+
+`wrangler.jsonc` commits the non-secret target variables `GITHUB_OWNER` and
+`GITHUB_REPO`. The target values after the governed rename are
+`jamesbregenzer` and `radar.wp.org.nz`. Missing or malformed values fail closed;
+the Worker no longer assumes the historical repository name.
 
 The Worker should remain narrowly scoped. It may read the generated admin data JSON and update `data/reviews/reviews.json`; it should not become a general-purpose repository editor. Review-save dashboard regeneration belongs in GitHub Actions, not in the Worker.
 
@@ -220,6 +253,7 @@ Local helper scripts may be committed when they contain no secrets and do not ex
 - `docs/WP-3-CERTIFIED-RADAR-DATA.md` — schemas, canonicalization, certification, retention, and verification
 - `docs/WP-4-STABLE-RADAR-OPERATIONS.md` — stable operation behavior, failures, and idempotency
 - `docs/WP-5-MACHINE-FEED-UI-ALIGNMENT.md` — feed/UI implementation and WP-6 handoff
+- `docs/WP-6-RADAR-PRODUCTION-MIGRATION.md` — production topology, cutover, acceptance, rollback, and human actions
 - `docs/contracts/executor.md` — executor-facing invocation and custody contract
 - `docs/contracts/machine-feed.md` — frozen `/api/v1/` consumer contract
 - `docs/mac-mini-collector.md` — local collection and scheduled runner workflow

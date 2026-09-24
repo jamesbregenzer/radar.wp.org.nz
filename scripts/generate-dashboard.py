@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the public static WP Core Radar dashboard."""
+"""Generate the static WP Core Radar dashboard asset."""
 
 from __future__ import annotations
 
@@ -673,7 +673,7 @@ def build_contributions_page(context: RunContext | None = None, selection: Datas
   <header>
     <div class="header-content">
       <h1>WP Core Radar Contributions</h1>
-      <p>Generated {html.escape(generated)}. A public record of human review, testing, and props outcomes powered by WP Core Radar.</p>
+      <p>Generated {html.escape(generated)}. A public-safe record of human review, testing, and props outcomes powered by WP Core Radar.</p>
     </div>
     <div class="header-actions">
       <a class="header-pill" href="/">Dashboard</a>
@@ -686,7 +686,7 @@ def build_contributions_page(context: RunContext | None = None, selection: Datas
     <div class="hero-grid">
       <section class="hero-card">
         <h2>Contribution history</h2>
-        <p>This page turns Radar review decisions into a public contribution record: tickets reviewed, patches tested, areas of focus, and props that were later recorded from WordPress.org. Radar still only recommends opportunities; all WordPress Core contribution actions remain manual and human-reviewed.</p>
+        <p>This page turns Radar review decisions into a contribution record: tickets reviewed, patches tested, areas of focus, and props that were later recorded from WordPress.org. Its content remains public-safe, while WP-6 protects the production surface with Cloudflare Access. Radar still only recommends opportunities; all WordPress Core contribution actions remain manual and human-reviewed.</p>
         <div class="metric-row">
           <div class="mini-metric"><strong>{len(records)}</strong><span>Tickets reviewed</span></div>
           <div class="mini-metric"><strong>{status_counts.get("tested", 0)}</strong><span>Tickets tested</span></div>

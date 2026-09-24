@@ -12,15 +12,15 @@ browser workflow, archives the source data in GitHub, explains ticket rankings,
 and generates a dashboard, contribution history, reports, and protected review
 workflow.
 
-The established live hostname remains `radar.james.bregenzer.dev` during the
-migration period.
+The legacy hostname remains an external rollback/redirect concern during the
+controlled migration period.
 
 ## TARGET ARCHITECTURE
 
 Radar becomes a reliable, independently useful source of certified WordPress
 Core opportunity intelligence at `radar.wp.org.nz`. Its dashboard, admin, and
-future API/feed project one canonical opportunity model with provenance and
-health evidence.
+implemented API/feed project one canonical opportunity model with provenance
+and health evidence.
 
 Radar does not perform autonomous contribution work. A separate private
 Federal Eagle WordPress Contributor may consume certified opportunities,
@@ -31,9 +31,10 @@ Radar should remain deterministic, explainable, safe by default, respectful of
 WordPress.org resources, and small enough to audit. The protected admin surface
 may manage Radar review metadata; it must not control the private contributor.
 
-The target production hostname is `radar.wp.org.nz`. Repository renaming to
-`jamesbregenzer/radar.wp.org.nz` is proposed for WP-6 but is not approved or
-performed by the current architecture freeze.
+The target production hostname is `radar.wp.org.nz`, and the approved target
+repository is `jamesbregenzer/radar.wp.org.nz`. WP-6 makes the product ready for
+both; provider-side rename and production cutover actions remain governed
+external work.
 
 Architecture changes require an ADR or an explicit update to the authoritative
 program document rather than silent drift.
