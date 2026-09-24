@@ -25,6 +25,7 @@ from certification import (
 )
 from radarcore import RunContext, file_sha256, select_datasets
 from radarlib import Opportunity, TICKET_ID_KEYS, load_queries
+from tests.fixture_support import ambiguous_collection_listing
 
 FIXTURES = ROOT / "tests" / "fixtures"
 EXPECTED = [query["slug"] for query in load_queries()]
@@ -155,14 +156,12 @@ class CertificationTests(unittest.TestCase):
 
     def test_ambiguous_query_fails_certification(self):
         with tempfile.TemporaryDirectory() as directory:
-            base = Path(directory) / "manual/2026-01-15"
-            base.mkdir(parents=True)
-            (base / "same.csv").write_text("id,summary\n1,A\n")
-            (base / "SAME.CSV").write_text("id,summary\n1,A\n")
-            selection = select_datasets(Path(directory), "2026-01-15", ["same"], TICKET_ID_KEYS)
-            self.assertIn("same", selection.ambiguous)
-            with self.assertRaises(CertificationError):
-                build_certification_bundle(selection, CONTEXT, REVISION)
+            root = Path(directory)
+            with ambiguous_collection_listing(root, "2026-01-15", "same"):
+                selection = select_datasets(root, "2026-01-15", ["same"], TICKET_ID_KEYS)
+                self.assertEqual(len(selection.ambiguous["same"]), 2)
+                with self.assertRaises(CertificationError):
+                    build_certification_bundle(selection, CONTEXT, REVISION)
 
     def test_success_publishes_and_offline_verifies(self):
         with tempfile.TemporaryDirectory() as directory:

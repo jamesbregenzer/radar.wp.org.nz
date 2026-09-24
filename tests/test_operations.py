@@ -21,6 +21,7 @@ from operations import (
 from pipeline import CollectionResult
 from radarcore import RunContext, select_datasets
 from radarlib import TICKET_ID_KEYS, load_queries
+from tests.fixture_support import ambiguous_collection_listing
 
 FIXTURE_RAW = ROOT / "tests/fixtures/raw"
 SLUGS = [query["slug"] for query in load_queries()]
@@ -110,12 +111,11 @@ class OperationsTests(unittest.TestCase):
 
     def test_ambiguous_validation(self):
         with tempfile.TemporaryDirectory() as directory:
-            base = Path(directory) / "manual/2026-01-15"
-            base.mkdir(parents=True)
-            for slug in SLUGS:
-                (base / f"{slug}.csv").write_text("id,summary\n1,A\n")
-            (base / f"{SLUGS[0].upper()}.CSV").write_text("id,summary\n1,A\n")
-            value = validate_collection_operation(CONTEXT, "2026-01-15", Path(directory))
+            root = Path(directory)
+            with ambiguous_collection_listing(root, "2026-01-15", SLUGS[0]) as base:
+                for slug in SLUGS[1:]:
+                    (base / f"{slug}.csv").write_text("id,summary\n1,A\n", encoding="utf-8")
+                value = validate_collection_operation(CONTEXT, "2026-01-15", root)
         self.assertEqual(value["code"], "COLLECTION_AMBIGUOUS")
 
     def test_deterministic_generate_result(self):
