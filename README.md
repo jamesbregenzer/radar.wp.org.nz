@@ -254,8 +254,8 @@ Radar does not require a GitHub credential at Worker runtime. Durable admin writ
 are intentionally executor-owned and fail closed until that executor capability exists.
 
 The canonical repository after the governed rename is
-`jamesbregenzer` and `radar.wp.org.nz`. Missing or malformed values fail closed;
-the Worker no longer assumes the historical repository name.
+`jamesbregenzer/radar.wp.org.nz`. The Worker does not require repository
+identity or GitHub credentials at runtime.
 
 The Worker should remain narrowly scoped. It may read the generated admin data JSON and update `data/reviews/reviews.json`; it should not become a general-purpose repository editor. Review-save dashboard regeneration belongs in GitHub Actions, not in the Worker.
 
