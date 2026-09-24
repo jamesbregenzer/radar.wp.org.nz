@@ -234,10 +234,12 @@ The protected `/admin/` route is rendered by a Cloudflare Worker. It should use 
 
 - `ADMIN_PASSWORD_HASH`
 - `SESSION_SECRET`
-- `GITHUB_TOKEN`
 
-`wrangler.jsonc` commits the non-secret target variables `GITHUB_OWNER` and
-`GITHUB_REPO`. The target values after the governed rename are
+Admin reads are credential-free and use the deployed safe review-state projection.
+Radar does not require a GitHub credential at Worker runtime. Durable admin writes
+are intentionally executor-owned and fail closed until that executor capability exists.
+
+The canonical repository after the governed rename is
 `jamesbregenzer` and `radar.wp.org.nz`. Missing or malformed values fail closed;
 the Worker no longer assumes the historical repository name.
 
