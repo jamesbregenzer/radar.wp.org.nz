@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import worker, { githubTarget, handleApiRequest } from "../cloudflare/worker-radar.js";
+import worker, { getReviews, handleApiRequest } from "../cloudflare/worker-radar.js";
 
 const root = new URL("../docs/radar/", import.meta.url);
 
@@ -155,19 +155,71 @@ test("unauthenticated admin writes remain blocked", async () => {
   assert.match(await response.text(), /Protected Console/);
 });
 
-test("admin GitHub target is explicit and repository-name portable", () => {
-  assert.deepEqual(githubTarget({
-    GITHUB_OWNER: "jamesbregenzer",
-    GITHUB_REPO: "radar.wp.org.nz",
-  }), { owner: "jamesbregenzer", repo: "radar.wp.org.nz" });
-  assert.deepEqual(githubTarget({
-    GITHUB_OWNER: "jamesbregenzer",
-    GITHUB_REPO: "wp-core-radar",
-  }), { owner: "jamesbregenzer", repo: "wp-core-radar" });
+
+test("admin review reads use deployed credential-free projection", async () => {
+  let externalFetches = 0;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (...args) => {
+    externalFetches += 1;
+    return originalFetch(...args);
+  };
+  try {
+    const reviews = await getReviews({ ASSETS: assets() });
+    assert.equal(typeof reviews, "object");
+    assert.equal(externalFetches, 0);
+    for (const review of Object.values(reviews)) {
+      assert.equal(Object.hasOwn(review, "notes"), false);
+    }
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
-test("admin GitHub target fails closed when missing or malformed", () => {
-  assert.throws(() => githubTarget({}), /GITHUB_CONFIGURATION_INVALID/);
-  assert.throws(() => githubTarget({ GITHUB_OWNER: "jamesbregenzer", GITHUB_REPO: "bad/repo" }),
-    /GITHUB_CONFIGURATION_INVALID/);
+async function adminSession(secret, csrf = "csrf-test") {
+  const payload = Buffer.from(JSON.stringify({ exp: Date.now() + 3600000, csrf })).toString("base64url");
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const signature = Buffer.from(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload))).toString("base64url");
+  return { cookie: `radar_admin=${payload}.${signature}`, csrf };
+}
+
+test("authenticated admin renders without any GitHub runtime credential", async () => {
+  const secret = "test-session-secret";
+  const session = await adminSession(secret);
+  const response = await worker.fetch(new Request("https://radar.example/admin/", {
+    headers: { cookie: session.cookie },
+  }), { ASSETS: assets(), SESSION_SECRET: secret });
+  assert.equal(response.status, 200);
+  const body = await response.text();
+  assert.match(body, /WP Core Radar Admin/);
+  assert.doesNotMatch(body, /GitHub read failed/);
+});
+
+test("review writes fail closed when executor is unavailable", async () => {
+  const secret = "test-session-secret";
+  const session = await adminSession(secret);
+  const response = await worker.fetch(new Request("https://radar.example/admin/save", {
+    method: "POST",
+    headers: { cookie: session.cookie, "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ csrf: session.csrf, ticket: "65661", status: "watch" }),
+  }), { ASSETS: assets(), SESSION_SECRET: secret });
+  assert.equal(response.status, 503);
+  const body = await response.text();
+  assert.match(body, /EXECUTOR_UNAVAILABLE/);
+  assert.match(body, /PERSIST_REVIEW_DECISION/);
+  assert.match(body, /No durable review state was changed/);
+});
+
+test("props writes fail closed when executor is unavailable", async () => {
+  const secret = "test-session-secret";
+  const session = await adminSession(secret);
+  const response = await worker.fetch(new Request("https://radar.example/admin/props", {
+    method: "POST",
+    headers: { cookie: session.cookie, "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ csrf: session.csrf, ticket: "64937", changeset: "62481" }),
+  }), { ASSETS: assets(), SESSION_SECRET: secret });
+  assert.equal(response.status, 503);
+  const body = await response.text();
+  assert.match(body, /EXECUTOR_UNAVAILABLE/);
+  assert.match(body, /RECORD_PROPS_OUTCOME/);
 });
