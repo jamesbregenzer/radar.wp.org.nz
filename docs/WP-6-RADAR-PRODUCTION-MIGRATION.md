@@ -35,14 +35,7 @@ lane. Creating a replacement repository is forbidden.
 GitHub Actions use repository-relative checkout and `${{ github.* }}` context,
 so no workflow change is required. Certified IDs and hashes do not contain the
 repository name. API reads are repository-independent. Admin writes now require
-explicit `GITHUB_OWNER` and `GITHUB_REPO` variables instead of silently
-defaulting to the historical name.
-
-Old-name occurrence classification after WP-6:
-
-| Occurrence | Classification | Treatment |
-| --- | --- | --- |
-| `config/production-migration.json` current repository | migration evidence | retain until cutover is recorded |
+explicit dence | retain until cutover is recorded |
 | this document and migration runbook | migration/history | retain and update status after cutover |
 | `scripts/run-scheduled-radar.sh` path/log prefix | runtime compatibility | retain; Federal Eagle Operations owns changes |
 | `docs/WP-2-CORE-HARDENING.md` Thor path | historical/compatibility | retain |
@@ -69,10 +62,13 @@ Required Worker secrets:
 
 - `ADMIN_PASSWORD_HASH`
 - `SESSION_SECRET`
-- `GITHUB_TOKEN`, restricted to contents read/write for this repository
+
+WP-6A removes GitHub credentials from the Worker runtime. Admin reads use a
+deterministic deployed `radar-review-state.v1` projection. Durable review/props
+writes are external executor requirements and fail closed while unavailable.
 
 The existing application password/session/CSRF controls remain defense in
-depth behind Cloudflare Access. The GitHub token cannot be replaced by a
+depth behind Cloudflare Access. Runtime GitHub access is no longer a
 Cloudflare Access token; these credentials serve different boundaries.
 
 Deploy an exact merged SHA using governed Cloudflare custody, first without a
