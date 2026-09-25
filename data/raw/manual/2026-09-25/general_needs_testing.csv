@@ -253,11 +253,11 @@
 65551,Connectors: Preserve stored AI provider API key when validation is indeterminate,assigned,Editor,jorgefilipecosta,defect (bug),normal,Awaiting Review,7.0,has-patch has-unit-tests needs-testing,06/29/2026 07:24:33 AM,09/04/2026 11:55:30 AM
 65626,7.0.1 9.9797 lagging at WP_Query->get_posts() on site with 16K= posts,new,Database,,defect (bug),normal,Awaiting Review,7.0.1,needs-testing needs-patch reporter-feedback,07/14/2026 10:42:44 AM,07/16/2026 09:43:07 AM
 65638,AI: Add embedding generation support to WordPress,new,AI,,enhancement,normal,7.2,,has-patch needs-testing has-unit-tests,07/15/2026 11:35:42 AM,09/16/2026 08:44:08 PM
-65661,Media: Enable client-side media uploads in the Media Library,new,Media,,enhancement,normal,7.2,,has-patch needs-testing has-unit-tests,07/17/2026 11:42:28 PM,09/25/2026 01:57:20 AM
+65661,Media: Enable client-side media uploads in the Media Library,new,Media,,enhancement,normal,7.2,,has-patch needs-testing has-unit-tests,07/17/2026 11:42:28 PM,09/25/2026 04:59:32 AM
 65718,Multisite: the blogname is required during site creation but can be emptied later,new,Networks and Sites,,defect (bug),normal,Future Release,,has-patch needs-testing,07/26/2026 08:31:58 PM,08/21/2026 07:10:21 AM
 65731,Changing the site timezone can immediately invalidate fresh privacy-request confirmation links,new,Privacy,,defect (bug),normal,,7.1,has-patch has-unit-tests needs-testing,07/27/2026 12:03:29 PM,07/30/2026 06:21:00 PM
 65734,Classic Editor: Support pasted WebP image URLs in TinyMCE smart paste,new,TinyMCE,,enhancement,normal,Future Release,7.1,has-patch needs-testing,07/27/2026 03:01:34 PM,08/10/2026 02:15:13 PM
-65757,Proposal: Make the Interactivity API extensible,new,Interactivity API,,defect (bug),normal,Future Release,,has-patch needs-testing 2nd-opinion,07/29/2026 07:42:15 PM,08/31/2026 11:55:42 PM
+65757,Proposal: Make the Interactivity API extensible,new,Interactivity API,,defect (bug),normal,Future Release,,has-patch needs-testing 2nd-opinion,07/29/2026 07:42:15 PM,09/25/2026 09:38:55 AM
 65897,Surface community-contributed patterns from the Pattern Directory in the editor (opt-in),assigned,Editor,ugyensupport,enhancement,normal,Awaiting Review,,has-patch needs-testing has-unit-tests,08/17/2026 02:53:39 PM,09/17/2026 07:34:13 AM
 66075,"Name the item, or give a count, in the plugin/theme auto-update email subject lines",new,Upgrade/Install,,enhancement,normal,Awaiting Review,,has-patch needs-testing has-unit-tests,09/09/2026 02:15:02 AM,09/23/2026 12:58:15 PM
 66142,Empty custom date/time fields are saved instead of remaining null in WordPress 7.1.1,new,Date/Time,,defect (bug),normal,Awaiting Review,7.1.1,needs-testing has-patch has-unit-tests,09/19/2026 12:26:47 PM,09/23/2026 05:09:25 AM

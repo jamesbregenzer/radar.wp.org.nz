@@ -1,22 +1,22 @@
 {
-  "generated": "2026-09-25T04:51:36",
+  "generated": "2026-09-25T10:52:23",
   "summary": {
     "unique_tickets": 290,
     "priority_targets": 12,
     "immediate": 9,
     "strong": 3,
-    "watching": 67,
+    "watching": 66,
     "reviews_loaded": 21,
     "certification": {
-      "snapshot_id": "snapshot-v1-77e3abcffbeed510ba9b6ceb",
-      "collection_id": "collection-v1-ce08eb19460aa22126a38b2c",
-      "reference_time": "2026-09-25T04:51:36",
+      "snapshot_id": "snapshot-v1-df1547187b4fe656d54c6d5c",
+      "collection_id": "collection-v1-d5f2ed84e02cfb44edfa65a4",
+      "reference_time": "2026-09-25T10:52:23",
       "state": "certified",
       "opportunity_count": 290,
       "scoring_version": "radar-scoring-v1",
-      "source_revision": "87c713b770f3ecdc7766213ac627db405b570dbb",
+      "source_revision": "6e6804920e4915c7c6d44fab7340ce6361cfbe0e",
       "warnings": [],
-      "dataset_sha256": "76ec20744fa220d5914e4ecdafed5d402fdce3e821793e59e3eed8ea5bcd56a2"
+      "dataset_sha256": "89ae032e687b98f4ffecc757eaeaddb29f523b9e5f852e0c18cdb555afde2c89"
     }
   },
   "groups": {
@@ -221,7 +221,7 @@
         "owner": "",
         "comments": "",
         "created": "07/17/2026 11:42:28 PM",
-        "modified": "09/25/2026 01:57:20 AM",
+        "modified": "09/25/2026 04:59:32 AM",
         "keywords": "has-patch has-unit-tests needs-testing",
         "signals": [
           {
@@ -2114,6 +2114,83 @@
         "review": {}
       },
       {
+        "ticket_id": "65757",
+        "url": "https://core.trac.wordpress.org/ticket/65757",
+        "score": 158,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Proposal: Make the Interactivity API extensible",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Interactivity API",
+        "owner": "",
+        "comments": "",
+        "created": "07/29/2026 07:42:15 PM",
+        "modified": "09/25/2026 09:38:55 AM",
+        "keywords": "2nd-opinion has-patch needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
         "ticket_id": "63109",
         "url": "https://core.trac.wordpress.org/ticket/63109",
         "score": 156,
@@ -3426,83 +3503,6 @@
         "created": "07/27/2026 03:01:34 PM",
         "modified": "08/10/2026 02:15:13 PM",
         "keywords": "has-patch needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          },
-          {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
-        "ticket_id": "65757",
-        "url": "https://core.trac.wordpress.org/ticket/65757",
-        "score": 148,
-        "tier_class": "watching",
-        "tier_label": "Worth Watching",
-        "summary": "Proposal: Make the Interactivity API extensible",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Interactivity API",
-        "owner": "",
-        "comments": "",
-        "created": "07/29/2026 07:42:15 PM",
-        "modified": "08/31/2026 11:55:42 PM",
-        "keywords": "2nd-opinion has-patch needs-testing",
         "signals": [
           {
             "label": "Track Priority: General: Needs Testing +65",
