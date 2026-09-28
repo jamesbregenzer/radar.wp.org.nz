@@ -686,7 +686,7 @@ def build_contributions_page(context: RunContext | None = None, selection: Datas
     latest_html = '<p>No activity recorded yet.</p>'
     if latest:
         latest_props = '<br>🏆 Props received' if latest["received_props"] else ''
-        latest_html = f'''<p><strong><a href="{html.escape(latest["url"])}">#{html.escape(latest["ticket_id"])}</a></strong><br>{html.escape(status_label(latest["status"]))} — {html.escape(latest["summary"])}{latest_props}</p><p>{html.escape(latest["updated_label"])}</p>'''
+        latest_html = f'''<p><strong><a href="{html.escape(latest["url"])}">#{html.escape(latest["ticket_id"])}</a></strong><br>{html.escape(status_label(latest["status"]))}: {html.escape(latest["summary"])}{latest_props}</p><p>{html.escape(latest["updated_label"])}</p>'''
 
     return f'''<!doctype html>
 <html lang="en">
@@ -715,7 +715,7 @@ def build_contributions_page(context: RunContext | None = None, selection: Datas
     <div class="hero-grid">
       <section class="hero-card">
         <h2>Contribution history</h2>
-        <p>This page turns Radar review decisions into a contribution record: tickets reviewed, patches tested, areas of focus, and props that were later recorded from WordPress.org. Its content remains public-safe, while WP-6 protects the production surface with Cloudflare Access. Radar still only recommends opportunities; all WordPress Core contribution actions remain manual and human-reviewed.</p>
+        <p>This page turns Radar review decisions into a contribution record: tickets reviewed, patches tested, areas of focus, and props that were later recorded from WordPress.org. Radar recommends opportunities only; all WordPress Core contribution decisions and actions remain manual.</p>
         <div class="metric-row">
           <div class="mini-metric"><strong>{len(records)}</strong><span>Tickets reviewed</span></div>
           <div class="mini-metric"><strong>{status_counts.get("tested", 0)}</strong><span>Tickets tested</span></div>
