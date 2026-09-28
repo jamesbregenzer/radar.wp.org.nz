@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-27T19:13:37",
+  "generated": "2026-09-28T01:14:30",
   "summary": {
     "unique_tickets": 290,
     "priority_targets": 12,
@@ -8,15 +8,15 @@
     "watching": 67,
     "reviews_loaded": 21,
     "certification": {
-      "snapshot_id": "snapshot-v1-787154c27ca635f5d632950c",
-      "collection_id": "collection-v1-bd23491816a0088de7c6dda2",
-      "reference_time": "2026-09-27T19:13:37",
+      "snapshot_id": "snapshot-v1-b7d6c725387974914e899e50",
+      "collection_id": "collection-v1-5fe6a7c0436cafba29bef0d6",
+      "reference_time": "2026-09-28T01:14:30",
       "state": "certified",
       "opportunity_count": 290,
       "scoring_version": "radar-scoring-v1",
-      "source_revision": "efeba671672f3cd45e6dcacb4ac40222d64f9fbe",
+      "source_revision": "88f80aca19c4aab4040c8d99ee58e35f9b2c2f19",
       "warnings": [],
-      "dataset_sha256": "7f57c735fa7851dcef10f7ecb291fe1ec64363f2dc423681a2424f45d2dfa2ad"
+      "dataset_sha256": "13f1e25d82ddf28e41adc95d7ecb41439bbff758bb8e3969dcc7e354d305c018"
     }
   },
   "groups": {
@@ -936,7 +936,7 @@
         "owner": "Clorith",
         "comments": "",
         "created": "02/08/2024 08:52:50 PM",
-        "modified": "09/27/2026 01:35:47 PM",
+        "modified": "09/27/2026 08:02:41 PM",
         "keywords": "early has-patch needs-testing",
         "signals": [
           {
@@ -8252,72 +8252,6 @@
         "review": {}
       },
       {
-        "ticket_id": "62744",
-        "url": "https://core.trac.wordpress.org/ticket/62744",
-        "score": 123,
-        "tier_class": "standard",
-        "tier_label": "Standard",
-        "summary": "Twenty Seventeen: Quote block Appearance settings do not affect citation",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Bundled Theme",
-        "owner": "",
-        "comments": "",
-        "created": "12/27/2024 11:23:16 AM",
-        "modified": "09/12/2026 08:28:29 PM",
-        "keywords": "needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Freshness: Recently Updated <=14 Days +20",
-            "class": "freshness"
-          },
-          {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+20",
-            "label": "Freshness",
-            "detail": "Recently Updated <=14 Days",
-            "display": "Freshness: Recently Updated <=14 Days",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
         "ticket_id": "7965",
         "url": "https://core.trac.wordpress.org/ticket/7965",
         "score": 122,
@@ -10292,6 +10226,72 @@
             "detail": "Very Old Ticket",
             "display": "Ticket Age: Very Old Ticket",
             "polarity": "negative"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "62744",
+        "url": "https://core.trac.wordpress.org/ticket/62744",
+        "score": 113,
+        "tier_class": "standard",
+        "tier_label": "Standard",
+        "summary": "Twenty Seventeen: Quote block Appearance settings do not affect citation",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Bundled Theme",
+        "owner": "",
+        "comments": "",
+        "created": "12/27/2024 11:23:16 AM",
+        "modified": "09/12/2026 08:28:29 PM",
+        "keywords": "needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Freshness: Updated Within 60 Days +10",
+            "class": "freshness"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+10",
+            "label": "Freshness",
+            "detail": "Updated Within 60 Days",
+            "display": "Freshness: Updated Within 60 Days",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
           }
         ],
         "discovery_track": "General Needs Testing",
@@ -19384,6 +19384,120 @@
         }
       },
       {
+        "ticket_id": "64707",
+        "url": "https://core.trac.wordpress.org/ticket/64707",
+        "score": 156,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Site Health: Opcode cache test reports a false negative when OPcache runs in file-cache-only mode",
+        "track": "General: Needs Testing",
+        "status": "Accepted",
+        "component": "Site Health",
+        "owner": "westonruter",
+        "comments": "",
+        "created": "02/23/2026 03:51:38 PM",
+        "modified": "09/27/2026 10:49:56 PM",
+        "keywords": "has-patch needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Has Concrete Milestone +8",
+            "class": "standard"
+          },
+          {
+            "label": "Has Owner +6",
+            "class": "owner"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          },
+          {
+            "label": "Setup Complexity: Server/runtime Configuration -16",
+            "class": "complexity"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Has Concrete Milestone",
+            "detail": "",
+            "display": "Has Concrete Milestone",
+            "polarity": "positive"
+          },
+          {
+            "points": "+6",
+            "label": "Has Owner",
+            "detail": "",
+            "display": "Has Owner",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          },
+          {
+            "points": "-16",
+            "label": "Setup Complexity",
+            "detail": "Server/runtime Configuration",
+            "display": "Setup Complexity: Server/runtime Configuration",
+            "polarity": "negative"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {
+          "status": "commented",
+          "reason": "Reviewed patch, tested in Playground, submitted Trac feedback.",
+          "updated_at": "2026-06-17T01:45:15.293Z"
+        }
+      },
+      {
         "ticket_id": "63256",
         "url": "https://core.trac.wordpress.org/ticket/63256",
         "score": 154,
@@ -19473,120 +19587,6 @@
           "status": "tested",
           "reason": "Positive test result",
           "updated_at": "2026-06-16T22:30:13.948Z"
-        }
-      },
-      {
-        "ticket_id": "64707",
-        "url": "https://core.trac.wordpress.org/ticket/64707",
-        "score": 146,
-        "tier_class": "watching",
-        "tier_label": "Worth Watching",
-        "summary": "Site Health: Opcode cache test reports a false negative when OPcache runs in file-cache-only mode",
-        "track": "General: Needs Testing",
-        "status": "Accepted",
-        "component": "Site Health",
-        "owner": "westonruter",
-        "comments": "",
-        "created": "02/23/2026 03:51:38 PM",
-        "modified": "08/04/2026 05:46:51 AM",
-        "keywords": "has-patch needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Has Concrete Milestone +8",
-            "class": "standard"
-          },
-          {
-            "label": "Has Owner +6",
-            "class": "owner"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          },
-          {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
-          },
-          {
-            "label": "Setup Complexity: Server/runtime Configuration -16",
-            "class": "complexity"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Has Concrete Milestone",
-            "detail": "",
-            "display": "Has Concrete Milestone",
-            "polarity": "positive"
-          },
-          {
-            "points": "+6",
-            "label": "Has Owner",
-            "detail": "",
-            "display": "Has Owner",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
-            "polarity": "positive"
-          },
-          {
-            "points": "-16",
-            "label": "Setup Complexity",
-            "detail": "Server/runtime Configuration",
-            "display": "Setup Complexity: Server/runtime Configuration",
-            "polarity": "negative"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {
-          "status": "commented",
-          "reason": "Reviewed patch, tested in Playground, submitted Trac feedback.",
-          "updated_at": "2026-06-17T01:45:15.293Z"
         }
       }
     ],
