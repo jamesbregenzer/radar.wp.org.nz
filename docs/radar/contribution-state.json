@@ -1,5 +1,17 @@
 {
   "schema": "contribution-state.v1",
   "version": 1,
-  "contributions": []
+  "contributions": [
+    {
+      "ticket_id": "63568",
+      "lifecycle_state": "PUBLIC_DELIVERY_VERIFIED",
+      "status": "commented",
+      "public_url": "https://core.trac.wordpress.org/ticket/63568#comment:61",
+      "tested_sha": "7c82a49985545e1aa65cee06622b63303857ace1",
+      "summary": "WP_Font_Face: Font names that contain single quotes are not wrapped in double quotes",
+      "reason": "Published independent focused test results against PR #13610.",
+      "updated_at": "2026-09-28T16:08:48Z",
+      "received_props": false
+    }
+  ]
 }
