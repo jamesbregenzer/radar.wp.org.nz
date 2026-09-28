@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://radar.wp.org.nz/schemas/radar-machine-feed.v1.schema.json",
+  "title": "WP Core Radar machine-feed.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "snapshot", "opportunities", "verifiedContributions"],
+  "properties": {
+    "schema": {"const": "radar-machine-feed.v1"},
+    "version": {"const": 1},
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "snapshot_id",
+        "collection_id",
+        "dataset_sha256",
+        "reference_time",
+        "source_revision",
+        "scoring_version",
+        "opportunity_count"
+      ],
+      "properties": {
+        "snapshot_id": {"type": "string", "pattern": "^snapshot-v1-[0-9a-f]{24}$"},
+        "collection_id": {"type": "string", "pattern": "^collection-v1-[0-9a-f]{24}$"},
+        "dataset_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "reference_time": {"type": "string", "minLength": 19},
+        "source_revision": {"type": ["string", "null"]},
+        "scoring_version": {"type": "string"},
+        "opportunity_count": {"type": "integer"}
+      }
+    },
+    "opportunities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ticketId", "opportunityKey", "opportunityRevision", "rank", "tier", "score"],
+        "properties": {
+          "ticketId": {"type": "string", "pattern": "^[0-9]+$"},
+          "opportunityKey": {"type": "string", "pattern": "^core-trac:[0-9]+$"},
+          "opportunityRevision": {"type": "string", "pattern": "^opportunity-revision-v1-[0-9a-f]{32}$"},
+          "rank": {"type": "integer"},
+          "tier": {"type": "string"},
+          "score": {"type": "integer"}
+        }
+      }
+    },
+    "verifiedContributions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ticketId",
+          "opportunityKey",
+          "publicUrl",
+          "contributionType",
+          "testedHeadSha",
+          "testedBaseSha",
+          "verifiedAt",
+          "lifecycleState"
+        ],
+        "properties": {
+          "ticketId": {"type": "string", "pattern": "^[0-9]+$"},
+          "opportunityKey": {"type": "string", "pattern": "^core-trac:[0-9]+$"},
+          "publicUrl": {"type": "string", "pattern": "^https://(core\\.trac\\.wordpress\\.org|github\\.com)/.+$"},
+          "contributionType": {
+            "enum": [
+              "NEW_FINDING",
+              "INDEPENDENT_CONFIRMATION",
+              "EXTENDED_EVIDENCE",
+              "RETEST_CONFIRMATION"
+            ]
+          },
+          "testedHeadSha": {"type": "string", "pattern": "^([0-9a-f]{40})?$"},
+          "testedBaseSha": {"type": "string", "pattern": "^([0-9a-f]{40})?$"},
+          "verifiedAt": {"type": "string", "minLength": 19},
+          "lifecycleState": {"enum": ["PUBLIC_DELIVERY_VERIFIED", "UPSTREAM_ACCEPTED", "FOLLOWUP_REQUIRED"]},
+          "changeset": {"type": "string", "pattern": "^[0-9]+$"},
+          "props": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}

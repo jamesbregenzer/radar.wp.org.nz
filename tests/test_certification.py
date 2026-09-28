@@ -20,6 +20,7 @@ from certification import (
     canonical_json,
     certify,
     load_schema,
+    opportunity_key,
     validate_named,
     verify_certified,
 )
@@ -101,6 +102,44 @@ class CertificationTests(unittest.TestCase):
         first = build_certification_bundle(fixture_selection(), CONTEXT, REVISION)
         second = build_certification_bundle(fixture_selection(), CONTEXT, REVISION)
         self.assertEqual(first.snapshot["snapshot_id"], second.snapshot["snapshot_id"])
+
+    def test_opportunity_identity_and_revision_are_deterministic(self):
+        first = build_certification_bundle(fixture_selection(), CONTEXT, REVISION)
+        second = build_certification_bundle(fixture_selection(), CONTEXT, REVISION)
+        record = first.opportunities["opportunities"][0]
+        self.assertEqual(record["opportunityKey"], opportunity_key(record["ticket"]["id"]))
+        self.assertEqual(
+            [item["opportunityRevision"] for item in first.opportunities["opportunities"]],
+            [item["opportunityRevision"] for item in second.opportunities["opportunities"]],
+        )
+
+    def test_opportunity_revision_ignores_snapshot_provenance_noise(self):
+        first = build_certification_bundle(fixture_selection(), CONTEXT, REVISION)
+        second = build_certification_bundle(fixture_selection(), CONTEXT, "f" * 40)
+        self.assertNotEqual(first.snapshot["snapshot_id"], second.snapshot["snapshot_id"])
+        self.assertEqual(
+            [item["opportunityRevision"] for item in first.opportunities["opportunities"]],
+            [item["opportunityRevision"] for item in second.opportunities["opportunities"]],
+        )
+
+    def test_opportunity_revision_changes_for_material_state_change(self):
+        selection = fixture_selection()
+        query_map = {query["slug"]: query for query in load_queries()}
+        opportunity = Opportunity("999", 100, ("track priority: test +100",),
+                                  {"id": "999", "summary": "Test", "status": "new", "modified": "2026-01-01"},
+                                  {"track": "testing"}, None)
+        changed = Opportunity("999", 100, ("track priority: test +100",),
+                              {"id": "999", "summary": "Test", "status": "closed", "modified": "2026-01-01"},
+                              {"track": "testing"}, None)
+        first = build_opportunity_record(opportunity, {EXPECTED[0]}, selection,
+                                         "collection-v1-" + "a" * 24,
+                                         "snapshot-v1-" + "b" * 24,
+                                         "radar-scoring-v1", query_map)
+        second = build_opportunity_record(changed, {EXPECTED[0]}, selection,
+                                          "collection-v1-" + "a" * 24,
+                                          "snapshot-v1-" + "b" * 24,
+                                          "radar-scoring-v1", query_map)
+        self.assertNotEqual(first["opportunityRevision"], second["opportunityRevision"])
 
     def test_bundle_is_byte_identical(self):
         first = build_certification_bundle(fixture_selection(), CONTEXT, REVISION).files()

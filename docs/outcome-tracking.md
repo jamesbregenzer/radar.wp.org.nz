@@ -25,6 +25,29 @@ Low-volume outcome records live in `data/outcomes/outcomes.csv`. They describe r
 
 Props are not a review status. They are recorded independently after WordPress.org shows the attribution, with an optional changeset reference. Upstream maintainers decide props.
 
+Verified public contribution delivery records live in
+`data/contributions/contribution-state.json`. Only public-safe records in
+`PUBLIC_DELIVERY_VERIFIED`, `UPSTREAM_ACCEPTED`, or `FOLLOWUP_REQUIRED` may be
+projected to `/api/v1/contributions` and `/api/v1/machine-feed`.
+
+The verified outcome machine contract includes:
+
+- `ticketId`;
+- `opportunityKey`;
+- public contribution URL;
+- contribution type, such as `INDEPENDENT_CONFIRMATION`;
+- tested head SHA;
+- tested base SHA when known;
+- `verifiedAt`;
+- lifecycle state;
+- optional changeset;
+- optional props flag.
+
+Radar records verified public outcomes. It does not perform contribution
+delivery, hold WordPress.org credentials, or decide whether a future Controller
+may act. The Controller must revalidate live Trac and GitHub state before doing
+any work.
+
 ## Published views
 
 `docs/radar/contributions/index.html` summarizes public-safe review and outcome metadata at [https://radar.wp.org.nz/contributions/](https://radar.wp.org.nz/contributions/). It includes totals, activity, component focus, and recorded props without exposing private notes or admin authentication data.

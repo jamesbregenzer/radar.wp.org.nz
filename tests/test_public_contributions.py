@@ -32,6 +32,7 @@ class PublicContributionStateTests(unittest.TestCase):
                 "--ticket", "63568",
                 "--lifecycle-state", "TESTED",
                 "--status", "tested",
+                "--contribution-type", "INDEPENDENT_CONFIRMATION",
                 "--public-url", "https://core.trac.wordpress.org/ticket/63568",
             )
             self.assertNotEqual(result.returncode, 0)
@@ -45,6 +46,7 @@ class PublicContributionStateTests(unittest.TestCase):
                 "--ticket", "63568",
                 "--lifecycle-state", "PUBLIC_DELIVERY_VERIFIED",
                 "--status", "commented",
+                "--contribution-type", "INDEPENDENT_CONFIRMATION",
                 "--public-url", "https://core.trac.wordpress.org/ticket/63568#comment:1",
                 "--tested-sha", "7c82a49985545e1aa65cee06622b63303857ace1",
                 "--updated-at", "2026-09-28T15:00:00Z",
@@ -54,7 +56,13 @@ class PublicContributionStateTests(unittest.TestCase):
                 (root / "data" / "contributions" / "contribution-state.json").read_text(encoding="utf-8")
             )
             self.assertEqual(len(payload["contributions"]), 1)
-            self.assertEqual(payload["contributions"][0]["lifecycle_state"], "PUBLIC_DELIVERY_VERIFIED")
+            record = payload["contributions"][0]
+            self.assertEqual(record["lifecycle_state"], "PUBLIC_DELIVERY_VERIFIED")
+            self.assertEqual(record["opportunityKey"], "core-trac:63568")
+            self.assertEqual(record["contributionType"], "INDEPENDENT_CONFIRMATION")
+            self.assertEqual(record["testedHeadSha"], "7c82a49985545e1aa65cee06622b63303857ace1")
+            self.assertEqual(record["testedBaseSha"], "")
+            self.assertEqual(record["verifiedAt"], "2026-09-28T15:00:00Z")
 
     def test_props_require_observed_at(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -63,6 +71,7 @@ class PublicContributionStateTests(unittest.TestCase):
                 "--ticket", "63568",
                 "--lifecycle-state", "PUBLIC_DELIVERY_VERIFIED",
                 "--status", "commented",
+                "--contribution-type", "INDEPENDENT_CONFIRMATION",
                 "--public-url", "https://core.trac.wordpress.org/ticket/63568",
                 "--received-props",
             )

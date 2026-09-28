@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://radar.wp.org.nz/schemas/verified-contribution-outcomes.v1.schema.json",
+  "title": "WP Core Radar verified-contribution-outcomes.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "contributions"],
+  "properties": {
+    "schema": {"const": "verified-contribution-outcomes.v1"},
+    "version": {"const": 1},
+    "contributions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ticketId",
+          "opportunityKey",
+          "publicUrl",
+          "contributionType",
+          "testedHeadSha",
+          "testedBaseSha",
+          "verifiedAt",
+          "lifecycleState"
+        ],
+        "properties": {
+          "ticketId": {"type": "string", "pattern": "^[0-9]+$"},
+          "opportunityKey": {"type": "string", "pattern": "^core-trac:[0-9]+$"},
+          "publicUrl": {"type": "string", "pattern": "^https://(core\\.trac\\.wordpress\\.org|github\\.com)/.+$"},
+          "contributionType": {
+            "enum": [
+              "NEW_FINDING",
+              "INDEPENDENT_CONFIRMATION",
+              "EXTENDED_EVIDENCE",
+              "RETEST_CONFIRMATION"
+            ]
+          },
+          "testedHeadSha": {"type": "string", "pattern": "^([0-9a-f]{40})?$"},
+          "testedBaseSha": {"type": "string", "pattern": "^([0-9a-f]{40})?$"},
+          "verifiedAt": {"type": "string", "minLength": 19},
+          "lifecycleState": {"enum": ["PUBLIC_DELIVERY_VERIFIED", "UPSTREAM_ACCEPTED", "FOLLOWUP_REQUIRED"]},
+          "changeset": {"type": "string", "pattern": "^[0-9]+$"},
+          "props": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}

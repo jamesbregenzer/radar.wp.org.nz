@@ -40,8 +40,8 @@ test("health describes the verified certified snapshot", async () => {
   assert.ok(response.headers.get("etag"));
 });
 
-test("canonical snapshot, collection, and opportunity feed are projected", async () => {
-  for (const name of ["snapshot", "collection", "opportunities"]) {
+test("canonical snapshot, collection, opportunity, contribution, and machine feeds are projected", async () => {
+  for (const name of ["snapshot", "collection", "opportunities", "contributions", "machine-feed"]) {
     const response = await api(`/api/v1/${name}`);
     assert.equal(response.status, 200);
     assert.equal(response.headers.get("content-type"), "application/json; charset=utf-8");
@@ -54,6 +54,31 @@ test("opportunity feed preserves certified deterministic ordering", async () => 
   const projected = await (await api("/api/v1/opportunities")).json();
   assert.deepEqual(projected.opportunities.map((item) => item.ticket.id),
     source.opportunities.map((item) => item.ticket.id));
+  assert.match(projected.opportunities[0].opportunityKey, /^core-trac:\d+$/);
+  assert.match(projected.opportunities[0].opportunityRevision, /^opportunity-revision-v1-[0-9a-f]{32}$/);
+});
+
+test("machine feed exposes stable snapshot identity and opportunity revisions", async () => {
+  const opportunities = await (await api("/api/v1/opportunities")).json();
+  const machine = await (await api("/api/v1/machine-feed")).json();
+  assert.equal(machine.snapshot.snapshot_id, opportunities.snapshot_id);
+  assert.equal(machine.opportunities.length, opportunities.opportunities.length);
+  assert.deepEqual(machine.opportunities.slice(0, 3).map((item) => item.opportunityRevision),
+    opportunities.opportunities.slice(0, 3).map((item) => item.opportunityRevision));
+  assert.equal(machine.verifiedContributions[0].opportunityKey, "core-trac:63568");
+  assert.equal(machine.verifiedContributions[0].contributionType, "INDEPENDENT_CONFIRMATION");
+});
+
+test("verified contribution outcomes are projected as public safe machine data", async () => {
+  const projected = await (await api("/api/v1/contributions")).json();
+  const record = projected.contributions.find((item) => item.ticketId === "63568");
+  assert.equal(record.opportunityKey, "core-trac:63568");
+  assert.equal(record.publicUrl, "https://core.trac.wordpress.org/ticket/63568#comment:61");
+  assert.equal(record.lifecycleState, "PUBLIC_DELIVERY_VERIFIED");
+  assert.equal(record.testedHeadSha, "7c82a49985545e1aa65cee06622b63303857ace1");
+  assert.equal(record.testedBaseSha, "");
+  assert.equal(Object.hasOwn(record, "summary"), false);
+  assert.equal(Object.hasOwn(record, "reason"), false);
 });
 
 test("individual record is byte-equivalent in content to feed record", async () => {
@@ -66,14 +91,18 @@ test("individual record is byte-equivalent in content to feed record", async () 
 test("multi-query provenance survives feed and individual projection", async () => {
   const snapshot = JSON.parse(await readFile(new URL("../data/certified/current/snapshot.json", import.meta.url), "utf8"));
   const feed = JSON.parse(await readFile(new URL("../data/certified/current/opportunities.json", import.meta.url), "utf8"));
+  const machine = JSON.parse(await readFile(new URL("../docs/radar/api/v1/machine-feed.json", import.meta.url), "utf8"));
   const first = feed.opportunities[0];
   first.discovery.sources.push({ ...first.discovery.sources[0], query_slug: "second_query", source_identity: "second_query", track: "second-track" });
   first.discovery.tracks.push("second-track");
   const feedText = JSON.stringify(feed) + "\n";
   snapshot.dataset_sha256 = await sha256(feedText);
+  machine.snapshot.dataset_sha256 = snapshot.dataset_sha256;
   const snapshotText = JSON.stringify(snapshot) + "\n";
+  const machineText = JSON.stringify(machine) + "\n";
   const overrides = {
     "/api/v1/opportunities.json": feedText,
+    "/api/v1/machine-feed.json": machineText,
     "/api/v1/snapshot.json": snapshotText,
     "/api/v1/snapshot.sha256": `${await sha256(snapshotText)}  snapshot.json\n`,
   };
@@ -98,6 +127,12 @@ test("ETag is stable and supports conditional GET", async () => {
 
 test("tampered certified data can never report healthy", async () => {
   const response = await api("/api/v1/health", {}, { "/api/v1/opportunities.json": "{}\n" });
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).code, "CERTIFIED_BUNDLE_INVALID");
+});
+
+test("tampered machine feed can never report healthy", async () => {
+  const response = await api("/api/v1/health", {}, { "/api/v1/machine-feed.json": "{\"schema\":\"radar-machine-feed.v1\",\"version\":1,\"snapshot\":{},\"opportunities\":[],\"verifiedContributions\":[]}\n" });
   assert.equal(response.status, 503);
   assert.equal((await response.json()).code, "CERTIFIED_BUNDLE_INVALID");
 });
