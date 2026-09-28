@@ -6,15 +6,93 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from certification import CERTIFIED_CURRENT, canonical_json, file_sha256, verify_certified
+from certification import CERTIFIED_CURRENT, canonical_json, file_sha256, validate_named, verify_certified
 
 ROOT = Path(__file__).resolve().parents[1]
 API_DIR = ROOT / "docs" / "radar" / "api" / "v1"
+CONTRIBUTION_STATE = ROOT / "data" / "contributions" / "contribution-state.json"
+
+
+def load_contribution_state(path: Path = CONTRIBUTION_STATE) -> dict:
+    if not path.exists():
+        return {"schema": "contribution-state.v1", "version": 1, "contributions": []}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    errors = validate_named(payload, "contribution-state.v1")
+    if errors:
+        raise RuntimeError("contribution-state.v1 validation failed: " + "; ".join(errors))
+    return payload
+
+
+def contribution_projection(contribution_state: dict) -> dict:
+    records = []
+    for contribution in contribution_state.get("contributions", []):
+        if contribution.get("lifecycle_state") not in {"PUBLIC_DELIVERY_VERIFIED", "UPSTREAM_ACCEPTED", "FOLLOWUP_REQUIRED"}:
+            continue
+        record = {
+            "ticketId": str(contribution["ticket_id"]),
+            "opportunityKey": contribution["opportunityKey"],
+            "publicUrl": contribution["public_url"],
+            "contributionType": contribution["contributionType"],
+            "testedHeadSha": contribution["testedHeadSha"],
+            "testedBaseSha": contribution["testedBaseSha"],
+            "verifiedAt": contribution["verifiedAt"],
+            "lifecycleState": contribution["lifecycle_state"],
+        }
+        if contribution.get("changeset"):
+            record["changeset"] = str(contribution["changeset"])
+        if contribution.get("received_props") is True:
+            record["props"] = True
+        records.append(record)
+    return {
+        "schema": "verified-contribution-outcomes.v1",
+        "version": 1,
+        "contributions": records,
+    }
+
+
+def machine_feed_payload(snapshot: dict, opportunity_set: dict, contribution_state: dict) -> dict:
+    contributions = contribution_projection(contribution_state)["contributions"]
+    feed = {
+        "schema": "radar-machine-feed.v1",
+        "version": 1,
+        "snapshot": {
+            "snapshot_id": snapshot["snapshot_id"],
+            "collection_id": snapshot["collection_id"],
+            "dataset_sha256": snapshot["dataset_sha256"],
+            "reference_time": snapshot["reference_time"],
+            "source_revision": snapshot.get("source_revision"),
+            "scoring_version": snapshot["scoring_version"],
+            "opportunity_count": snapshot["opportunity_count"],
+        },
+        "opportunities": [
+            {
+                "ticketId": record["ticket"]["id"],
+                "opportunityKey": record["opportunityKey"],
+                "opportunityRevision": record["opportunityRevision"],
+                "rank": index + 1,
+                "tier": record["ranking"]["tier"],
+                "score": record["ranking"]["score"],
+            }
+            for index, record in enumerate(opportunity_set["opportunities"])
+        ],
+        "verifiedContributions": contributions,
+    }
+    errors = validate_named(feed, "radar-machine-feed.v1")
+    if errors:
+        raise RuntimeError("radar-machine-feed.v1 validation failed: " + "; ".join(errors))
+    return feed
 
 
 def generate_api_assets(current_dir: Path = CERTIFIED_CURRENT, output_dir: Path = API_DIR) -> list[Path]:
     verified = verify_certified(current_dir)
     snapshot = json.loads((current_dir / "snapshot.json").read_text(encoding="utf-8"))
+    opportunity_set = json.loads((current_dir / "opportunities.json").read_text(encoding="utf-8"))
+    contribution_state = load_contribution_state()
+    contributions = contribution_projection(contribution_state)
+    contribution_errors = validate_named(contributions, "verified-contribution-outcomes.v1")
+    if contribution_errors:
+        raise RuntimeError("verified-contribution-outcomes.v1 validation failed: " + "; ".join(contribution_errors))
+    machine_feed = machine_feed_payload(snapshot, opportunity_set, contribution_state)
     health = {
         "schema": "radar-health.v1",
         "version": 1,
@@ -35,6 +113,12 @@ def generate_api_assets(current_dir: Path = CERTIFIED_CURRENT, output_dir: Path 
         destination = output_dir / name
         destination.write_bytes((current_dir / name).read_bytes())
         paths.append(destination)
+    contributions_path = output_dir / "contributions.json"
+    contributions_path.write_bytes(canonical_json(contributions))
+    paths.append(contributions_path)
+    machine_feed_path = output_dir / "machine-feed.json"
+    machine_feed_path.write_bytes(canonical_json(machine_feed))
+    paths.append(machine_feed_path)
     health_path = output_dir / "health.json"
     health_path.write_bytes(canonical_json(health))
     paths.append(health_path)

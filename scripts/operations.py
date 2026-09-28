@@ -146,6 +146,7 @@ def generation_artifact_paths(context: RunContext) -> list[Path]:
         ROOT / "docs/radar/contributions/index.html",
         ROOT / "docs/radar/api/v1/health.json", ROOT / "docs/radar/api/v1/snapshot.json",
         ROOT / "docs/radar/api/v1/collection.json", ROOT / "docs/radar/api/v1/opportunities.json",
+        ROOT / "docs/radar/api/v1/contributions.json", ROOT / "docs/radar/api/v1/machine-feed.json",
         ROOT / "docs/radar/api/v1/snapshot.sha256",
     ]
 

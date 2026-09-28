@@ -15,6 +15,12 @@ from urllib.parse import urlparse
 
 STATE_PATH = Path("data") / "contributions" / "contribution-state.json"
 ALLOWED_STATUS = {"tested", "commented", "committed"}
+ALLOWED_CONTRIBUTION_TYPES = {
+    "NEW_FINDING",
+    "INDEPENDENT_CONFIRMATION",
+    "EXTENDED_EVIDENCE",
+    "RETEST_CONFIRMATION",
+}
 
 
 def fail(message: str) -> None:
@@ -45,8 +51,11 @@ def main() -> int:
     parser.add_argument("--ticket", required=True)
     parser.add_argument("--lifecycle-state", required=True)
     parser.add_argument("--status", required=True, choices=sorted(ALLOWED_STATUS))
+    parser.add_argument("--contribution-type", required=True, choices=sorted(ALLOWED_CONTRIBUTION_TYPES))
     parser.add_argument("--public-url", required=True)
     parser.add_argument("--tested-sha", default="")
+    parser.add_argument("--tested-head-sha", default="")
+    parser.add_argument("--tested-base-sha", default="")
     parser.add_argument("--summary", default="")
     parser.add_argument("--reason", default="Public delivery verified.")
     parser.add_argument("--updated-at")
@@ -63,17 +72,27 @@ def main() -> int:
         fail("PROPS_OBSERVATION_REQUIRED")
     if not args.received_props and (args.props_observed_at or args.changeset):
         fail("PROPS_MUST_BE_OBSERVED")
+    tested_head_sha = args.tested_head_sha or args.tested_sha
+    for label, value in (("TESTED_HEAD_SHA_INVALID", tested_head_sha), ("TESTED_BASE_SHA_INVALID", args.tested_base_sha)):
+        if value and (len(value) != 40 or any(character not in "0123456789abcdef" for character in value.lower())):
+            fail(label)
+    verified_at = args.updated_at or datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
     state = load_state()
     record = {
         "ticket_id": args.ticket,
+        "opportunityKey": f"core-trac:{args.ticket}",
         "lifecycle_state": "PUBLIC_DELIVERY_VERIFIED",
+        "contributionType": args.contribution_type,
         "status": args.status,
         "public_url": public_url(args.public_url),
-        "tested_sha": args.tested_sha,
+        "tested_sha": tested_head_sha,
+        "testedHeadSha": tested_head_sha,
+        "testedBaseSha": args.tested_base_sha,
+        "verifiedAt": verified_at,
         "summary": args.summary,
         "reason": args.reason,
-        "updated_at": args.updated_at or datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "updated_at": verified_at,
         "received_props": args.received_props,
     }
     if args.received_props:

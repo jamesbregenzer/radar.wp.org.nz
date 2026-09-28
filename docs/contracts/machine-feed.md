@@ -13,6 +13,8 @@ Static Assets, and health documents are not independent authorities.
 | `GET /api/v1/collection` | byte-preserving `collection.v1` artifact |
 | `GET /api/v1/opportunities` | byte-preserving certified opportunity set |
 | `GET /api/v1/opportunities/{ticket_id}` | exact `opportunity.v1` record from that set |
+| `GET /api/v1/machine-feed` | compact `radar-machine-feed.v1` handoff for autonomous consumers |
+| `GET /api/v1/contributions` | public-safe `verified-contribution-outcomes.v1` projection |
 
 `HEAD` is also supported. Other methods return `405 METHOD_NOT_ALLOWED`.
 Malformed ticket IDs return `400 MALFORMED_TICKET_ID`; absent tickets return
@@ -30,6 +32,43 @@ certification time. Current operator reviews, reasons, and private notes live in
 the separate GitHub-backed review overlay. Dashboard/admin may apply that
 overlay for current human workflow; the machine feed does not mutate or replace
 the certified record when reviews change.
+
+## Autonomous contributor handoff
+
+Every certified `opportunity.v1` record includes:
+
+- `opportunityKey`: deterministic identity in the form `core-trac:{ticketId}`;
+- `opportunityRevision`: deterministic hash of material opportunity state.
+
+The revision preimage includes ticket state, discovery tracks, and material
+ranking inputs. It excludes generated timestamps, collection artifact paths,
+snapshot identity, and API publication details. A Controller can therefore
+compare the current snapshot identity and each opportunity revision to decide
+whether reevaluation is necessary.
+
+`/api/v1/machine-feed` is the cheapest polling surface for an always-on
+Controller. It contains:
+
+- current snapshot identity and dataset hash;
+- ordered `{ticketId, opportunityKey, opportunityRevision, rank, tier, score}`;
+- verified public contribution outcomes.
+
+The machine feed is a trigger surface only. It does not grant execution
+authority, does not contain credentials, and does not replace live Trac/GitHub
+revalidation.
+
+`/api/v1/contributions` exposes the same verified public outcome projection
+without the opportunity list. Outcome records include only public-safe fields:
+
+- `ticketId`;
+- `opportunityKey`;
+- public contribution URL;
+- contribution type;
+- tested head and base SHA when known;
+- verification timestamp;
+- lifecycle state;
+- optional changeset;
+- optional props flag.
 
 The API is public and its data is designed to be public-safe. No client should
 infer contribution authority from access or from an opportunity record.

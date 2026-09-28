@@ -4,10 +4,12 @@
   "title": "WP Core Radar opportunity.v1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "version", "ticket", "discovery", "ranking", "radar_state", "provenance"],
+  "required": ["schema", "version", "opportunityKey", "opportunityRevision", "ticket", "discovery", "ranking", "radar_state", "provenance"],
   "properties": {
     "schema": {"const": "opportunity.v1"},
     "version": {"const": 1},
+    "opportunityKey": {"type": "string", "pattern": "^core-trac:[0-9]+$"},
+    "opportunityRevision": {"type": "string", "pattern": "^opportunity-revision-v1-[0-9a-f]{32}$"},
     "ticket": {
       "type": "object", "additionalProperties": false,
       "required": ["id", "url", "summary", "component", "status", "resolution", "owner", "reporter", "type", "priority", "milestone", "wordpress_version", "keywords", "created", "modified", "comment_count"],

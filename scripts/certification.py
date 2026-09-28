@@ -40,8 +40,11 @@ SCORING_CONFIG = ROOT / "config" / "scoring.json"
 
 SCHEMA_FILES = {
     "collection.v1": "collection.v1.schema.json",
+    "contribution-state.v1": "contribution-state.v1.schema.json",
     "snapshot.v1": "snapshot.v1.schema.json",
     "opportunity.v1": "opportunity.v1.schema.json",
+    "radar-machine-feed.v1": "radar-machine-feed.v1.schema.json",
+    "verified-contribution-outcomes.v1": "verified-contribution-outcomes.v1.schema.json",
     "execution-result.v1": "execution-result.v1.schema.json",
 }
 
@@ -193,6 +196,62 @@ def _score_breakdown(reasons: tuple[str, ...]) -> list[dict[str, Any]]:
     return values
 
 
+def opportunity_key(ticket_id: str) -> str:
+    return f"core-trac:{ticket_id}"
+
+
+def opportunity_revision(material_state: dict[str, Any]) -> str:
+    return f"opportunity-revision-v1-{canonical_hash(material_state)[:32]}"
+
+
+def opportunity_material_state(
+    *,
+    ticket_id: str,
+    ticket: dict[str, Any],
+    discovery: dict[str, Any],
+    ranking: dict[str, Any],
+    radar_state: dict[str, Any],
+) -> dict[str, Any]:
+    """Return only material fields that should wake a controller.
+
+    This intentionally excludes generated timestamps, collection identity,
+    snapshot identity, source artifact paths, and other publication noise.
+    """
+    return {
+        "schema": "opportunity-material-state.v1",
+        "version": 1,
+        "ticket": {
+            "id": ticket_id,
+            "status": ticket["status"],
+            "resolution": ticket["resolution"],
+            "milestone": ticket["milestone"],
+            "keywords": ticket["keywords"],
+            "modified": ticket["modified"],
+            "component": ticket["component"],
+            "owner": ticket["owner"],
+        },
+        "discovery": {
+            "tracks": discovery["tracks"],
+            "sources": [
+                {
+                    "query_slug": source["query_slug"],
+                    "source_identity": source["source_identity"],
+                    "track": source["track"],
+                }
+                for source in discovery["sources"]
+            ],
+        },
+        "ranking": {
+            "score": ranking["score"],
+            "tier": ranking["tier"],
+            "scoring_version": ranking["scoring_version"],
+            "breakdown": ranking["breakdown"],
+            "complexity_markers": ranking["complexity_markers"],
+        },
+        "radar_state": radar_state,
+    }
+
+
 def build_opportunity_record(
     opportunity: Opportunity,
     all_sources: set[str],
@@ -223,40 +282,52 @@ def build_opportunity_record(
     complexity = sorted(
         reason.rsplit(" ", 1)[0] for reason in opportunity.reasons if reason.startswith("setup complexity:")
     )
+    ticket = {
+        "id": opportunity.ticket_id,
+        "url": trac_url(opportunity.ticket_id),
+        "summary": first_value(row, SUMMARY_KEYS, "Untitled ticket"),
+        "component": _string_or_none(first_value(row, COMPONENT_KEYS)),
+        "status": _string_or_none(first_value(row, STATUS_KEYS)),
+        "resolution": _string_or_none(first_value(row, ("resolution", "Resolution"))),
+        "owner": _string_or_none(first_value(row, OWNER_KEYS)),
+        "reporter": _string_or_none(first_value(row, ("reporter", "Reporter"))),
+        "type": _string_or_none(first_value(row, ("type", "Type"))),
+        "priority": _string_or_none(first_value(row, ("priority", "Priority"))),
+        "milestone": _string_or_none(first_value(row, MILESTONE_KEYS)),
+        "wordpress_version": _string_or_none(first_value(row, ("version", "Version"))),
+        "keywords": keywords,
+        "created": _string_or_none(first_value(row, CREATED_KEYS)),
+        "modified": _string_or_none(first_value(row, MODIFIED_KEYS)),
+        "comment_count": _integer_or_none(first_value(row, COMMENTS_KEYS)),
+    }
+    discovery = {
+        "sources": sources,
+        "tracks": sorted({source["track"] for source in sources}),
+    }
+    ranking = {
+        "score": opportunity.score,
+        "tier": tier,
+        "tier_label": tier_label,
+        "scoring_version": scoring_version,
+        "reasons": list(opportunity.reasons),
+        "breakdown": _score_breakdown(opportunity.reasons),
+        "complexity_markers": complexity,
+    }
+    material = opportunity_material_state(
+        ticket_id=opportunity.ticket_id,
+        ticket=ticket,
+        discovery=discovery,
+        ranking=ranking,
+        radar_state=radar_state,
+    )
     return {
         "schema": "opportunity.v1",
         "version": 1,
-        "ticket": {
-            "id": opportunity.ticket_id,
-            "url": trac_url(opportunity.ticket_id),
-            "summary": first_value(row, SUMMARY_KEYS, "Untitled ticket"),
-            "component": _string_or_none(first_value(row, COMPONENT_KEYS)),
-            "status": _string_or_none(first_value(row, STATUS_KEYS)),
-            "resolution": _string_or_none(first_value(row, ("resolution", "Resolution"))),
-            "owner": _string_or_none(first_value(row, OWNER_KEYS)),
-            "reporter": _string_or_none(first_value(row, ("reporter", "Reporter"))),
-            "type": _string_or_none(first_value(row, ("type", "Type"))),
-            "priority": _string_or_none(first_value(row, ("priority", "Priority"))),
-            "milestone": _string_or_none(first_value(row, MILESTONE_KEYS)),
-            "wordpress_version": _string_or_none(first_value(row, ("version", "Version"))),
-            "keywords": keywords,
-            "created": _string_or_none(first_value(row, CREATED_KEYS)),
-            "modified": _string_or_none(first_value(row, MODIFIED_KEYS)),
-            "comment_count": _integer_or_none(first_value(row, COMMENTS_KEYS)),
-        },
-        "discovery": {
-            "sources": sources,
-            "tracks": sorted({source["track"] for source in sources}),
-        },
-        "ranking": {
-            "score": opportunity.score,
-            "tier": tier,
-            "tier_label": tier_label,
-            "scoring_version": scoring_version,
-            "reasons": list(opportunity.reasons),
-            "breakdown": _score_breakdown(opportunity.reasons),
-            "complexity_markers": complexity,
-        },
+        "opportunityKey": opportunity_key(opportunity.ticket_id),
+        "opportunityRevision": opportunity_revision(material),
+        "ticket": ticket,
+        "discovery": discovery,
+        "ranking": ranking,
         "radar_state": radar_state,
         "provenance": {
             "collection_id": collection_id,
@@ -275,6 +346,7 @@ def derive_snapshot_id(
 ) -> str:
     identity = {
         "schema": "snapshot.v1",
+        "schema_versions": sorted(SCHEMA_FILES),
         "collection_hash": collection_hash,
         "dataset_seed_hash": dataset_seed_hash,
         "reference_time": context.generated_iso,
