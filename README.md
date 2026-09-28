@@ -17,6 +17,8 @@ I regularly collect and upload public ticket data from [WordPress Core Trac](htt
 
 The aim is simple: make promising testing, review, documentation, accessibility, and development opportunities easier to identify.
 
+Radar is a standalone public project built around human review. Its machine-readable API is a general public data interface; downstream tools or systems that choose to read it are outside Radar's product boundary and are not part of Radar's public architecture.
+
 ## How scoring works
 
 Each configured Trac search provides a baseline priority. Ticket-level signals then adjust that score. Useful signals include an existing patch, a request for testing or feedback, recent activity, a clear owner, and a manageable discussion size. Stale, closed, previously completed, or unusually complex tickets receive penalties.

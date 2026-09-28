@@ -8,7 +8,9 @@ This document defines WP Core Radar's durable product boundary. Architecture cha
 
 WP Core Radar collects public WordPress Core Trac datasets and turns them into a current, ranked view of contribution opportunities. It validates each collection, normalizes ticket data, applies deterministic scoring rules, certifies the resulting dataset, and publishes human and machine-readable views.
 
-Radar is independently useful. It does not modify WordPress.org, comment on Trac, submit patches, or hold WordPress.org contribution credentials.
+Radar is a standalone public project built around human review. It is independently useful. It does not modify WordPress.org, comment on Trac, submit patches, or hold WordPress.org contribution credentials.
+
+Its machine-readable interfaces are public data products. The identity, architecture, behavior, or existence of any downstream system that reads those interfaces is outside Radar's product boundary and should not be described as part of Radar.
 
 ## Source of truth
 
@@ -38,9 +40,10 @@ The canonical repository is `jamesbregenzer/radar.wp.org.nz`.
 - Keep scoring, normalization, selection, and generation deterministic.
 - Keep canonical hashes and source provenance with certified data.
 - Leave the previously certified dataset intact when a new run fails.
-- Keep public output free of private notes, credentials, and runtime details.
+- Keep public output free of private notes, credentials, runtime details, and private downstream-system details.
 - Treat HTTP as a projection, never as a second source of truth.
-- Require consumers to revalidate live Trac state before acting because Radar data can become stale.
+- Require users of machine-readable data to revalidate live Trac state before acting because Radar data can become stale.
+- Keep downstream consumers outside the Radar product model; public Radar documentation must not advertise or imply a private automation, AI agent, autonomous contributor, or other specific downstream consumer.
 
 ## Collection boundary
 
