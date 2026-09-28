@@ -13,7 +13,7 @@ Static Assets, and health documents are not independent authorities.
 | `GET /api/v1/collection` | byte-preserving `collection.v1` artifact |
 | `GET /api/v1/opportunities` | byte-preserving certified opportunity set |
 | `GET /api/v1/opportunities/{ticket_id}` | exact `opportunity.v1` record from that set |
-| `GET /api/v1/machine-feed` | compact `radar-machine-feed.v1` handoff for autonomous consumers |
+| `GET /api/v1/machine-feed` | compact public-safe `radar-machine-feed.v1` opportunity summary |
 | `GET /api/v1/contributions` | public-safe `verified-contribution-outcomes.v1` projection |
 
 `HEAD` is also supported. Other methods return `405 METHOD_NOT_ALLOWED`.
@@ -33,7 +33,7 @@ the separate GitHub-backed review overlay. Dashboard/admin may apply that
 overlay for current human workflow; the machine feed does not mutate or replace
 the certified record when reviews change.
 
-## Autonomous contributor handoff
+## Machine-readable opportunity identity
 
 Every certified `opportunity.v1` record includes:
 
@@ -42,20 +42,18 @@ Every certified `opportunity.v1` record includes:
 
 The revision preimage includes ticket state, discovery tracks, and material
 ranking inputs. It excludes generated timestamps, collection artifact paths,
-snapshot identity, and API publication details. A Controller can therefore
-compare the current snapshot identity and each opportunity revision to decide
-whether reevaluation is necessary.
+snapshot identity, and API publication details. These fields allow any API user
+to distinguish stable opportunity identity from a materially changed record.
 
-`/api/v1/machine-feed` is the cheapest polling surface for an always-on
-Controller. It contains:
+`/api/v1/machine-feed` contains:
 
 - current snapshot identity and dataset hash;
 - ordered `{ticketId, opportunityKey, opportunityRevision, rank, tier, score}`;
 - verified public contribution outcomes.
 
-The machine feed is a trigger surface only. It does not grant execution
-authority, does not contain credentials, and does not replace live Trac/GitHub
-revalidation.
+The machine feed is read-only public data. It grants no execution or contribution
+authority, contains no credentials, and does not replace live WordPress/Trac
+verification.
 
 `/api/v1/contributions` exposes the same verified public outcome projection
 without the opportunity list. Outcome records include only public-safe fields:
@@ -70,10 +68,11 @@ without the opportunity list. Outcome records include only public-safe fields:
 - optional changeset;
 - optional props flag.
 
-The API is public and its data is designed to be public-safe. No client should
-infer contribution authority from access or from an opportunity record.
+The API is public and its data is designed to be public-safe. Radar does not
+identify, document, or depend on specific downstream consumers.
 
-A consumer **MUST independently revalidate live WordPress/Trac state before
-acting**. Radar is discovery intelligence, may be stale when consumed, and does
-not authorize a contribution. Breaking changes require `/api/v2/` or an
-explicitly governed compatibility strategy.
+Anyone using Radar data to inform contribution work should independently
+revalidate current WordPress/Trac state before acting. Radar is discovery
+intelligence, may be stale when consumed, and does not authorize a contribution.
+Breaking changes require `/api/v2/` or an explicitly governed compatibility
+strategy.
