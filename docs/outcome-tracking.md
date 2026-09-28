@@ -1,108 +1,36 @@
-# Outcome Tracking
+# Review and Outcome Tracking
 
-WP Core Radar tracks contribution outcomes and review decisions so scoring and workflow sections can improve over time without automating contribution activity.
-
-## Contribution outcomes
-
-Contribution outcomes describe what happened after a ticket was acted on manually in WordPress Trac.
-
-Examples:
-
-- Ticket tested
-- Trac comment posted
-- Patch accepted
-- Props received
-- Ticket committed
-- Follow-up requested
-
-Outcome records live in:
-
-```text
-data/outcomes/outcomes.csv
-```
-
-This file remains intentionally simple because outcomes are low-volume and manually maintained.
+WP Core Radar records review decisions and contribution outcomes separately from certified opportunity data.
 
 ## Review decisions
 
-Review decisions describe how Radar triaged a ticket before or after human review.
+Review state lives in `data/reviews/reviews.json`, keyed by ticket ID. Supported statuses are:
 
-Examples:
+- `shortlist`: strong candidate for follow-up
+- `watch`: worth monitoring, but not actionable yet
+- `reject`: poor fit for the current workflow
+- `tested`: patch or behavior tested
+- `commented`: a Trac comment was posted
+- `committed`: the ticket was committed
 
-- `shortlist` — strong candidate for follow-up
-- `watch` — worth monitoring, but not actionable yet
-- `reject` — poor fit for this workflow
-- `tested` — patch or behavior tested
-- `commented` — manual Trac comment posted
-- `committed` — ticket was committed
+`shortlist`, `watch`, and `reject` are planning states. `tested`, `commented`, and `committed` are acted-on states shown under Completed / Acted On.
 
-Props are not a review decision. They are recorded as an independent outcome after contributor credit appears on WordPress.org.
+Review data is a mutable overlay. Changing it can update dashboard grouping without changing the identity or content of an already certified snapshot.
 
-Review decisions live in:
+Because the repository is public, review records must not contain secrets, credentials, or sensitive personal information. Generation publishes `docs/radar/review-state.json` as a display-safe projection and excludes free-form notes.
 
-```text
-data/reviews/reviews.json
-```
+## Contribution outcomes
 
-Reviews are stored as JSON keyed by ticket ID because this format is easy for both local tooling and the protected Cloudflare Worker admin route to validate safely.
+Low-volume outcome records live in `data/outcomes/outcomes.csv`. They describe results such as testing, an upstream comment, an accepted patch, a commit, or contributor props.
 
-Example:
+Props are not a review status. They are recorded independently after WordPress.org shows the attribution, with an optional changeset reference. Upstream maintainers decide props.
 
-```json
-{
-  "33073": {
-    "status": "tested",
-    "reason": "Patch tested successfully",
-    "notes": "Verified locally and reported results on Trac.",
-    "received_props": true,
-    "props_recorded_at": "2026-06-19T00:00:00Z",
-    "changeset": "62481",
-    "updated_at": "2026-06-19T00:00:00Z"
-  }
-}
-```
+## Published views
 
-The review data file should remain constrained metadata only. It should not become a general-purpose repository write surface.
+`docs/radar/contributions/index.html` summarizes public-safe review and outcome metadata at [https://radar.wp.org.nz/contributions/](https://radar.wp.org.nz/contributions/). It includes totals, activity, component focus, and recorded props without exposing private notes or admin authentication data.
 
-Because the repository is public, review notes should be written as publishable metadata. Do not store secrets, private credentials, or sensitive personal notes in `data/reviews/reviews.json`.
+The `/admin/` application reads `docs/radar/admin-data.json` and the safe review overlay from deployed Static Assets. Rendering does not call GitHub and does not require a GitHub credential.
 
-## Public-safe contribution history
+If durable review persistence is unavailable, admin write requests fail with `EXECUTOR_UNAVAILABLE`. They do not report success or create local-only state that appears durable. The required persistence interface is defined in [`contracts/executor.md`](contracts/executor.md).
 
-Review decisions also power a public-safe contribution history page generated at:
-
-```text
-docs/radar/contributions/index.html
-```
-
-This static page is served at `/contributions/` on the Radar application host.
-Under the WP-6 production policy it sits behind the human Cloudflare Access
-boundary, although its content remains public-safe if accidentally exposed. It
-summarizes display-safe review metadata only: total reviewed tickets,
-tested/commented/watch counts, props received, component focus, activity by
-month, and recent review activity. It does not expose admin authentication,
-secrets, or private notes.
-
-## Protected admin read and write boundary
-
-The production `/admin/` console is rendered by the Cloudflare Worker. After
-Cloudflare Access and the retained application login, it loads generated ticket
-data from `docs/radar/admin-data.json` and the public-safe review overlay from
-`docs/radar/review-state.json`. Rendering makes no GitHub API request and needs
-no GitHub credential.
-
-The Worker does not persist review or props changes. Its controls state that
-persistence is unavailable, and authenticated write requests return HTTP 503
-with `EXECUTOR_UNAVAILABLE`. No success response or local-only durable-looking
-state is created. Future writes must satisfy `PERSIST_REVIEW_DECISION` or
-`RECORD_PROPS_OUTCOME` through the portable executor contract.
-
-When an approved source changes `data/reviews/reviews.json` on `main`,
-`.github/workflows/refresh-dashboard.yml` runs `scripts/generate-dashboard.py`
-and commits regenerated projections. This behavior does not grant the Worker
-repository-write authority.
-
-Local review writes through `scripts/review-ticket.py` also regenerate dashboard files immediately so review grouping stays in sync during manual maintenance.
-
-Allowed review statuses are intentionally limited to the workflow states above. This keeps the admin route useful for review decisions without turning it into a broad repository write surface.
-
-Statuses represent workflow state only. `shortlist`, `watch`, and `reject` are planning states. `tested`, `commented`, and `committed` are acted-on outcomes and are grouped under Completed / Acted On. Props are not a status; they are an independent outcome recorded as `received_props: true`, with optional `changeset` metadata for future reporting.
+For local maintenance, `scripts/review-ticket.py` updates `data/reviews/reviews.json` and regenerates the affected dashboard projections.

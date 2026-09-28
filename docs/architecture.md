@@ -1,178 +1,59 @@
 # WP Core Radar Architecture
 
-The authoritative product boundary and roadmap live in
-`docs/RADAR-PRODUCT.md`. This document describes Radar's current
-implementation and target architecture without claiming that target work is
-already complete.
-
-## CURRENT IMPLEMENTATION
+WP Core Radar has one canonical data flow:
 
 ```text
-WordPress Trac
-  → local Firefox browser-assisted CSV collector
-  → data/raw/manual/YYYY-MM-DD/<query_slug>.csv
-  → explicit run context and collection evidence
-  → canonical opportunity normalization, scoring, and grouping
-  → Markdown reports + dashboard + contributions + admin-data.json
-  → GitHub durable source of truth
-
-Protected admin review save
-  → data/reviews/reviews.json
-  → GitHub Action regeneration
-  → committed generated dashboard files
+WordPress Core Trac CSV exports
+  -> raw collection archive
+  -> collection validation and evidence
+  -> normalization and deterministic scoring
+  -> certified current dataset
+  -> dashboard, admin, reports, and API projections
 ```
 
-The current collector opens configured Trac CSV searches, waits for
-`query.csv`, imports the file into the raw archive, and removes the browser
-download. It runs in an allowed local network/browser environment because
-hosted/server collection has historically been unreliable or blocked.
+## Collection
 
-WP-2 separated collection and generation behind `scripts/pipeline.py` while
-preserving the command-line entrypoint and browser behavior. `scripts/radarlib.py`
-normalizes rows into a canonical `Opportunity` model and applies the executable
-`config/scoring.json` policy. A single explicit `RunContext` supplies time to
-scoring and generation. Recursive archive discovery remains a compatibility
-path; explicit `DatasetSelection` is available for deterministic downstream
-work. The scheduled wrapper's timestamp-only commit workaround remains a
-runtime compatibility detail pending operational migration.
+`config/queries.json` defines the enabled Trac searches. The current collector opens those CSV exports in a local browser, imports each downloaded `query.csv` into `data/raw/manual/<collection-id>/`, and removes the temporary browser file.
 
-The repository includes a migration-ready Cloudflare Worker plus Static Assets
-target that serves `docs/radar`, projects the certified API, and renders the
-protected admin interface. No active product request depends on a Pages origin
-or the legacy hostname. Provider-side deployment, binding, and redirect changes
-remain external WP-6 cutover actions.
+One run context fixes the reference time, collection ID, source revision, and required query set before collection begins. Every later stage receives that same context, including when a run crosses a date boundary. A certifiable run must collect every enabled query successfully.
 
-### Current files and responsibilities
+The browser workflow is an implementation of the collection boundary, not a dependency of scoring or certification. See [`collection-operations.md`](collection-operations.md) for operating details.
 
-1. `config/queries.json` defines enabled query tracks.
-2. `scripts/browser-fetch.py` opens each query in Firefox and waits for
-   `query.csv`.
-3. `scripts/import-download.py` archives the CSV and deletes the temporary
-   browser download after successful import.
-4. `scripts/radarcore.py` selects exact artifacts and records collection
-   evidence including validation state, row count, file time, and SHA-256.
-   `scripts/verify-collector-snapshot.py` remains the compatibility verifier;
-   the scheduled wrapper then invokes WP-3/WP-4 certification and verification.
-5. `scripts/radarlib.py` normalizes rows into canonical opportunities, loads
-   review/outcome state, applies executable scoring, deduplicates, and groups.
-6. `scripts/generate-report.py` and `scripts/generate-dashboard.py` create the
-   committed report and UI projections.
-7. `docs/radar/admin-data.json` is a generated admin/UI payload, not a stable
-   machine API.
-8. `.github/workflows/refresh-dashboard.yml` regenerates and commits generated
-   dashboard files after review-state changes.
-9. `scripts/run-scheduled-radar.sh` contains host-specific compatibility,
-   synchronization, commit, and push behavior.
+## Canonical model and scoring
 
-### Current security and product boundaries
+`scripts/radarlib.py` normalizes source rows into a single opportunity model and applies `config/scoring.json`. Dataset selection is explicit for certified generation, and duplicate ticket rows retain complete query provenance.
 
-- Public Radar output contains public Trac data and display-safe review state.
-- `/admin/` is protected and reads deployed projections without GitHub
-  credentials. Durable writes fail closed until an approved executor satisfies
-  Radar's persistence contract.
-- Secrets belong in provider/runtime custody, never in the repository.
-- Radar does not modify WordPress.org, comment on Trac, submit patches, or hold
-  WordPress.org contribution credentials.
-- GitHub becomes durable truth after collected and generated data is published.
+Time-dependent scoring uses the run's explicit reference time. Identical inputs, configuration, and reference time therefore produce identical normalized records and ordering.
 
-## TARGET ARCHITECTURE
+## Certification
 
-```text
-Collector contract
-  → collection.v1
-  → validate-collection
-  → snapshot.v1
-  → deterministic normalize/score/rank
-  → opportunity.v1
-  → certify + verify
-  → GitHub canonical certified data
-  → dashboard/admin/report/API projections
-```
+The canonical application entrypoint is `scripts/radar.py`. Its operations cover collection, collection validation, generation, certification, verification, publication planning, and the composed pipeline. Each operation returns a schema-validated `execution-result.v1` document.
 
-The browser collector remains one valid implementation of the collector
-contract. Downstream Radar logic must not depend on Firefox, a particular host,
-LaunchAgent, local paths, credential custody, or runtime routing.
+Certification writes versioned `collection.v1`, `snapshot.v1`, and `opportunity.v1` artifacts under `data/certified/current/`. Canonical JSON and SHA-256 identities make the committed bundle independently verifiable offline. An incomplete or invalid run cannot replace the prior certified current dataset.
 
-The target application is `radar.wp.org.nz`, with protected administration at
-`/admin/` and a certified machine feed at `/api/v1/...`. The HTTP API is
-a projection of canonical certified GitHub data, not another authority.
+## Projections
 
-Dashboard, admin, reports, and API/feed will consume one canonical normalized
-opportunity model. Certification must include canonical hashes and provenance
-and fail closed when evidence is incomplete.
+All current product views use the certified opportunity model:
 
-Radar may define generic collector, persistence, and publication executor
-requirements, but it does not implement scheduling, host provisioning,
-provider credentials, or runtime routing. Consumers must independently
-revalidate live WordPress state before acting.
+- `scripts/generate-dashboard.py` creates the dashboard, contribution history, admin payload, and safe review-state projection.
+- `scripts/generate-report.py` creates the Markdown opportunity report.
+- `scripts/generate-api.py` creates static API artifacts from the verified bundle.
+- `cloudflare/worker-radar.js` serves Static Assets, API routes, and the admin application.
 
-## IMPLEMENTED — WP-3 certified data
+The Worker verifies manifest, hash, collection, snapshot, and opportunity relationships before reporting a healthy dataset. It does not fetch Trac data, rescore opportunities, or use GitHub for normal runtime reads.
 
-An explicit complete `DatasetSelection` can now produce strict `collection.v1`,
-`opportunity.v1`, `snapshot.v1`, and `execution-result.v1` data. Centralized
-canonical JSON and deterministic IDs/hashes make the committed
-`data/certified/current/` bundle independently verifiable offline. Failed or
-incomplete certification leaves the prior current bundle unchanged.
+## Review state
 
-The current dashboard, report, contribution history, and admin payload remain
-compatibility projections from the WP-2 internal model. Full consumption of the
-public versioned schema and `/api/v1/...` remain WP-5 work.
+`data/reviews/reviews.json` is the durable review overlay. Generated public views omit private notes. Applying current review state to a dashboard or admin view does not mutate certified snapshot identity or content.
 
-## IMPLEMENTED — WP-4 stable operations
+The deployed admin reads static projections without a GitHub credential. If durable write support is unavailable, write requests fail closed and do not claim that anything was saved. The generic persistence requirements are documented in [`contracts/executor.md`](contracts/executor.md).
 
-`scripts/radar.py` is the canonical application entrypoint for `collect`,
-`validate-collection`, `generate`, `certify`, `verify`, `publish`, and
-`pipeline`. Every command emits a validated `execution-result.v1` JSON document,
-and the pipeline stops at the first failed stage. `publish` is a deterministic
-eligibility plan over the verified certified bundle; executors retain custody
-of Git authentication, repository writes, scheduling, and delivery. The exact
-boundary is in `docs/contracts/executor.md`.
+## Publication
 
-## IMPLEMENTED — WP-5 machine feed and aligned projections
+The public application is served by the `radar-wp-org-nz` Cloudflare Worker with Static Assets from `docs/radar`. GitHub remains the durable source of truth; deployment copies committed projections to the public application.
 
-The Worker projects the committed, verified `data/certified/current/` bundle at
-`/api/v1/`. Generated Static Assets are byte-preserving copies or deterministic
-derivatives; the Worker checks manifest, dataset, collection, and identity
-relationships before returning healthy data. Dashboard, admin data, and reports
-use `scripts/certifiedmodel.py` to adapt the same `opportunity.v1` records for
-existing renderers without rescoring raw CSV.
+Radar core does not own scheduling, browser availability, provider credentials, or repository publication. Those concerns are supplied by its operating environment through the bounded contract in [`contracts/executor.md`](contracts/executor.md).
 
-Human review data remains a separate mutable GitHub-backed overlay. It may
-change dashboard/admin grouping between certifications, but it never rewrites
-the immutable certified snapshot or enters the machine feed as current private
-notes. Production hostname and Access policy are specified by
-WP-6 and remain provider-side cutover work.
+## Safety boundary
 
-## IMPLEMENTED — WP-6 production architecture
-
-The canonical repository is `jamesbregenzer/radar.wp.org.nz`. The Worker has no
-GitHub repository setting or credential because dashboard, API, and admin reads
-come from deployed projections. `wrangler.jsonc` names the durable Worker and
-Static Assets directory; the canonical hostname binding and Cloudflare Access
-policy remain provider-owned configuration. The target topology, machine-access
-policy, DNS/redirect semantics, acceptance tests, rollback, and Pages-retirement gates are frozen in
-`docs/WP-6-RADAR-PRODUCTION-MIGRATION.md` and
-`config/production-migration.json`.
-
-The Worker is bound at `radar.wp.org.nz` behind the human Access policy. The API
-is private by default in the current production deployment.
-The historical Pages project remains rollback infrastructure. Provider-side
-redirect and legacy-host state must be verified independently of repository
-configuration.
-
-## HISTORICAL/COMPATIBILITY
-
-- The legacy hostname is retained during the migration window as the recorded
-  rollback/redirect source.
-- Cloudflare Pages may remain part of the live rollback path until WP-6 proves
-  the Worker migration.
-- The local checkout path, Python path, and six-hour scheduler cadence are
-  current compatibility details documented in
-  `docs/mac-mini-collector.md`; they are not core Radar architecture.
-- Legacy raw archive layouts remain readable through recursive compatibility
-  discovery. WP-2 added explicit selection for deterministic generation; WP-3
-  made certification fail closed over selected inputs.
-
-Architecture changes require an ADR or explicit amendment to
-`docs/RADAR-PRODUCT.md`; they must not enter through silent code
-or documentation drift.
+Radar recommends opportunities only. A consumer must check current Trac state and make its own contribution decision. Radar never treats a score or API record as authority to change WordPress.org.
