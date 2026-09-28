@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-28T16:31:56",
+  "generated": "2026-09-28T19:17:03",
   "summary": {
     "unique_tickets": 290,
     "priority_targets": 12,
@@ -8,15 +8,15 @@
     "watching": 67,
     "reviews_loaded": 21,
     "certification": {
-      "snapshot_id": "snapshot-v1-be2085ccf91b8a5ee05d5e3a",
-      "collection_id": "collection-v1-bfff7cb73feb9b058db3dca5",
-      "reference_time": "2026-09-28T13:16:13",
+      "snapshot_id": "snapshot-v1-b04bbb68b2c2510f92c82a09",
+      "collection_id": "collection-v1-384a076a1e7cc620e3348fc4",
+      "reference_time": "2026-09-28T19:17:03",
       "state": "certified",
       "opportunity_count": 290,
       "scoring_version": "radar-scoring-v1",
-      "source_revision": "e553edbe46064e1563bf8f1e029ff39ba1b59419",
+      "source_revision": "4af85a2bf51f7c84e28c1f4a5856d45703940f04",
       "warnings": [],
-      "dataset_sha256": "5e09cd359c13e1dbd7d55fb5a187033bf253c051f7a7633c7f047bc43f383ad1"
+      "dataset_sha256": "e5accd0586ba64341502b2480e86611c06481ca0864a842cb56d9cb6339886c5"
     }
   },
   "groups": {
@@ -320,7 +320,7 @@
         "owner": "audrasjb",
         "comments": "",
         "created": "06/14/2025 01:01:14 PM",
-        "modified": "09/18/2026 04:23:01 PM",
+        "modified": "09/28/2026 04:07:39 PM",
         "keywords": "dev-feedback has-patch has-screenshots has-test-info has-unit-tests needs-testing",
         "signals": [
           {
@@ -936,7 +936,7 @@
         "owner": "Clorith",
         "comments": "",
         "created": "02/08/2024 08:52:50 PM",
-        "modified": "09/28/2026 03:35:59 AM",
+        "modified": "09/28/2026 05:37:23 PM",
         "keywords": "early has-patch needs-testing",
         "signals": [
           {
@@ -1810,6 +1810,83 @@
             "label": "Freshness",
             "detail": "Updated Within 60 Days",
             "display": "Freshness: Updated Within 60 Days",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "62744",
+        "url": "https://core.trac.wordpress.org/ticket/62744",
+        "score": 158,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Twenty Seventeen: Quote block Appearance settings do not affect citation",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Bundled Theme",
+        "owner": "",
+        "comments": "",
+        "created": "12/27/2024 11:23:16 AM",
+        "modified": "09/28/2026 06:03:13 PM",
+        "keywords": "has-patch needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
             "polarity": "positive"
           }
         ],
@@ -10226,72 +10303,6 @@
             "detail": "Very Old Ticket",
             "display": "Ticket Age: Very Old Ticket",
             "polarity": "negative"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
-        "ticket_id": "62744",
-        "url": "https://core.trac.wordpress.org/ticket/62744",
-        "score": 113,
-        "tier_class": "standard",
-        "tier_label": "Standard",
-        "summary": "Twenty Seventeen: Quote block Appearance settings do not affect citation",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Bundled Theme",
-        "owner": "",
-        "comments": "",
-        "created": "12/27/2024 11:23:16 AM",
-        "modified": "09/12/2026 08:28:29 PM",
-        "keywords": "needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          },
-          {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
-            "polarity": "positive"
           }
         ],
         "discovery_track": "General Needs Testing",
