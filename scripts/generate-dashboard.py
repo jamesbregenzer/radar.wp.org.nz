@@ -34,6 +34,7 @@ from radarlib import (
 )
 
 PUBLIC_TOP_LIMIT = 50
+CONTRIBUTION_STATE = Path("data") / "contributions" / "contribution-state.json"
 
 
 def opportunity_data(context: RunContext, selection: DatasetSelection | None = None):
@@ -46,10 +47,10 @@ def html_badge(label: str, css_prefix: str = "signal") -> str:
 
 
 def signal_badges(keywords: str, reasons: list[str]) -> str:
-    """Render compact public signal pills with explicit scoring context."""
+    """Render the most useful public signal pills without overwhelming a row."""
     labels = ranking_signal_labels(reasons)
 
-    # Keep non-scoring Trac keywords visible after the scoring rationale because
+    # Keep non-scoring Trac keywords available after the scoring rationale because
     # keywords like needs-refresh and needs-screenshots are still useful triage
     # context even when they do not directly affect the score.
     scored_keys = {label.lower().replace("-", " ") for label in labels}
@@ -58,7 +59,16 @@ def signal_badges(keywords: str, reasons: list[str]) -> str:
         if normalized not in scored_keys:
             labels.append(keyword_label)
 
-    return " ".join(html_badge(label, "signal") for label in labels)
+    visible = labels[:4]
+    hidden = labels[4:]
+    rendered = " ".join(html_badge(label, "signal") for label in visible)
+    if hidden:
+        extra = " ".join(html_badge(label, "signal") for label in hidden)
+        rendered += (
+            f' <details class="signal-more"><summary>+{len(hidden)} more</summary>'
+            f'<span class="signal-more-items">{extra}</span></details>'
+        )
+    return rendered
 
 
 def ticket_row(item: dict[str, Any], duplicate_sources: dict[str, set[str]]) -> str:
@@ -274,6 +284,61 @@ def dashboard_css() -> str:
     .signal-age { background: #fef9c3; color: #854d0e; }
     .signal-component { background: #fce7f3; color: #9d174d; }
     .signal-complexity { background: #fee2e2; color: #991b1b; }
+    .signal-more {
+      display: inline-block;
+      position: relative;
+      vertical-align: top;
+    }
+    .signal-more summary {
+      display: inline-block;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 4px 8px;
+      margin: 0 4px 5px 0;
+      background: #f3f4f6;
+      color: #4b5563;
+      font-size: 12px;
+      font-weight: 700;
+      list-style: none;
+    }
+    .signal-more summary::-webkit-details-marker { display: none; }
+    .signal-more-items {
+      display: block;
+      margin-top: 4px;
+    }
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .status-detail {
+      margin-top: 14px;
+      color: #50575e;
+      line-height: 1.55;
+    }
+    .technical-details {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 1px solid #dcdcde;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .technical-details summary {
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .technical-details p {
+      margin-bottom: 0;
+      color: #50575e;
+      line-height: 1.55;
+    }
+    .scoring-explainer {
+      background: #fff;
+      border: 1px solid #dcdcde;
+      border-radius: 8px;
+      padding: 18px;
+      line-height: 1.6;
+    }
     a {
       color: #2271b1;
       font-weight: 600;
@@ -428,6 +493,26 @@ def admin_data_payload(context: RunContext | None = None, selection: DatasetSele
     }
 
 
+def load_contribution_state(path: Path = CONTRIBUTION_STATE) -> dict[str, Any]:
+    """Load the public-safe contribution ledger.
+
+    Only PUBLIC_DELIVERY_VERIFIED records are eligible for public rendering.
+    Reviews, watches, rejections, and test work without verified public delivery
+    stay in the private/admin review model.
+    """
+    if not path.exists():
+        return {"schema": "contribution-state.v1", "version": 1, "contributions": []}
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if (
+        payload.get("schema") != "contribution-state.v1"
+        or payload.get("version") != 1
+        or not isinstance(payload.get("contributions"), list)
+    ):
+        raise ValueError("CONTRIBUTION_STATE_INVALID")
+    return payload
+
+
 def parse_review_datetime(value: str) -> datetime | None:
     """Parse review timestamps for contribution-history ordering."""
     if not value:
@@ -445,43 +530,45 @@ def status_label(status: str) -> str:
 
 def contribution_records(
     ranked: list[dict[str, Any]],
-    reviews: dict[str, dict[str, Any]],
+    contribution_state: dict[str, Any],
 ) -> list[dict[str, Any]]:
-    """Return public-safe contribution/review records enriched with ticket data.
-
-    Reviews are the long-lived archive. Some reviewed or props-producing tickets
-    may no longer exist in the current Trac CSV opportunity export, so the
-    contribution page must continue to render those historical records with
-    graceful fallback labels.
-    """
+    """Return only verified public contribution records enriched with ticket data."""
     items_by_ticket = {item["ticket_id"]: item for item in ranked}
     records: list[dict[str, Any]] = []
 
-    for ticket_id, review in reviews.items():
+    for contribution in contribution_state.get("contributions", []):
+        if contribution.get("lifecycle_state") != "PUBLIC_DELIVERY_VERIFIED":
+            continue
+
+        ticket_id = str(contribution.get("ticket_id", "")).strip()
+        if not ticket_id.isdigit():
+            continue
+
         item = items_by_ticket.get(ticket_id)
         row = item["row"] if item else {}
         tier_class, tier_label = priority_tier(item) if item else ("standard", "Historical")
-        updated_at = str(review.get("updated_at", ""))
+        updated_at = str(contribution.get("updated_at", ""))
         parsed_updated = parse_review_datetime(updated_at)
-        status = str(review.get("status", "")).strip().lower() or "reviewed"
-        received_props = review.get("received_props") is True or status == "props"
+        status = str(contribution.get("status", "commented")).strip().lower() or "commented"
+        received_props = contribution.get("received_props") is True and bool(contribution.get("props_observed_at"))
 
         records.append(
             {
                 "ticket_id": ticket_id,
-                "url": trac_url(ticket_id),
-                "summary": first_value(row, SUMMARY_KEYS, "Historical ticket not present in current opportunity data"),
-                "component": first_value(row, ("component", "Component"), "Historical") or "Historical",
-                "track": item["query"].get("name", item["query"].get("track", "unknown")) if item else "Historical review",
+                "url": str(contribution.get("public_url") or trac_url(ticket_id)),
+                "summary": first_value(row, SUMMARY_KEYS, str(contribution.get("summary") or "Verified WordPress Core contribution")),
+                "component": first_value(row, ("component", "Component"), str(contribution.get("component") or "Historical")) or "Historical",
+                "track": item["query"].get("name", item["query"].get("track", "unknown")) if item else str(contribution.get("track") or "Verified contribution"),
                 "score": item["score"] if item else "",
                 "tier_class": tier_class,
                 "tier_label": tier_label,
                 "status": status,
-                "reason": str(review.get("reason", "")),
+                "reason": str(contribution.get("reason") or "Public delivery verified."),
                 "notes": "",
                 "received_props": received_props,
-                "props_recorded_at": str(review.get("props_recorded_at", "")),
-                "changeset": str(review.get("changeset", "")),
+                "props_recorded_at": str(contribution.get("props_observed_at", "")) if received_props else "",
+                "changeset": str(contribution.get("changeset", "")) if received_props else "",
+                "tested_sha": str(contribution.get("tested_sha", "")),
                 "updated_at": updated_at,
                 "updated_dt": parsed_updated,
                 "updated_label": parsed_updated.strftime("%b %d, %Y") if parsed_updated else "Unknown",
@@ -635,7 +722,8 @@ def contribution_bar_chart(title: str, counts: Counter[str], labeler=status_labe
 def build_contributions_page(context: RunContext | None = None, selection: DatasetSelection | None = None) -> str:
     context = context or parse_run_time(None)
     ranked, duplicate_sources, summary = opportunity_data(context, selection)
-    records = contribution_records(ranked, summary["reviews"])
+    contribution_state = load_contribution_state()
+    records = contribution_records(ranked, contribution_state)
     generated = context.generated_display
 
     status_counts = Counter(record["status"] for record in records)
@@ -702,7 +790,7 @@ def build_contributions_page(context: RunContext | None = None, selection: Datas
   <header>
     <div class="header-content">
       <h1>WP Core Radar Contributions</h1>
-      <p>Generated {html.escape(generated)}. A public-safe record of human review, testing, and props outcomes powered by WP Core Radar.</p>
+      <p>Generated {html.escape(generated)}. A public-safe record of verified WordPress Core contributions powered by WP Core Radar.</p>
     </div>
     <div class="header-actions">
       <a class="header-pill" href="/">Dashboard</a>
@@ -715,11 +803,11 @@ def build_contributions_page(context: RunContext | None = None, selection: Datas
     <div class="hero-grid">
       <section class="hero-card">
         <h2>Contribution history</h2>
-        <p>This page turns Radar review decisions into a contribution record: tickets reviewed, patches tested, areas of focus, and props that were later recorded from WordPress.org. Radar recommends opportunities only; all WordPress Core contribution decisions and actions remain manual.</p>
+        <p>This page lists only contribution activity that reached <code>PUBLIC_DELIVERY_VERIFIED</code>. Radar reviews, watches, rejections, and unfinished testing are intentionally excluded.</p>
         <div class="metric-row">
-          <div class="mini-metric"><strong>{len(records)}</strong><span>Tickets reviewed</span></div>
-          <div class="mini-metric"><strong>{status_counts.get("tested", 0)}</strong><span>Tickets tested</span></div>
-          <div class="mini-metric"><strong>{acted_on_count}</strong><span>Completed / acted on</span></div>
+          <div class="mini-metric"><strong>{len(records)}</strong><span>Verified contributions</span></div>
+          <div class="mini-metric"><strong>{status_counts.get("tested", 0)}</strong><span>Verified test reports</span></div>
+          <div class="mini-metric"><strong>{acted_on_count}</strong><span>Public actions</span></div>
           <div class="mini-metric props-card"><strong>{props_count}</strong><span>Props received</span><div class="props-note">{props_rate}% of acted-on tickets</div></div>
           <div class="mini-metric"><strong>{len(component_counts)}</strong><span>Components touched</span></div>
         </div>
@@ -762,7 +850,7 @@ def build_contributions_page(context: RunContext | None = None, selection: Datas
   </main>
 
   <footer class="contribution-footer">
-    <span>Generated from public-safe review metadata in <code>data/reviews/reviews.json</code>.</span>
+    <span>Generated from <code>data/contributions/contribution-state.json</code>; only <code>PUBLIC_DELIVERY_VERIFIED</code> records are eligible.</span>
     <a class="footer-pill" href="/">Back to dashboard</a>
   </footer>
 </body>
@@ -775,10 +863,19 @@ def build_dashboard(context: RunContext | None = None, selection: DatasetSelecti
     groups = group_items(ranked)
     certification = summary["certification"]
     generated = certification["reference_time"]
+    contribution_state = load_contribution_state()
+    verified_contributions = sum(
+        1
+        for item in contribution_state.get("contributions", [])
+        if item.get("lifecycle_state") == "PUBLIC_DELIVERY_VERIFIED"
+    )
 
     immediate_count = sum(1 for item in groups["priority"] if priority_tier(item)[0] == "immediate")
     strong_count = sum(1 for item in groups["priority"] if priority_tier(item)[0] == "strong")
     watching_count = sum(1 for item in groups["top"] if priority_tier(item)[0] == "watching")
+    warnings = certification["warnings"]
+    data_status = "Current" if certification["state"] == "certified" and not warnings else "Attention"
+    warning_label = "None" if not warnings else str(len(warnings))
 
     return f"""<!doctype html>
 <html lang="en">
@@ -794,7 +891,7 @@ def build_dashboard(context: RunContext | None = None, selection: DatasetSelecti
   <header>
     <div class="header-content">
       <h1>WP Core Radar Dashboard</h1>
-      <p>Generated {html.escape(generated)}. Radar recommends opportunities only. Humans make contribution decisions.</p>
+      <p>Updated {html.escape(generated)}. Radar highlights contribution opportunities; contributors make the final call.</p>
     </div>
     <div class="header-actions">
       <a class="header-pill" href="/contributions/">Contributions</a>
@@ -804,23 +901,43 @@ def build_dashboard(context: RunContext | None = None, selection: DatasetSelecti
 
   <main>
     <div class="summary">
-      <div class="card"><strong>{len(ranked)}</strong>Unique tickets scored</div>
-      <div class="card"><strong>{len(groups["priority"])}</strong>Priority targets</div>
+      <div class="card"><strong>{len(ranked)}</strong>Opportunities scored</div>
       <div class="card card-blue"><strong>{immediate_count}</strong>Immediate Review</div>
       <div class="card card-purple"><strong>{strong_count}</strong>Strong Candidates</div>
       <div class="card card-amber"><strong>{watching_count}</strong>Worth Watching</div>
-      <div class="card"><strong>{len(summary["reviews"])}</strong>Reviews loaded</div>
+      <div class="card"><strong>{verified_contributions}</strong>Verified contributions</div>
+      <div class="card"><strong>{html.escape(certification["reference_time"][:10])}</strong>Last updated</div>
     </div>
 
-    <section aria-labelledby="certification-health">
-      <h2 id="certification-health">Certified data health</h2>
-      <div class="summary">
-        <div class="card card-blue"><strong>{html.escape(certification["state"].title())}</strong>Certification</div>
-        <div class="card"><strong>{html.escape(certification["reference_time"][:10])}</strong>Certified snapshot date</div>
-        <div class="card"><strong>{html.escape(certification["scoring_version"])}</strong>Scoring version</div>
-        <div class="card"><strong>{html.escape(certification["snapshot_id"].removeprefix("snapshot-v1-")[:12])}</strong>Snapshot</div>
+    <section aria-labelledby="data-status">
+      <h2 id="data-status">Data status</h2>
+      <div class="status-grid">
+        <div class="card card-blue"><strong>{html.escape(data_status)}</strong>Dataset</div>
+        <div class="card"><strong>{len(ranked)}</strong>Tickets processed</div>
+        <div class="card"><strong>{html.escape(certification["reference_time"][:10])}</strong>Updated</div>
+        <div class="card"><strong>{html.escape(warning_label)}</strong>Warnings</div>
       </div>
-      <p class="health-detail">Collection <code>{html.escape(certification["collection_id"])}</code> · Source <code>{html.escape((certification["source_revision"] or "unknown")[:12])}</code>{" · Warnings: " + html.escape(", ".join(certification["warnings"])) if certification["warnings"] else " · No certification warnings"}</p>
+      <p class="status-detail">The dashboard is generated from the current verified Radar dataset. Scores help prioritize where to look first; current Trac state should still be checked before contributing.</p>
+      <details class="technical-details">
+        <summary>Technical details</summary>
+        <p>
+          Scoring version <code>{html.escape(certification["scoring_version"])}</code> ·
+          Snapshot <code>{html.escape(certification["snapshot_id"])}</code> ·
+          Collection <code>{html.escape(certification["collection_id"])}</code> ·
+          Source <code>{html.escape(certification["source_revision"] or "unknown")}</code>
+          {" · Warnings: " + html.escape(", ".join(warnings)) if warnings else " · No data warnings"}
+        </p>
+      </details>
+    </section>
+
+    <section aria-labelledby="scoring-explainer">
+      <h2 id="scoring-explainer">How the tiers work</h2>
+      <div class="scoring-explainer">
+        <strong>Immediate Review</strong> surfaces the strongest current signals and is the first place to look.
+        <strong>Strong Candidates</strong> are promising opportunities that still deserve a quick upstream check.
+        <strong>Worth Watching</strong> have useful signals but may need more context, stability, or timing before acting.
+        Scores are deterministic recommendations, not contribution decisions.
+      </div>
     </section>
 
     {section_html("Priority Targets", groups["priority"], duplicate_sources)}
@@ -832,7 +949,7 @@ def build_dashboard(context: RunContext | None = None, selection: DatasetSelecti
   </main>
 
   <footer>
-    WP Core Radar does not auto-comment on Trac or automate contribution activity.
+    WP Core Radar recommends opportunities and records verified contribution outcomes.
   </footer>
 </body>
 </html>
@@ -869,10 +986,17 @@ def main() -> int:
     contributions_output = contributions_dir / "index.html"
     contributions_output.write_text(build_contributions_page(context, selection), encoding="utf-8")
 
+    contribution_state_output = radar_dir / "contribution-state.json"
+    contribution_state_output.write_text(
+        json.dumps(load_contribution_state(), indent=2) + "\n",
+        encoding="utf-8",
+    )
+
     print(f"Wrote {output}")
     print(f"Wrote {admin_data}")
     print(f"Wrote {review_state}")
     print(f"Wrote {contributions_output}")
+    print(f"Wrote {contribution_state_output}")
     return 0
 
 
