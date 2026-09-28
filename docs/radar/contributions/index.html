@@ -153,6 +153,61 @@
     .signal-age { background: #fef9c3; color: #854d0e; }
     .signal-component { background: #fce7f3; color: #9d174d; }
     .signal-complexity { background: #fee2e2; color: #991b1b; }
+    .signal-more {
+      display: inline-block;
+      position: relative;
+      vertical-align: top;
+    }
+    .signal-more summary {
+      display: inline-block;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 4px 8px;
+      margin: 0 4px 5px 0;
+      background: #f3f4f6;
+      color: #4b5563;
+      font-size: 12px;
+      font-weight: 700;
+      list-style: none;
+    }
+    .signal-more summary::-webkit-details-marker { display: none; }
+    .signal-more-items {
+      display: block;
+      margin-top: 4px;
+    }
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .status-detail {
+      margin-top: 14px;
+      color: #50575e;
+      line-height: 1.55;
+    }
+    .technical-details {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 1px solid #dcdcde;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .technical-details summary {
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .technical-details p {
+      margin-bottom: 0;
+      color: #50575e;
+      line-height: 1.55;
+    }
+    .scoring-explainer {
+      background: #fff;
+      border: 1px solid #dcdcde;
+      border-radius: 8px;
+      padding: 18px;
+      line-height: 1.6;
+    }
     a {
       color: #2271b1;
       font-weight: 600;
@@ -346,7 +401,7 @@
   <header>
     <div class="header-content">
       <h1>WP Core Radar Contributions</h1>
-      <p>Generated 2026-09-28 13:16. A public-safe record of human review, testing, and props outcomes powered by WP Core Radar.</p>
+      <p>Generated 2026-09-28 16:28. A public-safe record of verified WordPress Core contributions powered by WP Core Radar.</p>
     </div>
     <div class="header-actions">
       <a class="header-pill" href="/">Dashboard</a>
@@ -359,342 +414,54 @@
     <div class="hero-grid">
       <section class="hero-card">
         <h2>Contribution history</h2>
-        <p>This page turns Radar review decisions into a contribution record: tickets reviewed, patches tested, areas of focus, and props that were later recorded from WordPress.org. Radar recommends opportunities only; all WordPress Core contribution decisions and actions remain manual.</p>
+        <p>This page lists only contribution activity that reached <code>PUBLIC_DELIVERY_VERIFIED</code>. Radar reviews, watches, rejections, and unfinished testing are intentionally excluded.</p>
         <div class="metric-row">
-          <div class="mini-metric"><strong>21</strong><span>Tickets reviewed</span></div>
-          <div class="mini-metric"><strong>10</strong><span>Tickets tested</span></div>
-          <div class="mini-metric"><strong>14</strong><span>Completed / acted on</span></div>
-          <div class="mini-metric props-card"><strong>3</strong><span>Props received</span><div class="props-note">21% of acted-on tickets</div></div>
-          <div class="mini-metric"><strong>9</strong><span>Components touched</span></div>
+          <div class="mini-metric"><strong>0</strong><span>Verified contributions</span></div>
+          <div class="mini-metric"><strong>0</strong><span>Verified test reports</span></div>
+          <div class="mini-metric"><strong>0</strong><span>Public actions</span></div>
+          <div class="mini-metric props-card"><strong>0</strong><span>Props received</span><div class="props-note">0% of acted-on tickets</div></div>
+          <div class="mini-metric"><strong>0</strong><span>Components touched</span></div>
         </div>
       </section>
       <aside class="hero-card latest-card">
         <h3>Latest activity</h3>
-        <p><strong><a href="https://core.trac.wordpress.org/ticket/65623">#65623</a></strong><br>Watch: Historical ticket not present in current opportunity data</p><p>Jul 14, 2026</p>
+        <p>No activity recorded yet.</p>
       </aside>
     </div>
 
     <div class="summary">
-      <div class="card card-blue"><strong>10</strong>Tested</div>
-      <div class="card"><strong>2</strong>Commented</div>
-      <div class="card"><strong>6</strong>Watching</div>
+      <div class="card card-blue"><strong>0</strong>Tested</div>
+      <div class="card"><strong>0</strong>Commented</div>
+      <div class="card"><strong>0</strong>Watching</div>
       <div class="card"><strong>0</strong>Shortlisted</div>
-      <div class="card"><strong>1</strong>Rejected</div>
-      <div class="card card-purple"><strong>2</strong>Committed</div>
-      <div class="card card-amber"><strong>3</strong>Props received</div>
+      <div class="card"><strong>0</strong>Rejected</div>
+      <div class="card card-purple"><strong>0</strong>Committed</div>
+      <div class="card card-amber"><strong>0</strong>Props received</div>
     </div>
 
     <section>
-      <h2>Decision breakdown <span>21</span></h2>
-      <div class="chart-card"><h3>Reviews by decision</h3><div class="bar-list"><div class="bar-row">
-  <div class="bar-label">Tested</div>
-  <div class="bar-track"><span class="bar-fill" style="width: 100%"></span></div>
-  <div>10</div>
-</div><div class="bar-row">
-  <div class="bar-label">Watch</div>
-  <div class="bar-track"><span class="bar-fill" style="width: 60%"></span></div>
-  <div>6</div>
-</div><div class="bar-row">
-  <div class="bar-label">Commented</div>
-  <div class="bar-track"><span class="bar-fill" style="width: 20%"></span></div>
-  <div>2</div>
-</div><div class="bar-row">
-  <div class="bar-label">Committed</div>
-  <div class="bar-track"><span class="bar-fill" style="width: 20%"></span></div>
-  <div>2</div>
-</div><div class="bar-row">
-  <div class="bar-label">Reject</div>
-  <div class="bar-track"><span class="bar-fill" style="width: 10%"></span></div>
-  <div>1</div>
-</div></div></div>
+      <h2>Decision breakdown <span>0</span></h2>
+      <p class="empty">No contribution data yet.</p>
     </section>
 
     <section>
-      <h2>Activity by month <span>21</span></h2>
-      <div class="chart-card"><h3>Review activity over time</h3><div class="bar-list"><div class="bar-row">
-  <div class="bar-label">Jun 2026</div>
-  <div class="bar-track"><span class="bar-fill" style="width: 100%"></span></div>
-  <div>18</div>
-</div><div class="bar-row">
-  <div class="bar-label">Jul 2026</div>
-  <div class="bar-track"><span class="bar-fill" style="width: 17%"></span></div>
-  <div>3</div>
-</div></div></div>
+      <h2>Activity by month <span>0</span></h2>
+      <p class="empty">No contribution data yet.</p>
     </section>
 
     <section>
-      <h2>Component focus <span>9</span></h2>
-      <div class="component-grid"><div class="component-card"><strong>12</strong><span>Historical</span></div><div class="component-card"><strong>2</strong><span>Media</span></div><div class="component-card"><strong>1</strong><span>External Libraries</span></div><div class="component-card"><strong>1</strong><span>Site Health</span></div><div class="component-card"><strong>1</strong><span>Taxonomy</span></div><div class="component-card"><strong>1</strong><span>Database</span></div><div class="component-card"><strong>1</strong><span>Networks and Sites</span></div><div class="component-card"><strong>1</strong><span>Widgets</span></div></div>
+      <h2>Component focus <span>0</span></h2>
+      <div class="component-grid"><p class="empty">No components recorded yet.</p></div>
     </section>
 
     <section>
-      <h2>Recent activity <span>21</span></h2>
-      <div class="timeline"><article class="timeline-item tier-standard">
-  <div class="timeline-date">Jul 14, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/65623">#65623</a> Historical ticket not present in current opportunity data</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Watch</span>
-      <span class="signal-badge signal-standard">Historical</span>
-      <span class="tier-label-badge tier-label-standard">Historical</span>
-      
-      
-    </div>
-    <p class="note-preview">Technically testable, but requires understanding of REST API behavior and media-processing filters to provide meaningful independent verification.</p>
-  </div>
-</article><article class="timeline-item tier-standard">
-  <div class="timeline-date">Jul 14, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/65549">#65549</a> Historical ticket not present in current opportunity data</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Reject</span>
-      <span class="signal-badge signal-standard">Historical</span>
-      <span class="tier-label-badge tier-label-standard">Historical</span>
-      
-      
-    </div>
-    <p class="note-preview">Associated implementation appears to have already landed and the GitHub PR is closed, leaving little opportunity for meaningful testing.</p>
-  </div>
-</article><article class="timeline-item tier-standard">
-  <div class="timeline-date">Jul 14, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/65417">#65417</a> Historical ticket not present in current opportunity data</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Tested</span>
-      <span class="signal-badge signal-standard">Historical</span>
-      <span class="tier-label-badge tier-label-standard">Historical</span>
-      
-      
-    </div>
-    <p class="note-preview">Successfully verified the patch in the linked Playground instance with multiple URL scheme variations.</p>
-  </div>
-</article><article class="timeline-item tier-standard">
-  <div class="timeline-date">Jun 22, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/65513">#65513</a> Historical ticket not present in current opportunity data</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Commented</span>
-      <span class="signal-badge signal-standard">Historical</span>
-      <span class="tier-label-badge tier-label-standard">Historical</span>
-      
-      
-    </div>
-    <p class="note-preview">PR fixes the first-upload count, but delete/reset behavior still leaves a stale selectable thumbnail.</p>
-  </div>
-</article><article class="timeline-item tier-standard">
-  <div class="timeline-date">Jun 19, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/64937">#64937</a> Historical ticket not present in current opportunity data</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Committed</span>
-      <span class="signal-badge signal-standard">Historical</span>
-      <span class="tier-label-badge tier-label-standard">Historical</span>
-      <span class="signal-badge signal-standard">🏆 Props Received</span>
-      <a class="changeset-link" href="https://core.trac.wordpress.org/changeset/62481">Changeset 62481</a>
-    </div>
-    <p class="note-preview">Props received</p>
-  </div>
-</article><article class="timeline-item tier-standard">
-  <div class="timeline-date">Jun 19, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/65397">#65397</a> Historical ticket not present in current opportunity data</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Committed</span>
-      <span class="signal-badge signal-standard">Historical</span>
-      <span class="tier-label-badge tier-label-standard">Historical</span>
-      <span class="signal-badge signal-standard">🏆 Props Received</span>
-      <a class="changeset-link" href="https://core.trac.wordpress.org/changeset/62494">Changeset 62494</a>
-    </div>
-    <p class="note-preview">Props received</p>
-  </div>
-</article><article class="timeline-item tier-standard">
-  <div class="timeline-date">Jun 19, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/64877">#64877</a> Historical ticket not present in current opportunity data</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Tested</span>
-      <span class="signal-badge signal-standard">Historical</span>
-      <span class="tier-label-badge tier-label-standard">Historical</span>
-      <span class="signal-badge signal-standard">🏆 Props Received</span>
-      <a class="changeset-link" href="https://core.trac.wordpress.org/changeset/62521">Changeset 62521</a>
-    </div>
-    <p class="note-preview">Props received</p>
-  </div>
-</article><article class="timeline-item tier-standard">
-  <div class="timeline-date">Jun 19, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/65419">#65419</a> Historical ticket not present in current opportunity data</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Tested</span>
-      <span class="signal-badge signal-standard">Historical</span>
-      <span class="tier-label-badge tier-label-standard">Historical</span>
-      
-      
-    </div>
-    <p class="note-preview">Verified Add Plugins/Add Themes tab visibility in Windows forced-colors mode.</p>
-  </div>
-</article><article class="timeline-item tier-strong">
-  <div class="timeline-date">Jun 19, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/56320">#56320</a> Update mediaelement.js to the latest version</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Watch</span>
-      <span class="signal-badge signal-standard">External Libraries</span>
-      <span class="tier-label-badge tier-label-standard">Strong Candidate</span>
-      
-      
-    </div>
-    <p class="note-preview">Valid Core testing opportunity, but mediaelement upgrade testing is too broad for today’s easy-win queue.</p>
-  </div>
-</article><article class="timeline-item tier-watching">
-  <div class="timeline-date">Jun 17, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/60628">#60628</a> Issues with avif image  imagecreatefromavif not working. Resizing not possible.</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Watch</span>
-      <span class="signal-badge signal-standard">Media</span>
-      <span class="tier-label-badge tier-label-standard">Worth Watching</span>
-      
-      
-    </div>
-    <p class="note-preview">Valid Media ticket, but AVIF testing depends on local image library support.</p>
-  </div>
-</article><article class="timeline-item tier-standard">
-  <div class="timeline-date">Jun 17, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/65392">#65392</a> Historical ticket not present in current opportunity data</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Watch</span>
-      <span class="signal-badge signal-standard">Historical</span>
-      <span class="tier-label-badge tier-label-standard">Historical</span>
-      
-      
-    </div>
-    <p class="note-preview">PR exists, but useful testing requires WooCommerce/custom comment-type setup.</p>
-  </div>
-</article><article class="timeline-item tier-strong">
-  <div class="timeline-date">Jun 17, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/64707">#64707</a> Site Health: Opcode cache test reports a false negative when OPcache runs in file-cache-only mode</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Commented</span>
-      <span class="signal-badge signal-standard">Site Health</span>
-      <span class="tier-label-badge tier-label-standard">Strong Candidate</span>
-      
-      
-    </div>
-    <p class="note-preview">Reviewed patch, tested in Playground, submitted Trac feedback.</p>
-  </div>
-</article><article class="timeline-item tier-strong">
-  <div class="timeline-date">Jun 16, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/63256">#63256</a> Unnecessary array_map() call in get_terms() when object_ids is not set</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Tested</span>
-      <span class="signal-badge signal-standard">Taxonomy</span>
-      <span class="tier-label-badge tier-label-standard">Strong Candidate</span>
-      
-      
-    </div>
-    <p class="note-preview">Positive test result</p>
-  </div>
-</article><article class="timeline-item tier-watching">
-  <div class="timeline-date">Jun 16, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/45354">#45354</a> Adding index for meta_key and post_id in postmeta</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Watch</span>
-      <span class="signal-badge signal-standard">Database</span>
-      <span class="tier-label-badge tier-label-standard">Worth Watching</span>
-      
-      
-    </div>
-    <p class="note-preview">Awaiting PR/test stability</p>
-  </div>
-</article><article class="timeline-item tier-strong">
-  <div class="timeline-date">Jun 16, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/64902">#64902</a> wp_save_image() fatal error when wp_save_image_file() returns WP_Error</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Tested</span>
-      <span class="signal-badge signal-standard">Media</span>
-      <span class="tier-label-badge tier-label-standard">Strong Candidate</span>
-      
-      
-    </div>
-    <p class="note-preview">Positive test result</p>
-  </div>
-</article><article class="timeline-item tier-strong">
-  <div class="timeline-date">Jun 16, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/56886">#56886</a> Admin facing add site screen missing search engine visibility field</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Tested</span>
-      <span class="signal-badge signal-standard">Networks and Sites</span>
-      <span class="tier-label-badge tier-label-standard">Strong Candidate</span>
-      
-      
-    </div>
-    <p class="note-preview">Positive test result</p>
-  </div>
-</article><article class="timeline-item tier-standard">
-  <div class="timeline-date">Jun 16, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/65329">#65329</a> Historical ticket not present in current opportunity data</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Tested</span>
-      <span class="signal-badge signal-standard">Historical</span>
-      <span class="tier-label-badge tier-label-standard">Historical</span>
-      
-      
-    </div>
-    <p class="note-preview">Positive test result</p>
-  </div>
-</article><article class="timeline-item tier-standard">
-  <div class="timeline-date">Jun 16, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/43178">#43178</a> Historical ticket not present in current opportunity data</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Tested</span>
-      <span class="signal-badge signal-standard">Historical</span>
-      <span class="tier-label-badge tier-label-standard">Historical</span>
-      
-      
-    </div>
-    <p class="note-preview">Verified PR behavior in WordPress Playground.</p>
-  </div>
-</article><article class="timeline-item tier-standard">
-  <div class="timeline-date">Jun 15, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/65345">#65345</a> Historical ticket not present in current opportunity data</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Tested</span>
-      <span class="signal-badge signal-standard">Historical</span>
-      <span class="tier-label-badge tier-label-standard">Historical</span>
-      
-      
-    </div>
-    <p class="note-preview">Verified patch behavior locally and reported results on Trac.</p>
-  </div>
-</article><article class="timeline-item tier-strong">
-  <div class="timeline-date">Jun 15, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/41081">#41081</a> Improve Custom Menu widget, show notification if menu is empty or no menu selected</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Tested</span>
-      <span class="signal-badge signal-standard">Widgets</span>
-      <span class="tier-label-badge tier-label-standard">Strong Candidate</span>
-      
-      
-    </div>
-    <p class="note-preview">Refreshed stale patch and validated behavior against current trunk.</p>
-  </div>
-</article></div>
+      <h2>Recent activity <span>0</span></h2>
+      <div class="timeline"><p class="empty">No review activity recorded yet.</p></div>
     </section>
   </main>
 
   <footer class="contribution-footer">
-    <span>Generated from public-safe review metadata in <code>data/reviews/reviews.json</code>.</span>
+    <span>Generated from <code>data/contributions/contribution-state.json</code>; only <code>PUBLIC_DELIVERY_VERIFIED</code> records are eligible.</span>
     <a class="footer-pill" href="/">Back to dashboard</a>
   </footer>
 </body>

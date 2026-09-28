@@ -153,6 +153,61 @@
     .signal-age { background: #fef9c3; color: #854d0e; }
     .signal-component { background: #fce7f3; color: #9d174d; }
     .signal-complexity { background: #fee2e2; color: #991b1b; }
+    .signal-more {
+      display: inline-block;
+      position: relative;
+      vertical-align: top;
+    }
+    .signal-more summary {
+      display: inline-block;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 4px 8px;
+      margin: 0 4px 5px 0;
+      background: #f3f4f6;
+      color: #4b5563;
+      font-size: 12px;
+      font-weight: 700;
+      list-style: none;
+    }
+    .signal-more summary::-webkit-details-marker { display: none; }
+    .signal-more-items {
+      display: block;
+      margin-top: 4px;
+    }
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .status-detail {
+      margin-top: 14px;
+      color: #50575e;
+      line-height: 1.55;
+    }
+    .technical-details {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 1px solid #dcdcde;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .technical-details summary {
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .technical-details p {
+      margin-bottom: 0;
+      color: #50575e;
+      line-height: 1.55;
+    }
+    .scoring-explainer {
+      background: #fff;
+      border: 1px solid #dcdcde;
+      border-radius: 8px;
+      padding: 18px;
+      line-height: 1.6;
+    }
     a {
       color: #2271b1;
       font-weight: 600;
@@ -226,7 +281,7 @@
   <header>
     <div class="header-content">
       <h1>WP Core Radar Dashboard</h1>
-      <p>Generated 2026-09-28T13:16:13. Radar recommends opportunities only. Humans make contribution decisions.</p>
+      <p>Updated 2026-09-28T13:16:13. Radar highlights contribution opportunities; contributors make the final call.</p>
     </div>
     <div class="header-actions">
       <a class="header-pill" href="/contributions/">Contributions</a>
@@ -236,23 +291,43 @@
 
   <main>
     <div class="summary">
-      <div class="card"><strong>290</strong>Unique tickets scored</div>
-      <div class="card"><strong>12</strong>Priority targets</div>
+      <div class="card"><strong>290</strong>Opportunities scored</div>
       <div class="card card-blue"><strong>9</strong>Immediate Review</div>
       <div class="card card-purple"><strong>3</strong>Strong Candidates</div>
       <div class="card card-amber"><strong>67</strong>Worth Watching</div>
-      <div class="card"><strong>21</strong>Reviews loaded</div>
+      <div class="card"><strong>0</strong>Verified contributions</div>
+      <div class="card"><strong>2026-09-28</strong>Last updated</div>
     </div>
 
-    <section aria-labelledby="certification-health">
-      <h2 id="certification-health">Certified data health</h2>
-      <div class="summary">
-        <div class="card card-blue"><strong>Certified</strong>Certification</div>
-        <div class="card"><strong>2026-09-28</strong>Certified snapshot date</div>
-        <div class="card"><strong>radar-scoring-v1</strong>Scoring version</div>
-        <div class="card"><strong>be2085ccf91b</strong>Snapshot</div>
+    <section aria-labelledby="data-status">
+      <h2 id="data-status">Data status</h2>
+      <div class="status-grid">
+        <div class="card card-blue"><strong>Current</strong>Dataset</div>
+        <div class="card"><strong>290</strong>Tickets processed</div>
+        <div class="card"><strong>2026-09-28</strong>Updated</div>
+        <div class="card"><strong>None</strong>Warnings</div>
       </div>
-      <p class="health-detail">Collection <code>collection-v1-bfff7cb73feb9b058db3dca5</code> · Source <code>e553edbe4606</code> · No certification warnings</p>
+      <p class="status-detail">The dashboard is generated from the current verified Radar dataset. Scores help prioritize where to look first; current Trac state should still be checked before contributing.</p>
+      <details class="technical-details">
+        <summary>Technical details</summary>
+        <p>
+          Scoring version <code>radar-scoring-v1</code> ·
+          Snapshot <code>snapshot-v1-be2085ccf91b8a5ee05d5e3a</code> ·
+          Collection <code>collection-v1-bfff7cb73feb9b058db3dca5</code> ·
+          Source <code>e553edbe46064e1563bf8f1e029ff39ba1b59419</code>
+           · No data warnings
+        </p>
+      </details>
+    </section>
+
+    <section aria-labelledby="scoring-explainer">
+      <h2 id="scoring-explainer">How the tiers work</h2>
+      <div class="scoring-explainer">
+        <strong>Immediate Review</strong> surfaces the strongest current signals and is the first place to look.
+        <strong>Strong Candidates</strong> are promising opportunities that still deserve a quick upstream check.
+        <strong>Worth Watching</strong> have useful signals but may need more context, stability, or timing before acting.
+        Scores are deterministic recommendations, not contribution decisions.
+      </div>
     </section>
 
     
@@ -282,7 +357,7 @@
   <td data-label="Track">Media: Has Patch</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">Media Has Patch</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">A11y Media Toolbar</span> <span class="signal-badge signal-patch">Has Patch</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">A11y Media Toolbar</span> <span class="signal-badge signal-patch">Has Patch</span></span></details></td>
 </tr>
 
 
@@ -294,7 +369,7 @@
   <td data-label="Track">Media: Has Patch</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">Media Has Patch</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">A11y Media Toolbar</span> <span class="signal-badge signal-standard">A11y Visible Labels</span> <span class="signal-badge signal-patch">Has Patch</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">A11y Media Toolbar</span> <span class="signal-badge signal-standard">A11y Visible Labels</span> <span class="signal-badge signal-patch">Has Patch</span></span></details></td>
 </tr>
 
 
@@ -306,7 +381,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -318,7 +393,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Accepted</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Screenshots</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+9 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Screenshots</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -330,7 +405,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -342,7 +417,7 @@
   <td data-label="Track">Media: Has Patch</td>
   <td data-label="Trac Status">Accepted</td>
   <td data-label="Discovery Track">Media Has Patch</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-standard">Needs Design</span> <span class="signal-badge signal-standard">Phase 3 Media Triage</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-standard">Needs Design</span> <span class="signal-badge signal-standard">Phase 3 Media Triage</span></span></details></td>
 </tr>
 
 
@@ -354,7 +429,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -366,7 +441,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Screenshots</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Screenshots</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -378,7 +453,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -390,7 +465,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -402,7 +477,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -414,7 +489,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Accepted</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <details class="signal-more"><summary>+9 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></span></details></td>
 </tr>
 
       </tbody>
@@ -449,7 +524,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Reviewing</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Very Old Ticket -8</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Screenshots</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+12 more</summary><span class="signal-more-items"><span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Very Old Ticket -8</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Screenshots</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -461,7 +536,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Accepted</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Very Old Ticket -8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Very Old Ticket -8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -473,7 +548,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Reviewing</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></span></details></td>
 </tr>
 
 
@@ -485,7 +560,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -497,7 +572,7 @@
   <td data-label="Track">Media: Has Patch</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">Media Has Patch</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-standard">Media</span> <span class="signal-badge signal-standard">Post</span> <span class="signal-badge signal-standard">Type</span> <span class="signal-badge signal-patch">Has Patch</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-standard">Media</span> <span class="signal-badge signal-standard">Post</span> <span class="signal-badge signal-standard">Type</span> <span class="signal-badge signal-patch">Has Patch</span></span></details></td>
 </tr>
 
 
@@ -509,7 +584,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Reopened</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-first">Good First Bug +20</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-freshness">Freshness: Stale Activity &gt;730 Days -10</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-first">Good First Bug +20</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-freshness">Freshness: Stale Activity &gt;730 Days -10</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -521,7 +596,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></span></details></td>
 </tr>
 
 
@@ -533,7 +608,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -545,7 +620,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -557,7 +632,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">Close</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">Close</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -569,7 +644,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -581,7 +656,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -593,7 +668,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -605,7 +680,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -617,7 +692,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -629,7 +704,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -641,7 +716,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-standard">Changes Requested</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Needs Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-standard">Changes Requested</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Needs Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -653,7 +728,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -665,7 +740,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+2 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -677,7 +752,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-first">Good First Bug +20</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-first">Good First Bug +20</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -689,7 +764,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -701,7 +776,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Screenshots</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Screenshots</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></span></details></td>
 </tr>
 
 
@@ -713,7 +788,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -725,7 +800,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-standard">Close</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-standard">Close</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -737,7 +812,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -749,7 +824,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -761,7 +836,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-standard">Early Like Actually Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-standard">Early Like Actually Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -773,7 +848,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -785,7 +860,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></span></details></td>
 </tr>
 
 
@@ -797,7 +872,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -809,7 +884,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -821,7 +896,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -833,7 +908,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -845,7 +920,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Stale Activity &gt;730 Days -10</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Stale Activity &gt;730 Days -10</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -857,7 +932,7 @@
   <td data-label="Track">Media: Has Patch</td>
   <td data-label="Trac Status">Accepted</td>
   <td data-label="Discovery Track">Media Has Patch</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-patch">Needs Patch</span> <span class="signal-badge signal-standard">Phase 3 Media Triage</span> <span class="signal-badge signal-standard">Wpcampus Report</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Needs Patch</span> <span class="signal-badge signal-standard">Phase 3 Media Triage</span> <span class="signal-badge signal-standard">Wpcampus Report</span></span></details></td>
 </tr>
 
 
@@ -869,7 +944,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Reviewing</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Needs Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Needs Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></span></details></td>
 </tr>
 
 
@@ -881,7 +956,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Reviewing</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Needs Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Needs Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></span></details></td>
 </tr>
 
 
@@ -893,7 +968,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Stale Activity &gt;730 Days -10</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Stale Activity &gt;730 Days -10</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></span></details></td>
 </tr>
 
 
@@ -905,7 +980,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -917,7 +992,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -929,7 +1004,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -941,7 +1016,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Reopened</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-age">Ticket Age: Very Old Ticket -8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Very Old Ticket -8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -953,7 +1028,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -965,7 +1040,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -977,7 +1052,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></span></details></td>
 </tr>
 
 
@@ -989,7 +1064,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -1001,7 +1076,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -1013,7 +1088,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-freshness">Freshness: Stale Activity &gt;730 Days -10</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Stale Activity &gt;730 Days -10</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -1025,7 +1100,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Reviewing</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -1037,7 +1112,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-standard">Php81</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-standard">Php81</span></span></details></td>
 </tr>
 
       </tbody>
@@ -1096,7 +1171,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-first">Good First Bug +20</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-age">Ticket Age: Very Old Ticket -8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-refresh">Needs Refresh</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+8 more</summary><span class="signal-more-items"><span class="signal-badge signal-first">Good First Bug +20</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-age">Ticket Age: Very Old Ticket -8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-refresh">Needs Refresh</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -1108,7 +1183,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Accepted</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -1120,7 +1195,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -1132,7 +1207,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-complexity">Setup Complexity: Specialized Image Library -18</span> <span class="signal-badge signal-standard">Avif</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <details class="signal-more"><summary>+9 more</summary><span class="signal-more-items"><span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-complexity">Setup Complexity: Specialized Image Library -18</span> <span class="signal-badge signal-standard">Avif</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></span></details></td>
 </tr>
 
       </tbody>
@@ -1167,7 +1242,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-first">Good First Bug +20</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-first">Good First Bug +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -1179,7 +1254,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -1191,7 +1266,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-first">Good First Bug +20</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-refresh">Needs Refresh</span> <span class="signal-badge signal-standard">Needs Screenshots</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-first">Good First Bug +20</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-refresh">Needs Refresh</span> <span class="signal-badge signal-standard">Needs Screenshots</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -1203,7 +1278,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Accepted</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-complexity">Setup Complexity: Server/runtime Configuration -16</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-complexity">Setup Complexity: Server/runtime Configuration -16</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
 
@@ -1215,7 +1290,7 @@
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">Reviewing</td>
   <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
       </tbody>
@@ -1250,7 +1325,7 @@
   </main>
 
   <footer>
-    WP Core Radar does not auto-comment on Trac or automate contribution activity.
+    WP Core Radar recommends opportunities and records verified contribution outcomes.
   </footer>
 </body>
 </html>
