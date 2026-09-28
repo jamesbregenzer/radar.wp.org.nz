@@ -12,11 +12,11 @@ The active tracks live in `config/queries.json`. Each track has:
 
 ## Current tracks
 
-- `media_has_patch` — Media tickets with patches that may be ready for testing or review.
-- `accessibility_has_patch` — Accessibility tickets with patches that may need verification.
-- `docs_needs_testing` — Documentation tickets where testing or confirmation may help.
-- `good_first_bugs` — Beginner-friendly tickets useful for repeatable contribution practice.
-- `general_needs_testing` — General tickets where a test report could move the ticket forward.
+- `media_has_patch`: Media tickets with patches that may be ready for testing or review.
+- `accessibility_has_patch`: Accessibility tickets with patches that may need verification.
+- `docs_needs_testing`: Documentation tickets where testing or confirmation may help.
+- `good_first_bugs`: Beginner-friendly tickets useful for repeatable contribution practice.
+- `general_needs_testing`: General tickets where a test report could move the ticket forward.
 
 ## Track principles
 
