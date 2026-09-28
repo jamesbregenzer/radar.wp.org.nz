@@ -1,6 +1,6 @@
 # WP Core Radar Report
 
-Generated: 2026-09-28 01:14
+Generated: 2026-09-28 07:15
 
 ## Summary
 
@@ -9,8 +9,8 @@ Generated: 2026-09-28 01:14
 - Outcomes loaded: 4
 - Reviews loaded: 21
 - Top opportunity limit: 50
-- Certified snapshot: snapshot-v1-b7d6c725387974914e899e50
-- Certified collection: collection-v1-5fe6a7c0436cafba29bef0d6
+- Certified snapshot: snapshot-v1-a2042c76f4db4e0183cffe23
+- Certified collection: collection-v1-d9b328974bf102f426f24215
 - Scoring version: radar-scoring-v1
 
 ## Review Workflow
@@ -188,7 +188,7 @@ Generated: 2026-09-28 01:14
 - Milestone: 7.2
 - Keywords: has-patch has-screenshots has-test-info has-unit-tests needs-testing
 - Created: 03/05/2026 11:45:53 AM
-- Modified: 09/18/2026 12:02:17 PM
+- Modified: 09/28/2026 04:41:12 AM
 - Why it ranked: track priority: General: Needs Testing +65, has patch +35, needs testing +30, has concrete milestone +8, freshness: recently updated <=14 days +20, ticket age: mature but not ancient +8
 - Score breakdown:
   - +65: Track Priority
@@ -253,7 +253,7 @@ Generated: 2026-09-28 01:14
 - Owner: Clorith
 - Keywords: early has-patch needs-testing
 - Created: 02/08/2024 08:52:50 PM
-- Modified: 09/27/2026 08:02:41 PM
+- Modified: 09/28/2026 03:35:59 AM
 - Why it ranked: track priority: General: Needs Testing +65, has patch +35, needs testing +30, has concrete milestone +8, has owner +6, freshness: recently updated <=14 days +20
 - Score breakdown:
   - +65: Track Priority
