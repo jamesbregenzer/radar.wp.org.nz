@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-29T13:19:42",
+  "generated": "2026-09-29T19:20:31",
   "summary": {
     "unique_tickets": 290,
     "priority_targets": 12,
@@ -8,15 +8,15 @@
     "watching": 64,
     "reviews_loaded": 21,
     "certification": {
-      "snapshot_id": "snapshot-v1-3b89baca25590e41f17fb65c",
-      "collection_id": "collection-v1-77632ef91263eb684638086a",
-      "reference_time": "2026-09-29T13:19:42",
+      "snapshot_id": "snapshot-v1-51cb1f581475b3fb3ad1533d",
+      "collection_id": "collection-v1-6bb764af71dc694f70624d8b",
+      "reference_time": "2026-09-29T19:20:31",
       "state": "certified",
       "opportunity_count": 290,
       "scoring_version": "radar-scoring-v1",
-      "source_revision": "e74ec3ee8afe0c47fbcb33d509e360eb3fe1dc16",
+      "source_revision": "bdbc004e6e19b96066540b61d20e7268a33439fc",
       "warnings": [],
-      "dataset_sha256": "f03faa80d65e256d9307847cb12af4a6ff2d827f961edb89ec53d5414abf4647"
+      "dataset_sha256": "4b910a6f9f885ae189e3f002102cca49449c15f902c28dce7070528c5a7614c5"
     }
   },
   "groups": {
@@ -419,8 +419,8 @@
         "owner": "",
         "comments": "",
         "created": "01/07/2026 06:48:55 PM",
-        "modified": "09/24/2026 07:53:44 AM",
-        "keywords": "has-patch has-unit-tests needs-testing",
+        "modified": "09/29/2026 02:31:38 PM",
+        "keywords": "2nd-opinion has-patch has-unit-tests needs-testing",
         "signals": [
           {
             "label": "Track Priority: General: Needs Testing +65",
@@ -1136,7 +1136,7 @@
         "owner": "SergeyBiryukov",
         "comments": "",
         "created": "06/23/2010 02:46:16 PM",
-        "modified": "09/22/2026 12:35:51 PM",
+        "modified": "09/29/2026 05:35:55 PM",
         "keywords": "2nd-opinion dev-feedback early has-patch has-screenshots has-test-info has-unit-tests needs-testing",
         "signals": [
           {
@@ -3645,83 +3645,6 @@
         "comments": "",
         "created": "06/02/2026 09:05:13 PM",
         "modified": "08/24/2026 06:34:56 AM",
-        "keywords": "has-patch has-unit-tests needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          },
-          {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
-        "ticket_id": "65731",
-        "url": "https://core.trac.wordpress.org/ticket/65731",
-        "score": 148,
-        "tier_class": "watching",
-        "tier_label": "Worth Watching",
-        "summary": "Changing the site timezone can immediately invalidate fresh privacy-request confirmation links",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Privacy",
-        "owner": "",
-        "comments": "",
-        "created": "07/27/2026 12:03:29 PM",
-        "modified": "07/30/2026 06:21:00 PM",
         "keywords": "has-patch has-unit-tests needs-testing",
         "signals": [
           {
@@ -6437,6 +6360,72 @@
         "review": {}
       },
       {
+        "ticket_id": "65731",
+        "url": "https://core.trac.wordpress.org/ticket/65731",
+        "score": 138,
+        "tier_class": "watching",
+        "tier_label": "Worth Watching",
+        "summary": "Changing the site timezone can immediately invalidate fresh privacy-request confirmation links",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Privacy",
+        "owner": "",
+        "comments": "",
+        "created": "07/27/2026 12:03:29 PM",
+        "modified": "07/30/2026 06:21:00 PM",
+        "keywords": "has-patch has-unit-tests needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
         "ticket_id": "38238",
         "url": "https://core.trac.wordpress.org/ticket/38238",
         "score": 136,
@@ -7923,7 +7912,7 @@
         "owner": "",
         "comments": "",
         "created": "11/20/2025 02:14:56 PM",
-        "modified": "09/23/2026 07:16:33 AM",
+        "modified": "09/29/2026 01:48:21 PM",
         "keywords": "has-patch has-testing needs-unit-tests",
         "signals": [
           {
