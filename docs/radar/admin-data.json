@@ -1,22 +1,22 @@
 {
-  "generated": "2026-09-29T19:20:31",
+  "generated": "2026-09-30T01:21:29",
   "summary": {
     "unique_tickets": 290,
     "priority_targets": 12,
     "immediate": 9,
     "strong": 3,
-    "watching": 64,
+    "watching": 63,
     "reviews_loaded": 21,
     "certification": {
-      "snapshot_id": "snapshot-v1-51cb1f581475b3fb3ad1533d",
-      "collection_id": "collection-v1-6bb764af71dc694f70624d8b",
-      "reference_time": "2026-09-29T19:20:31",
+      "snapshot_id": "snapshot-v1-ecbd05416f30e80ed18ed65b",
+      "collection_id": "collection-v1-be5e91a4924fe266eb65e932",
+      "reference_time": "2026-09-30T01:21:29",
       "state": "certified",
       "opportunity_count": 290,
       "scoring_version": "radar-scoring-v1",
-      "source_revision": "bdbc004e6e19b96066540b61d20e7268a33439fc",
+      "source_revision": "8056aeabc13a50835af8b0132b7edb32608a4837",
       "warnings": [],
-      "dataset_sha256": "4b910a6f9f885ae189e3f002102cca49449c15f902c28dce7070528c5a7614c5"
+      "dataset_sha256": "3710ac563b3162b0a231cb55ad9aaf6497bf85cb219f3824e7caaef1c648b102"
     }
   },
   "groups": {
@@ -2884,6 +2884,72 @@
         "review": {}
       },
       {
+        "ticket_id": "43010",
+        "url": "https://core.trac.wordpress.org/ticket/43010",
+        "score": 150,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Attribute Name Escape",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Formatting",
+        "owner": "",
+        "comments": "",
+        "created": "01/02/2018 05:03:09 PM",
+        "modified": "09/29/2026 08:13:31 PM",
+        "keywords": "has-patch needs-testing needs-unit-tests",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
         "ticket_id": "46017",
         "url": "https://core.trac.wordpress.org/ticket/46017",
         "score": 150,
@@ -4493,72 +4559,6 @@
         "created": "04/02/2017 01:32:06 PM",
         "modified": "09/02/2026 11:25:30 PM",
         "keywords": "has-patch has-unit-tests needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
-        "ticket_id": "43010",
-        "url": "https://core.trac.wordpress.org/ticket/43010",
-        "score": 140,
-        "tier_class": "watching",
-        "tier_label": "Worth Watching",
-        "summary": "Attribute Name Escape",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Formatting",
-        "owner": "",
-        "comments": "",
-        "created": "01/02/2018 05:03:09 PM",
-        "modified": "08/21/2026 10:50:51 AM",
-        "keywords": "has-patch needs-testing needs-unit-tests",
         "signals": [
           {
             "label": "Track Priority: General: Needs Testing +65",
