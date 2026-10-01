@@ -86,13 +86,13 @@
 42329,"Customizer: interacting with text fields in a ""wide"" widget shifts child panel position in Safari.",new,Customize,,defect (bug),normal,Future Release,4.7,needs-testing,10/24/2017 11:06:54 PM,06/22/2024 08:36:23 PM
 42670,Symlinked plugin makes plugin_basename function return wrong basename,assigned,Plugins,brianhenryie,defect (bug),normal,Future Release,4.9,has-unit-tests needs-testing has-patch has-test-info dev-feedback,11/23/2017 11:36:11 AM,08/15/2026 10:51:53 AM
 42833,WordPress forces non-ssl login in described circumstance even though FORCE_SSL_ADMIN is set in wp-config,new,Administration,,defect (bug),normal,Awaiting Review,4.9.1,needs-testing,12/07/2017 07:32:39 PM,09/21/2021 06:59:07 AM
-43010,Attribute Name Escape,new,Formatting,,enhancement,normal,Awaiting Review,,needs-testing needs-unit-tests has-patch,01/02/2018 05:03:09 PM,09/29/2026 08:13:31 PM
+43010,Attribute Name Escape,new,Formatting,,enhancement,normal,Awaiting Review,,needs-testing needs-unit-tests has-patch,01/02/2018 05:03:09 PM,10/01/2026 07:14:49 PM
 43019,Hook to validate post form data before save,new,Database,,enhancement,normal,Awaiting Review,,has-patch needs-testing,01/04/2018 01:23:07 PM,10/28/2021 03:26:41 AM
 43233,Network transients,new,Networks and Sites,,enhancement,normal,Future Release,2.9,has-patch 2nd-opinion needs-testing,02/06/2018 09:28:25 AM,04/01/2025 05:28:43 PM
 43746,Custom post type single post feed returns a 404 if has_archive is set to false when calling register_post_type(),reviewing,Rewrite Rules,SergeyBiryukov,defect (bug),normal,Future Release,4.9.5,2nd-opinion has-patch needs-testing has-unit-tests,04/12/2018 01:58:17 PM,04/13/2026 08:34:34 AM
 43749,Update zxcvbn to 4.4.2,assigned,External Libraries,,enhancement,normal,Future Release,,needs-testing needs-refresh,04/12/2018 04:32:33 PM,10/07/2025 10:45:45 AM
 43879,Add tools for anonymizing of post authors,assigned,Privacy,tz-media,enhancement,normal,Future Release,,"has-patch, needs-testing, needs-unit-tests, 2nd-opinion",04/27/2018 01:46:24 PM,09/07/2020 08:30:09 AM
-43885,WP_Role and WP_Roles::get_role() missing Display Name,new,Role/Capability,,enhancement,normal,Awaiting Review,,dev-feedback has-patch needs-testing,04/27/2018 09:19:41 PM,08/29/2025 12:46:59 PM
+43885,WP_Role and WP_Roles::get_role() missing Display Name,new,Role/Capability,,enhancement,normal,Awaiting Review,,dev-feedback has-patch needs-testing,04/27/2018 09:19:41 PM,10/01/2026 01:54:02 PM
 44283,Enclosure can't deal with CDN media files - WPCore redirects the URL,new,Feeds,,defect (bug),normal,Awaiting Review,4.9.6,needs-testing needs-patch has-screenshots 2nd-opinion,05/31/2018 03:36:55 PM,06/07/2021 09:58:21 AM
 44284,Remove e.preventDefault(); code line from widgets.js file,new,Widgets,,defect (bug),normal,Awaiting Review,4.9.6,has-screenshots has-patch needs-testing,05/31/2018 05:00:16 PM,07/29/2019 04:43:09 PM
 44445,wp_cache_init() and WP_Object_Cache constructor has a memory leak,assigned,Cache API,pbearne,defect (bug),normal,Awaiting Review,2.2,dev-feedback needs-testing,06/24/2018 05:00:47 AM,06/14/2024 08:56:33 PM
@@ -101,7 +101,7 @@
 44641,Customizing Button Text in Custom Media Manager Frame Doesn't Work Anymore,assigned,Media,antpb,defect (bug),normal,Future Release,4.9.7,has-patch needs-testing 2nd-opinion,07/25/2018 12:16:47 PM,01/30/2022 04:52:29 PM
 44658,Support BETWEEN for term names in WP_Tax_Query/WP_Term_Query,new,Query,,feature request,normal,Future Release,,needs-testing has-unit-tests 2nd-opinion needs-dev-note needs-patch,07/27/2018 08:23:30 PM,09/11/2019 03:56:51 PM
 44921,User nicename discovery is slow to return,accepted,Users,pbearne,enhancement,normal,Future Release,2.0,has-patch needs-testing has-unit-tests needs-refresh,09/08/2018 12:12:26 PM,01/18/2025 03:10:57 PM
-44964,`redirect_guess_404_permalink` doesn't support array in `post_type` var,new,Query,,defect (bug),normal,Awaiting Review,4.9,needs-testing dev-feedback has-patch has-unit-tests,09/19/2018 09:35:59 AM,08/07/2026 11:16:33 PM
+44964,`redirect_guess_404_permalink` doesn't support array in `post_type` var,new,Query,,defect (bug),normal,Awaiting Review,4.9,needs-testing dev-feedback has-patch has-unit-tests,09/19/2018 09:35:59 AM,10/01/2026 06:07:44 PM
 44973,Issues with $wpdb->get_col_info,new,Database,,defect (bug),normal,Awaiting Review,4.9.8,needs-testing,09/20/2018 09:37:49 PM,09/23/2018 02:50:24 PM
 44980,When using a mobile browser (iOS 12) and the Visual Editor you won’t be able to properly select/highlight text,new,Editor,,defect (bug),normal,Awaiting Review,4.9.8,needs-testing,09/21/2018 11:46:00 PM,03/02/2019 06:35:18 AM
 45013,Wrong links when installing in subdirectory =,new,Administration,,defect (bug),normal,Awaiting Review,4.9.8,has-screenshots needs-testing,09/29/2018 08:32:21 PM,10/10/2018 04:23:16 PM
@@ -125,7 +125,7 @@
 48193,Improve the WordPress loop,new,Query,,enhancement,normal,Awaiting Review,,has-patch dev-feedback needs-testing has-unit-tests 2nd-opinion,10/01/2019 06:53:57 PM,01/20/2024 03:01:13 PM
 48328,IIS 7+ with standard FCGI an URL_REWRITE mangles REQUEST_URI,new,Bootstrap/Load,,defect (bug),normal,Awaiting Review,5.2.3,needs-patch needs-testing,10/16/2019 03:45:55 PM,09/18/2024 11:53:22 AM
 48361,Select Files on iOS doesn't trigger on modal if start on Upload Files tab and switch to Media Library tab,assigned,Media,adamsilverstein,defect (bug),normal,Awaiting Review,,needs-patch needs-testing,10/17/2019 11:27:06 PM,11/03/2019 07:46:59 PM
-48522,Attachment size not generated when large images uploaded,new,Media,,defect (bug),normal,Future Release,5.3,2nd-opinion needs-testing needs-unit-tests has-patch,11/07/2019 01:33:39 AM,08/27/2026 06:34:32 AM
+48522,Attachment size not generated when large images uploaded,new,Media,,defect (bug),normal,Future Release,5.3,2nd-opinion needs-testing needs-unit-tests has-patch,11/07/2019 01:33:39 AM,10/01/2026 05:36:15 PM
 48729,Twenty Twenty: Margin reset for first-child and last-child is overridden for heading and blocks with alignment,new,Bundled Theme,,defect (bug),normal,Awaiting Review,5.3,needs-testing 2nd-opinion,11/19/2019 04:47:08 PM,12/23/2024 06:39:08 PM
 48802,Twenty Twenty: Fixed Background Image on Cover template bugs on iPad,new,Bundled Theme,,defect (bug),normal,Awaiting Review,5.3,has-screenshots needs-patch needs-testing,11/26/2019 09:26:10 PM,06/08/2024 05:22:00 PM
 49408,Why is the action wp_ajax_wp_link_ajax not using wp_send_json(),new,General,,enhancement,normal,Awaiting Review,5.3.2,has-patch needs-testing has-unit-tests,02/11/2020 04:09:10 PM,08/19/2026 06:26:11 AM
@@ -155,7 +155,7 @@
 53529,Block based widget admin screen causes a NS_ERROR_FAILURE error in Firefox,reopened,Customize,,defect (bug),normal,Future Release,5.8,needs-testing needs-patch,06/27/2021 04:30:56 PM,09/21/2026 11:48:10 PM
 53552,Inactive Widgets prevent placement of new widget if `multiple` is false,new,Widgets,,defect (bug),normal,Future Release,5.8,needs-testing needs-patch needs-design,06/29/2021 04:03:42 PM,11/01/2021 10:05:49 PM
 53732,Widgets option shows blank,new,Widgets,,defect (bug),normal,Awaiting Review,5.8,reporter-feedback needs-testing,07/22/2021 08:53:02 AM,07/23/2021 11:06:23 AM
-54016,Media Library: Bulk delete elements in grid view takes very long,new,Media,,enhancement,normal,Awaiting Review,,has-patch 2nd-opinion needs-testing,08/26/2021 03:10:47 PM,04/14/2026 10:33:21 AM
+54016,Media Library: Bulk delete elements in grid view takes very long,new,Media,,enhancement,normal,Awaiting Review,,has-patch 2nd-opinion needs-testing,08/26/2021 03:10:47 PM,10/01/2026 02:01:22 PM
 54034,Update jQuery UI Touch Punch to the latest version,assigned,External Libraries,Hareesh Pillai,enhancement,normal,Future Release,,has-patch needs-testing needs-test-info dev-feedback changes-requested,08/28/2021 07:39:10 PM,02/18/2026 04:03:26 PM
 54042,Extending wpdb::prepare() to support IN() operator,new,Database,,enhancement,normal,Future Release,,has-patch dev-feedback needs-testing early has-unit-tests changes-requested,08/31/2021 02:23:26 PM,09/17/2023 10:53:12 AM
 54151,Dashboard widgets e2e tests,assigned,Build/Test Tools,justinahinon,enhancement,normal,Awaiting Review,,has-patch needs-testing,09/21/2021 07:35:18 AM,09/21/2021 12:16:01 PM
@@ -224,7 +224,6 @@
 64056,Media / REST API: Uploading non-resizable image formats (SVG) generates multiple PHP warnings,new,Media,,enhancement,normal,Awaiting Review,,has-patch needs-testing close,09/30/2025 02:27:40 PM,10/01/2025 08:28:56 AM
 64282,Erase personal data does not remove biographical info,new,Privacy,,defect (bug),normal,Awaiting Review,6.8.3,has-patch has-testing needs-unit-tests,11/20/2025 02:14:56 PM,09/29/2026 01:48:21 PM
 64376,redirect_canonical() causes unnecessary 301 redirects for query string encoding variants (+ vs %20),new,Canonical,,defect (bug),normal,Future Release,,has-patch has-unit-tests needs-testing has-test-info,12/08/2025 11:00:27 AM,08/11/2026 11:13:00 AM
-64480,WordPress PHP Deprecated: Implicit conversion from float 44.168,new,Media,,defect (bug),normal,Awaiting Review,6.9,has-patch has-unit-tests needs-testing,01/07/2026 06:48:55 PM,09/30/2026 10:04:53 AM
 64523,_do_query needs exception processing in class-wpdb.php,new,General,,defect (bug),normal,Awaiting Review,6.9,has-patch needs-testing needs-unit-tests has-pr,01/16/2026 09:40:38 PM,01/23/2026 05:36:40 AM
 64670,WP_REST_Posts_Controller::update_item() not passing parent to wp_unique_post_slug() for draft child,new,REST API,,defect (bug),normal,Awaiting Review,6.9.1,has-patch needs-testing,02/18/2026 05:35:30 PM,07/15/2026 09:56:40 AM
 64707,Site Health: Opcode cache test reports a false negative when OPcache runs in file-cache-only mode,accepted,Site Health,westonruter,defect (bug),normal,7.2,7.0,has-patch needs-testing,02/23/2026 03:51:38 PM,09/27/2026 10:49:56 PM
@@ -241,7 +240,7 @@
 65054,$_GET['pagenow'] and $_GET['widget'] unsanitized in dashboard AJAX handler,assigned,Security,rajeshcp,defect (bug),normal,Awaiting Review,,has-patch needs-testing has-test-info has-unit-tests,04/09/2026 04:50:52 PM,07/18/2026 12:12:21 PM
 65111,Twenty Sixteen: Center text in image captions,new,Bundled Theme,,enhancement,normal,Awaiting Review,4.4,has-patch needs-testing,04/22/2026 10:53:20 AM,09/20/2026 11:38:39 AM
 65120,Add `wp_elements_block_supports_class_name` filter to `wp_get_elements_class_name()`,new,Editor,,enhancement,normal,Awaiting Review,,has-patch needs-testing has-test-info 2nd-opinion,04/23/2026 06:57:36 PM,05/20/2026 05:57:15 AM
-65171,wp_check_post_lock_window filter values below 120s break post lock detection in backgrounded tabs,new,Editor,,defect (bug),normal,Awaiting Review,,has-patch needs-unit-tests needs-testing,05/05/2026 09:12:28 PM,08/07/2026 01:05:37 PM
+65171,wp_check_post_lock_window filter values below 120s break post lock detection in backgrounded tabs,new,Editor,,defect (bug),normal,Awaiting Review,,has-patch needs-unit-tests needs-testing,05/05/2026 09:12:28 PM,10/01/2026 02:17:27 PM
 65281,Custom Time & Date Format Fields Allow Empty Save Instead of Validation,new,Date/Time,,defect (bug),normal,Awaiting Review,,has-patch has-unit-tests has-test-info needs-testing,05/20/2026 06:43:42 PM,06/15/2026 02:26:48 PM
 65348,"Adding menu items in bulk, checked items forgotten when navigating",new,Menus,,defect (bug),normal,Awaiting Review,6.9.4,has-patch has-unit-tests needs-testing,05/26/2026 01:48:25 PM,09/29/2026 10:08:00 AM
 65350,Possible duplicate update event firing during wp_maybe_auto_update,new,Upgrade/Install,,defect (bug),normal,Awaiting Review,7.0,needs-testing 2nd-opinion,05/26/2026 02:22:13 PM,06/06/2026 03:27:02 AM
@@ -250,7 +249,6 @@
 65480,Custom HTML Block hangs when switching tabs and scrolling (Gutenberg/WordPress 7.0),new,Editor,,defect (bug),normal,Awaiting Review,7.0,needs-testing close,06/18/2026 07:24:05 AM,06/30/2026 04:18:18 PM
 65496,Theme testing workflow will fail when multiple themes have uncommitted changes to built files.,new,Build/Test Tools,,defect (bug),normal,Future Release,,has-patch needs-testing,06/19/2026 06:39:45 PM,09/16/2026 12:54:50 PM
 65515,"ThickBox ReferenceError: imgLoader is not defined due to ""use strict"" contamination in load-scripts.php",reviewing,Script Loader,wildworks,defect (bug),normal,Future Release,7.0,has-patch has-unit-tests needs-testing reporter-feedback,06/22/2026 12:39:34 PM,08/10/2026 12:18:08 PM
-65551,Connectors: Preserve stored AI provider API key when validation is indeterminate,assigned,Editor,jorgefilipecosta,defect (bug),normal,Awaiting Review,7.0,has-patch has-unit-tests needs-testing,06/29/2026 07:24:33 AM,10/01/2026 10:41:18 AM
 65626,7.0.1 9.9797 lagging at WP_Query->get_posts() on site with 16K= posts,new,Database,,defect (bug),normal,Awaiting Review,7.0.1,needs-testing needs-patch reporter-feedback,07/14/2026 10:42:44 AM,07/16/2026 09:43:07 AM
 65638,AI: Add embedding generation support to WordPress,new,AI,,enhancement,normal,7.2,,has-patch needs-testing has-unit-tests,07/15/2026 11:35:42 AM,09/16/2026 08:44:08 PM
 65661,Media: Enable client-side media uploads in the Media Library,new,Media,,enhancement,normal,7.2,,has-patch needs-testing has-unit-tests,07/17/2026 11:42:28 PM,09/25/2026 04:59:32 AM
