@@ -59,6 +59,47 @@
         "props_recorded_at": {"type": "string"}, "changeset": {"type": "string"}
       }
     },
+    "qualification": {
+      "type": "object", "additionalProperties": false,
+      "required": ["opportunity_class", "expected_contribution_type", "required_evidence_profiles", "visual_evidence", "relevant_skills", "upstream_freshness", "duplication_risk", "likely_hwp_channel", "engineering_weight", "eligibility"],
+      "properties": {
+        "opportunity_class": {"type": "string", "enum": ["testing-review", "php-regression-testing", "browser-visual-testing", "accessibility-testing", "documentation-review", "unit-test-review", "code-authoring", "patch-preparation", "retesting-after-changes", "performance-validation"]},
+        "expected_contribution_type": {"type": "string"},
+        "required_evidence_profiles": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "visual_evidence": {
+          "type": "object", "additionalProperties": false, "required": ["relevance", "reason"],
+          "properties": {
+            "relevance": {"type": "string", "enum": ["required", "useful", "not-relevant"]},
+            "reason": {"type": "string"}
+          }
+        },
+        "relevant_skills": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "upstream_freshness": {
+          "type": "object", "additionalProperties": false, "required": ["state", "modified_at", "age_days"],
+          "properties": {
+            "state": {"type": "string", "enum": ["fresh", "recent", "stale", "unknown"]},
+            "modified_at": {"type": ["string", "null"]},
+            "age_days": {"type": ["integer", "null"]}
+          }
+        },
+        "duplication_risk": {
+          "type": "object", "additionalProperties": false, "required": ["level", "reasons"],
+          "properties": {
+            "level": {"type": "string", "enum": ["low", "medium", "high", "unknown"]},
+            "reasons": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+          }
+        },
+        "likely_hwp_channel": {"type": "string", "enum": ["core-trac-comment", "github-review", "core-trac-attachment"]},
+        "engineering_weight": {"type": "string", "enum": ["small", "medium", "large"]},
+        "eligibility": {
+          "type": "object", "additionalProperties": false, "required": ["state", "blockers"],
+          "properties": {
+            "state": {"type": "string", "enum": ["eligible", "requires-upstream-validation", "blocked"]},
+            "blockers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+          }
+        }
+      }
+    },
     "provenance": {
       "type": "object", "additionalProperties": false, "required": ["collection_id", "snapshot_id"],
       "properties": {

@@ -72,6 +72,19 @@ def machine_feed_payload(snapshot: dict, opportunity_set: dict, contribution_sta
                 "rank": index + 1,
                 "tier": record["ranking"]["tier"],
                 "score": record["ranking"]["score"],
+                "qualification": {
+                    "opportunityClass": record["qualification"]["opportunity_class"],
+                    "expectedContributionType": record["qualification"]["expected_contribution_type"],
+                    "requiredEvidenceProfiles": record["qualification"]["required_evidence_profiles"],
+                    "visualEvidenceRelevance": record["qualification"]["visual_evidence"]["relevance"],
+                    "relevantSkills": record["qualification"]["relevant_skills"],
+                    "upstreamFreshness": record["qualification"]["upstream_freshness"]["state"],
+                    "duplicationRisk": record["qualification"]["duplication_risk"]["level"],
+                    "likelyHwpChannel": record["qualification"]["likely_hwp_channel"],
+                    "engineeringWeight": record["qualification"]["engineering_weight"],
+                    "eligibilityState": record["qualification"]["eligibility"]["state"],
+                    "blockers": record["qualification"]["eligibility"]["blockers"],
+                },
             }
             for index, record in enumerate(opportunity_set["opportunities"])
         ],
