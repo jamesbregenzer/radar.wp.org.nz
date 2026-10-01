@@ -24,12 +24,13 @@ async function assetText(env, path) {
 }
 
 async function loadCertifiedBundle(env) {
-  const [snapshotText, collectionText, opportunitiesText, contributionsText, machineFeedText, checksumText] = await Promise.all([
+  const [snapshotText, collectionText, opportunitiesText, contributionsText, machineFeedText, diagnosticsText, checksumText] = await Promise.all([
     assetText(env, "/api/v1/snapshot.json"),
     assetText(env, "/api/v1/collection.json"),
     assetText(env, "/api/v1/opportunities.json"),
     assetText(env, "/api/v1/contributions.json"),
     assetText(env, "/api/v1/machine-feed.json"),
+    assetText(env, "/api/v1/supply-diagnostics.json"),
     assetText(env, "/api/v1/snapshot.sha256"),
   ]);
   let snapshot;
@@ -37,12 +38,14 @@ async function loadCertifiedBundle(env) {
   let opportunities;
   let contributions;
   let machineFeed;
+  let diagnostics;
   try {
     snapshot = JSON.parse(snapshotText);
     collection = JSON.parse(collectionText);
     opportunities = JSON.parse(opportunitiesText);
     contributions = JSON.parse(contributionsText);
     machineFeed = JSON.parse(machineFeedText);
+    diagnostics = JSON.parse(diagnosticsText);
   } catch {
     throw new Error("CERTIFIED_BUNDLE_MALFORMED");
   }
@@ -51,12 +54,14 @@ async function loadCertifiedBundle(env) {
   const opportunitiesSha = await sha256Hex(opportunitiesText);
   const contributionsSha = await sha256Hex(contributionsText);
   const machineFeedSha = await sha256Hex(machineFeedText);
+  const diagnosticsSha = await sha256Hex(diagnosticsText);
   const expectedManifestSha = checksumText.trim().split(/\s+/)[0];
   const valid = snapshot.schema === "snapshot.v1"
     && collection.schema === "collection.v1"
     && opportunities.schema === "opportunity-set.v1"
     && contributions.schema === "verified-contribution-outcomes.v1"
     && machineFeed.schema === "radar-machine-feed.v1"
+    && diagnostics.schema === "supply-diagnostics.v1"
     && snapshot.certification?.state === "certified"
     && snapshotSha === expectedManifestSha
     && collectionSha === snapshot.collection_sha256
@@ -64,6 +69,9 @@ async function loadCertifiedBundle(env) {
     && collection.collection_id === snapshot.collection_id
     && opportunities.collection_id === snapshot.collection_id
     && opportunities.snapshot_id === snapshot.snapshot_id
+    && diagnostics.snapshot_id === snapshot.snapshot_id
+    && diagnostics.collection_id === snapshot.collection_id
+    && diagnostics.opportunity_count === snapshot.opportunity_count
     && opportunities.opportunities?.length === snapshot.opportunity_count
     && machineFeed.snapshot?.snapshot_id === snapshot.snapshot_id
     && machineFeed.snapshot?.collection_id === snapshot.collection_id
@@ -84,8 +92,8 @@ async function loadCertifiedBundle(env) {
       JSON.stringify(item) === JSON.stringify(contributions.contributions[index])
     );
   if (!valid) throw new Error("CERTIFIED_BUNDLE_INVALID");
-  return { snapshot, collection, opportunities, contributions, machineFeed, snapshotText, collectionText, opportunitiesText, contributionsText, machineFeedText,
-    hashes: { snapshot: snapshotSha, collection: collectionSha, opportunities: opportunitiesSha, contributions: contributionsSha, machineFeed: machineFeedSha } };
+  return { snapshot, collection, opportunities, contributions, machineFeed, diagnostics, snapshotText, collectionText, opportunitiesText, contributionsText, machineFeedText, diagnosticsText,
+    hashes: { snapshot: snapshotSha, collection: collectionSha, opportunities: opportunitiesSha, contributions: contributionsSha, machineFeed: machineFeedSha, diagnostics: diagnosticsSha } };
 }
 
 function apiJson(request, body, etagHash, snapshotId, status = 200) {
@@ -129,6 +137,7 @@ async function handleApiRequest(request, env) {
   if (url.pathname === "/api/v1/opportunities") return apiJson(request, bundle.opportunitiesText, hashes.opportunities, snapshot.snapshot_id);
   if (url.pathname === "/api/v1/contributions") return apiJson(request, bundle.contributionsText, hashes.contributions, snapshot.snapshot_id);
   if (url.pathname === "/api/v1/machine-feed") return apiJson(request, bundle.machineFeedText, hashes.machineFeed, snapshot.snapshot_id);
+  if (url.pathname === "/api/v1/supply-diagnostics") return apiJson(request, bundle.diagnosticsText, hashes.diagnostics, snapshot.snapshot_id);
   const match = url.pathname.match(/^\/api\/v1\/opportunities\/([^/]+)$/);
   if (match) {
     if (!/^\d+$/.test(match[1])) return apiError(400, "MALFORMED_TICKET_ID", "Ticket ID must contain only digits.");

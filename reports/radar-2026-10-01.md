@@ -9,7 +9,7 @@ Generated: 2026-10-01 19:27
 - Outcomes loaded: 4
 - Reviews loaded: 21
 - Top opportunity limit: 50
-- Certified snapshot: snapshot-v1-9131cca1d3780950bad1d5cc
+- Certified snapshot: snapshot-v1-0438dda30570d110d1895060
 - Certified collection: collection-v1-86b7432c7bc770727e75b4ac
 - Scoring version: radar-scoring-v1
 

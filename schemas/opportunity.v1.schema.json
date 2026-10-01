@@ -4,107 +4,504 @@
   "title": "WP Core Radar opportunity.v1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "version", "opportunityKey", "opportunityRevision", "ticket", "discovery", "ranking", "radar_state", "provenance"],
+  "required": [
+    "schema",
+    "version",
+    "opportunityKey",
+    "opportunityRevision",
+    "ticket",
+    "discovery",
+    "ranking",
+    "radar_state",
+    "provenance"
+  ],
   "properties": {
-    "schema": {"const": "opportunity.v1"},
-    "version": {"const": 1},
-    "opportunityKey": {"type": "string", "pattern": "^core-trac:[0-9]+$"},
-    "opportunityRevision": {"type": "string", "pattern": "^opportunity-revision-v1-[0-9a-f]{32}$"},
+    "schema": {
+      "const": "opportunity.v1"
+    },
+    "version": {
+      "const": 1
+    },
+    "opportunityKey": {
+      "type": "string",
+      "pattern": "^core-trac:[0-9]+$"
+    },
+    "opportunityRevision": {
+      "type": "string",
+      "pattern": "^opportunity-revision-v1-[0-9a-f]{32}$"
+    },
     "ticket": {
-      "type": "object", "additionalProperties": false,
-      "required": ["id", "url", "summary", "component", "status", "resolution", "owner", "reporter", "type", "priority", "milestone", "wordpress_version", "keywords", "created", "modified", "comment_count"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "url",
+        "summary",
+        "component",
+        "status",
+        "resolution",
+        "owner",
+        "reporter",
+        "type",
+        "priority",
+        "milestone",
+        "wordpress_version",
+        "keywords",
+        "created",
+        "modified",
+        "comment_count"
+      ],
       "properties": {
-        "id": {"type": "string", "pattern": "[0-9]+"},
-        "url": {"type": "string", "pattern": "https://core\\.trac\\.wordpress\\.org/ticket/[0-9]+"},
-        "summary": {"type": "string", "minLength": 1},
-        "component": {"type": ["string", "null"]}, "status": {"type": ["string", "null"]},
-        "resolution": {"type": ["string", "null"]}, "owner": {"type": ["string", "null"]},
-        "reporter": {"type": ["string", "null"]}, "type": {"type": ["string", "null"]},
-        "priority": {"type": ["string", "null"]}, "milestone": {"type": ["string", "null"]},
-        "wordpress_version": {"type": ["string", "null"]},
-        "keywords": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
-        "created": {"type": ["string", "null"]}, "modified": {"type": ["string", "null"]},
-        "comment_count": {"type": ["integer", "null"]}
+        "id": {
+          "type": "string",
+          "pattern": "[0-9]+"
+        },
+        "url": {
+          "type": "string",
+          "pattern": "https://core\\.trac\\.wordpress\\.org/ticket/[0-9]+"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "component": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resolution": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "owner": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reporter": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "priority": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "milestone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "wordpress_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "created": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "modified": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "comment_count": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
       }
     },
     "discovery": {
-      "type": "object", "additionalProperties": false, "required": ["sources", "tracks"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sources",
+        "tracks"
+      ],
       "properties": {
-        "sources": {"type": "array", "minItems": 1, "items": {
-          "type": "object", "additionalProperties": false,
-          "required": ["query_slug", "source_identity", "artifact_path", "track"],
-          "properties": {
-            "query_slug": {"type": "string"}, "source_identity": {"type": "string"},
-            "artifact_path": {"type": "string"}, "track": {"type": "string"}
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "query_slug",
+              "source_identity",
+              "artifact_path",
+              "track"
+            ],
+            "properties": {
+              "query_slug": {
+                "type": "string"
+              },
+              "source_identity": {
+                "type": "string"
+              },
+              "artifact_path": {
+                "type": "string"
+              },
+              "track": {
+                "type": "string"
+              }
+            }
           }
-        }},
-        "tracks": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        },
+        "tracks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
       }
     },
     "ranking": {
-      "type": "object", "additionalProperties": false,
-      "required": ["score", "tier", "tier_label", "scoring_version", "reasons", "breakdown", "complexity_markers"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "score",
+        "tier",
+        "tier_label",
+        "scoring_version",
+        "reasons",
+        "breakdown",
+        "complexity_markers"
+      ],
       "properties": {
-        "score": {"type": "integer"}, "tier": {"type": "string"}, "tier_label": {"type": "string"},
-        "scoring_version": {"type": "string"}, "reasons": {"type": "array", "items": {"type": "string"}},
-        "breakdown": {"type": "array", "items": {"type": "object", "additionalProperties": false,
-          "required": ["signal", "points"], "properties": {"signal": {"type": "string"}, "points": {"type": "integer"}}}},
-        "complexity_markers": {"type": "array", "items": {"type": "string"}}
+        "score": {
+          "type": "integer"
+        },
+        "tier": {
+          "type": "string"
+        },
+        "tier_label": {
+          "type": "string"
+        },
+        "scoring_version": {
+          "type": "string"
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "breakdown": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "signal",
+              "points"
+            ],
+            "properties": {
+              "signal": {
+                "type": "string"
+              },
+              "points": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "complexity_markers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "radar_state": {
-      "type": "object", "additionalProperties": false,
+      "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "status": {"type": "string"}, "received_props": {"type": "boolean"},
-        "props_recorded_at": {"type": "string"}, "changeset": {"type": "string"}
+        "status": {
+          "type": "string"
+        },
+        "received_props": {
+          "type": "boolean"
+        },
+        "props_recorded_at": {
+          "type": "string"
+        },
+        "changeset": {
+          "type": "string"
+        }
       }
     },
     "qualification": {
-      "type": "object", "additionalProperties": false,
-      "required": ["opportunity_class", "expected_contribution_type", "required_evidence_profiles", "visual_evidence", "relevant_skills", "upstream_freshness", "duplication_risk", "likely_hwp_channel", "engineering_weight", "eligibility"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "opportunity_class",
+        "expected_contribution_type",
+        "contribution_hypothesis",
+        "required_evidence_profiles",
+        "visual_evidence",
+        "relevant_skills",
+        "upstream_freshness",
+        "duplication_risk",
+        "likely_hwp_channel",
+        "engineering_weight",
+        "eligibility",
+        "supply_quality"
+      ],
       "properties": {
-        "opportunity_class": {"type": "string", "enum": ["testing-review", "php-regression-testing", "browser-visual-testing", "accessibility-testing", "documentation-review", "unit-test-review", "code-authoring", "patch-preparation", "retesting-after-changes", "performance-validation"]},
-        "expected_contribution_type": {"type": "string"},
-        "required_evidence_profiles": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "opportunity_class": {
+          "type": "string",
+          "enum": [
+            "needs-testing-verification",
+            "regression-test-only",
+            "browser-ui-testing",
+            "responsive-mobile-testing",
+            "accessibility-testing",
+            "documentation-review",
+            "unit-test-review",
+            "bounded-needs-patch",
+            "stale-patch-refresh",
+            "php-runtime-compatibility",
+            "build-tooling",
+            "performance-validation",
+            "failing-fragile-test-reproduction",
+            "maintainer-requested-reproduction",
+            "dev-feedback-review",
+            "meaningful-good-first-bug",
+            "recent-patch-verification",
+            "scoped-investigation"
+          ]
+        },
+        "expected_contribution_type": {
+          "type": "string"
+        },
+        "contribution_hypothesis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required_evidence_profiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
         "visual_evidence": {
-          "type": "object", "additionalProperties": false, "required": ["relevance", "reason"],
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "relevance",
+            "reason"
+          ],
           "properties": {
-            "relevance": {"type": "string", "enum": ["required", "useful", "not-relevant"]},
-            "reason": {"type": "string"}
+            "relevance": {
+              "type": "string",
+              "enum": [
+                "required",
+                "useful",
+                "not-relevant"
+              ]
+            },
+            "reason": {
+              "type": "string"
+            }
           }
         },
-        "relevant_skills": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "relevant_skills": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
         "upstream_freshness": {
-          "type": "object", "additionalProperties": false, "required": ["state", "modified_at", "age_days"],
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "modified_at",
+            "age_days"
+          ],
           "properties": {
-            "state": {"type": "string", "enum": ["fresh", "recent", "stale", "unknown"]},
-            "modified_at": {"type": ["string", "null"]},
-            "age_days": {"type": ["integer", "null"]}
+            "state": {
+              "type": "string",
+              "enum": [
+                "fresh",
+                "recent",
+                "stale",
+                "unknown"
+              ]
+            },
+            "modified_at": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "age_days": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
           }
         },
         "duplication_risk": {
-          "type": "object", "additionalProperties": false, "required": ["level", "reasons"],
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "level",
+            "reasons"
+          ],
           "properties": {
-            "level": {"type": "string", "enum": ["low", "medium", "high", "unknown"]},
-            "reasons": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+            "level": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "unknown"
+              ]
+            },
+            "reasons": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            }
           }
         },
-        "likely_hwp_channel": {"type": "string", "enum": ["core-trac-comment", "github-review", "core-trac-attachment"]},
-        "engineering_weight": {"type": "string", "enum": ["small", "medium", "large"]},
+        "likely_hwp_channel": {
+          "type": "string",
+          "enum": [
+            "core-trac-comment",
+            "github-review",
+            "core-trac-attachment"
+          ]
+        },
+        "engineering_weight": {
+          "type": "string",
+          "enum": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
         "eligibility": {
-          "type": "object", "additionalProperties": false, "required": ["state", "blockers"],
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "blockers"
+          ],
           "properties": {
-            "state": {"type": "string", "enum": ["eligible", "requires-upstream-validation", "blocked"]},
-            "blockers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+            "state": {
+              "type": "string",
+              "enum": [
+                "eligible",
+                "requires-upstream-validation",
+                "blocked"
+              ]
+            },
+            "blockers": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            }
+          }
+        },
+        "supply_quality": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "current_ticket_state_required",
+            "fresh_upstream_read_required",
+            "nonduplication_check_required",
+            "current_patch_identity_required",
+            "missing_patch_head_base",
+            "screenshot_candidate",
+            "backend_only_candidate"
+          ],
+          "properties": {
+            "current_ticket_state_required": {
+              "type": "boolean"
+            },
+            "fresh_upstream_read_required": {
+              "type": "boolean"
+            },
+            "nonduplication_check_required": {
+              "type": "boolean"
+            },
+            "current_patch_identity_required": {
+              "type": "boolean"
+            },
+            "missing_patch_head_base": {
+              "type": "boolean"
+            },
+            "screenshot_candidate": {
+              "type": "boolean"
+            },
+            "backend_only_candidate": {
+              "type": "boolean"
+            }
           }
         }
       }
     },
     "provenance": {
-      "type": "object", "additionalProperties": false, "required": ["collection_id", "snapshot_id"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "collection_id",
+        "snapshot_id"
+      ],
       "properties": {
-        "collection_id": {"type": "string", "pattern": "collection-v1-[0-9a-f]{24}"},
-        "snapshot_id": {"type": "string", "pattern": "snapshot-v1-[0-9a-f]{24}"}
+        "collection_id": {
+          "type": "string",
+          "pattern": "collection-v1-[0-9a-f]{24}"
+        },
+        "snapshot_id": {
+          "type": "string",
+          "pattern": "snapshot-v1-[0-9a-f]{24}"
+        }
       }
     }
   }
