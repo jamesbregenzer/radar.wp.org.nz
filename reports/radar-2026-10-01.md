@@ -1,6 +1,6 @@
 # WP Core Radar Report
 
-Generated: 2026-10-01 01:24
+Generated: 2026-10-01 07:25
 
 ## Summary
 
@@ -9,8 +9,8 @@ Generated: 2026-10-01 01:24
 - Outcomes loaded: 4
 - Reviews loaded: 21
 - Top opportunity limit: 50
-- Certified snapshot: snapshot-v1-8cbee2321933494d407d6591
-- Certified collection: collection-v1-d4f237c7dcf199e00e057c4a
+- Certified snapshot: snapshot-v1-d7d7ae3ee7434dfac7a65d75
+- Certified collection: collection-v1-5ee989ec392b431ee2d81089
 - Scoring version: radar-scoring-v1
 
 ## Review Workflow
@@ -1344,7 +1344,7 @@ No tickets in this section.
 - Owner: adamsilverstein
 - Keywords: 2nd-opinion has-patch needs-testing
 - Created: 08/01/2022 06:20:19 PM
-- Modified: 09/22/2026 05:58:47 PM
+- Modified: 10/01/2026 03:55:21 AM
 - Review status: watch
 - Review reason: Valid Core testing opportunity, but mediaelement upgrade testing is too broad for today’s easy-win queue.
 - Review notes: This ticket has an active PR, patch, owner, and needs-testing, so it is a legitimate contribution candidate. However, the update touches a large external library upgrade with prior UI/icon, shortcode, and accessibility concerns, making it better suited for a focused local testing pass rather than a quick comment. No testing or Core comment left today. Revisit when there is time for shortcode audio/video testing, browser console checks, and keyboard accessibility validation.

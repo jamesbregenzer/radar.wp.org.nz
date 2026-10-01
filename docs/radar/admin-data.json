@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-01T01:24:59",
+  "generated": "2026-10-01T07:25:48",
   "summary": {
     "unique_tickets": 291,
     "priority_targets": 12,
@@ -8,15 +8,15 @@
     "watching": 62,
     "reviews_loaded": 21,
     "certification": {
-      "snapshot_id": "snapshot-v1-8cbee2321933494d407d6591",
-      "collection_id": "collection-v1-d4f237c7dcf199e00e057c4a",
-      "reference_time": "2026-10-01T01:24:59",
+      "snapshot_id": "snapshot-v1-d7d7ae3ee7434dfac7a65d75",
+      "collection_id": "collection-v1-5ee989ec392b431ee2d81089",
+      "reference_time": "2026-10-01T07:25:48",
       "state": "certified",
       "opportunity_count": 291,
       "scoring_version": "radar-scoring-v1",
-      "source_revision": "6acfcfd5c8b0b69039b8ce22bf3f63fa1073d01c",
+      "source_revision": "810a13cc4c0eff6b682ca6cf7c22c55d4c7e1455",
       "warnings": [],
-      "dataset_sha256": "a328e4e0363b2cc27bd23c9fd663560fbfa0beb7a0b932cfa5f8b085bc6ce41f"
+      "dataset_sha256": "95092d20ad7c193fe14e0facefe22a5114e6f2b97fa25bddb77f5597c8ab1153"
     }
   },
   "groups": {
@@ -8186,61 +8186,6 @@
         "review": {}
       },
       {
-        "ticket_id": "60250",
-        "url": "https://core.trac.wordpress.org/ticket/60250",
-        "score": 126,
-        "tier_class": "standard",
-        "tier_label": "Standard",
-        "summary": "Feature Req \u2013 Media Library Grid-List",
-        "track": "Media: Has Patch",
-        "status": "Assigned",
-        "component": "Media",
-        "owner": "antpb",
-        "comments": "",
-        "created": "01/14/2024 04:18:41 PM",
-        "modified": "09/30/2024 02:37:11 AM",
-        "keywords": "phase-3-media-triage",
-        "signals": [
-          {
-            "label": "Track Priority: Media: Has Patch +100",
-            "class": "priority"
-          },
-          {
-            "label": "Preferred Component: Media +20",
-            "class": "component"
-          },
-          {
-            "label": "Has Owner +6",
-            "class": "owner"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+100",
-            "label": "Track Priority",
-            "detail": "Media: Has Patch",
-            "display": "Track Priority: Media: Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+20",
-            "label": "Preferred Component",
-            "detail": "Media",
-            "display": "Preferred Component: Media",
-            "polarity": "positive"
-          },
-          {
-            "points": "+6",
-            "label": "Has Owner",
-            "detail": "",
-            "display": "Has Owner",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "Media Has Patch",
-        "review": {}
-      },
-      {
         "ticket_id": "43746",
         "url": "https://core.trac.wordpress.org/ticket/43746",
         "score": 124,
@@ -10003,6 +9948,72 @@
         "comments": "",
         "created": "04/09/2021 07:07:03 PM",
         "modified": "07/02/2024 03:35:19 PM",
+        "keywords": "phase-3-media-triage",
+        "signals": [
+          {
+            "label": "Track Priority: Media: Has Patch +100",
+            "class": "priority"
+          },
+          {
+            "label": "Preferred Component: Media +20",
+            "class": "component"
+          },
+          {
+            "label": "Has Owner +6",
+            "class": "owner"
+          },
+          {
+            "label": "Freshness: Stale Activity >730 Days -10",
+            "class": "freshness"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+100",
+            "label": "Track Priority",
+            "detail": "Media: Has Patch",
+            "display": "Track Priority: Media: Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Preferred Component",
+            "detail": "Media",
+            "display": "Preferred Component: Media",
+            "polarity": "positive"
+          },
+          {
+            "points": "+6",
+            "label": "Has Owner",
+            "detail": "",
+            "display": "Has Owner",
+            "polarity": "positive"
+          },
+          {
+            "points": "-10",
+            "label": "Freshness",
+            "detail": "Stale Activity >730 Days",
+            "display": "Freshness: Stale Activity >730 Days",
+            "polarity": "negative"
+          }
+        ],
+        "discovery_track": "Media Has Patch",
+        "review": {}
+      },
+      {
+        "ticket_id": "60250",
+        "url": "https://core.trac.wordpress.org/ticket/60250",
+        "score": 116,
+        "tier_class": "standard",
+        "tier_label": "Standard",
+        "summary": "Feature Req \u2013 Media Library Grid-List",
+        "track": "Media: Has Patch",
+        "status": "Assigned",
+        "component": "Media",
+        "owner": "antpb",
+        "comments": "",
+        "created": "01/14/2024 04:18:41 PM",
+        "modified": "09/30/2024 02:37:11 AM",
         "keywords": "phase-3-media-triage",
         "signals": [
           {
@@ -18952,7 +18963,7 @@
         "owner": "adamsilverstein",
         "comments": "",
         "created": "08/01/2022 06:20:19 PM",
-        "modified": "09/22/2026 05:58:47 PM",
+        "modified": "10/01/2026 03:55:21 AM",
         "keywords": "2nd-opinion has-patch needs-testing",
         "signals": [
           {
