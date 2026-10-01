@@ -10,6 +10,7 @@ import re
 import shutil
 import tempfile
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -29,6 +30,7 @@ from radarlib import (
     first_value,
     load_queries,
     priority_tier,
+    parse_datetime,
     trac_url,
 )
 
@@ -196,6 +198,148 @@ def _score_breakdown(reasons: tuple[str, ...]) -> list[dict[str, Any]]:
     return values
 
 
+def derive_opportunity_profile(
+    *,
+    ticket: dict[str, Any],
+    discovery: dict[str, Any],
+    radar_state: dict[str, Any],
+    reference_time: datetime,
+) -> dict[str, Any]:
+    """Derive a conservative contribution route from certified Trac signals.
+
+    The profile is advisory. It tells downstream contributors what kind of
+    useful work may exist, but it never replaces a fresh upstream duplicate
+    and eligibility check.
+    """
+    keywords = {str(item).lower() for item in ticket.get("keywords", [])}
+    tracks = {str(item).lower() for item in discovery.get("tracks", [])}
+    component = str(ticket.get("component") or "").lower()
+    summary = str(ticket.get("summary") or "").lower()
+    ticket_type = str(ticket.get("type") or "").lower()
+    signals = " ".join(sorted(keywords | tracks | {component, summary, ticket_type}))
+
+    accessibility = "accessibility" in signals or "a11y" in signals
+    documentation = any(marker in signals for marker in ("documentation", "docs", "docblock", "inline docs"))
+    unit_tests = any(marker in signals for marker in ("needs-unit-tests", "needs unit tests", "unit test", "phpunit"))
+    visual = any(marker in signals for marker in (
+        "ui", "visual", "browser", "responsive", "mobile", "editor", "block", "wp-admin", "toolbar", "modal",
+    ))
+    performance = "performance" in signals
+    build_tooling = any(marker in signals for marker in ("build/test tools", "build tooling", "grunt", "npm", "webpack"))
+    has_patch = "has-patch" in keywords or "has patch" in signals
+    needs_patch = "needs-patch" in keywords or "needs patch" in signals
+    needs_testing = "needs-testing" in keywords or "needs testing" in signals
+    feedback = any(marker in keywords for marker in ("dev-feedback", "reporter-feedback"))
+
+    modified = parse_datetime(str(ticket.get("modified") or ""))
+    age_days = max(0, (reference_time - modified.astimezone(timezone.utc)).days) if modified else None
+    if age_days is None:
+        freshness_state = "unknown"
+    elif age_days <= 14:
+        freshness_state = "fresh"
+    elif age_days <= 90:
+        freshness_state = "recent"
+    else:
+        freshness_state = "stale"
+
+    if accessibility:
+        opportunity_class = "accessibility-testing"
+        expected_type = "accessibility-review"
+        profiles = ["build.wordpress", "browser.accessibility-smoke"]
+    elif documentation:
+        opportunity_class = "documentation-review"
+        expected_type = "documentation-review"
+        profiles = ["docs.static-review"]
+    elif unit_tests:
+        opportunity_class = "unit-test-review" if has_patch else "php-regression-testing"
+        expected_type = "regression-test-review" if has_patch else "regression-test-authoring"
+        profiles = ["build.wordpress", "phpunit.focused"]
+    elif performance:
+        opportunity_class = "performance-validation"
+        expected_type = "performance-evidence"
+        profiles = ["build.wordpress", "phpunit.focused"]
+    elif visual:
+        opportunity_class = "browser-visual-testing"
+        expected_type = "browser-test-report"
+        profiles = ["build.wordpress", "browser.wordpress-admin"]
+    elif has_patch and freshness_state == "stale":
+        opportunity_class = "patch-preparation"
+        expected_type = "patch-refresh"
+        profiles = ["build.wordpress", "phpunit.focused"]
+    elif needs_patch:
+        opportunity_class = "code-authoring"
+        expected_type = "patch"
+        profiles = ["build.wordpress", "phpunit.focused"]
+    elif build_tooling:
+        opportunity_class = "testing-review"
+        expected_type = "tooling-reproduction"
+        profiles = ["build.wordpress"]
+    elif has_patch or needs_testing or feedback:
+        opportunity_class = "testing-review"
+        expected_type = "test-report"
+        profiles = ["build.wordpress", "phpunit.focused"]
+    else:
+        opportunity_class = "code-authoring"
+        expected_type = "scoped-investigation"
+        profiles = ["build.wordpress"]
+
+    if accessibility:
+        visual_relevance = "useful"
+        visual_reason = "A focused screenshot may help locate the accessibility state, but semantic browser evidence remains primary."
+    elif visual:
+        visual_relevance = "useful"
+        visual_reason = "The ticket describes a visible or interaction state where exact-revision screenshots may help maintainers."
+    else:
+        visual_relevance = "not-relevant"
+        visual_reason = "The available ticket signals do not indicate that a screenshot would add material evidence."
+
+    duplication_reasons: list[str] = []
+    comments = ticket.get("comment_count")
+    if isinstance(comments, int) and comments > 30:
+        duplication_reasons.append("large-discussion-requires-fresh-read")
+    if radar_state.get("status") in {"tested", "commented", "committed"}:
+        duplication_reasons.append("radar-records-prior-contribution")
+    duplication_level = "high" if duplication_reasons else "unknown"
+
+    blockers: list[str] = []
+    status = str(ticket.get("status") or "").lower()
+    if status in {"closed", "fixed", "wontfix", "duplicate", "invalid"} or ticket.get("resolution"):
+        blockers.append("ticket-not-open")
+    if radar_state.get("status") == "reject":
+        blockers.append("radar-review-rejected")
+    eligibility_state = "blocked" if blockers else "requires-upstream-validation"
+
+    weight = "large" if opportunity_class in {"code-authoring", "patch-preparation", "performance-validation"} else (
+        "medium" if len(profiles) > 1 else "small"
+    )
+    skills = ["wordpress-core"]
+    if "phpunit.focused" in profiles:
+        skills.append("phpunit")
+    if any(profile.startswith("browser.") for profile in profiles):
+        skills.append("browser-testing")
+    if accessibility:
+        skills.append("accessibility")
+    if documentation:
+        skills.append("documentation")
+
+    return {
+        "opportunity_class": opportunity_class,
+        "expected_contribution_type": expected_type,
+        "required_evidence_profiles": profiles,
+        "visual_evidence": {"relevance": visual_relevance, "reason": visual_reason},
+        "relevant_skills": skills,
+        "upstream_freshness": {
+            "state": freshness_state,
+            "modified_at": ticket.get("modified"),
+            "age_days": age_days,
+        },
+        "duplication_risk": {"level": duplication_level, "reasons": duplication_reasons},
+        "likely_hwp_channel": "core-trac-comment",
+        "engineering_weight": weight,
+        "eligibility": {"state": eligibility_state, "blockers": blockers},
+    }
+
+
 def opportunity_key(ticket_id: str) -> str:
     return f"core-trac:{ticket_id}"
 
@@ -313,6 +457,12 @@ def build_opportunity_record(
         "breakdown": _score_breakdown(opportunity.reasons),
         "complexity_markers": complexity,
     }
+    qualification = derive_opportunity_profile(
+        ticket=ticket,
+        discovery=discovery,
+        radar_state=radar_state,
+        reference_time=parse_datetime(selection.identity) or datetime(1970, 1, 1, tzinfo=timezone.utc),
+    )
     material = opportunity_material_state(
         ticket_id=opportunity.ticket_id,
         ticket=ticket,
@@ -329,6 +479,7 @@ def build_opportunity_record(
         "discovery": discovery,
         "ranking": ranking,
         "radar_state": radar_state,
+        "qualification": qualification,
         "provenance": {
             "collection_id": collection_id,
             "snapshot_id": snapshot_id,

@@ -39,6 +39,10 @@ The canonical repository is `jamesbregenzer/radar.wp.org.nz`.
 - Require every enabled query in a certifiable collection. Partial collections fail closed.
 - Keep scoring, normalization, selection, and generation deterministic.
 - Keep canonical hashes and source provenance with certified data.
+- Describe likely contribution classes and proportionate evidence as advisory
+  qualification derived from certified public ticket signals.
+- Preserve stable opportunity revisions when advisory qualification is added;
+  live upstream validation remains required before anyone acts.
 - Leave the previously certified dataset intact when a new run fails.
 - Keep public output free of private notes, credentials, runtime details, and private downstream-system details.
 - Treat HTTP as a projection, never as a second source of truth.

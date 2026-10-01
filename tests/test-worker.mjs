@@ -67,6 +67,9 @@ test("machine feed exposes stable snapshot identity and opportunity revisions", 
     opportunities.opportunities.slice(0, 3).map((item) => item.opportunityRevision));
   assert.equal(machine.verifiedContributions[0].opportunityKey, "core-trac:63568");
   assert.equal(machine.verifiedContributions[0].contributionType, "INDEPENDENT_CONFIRMATION");
+  assert.equal(typeof machine.opportunities[0].qualification.opportunityClass, "string");
+  assert.equal(Array.isArray(machine.opportunities[0].qualification.requiredEvidenceProfiles), true);
+  assert.match(machine.opportunities[0].qualification.visualEvidenceRelevance, /^(required|useful|not-relevant)$/);
 });
 
 test("verified contribution outcomes are projected as public safe machine data", async () => {

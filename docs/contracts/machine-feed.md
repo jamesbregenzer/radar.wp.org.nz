@@ -45,10 +45,19 @@ ranking inputs. It excludes generated timestamps, collection artifact paths,
 snapshot identity, and API publication details. These fields allow any API user
 to distinguish stable opportunity identity from a materially changed record.
 
+Current certified records may also include an advisory `qualification` object.
+It describes the likely opportunity class and contribution type, proportionate
+evidence profiles, visual-evidence relevance, useful skills, freshness,
+duplication risk, likely public channel, engineering weight, and preliminary
+eligibility blockers. Qualification is derived only from certified public
+ticket signals. It is discovery guidance, not proof that work is still needed,
+and does not by itself change a stable opportunity revision.
+
 `/api/v1/machine-feed` contains:
 
 - current snapshot identity and dataset hash;
-- ordered `{ticketId, opportunityKey, opportunityRevision, rank, tier, score}`;
+- ordered `{ticketId, opportunityKey, opportunityRevision, rank, tier, score}`
+  records, with the advisory `qualification` projection when available;
 - verified public contribution outcomes.
 
 The machine feed is read-only public data. It grants no execution or contribution

@@ -17,6 +17,7 @@ from certification import (
     build_certification_bundle,
     build_collection,
     build_opportunity_record,
+    derive_opportunity_profile,
     canonical_json,
     certify,
     load_schema,
@@ -39,6 +40,48 @@ def fixture_selection():
 
 
 class CertificationTests(unittest.TestCase):
+    def test_qualification_routes_visual_accessibility_work_without_making_screenshots_mandatory(self):
+        profile = derive_opportunity_profile(
+            ticket={
+                "summary": "Improve keyboard focus in wp-admin modal",
+                "component": "Accessibility",
+                "type": "defect",
+                "keywords": ["has-patch", "needs-testing", "accessibility"],
+                "modified": "2026-01-14",
+                "status": "new",
+                "resolution": None,
+                "comment_count": 4,
+            },
+            discovery={"tracks": ["accessibility"]},
+            radar_state={},
+            reference_time=datetime(2026, 1, 15, tzinfo=timezone.utc),
+        )
+        self.assertEqual(profile["opportunity_class"], "accessibility-testing")
+        self.assertEqual(profile["required_evidence_profiles"], ["build.wordpress", "browser.accessibility-smoke"])
+        self.assertEqual(profile["visual_evidence"]["relevance"], "useful")
+        self.assertEqual(profile["upstream_freshness"]["state"], "fresh")
+        self.assertEqual(profile["eligibility"]["state"], "requires-upstream-validation")
+
+    def test_qualification_routes_stale_patch_to_refresh(self):
+        profile = derive_opportunity_profile(
+            ticket={
+                "summary": "Refresh legacy media patch",
+                "component": "Media",
+                "type": "defect",
+                "keywords": ["has-patch"],
+                "modified": "2024-01-01",
+                "status": "new",
+                "resolution": None,
+                "comment_count": 3,
+            },
+            discovery={"tracks": ["media"]},
+            radar_state={},
+            reference_time=datetime(2026, 1, 15, tzinfo=timezone.utc),
+        )
+        self.assertEqual(profile["opportunity_class"], "patch-preparation")
+        self.assertEqual(profile["expected_contribution_type"], "patch-refresh")
+        self.assertEqual(profile["visual_evidence"]["relevance"], "not-relevant")
+
     def test_all_schema_documents_have_stable_ids(self):
         for name in SCHEMA_FILES:
             schema = load_schema(name)

@@ -42,7 +42,25 @@
           "opportunityRevision": {"type": "string", "pattern": "^opportunity-revision-v1-[0-9a-f]{32}$"},
           "rank": {"type": "integer"},
           "tier": {"type": "string"},
-          "score": {"type": "integer"}
+          "score": {"type": "integer"},
+          "qualification": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["opportunityClass", "expectedContributionType", "requiredEvidenceProfiles", "visualEvidenceRelevance", "relevantSkills", "upstreamFreshness", "duplicationRisk", "likelyHwpChannel", "engineeringWeight", "eligibilityState", "blockers"],
+            "properties": {
+              "opportunityClass": {"type": "string"},
+              "expectedContributionType": {"type": "string"},
+              "requiredEvidenceProfiles": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+              "visualEvidenceRelevance": {"type": "string", "enum": ["required", "useful", "not-relevant"]},
+              "relevantSkills": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+              "upstreamFreshness": {"type": "string", "enum": ["fresh", "recent", "stale", "unknown"]},
+              "duplicationRisk": {"type": "string", "enum": ["low", "medium", "high", "unknown"]},
+              "likelyHwpChannel": {"type": "string"},
+              "engineeringWeight": {"type": "string", "enum": ["small", "medium", "large"]},
+              "eligibilityState": {"type": "string", "enum": ["eligible", "requires-upstream-validation", "blocked"]},
+              "blockers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+            }
+          }
         }
       }
     },
