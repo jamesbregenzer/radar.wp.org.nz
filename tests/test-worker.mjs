@@ -40,13 +40,23 @@ test("health describes the verified certified snapshot", async () => {
   assert.ok(response.headers.get("etag"));
 });
 
-test("canonical snapshot, collection, opportunity, contribution, and machine feeds are projected", async () => {
-  for (const name of ["snapshot", "collection", "opportunities", "contributions", "machine-feed"]) {
+test("canonical snapshot, collection, opportunity, contribution, diagnostics, and machine feeds are projected", async () => {
+  for (const name of ["snapshot", "collection", "opportunities", "contributions", "machine-feed", "supply-diagnostics"]) {
     const response = await api(`/api/v1/${name}`);
     assert.equal(response.status, 200);
     assert.equal(response.headers.get("content-type"), "application/json; charset=utf-8");
     assert.ok(response.headers.get("x-radar-snapshot-id"));
   }
+});
+
+test("supply diagnostics explain candidate supply and execution bottlenecks", async () => {
+  const diagnostics = await (await api("/api/v1/supply-diagnostics")).json();
+  assert.equal(diagnostics.schema, "supply-diagnostics.v1");
+  assert.equal(diagnostics.opportunity_count > 0, true);
+  assert.equal(Array.isArray(diagnostics.qualified_candidates_by_class), true);
+  assert.equal(Array.isArray(diagnostics.rejected_candidates_by_reason), true);
+  assert.equal(typeof diagnostics.screenshot_suitable_count, "number");
+  assert.equal(typeof diagnostics.backend_only_evidence_count, "number");
 });
 
 test("opportunity feed preserves certified deterministic ordering", async () => {

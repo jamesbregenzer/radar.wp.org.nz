@@ -17,6 +17,7 @@ from certification import (
     build_certification_bundle,
     build_collection,
     build_opportunity_record,
+    build_supply_diagnostics,
     derive_opportunity_profile,
     canonical_json,
     certify,
@@ -78,9 +79,40 @@ class CertificationTests(unittest.TestCase):
             radar_state={},
             reference_time=datetime(2026, 1, 15, tzinfo=timezone.utc),
         )
-        self.assertEqual(profile["opportunity_class"], "patch-preparation")
+        self.assertEqual(profile["opportunity_class"], "stale-patch-refresh")
         self.assertEqual(profile["expected_contribution_type"], "patch-refresh")
         self.assertEqual(profile["visual_evidence"]["relevance"], "not-relevant")
+        self.assertIn("patch-refresh-required-before-verification", profile["eligibility"]["blockers"])
+
+    def test_qualification_routes_specific_non_testing_classes(self):
+        reference = datetime(2026, 1, 15, tzinfo=timezone.utc)
+        examples = [
+            ("needs-unit-tests", "regression-test-only"),
+            ("php-compatibility", "php-runtime-compatibility"),
+            ("dev-feedback", "dev-feedback-review"),
+            ("good-first-bug has-patch", "meaningful-good-first-bug"),
+            ("needs-reproduction", "maintainer-requested-reproduction"),
+        ]
+        for keywords, expected_class in examples:
+            with self.subTest(keywords=keywords):
+                profile = derive_opportunity_profile(
+                    ticket={
+                        "summary": "Focused contribution candidate",
+                        "component": "General",
+                        "type": "defect",
+                        "keywords": keywords.split(),
+                        "modified": "2026-01-14",
+                        "status": "new",
+                        "resolution": None,
+                        "comment_count": 2,
+                    },
+                    discovery={"tracks": ["testing"]},
+                    radar_state={},
+                    reference_time=reference,
+                )
+                self.assertEqual(profile["opportunity_class"], expected_class)
+                self.assertTrue(profile["contribution_hypothesis"])
+                self.assertTrue(profile["supply_quality"]["fresh_upstream_read_required"])
 
     def test_all_schema_documents_have_stable_ids(self):
         for name in SCHEMA_FILES:
@@ -137,9 +169,20 @@ class CertificationTests(unittest.TestCase):
     def test_complete_bundle_validates_all_records(self):
         bundle = build_certification_bundle(fixture_selection(), CONTEXT, REVISION)
         self.assertEqual(validate_named(bundle.snapshot, "snapshot.v1"), [])
+        self.assertEqual(validate_named(bundle.diagnostics, "supply-diagnostics.v1"), [])
         for record in bundle.opportunities["opportunities"]:
             self.assertEqual(validate_named(record, "opportunity.v1"), [])
         self.assertEqual(validate_named(bundle.result, "execution-result.v1"), [])
+
+    def test_supply_diagnostics_reports_candidate_mix(self):
+        bundle = build_certification_bundle(fixture_selection(), CONTEXT, REVISION)
+        diagnostics = build_supply_diagnostics(bundle.opportunities, bundle.collection, bundle.snapshot["snapshot_id"])
+        classes = {item["key"]: item["count"] for item in diagnostics["qualified_candidates_by_class"]}
+        self.assertGreater(sum(classes.values()), 0)
+        self.assertEqual(diagnostics["opportunity_count"], len(bundle.opportunities["opportunities"]))
+        self.assertIn("requires-upstream-validation", {
+            item["key"] for item in diagnostics["bottleneck_by_lifecycle_stage"]
+        })
 
     def test_snapshot_id_is_deterministic(self):
         first = build_certification_bundle(fixture_selection(), CONTEXT, REVISION)

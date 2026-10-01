@@ -9,6 +9,7 @@ import os
 import re
 import shutil
 import tempfile
+from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -46,6 +47,7 @@ SCHEMA_FILES = {
     "snapshot.v1": "snapshot.v1.schema.json",
     "opportunity.v1": "opportunity.v1.schema.json",
     "radar-machine-feed.v1": "radar-machine-feed.v1.schema.json",
+    "supply-diagnostics.v1": "supply-diagnostics.v1.schema.json",
     "verified-contribution-outcomes.v1": "verified-contribution-outcomes.v1.schema.json",
     "execution-result.v1": "execution-result.v1.schema.json",
 }
@@ -219,17 +221,23 @@ def derive_opportunity_profile(
     signals = " ".join(sorted(keywords | tracks | {component, summary, ticket_type}))
 
     accessibility = "accessibility" in signals or "a11y" in signals
-    documentation = any(marker in signals for marker in ("documentation", "docs", "docblock", "inline docs"))
-    unit_tests = any(marker in signals for marker in ("needs-unit-tests", "needs unit tests", "unit test", "phpunit"))
+    documentation = any(marker in signals for marker in ("documentation", "docs", "docblock", "inline docs", "docs-focus"))
+    unit_tests = any(marker in signals for marker in ("needs-unit-tests", "needs unit tests", "unit test", "phpunit", "qunit"))
     visual = any(marker in signals for marker in (
         "ui", "visual", "browser", "responsive", "mobile", "editor", "block", "wp-admin", "toolbar", "modal",
     ))
+    responsive = any(marker in signals for marker in ("responsive", "mobile", "small screen", "viewport"))
     performance = "performance" in signals
-    build_tooling = any(marker in signals for marker in ("build/test tools", "build tooling", "grunt", "npm", "webpack"))
+    build_tooling = any(marker in signals for marker in ("build/test tools", "build tooling", "grunt", "npm", "webpack", "playwright"))
+    php_runtime = any(marker in signals for marker in ("php 8", "php8", "deprecated", "fatal error", "warning", "notice", "compatibility"))
+    fragile_tests = any(marker in signals for marker in ("test failure", "failing test", "flaky", "fragile", "intermittent"))
+    reproduction = any(marker in signals for marker in ("needs-reproduction", "needs reproduction", "reproduce", "steps to reproduce"))
     has_patch = "has-patch" in keywords or "has patch" in signals
     needs_patch = "needs-patch" in keywords or "needs patch" in signals
     needs_testing = "needs-testing" in keywords or "needs testing" in signals
     feedback = any(marker in keywords for marker in ("dev-feedback", "reporter-feedback"))
+    dev_feedback = "dev-feedback" in keywords or "2nd-opinion" in keywords or "second-opinion" in keywords
+    good_first_bug = "good-first-bug" in keywords or "good first bug" in signals
 
     modified = parse_datetime(str(ticket.get("modified") or ""))
     age_days = max(0, (reference_time - modified.astimezone(timezone.utc)).days) if modified else None
@@ -246,42 +254,87 @@ def derive_opportunity_profile(
         opportunity_class = "accessibility-testing"
         expected_type = "accessibility-review"
         profiles = ["build.wordpress", "browser.accessibility-smoke"]
+        hypothesis = "Provide focused accessibility verification against the current patch or ticket state, including semantic browser evidence that can change maintainer confidence."
     elif documentation:
         opportunity_class = "documentation-review"
         expected_type = "documentation-review"
         profiles = ["docs.static-review"]
+        hypothesis = "Review the exact documentation or DocBlock concern and contribute a narrow confirmation, correction, or patch only if current upstream text still needs it."
     elif unit_tests:
-        opportunity_class = "unit-test-review" if has_patch else "php-regression-testing"
+        opportunity_class = "unit-test-review" if has_patch else "regression-test-only"
         expected_type = "regression-test-review" if has_patch else "regression-test-authoring"
         profiles = ["build.wordpress", "phpunit.focused"]
+        hypothesis = "Use the official WordPress test suite to verify or author focused regression coverage for the current ticket behavior."
+    elif fragile_tests:
+        opportunity_class = "failing-fragile-test-reproduction"
+        expected_type = "test-failure-reproduction"
+        profiles = ["build.wordpress", "phpunit.focused"]
+        hypothesis = "Reproduce the reported test instability or failure on exact revisions and report bounded evidence instead of proposing broad infrastructure changes."
     elif performance:
         opportunity_class = "performance-validation"
         expected_type = "performance-evidence"
         profiles = ["build.wordpress", "phpunit.focused"]
-    elif visual:
-        opportunity_class = "browser-visual-testing"
-        expected_type = "browser-test-report"
-        profiles = ["build.wordpress", "browser.wordpress-admin"]
-    elif has_patch and freshness_state == "stale":
-        opportunity_class = "patch-preparation"
-        expected_type = "patch-refresh"
+        hypothesis = "Run bounded performance-oriented verification or code review where current ticket evidence shows a concrete measurable concern."
+    elif php_runtime:
+        opportunity_class = "php-runtime-compatibility"
+        expected_type = "runtime-compatibility-review"
         profiles = ["build.wordpress", "phpunit.focused"]
-    elif needs_patch:
-        opportunity_class = "code-authoring"
-        expected_type = "patch"
-        profiles = ["build.wordpress", "phpunit.focused"]
+        hypothesis = "Verify the exact PHP/runtime compatibility claim on supported environments and contribute focused evidence or a bounded fix."
     elif build_tooling:
-        opportunity_class = "testing-review"
+        opportunity_class = "build-tooling"
         expected_type = "tooling-reproduction"
         profiles = ["build.wordpress"]
+        hypothesis = "Reproduce the build/tooling issue with the official repository workflow and report exact command/output evidence."
+    elif responsive:
+        opportunity_class = "responsive-mobile-testing"
+        expected_type = "browser-test-report"
+        profiles = ["build.wordpress", "browser.wordpress-admin"]
+        hypothesis = "Capture exact desktop/mobile behavior for the current patch or ticket state and explain whether it resolves the responsive issue."
+    elif visual:
+        opportunity_class = "browser-ui-testing"
+        expected_type = "browser-test-report"
+        profiles = ["build.wordpress", "browser.wordpress-admin"]
+        hypothesis = "Exercise the visible UI/browser flow on exact base and head revisions and provide nonduplicative evidence with screenshots only when useful."
+    elif has_patch and freshness_state == "stale":
+        opportunity_class = "stale-patch-refresh"
+        expected_type = "patch-refresh"
+        profiles = ["build.wordpress", "phpunit.focused"]
+        hypothesis = "Determine whether the stale patch still applies or needs a minimal refresh before maintainers can evaluate it."
+    elif needs_patch:
+        opportunity_class = "bounded-needs-patch"
+        expected_type = "patch"
+        profiles = ["build.wordpress", "phpunit.focused"]
+        hypothesis = "Investigate the current bug and prepare a narrowly scoped patch only if the ticket evidence supports a bounded implementation."
+    elif reproduction:
+        opportunity_class = "maintainer-requested-reproduction"
+        expected_type = "reproduction-report"
+        profiles = ["build.wordpress", "phpunit.focused"]
+        hypothesis = "Reproduce the maintainer-requested behavior on exact revisions and contribute a clear pass/fail report."
+    elif dev_feedback:
+        opportunity_class = "dev-feedback-review"
+        expected_type = "2nd-opinion-review"
+        profiles = ["build.wordpress", "phpunit.focused"]
+        hypothesis = "Answer the current dev-feedback question with exact code/test evidence rather than repeating generic testing."
+    elif good_first_bug and has_patch:
+        opportunity_class = "meaningful-good-first-bug"
+        expected_type = "patch-review"
+        profiles = ["build.wordpress", "phpunit.focused"]
+        hypothesis = "Use the good-first-bug scope only when there is a technically meaningful patch or verification question to resolve."
+    elif has_patch and freshness_state in {"fresh", "recent"}:
+        opportunity_class = "recent-patch-verification"
+        expected_type = "patch-review"
+        profiles = ["build.wordpress", "phpunit.focused"]
+        hypothesis = "Review or test the current patch while it is fresh enough that maintainer context is likely still active."
     elif has_patch or needs_testing or feedback:
-        opportunity_class = "testing-review"
+        opportunity_class = "needs-testing-verification"
         expected_type = "test-report"
         profiles = ["build.wordpress", "phpunit.focused"]
+        hypothesis = "Produce a focused, nonduplicative test report for the current ticket state, with exact revisions and result evidence."
     else:
-        opportunity_class = "code-authoring"
+        opportunity_class = "scoped-investigation"
         expected_type = "scoped-investigation"
         profiles = ["build.wordpress"]
+        hypothesis = "Perform a bounded current-state investigation before deciding whether any public contribution is useful."
 
     if accessibility:
         visual_relevance = "useful"
@@ -299,7 +352,7 @@ def derive_opportunity_profile(
         duplication_reasons.append("large-discussion-requires-fresh-read")
     if radar_state.get("status") in {"tested", "commented", "committed"}:
         duplication_reasons.append("radar-records-prior-contribution")
-    duplication_level = "high" if duplication_reasons else "unknown"
+    duplication_level = "high" if duplication_reasons else "low"
 
     blockers: list[str] = []
     status = str(ticket.get("status") or "").lower()
@@ -307,9 +360,11 @@ def derive_opportunity_profile(
         blockers.append("ticket-not-open")
     if radar_state.get("status") == "reject":
         blockers.append("radar-review-rejected")
+    if has_patch and freshness_state == "stale":
+        blockers.append("patch-refresh-required-before-verification")
     eligibility_state = "blocked" if blockers else "requires-upstream-validation"
 
-    weight = "large" if opportunity_class in {"code-authoring", "patch-preparation", "performance-validation"} else (
+    weight = "large" if opportunity_class in {"bounded-needs-patch", "stale-patch-refresh", "performance-validation"} else (
         "medium" if len(profiles) > 1 else "small"
     )
     skills = ["wordpress-core"]
@@ -325,6 +380,7 @@ def derive_opportunity_profile(
     return {
         "opportunity_class": opportunity_class,
         "expected_contribution_type": expected_type,
+        "contribution_hypothesis": hypothesis,
         "required_evidence_profiles": profiles,
         "visual_evidence": {"relevance": visual_relevance, "reason": visual_reason},
         "relevant_skills": skills,
@@ -337,7 +393,104 @@ def derive_opportunity_profile(
         "likely_hwp_channel": "core-trac-comment",
         "engineering_weight": weight,
         "eligibility": {"state": eligibility_state, "blockers": blockers},
+        "supply_quality": {
+            "current_ticket_state_required": True,
+            "fresh_upstream_read_required": True,
+            "nonduplication_check_required": True,
+            "current_patch_identity_required": has_patch,
+            "missing_patch_head_base": has_patch,
+            "screenshot_candidate": visual_relevance in {"required", "useful"},
+            "backend_only_candidate": not visual and any(profile in profiles for profile in ("phpunit.focused", "build.wordpress")),
+        },
     }
+
+
+def counted(counter: Counter[str]) -> list[dict[str, Any]]:
+    return [{"key": key, "count": counter[key]} for key in sorted(counter)]
+
+
+def age_bucket(age_days: int | None) -> str:
+    if age_days is None:
+        return "unknown"
+    if age_days <= 14:
+        return "0-14-days"
+    if age_days <= 60:
+        return "15-60-days"
+    if age_days <= 180:
+        return "61-180-days"
+    if age_days <= 730:
+        return "181-730-days"
+    return "over-730-days"
+
+
+def build_supply_diagnostics(
+    opportunity_set: dict[str, Any],
+    collection: dict[str, Any],
+    snapshot_id: str,
+) -> dict[str, Any]:
+    by_class: Counter[str] = Counter()
+    rejected: Counter[str] = Counter()
+    stale: Counter[str] = Counter()
+    duplicate: Counter[str] = Counter()
+    missing_environment: Counter[str] = Counter()
+    missing_patch_identity: Counter[str] = Counter()
+    lifecycle: Counter[str] = Counter()
+    ages: Counter[str] = Counter()
+    screenshot = 0
+    backend_only = 0
+    already_satisfied = 0
+
+    for record in opportunity_set["opportunities"]:
+        qualification = record["qualification"]
+        opportunity_class = qualification["opportunity_class"]
+        by_class[opportunity_class] += 1
+        lifecycle[qualification["eligibility"]["state"]] += 1
+        for blocker in qualification["eligibility"]["blockers"]:
+            rejected[blocker] += 1
+        freshness = qualification["upstream_freshness"]
+        ages[age_bucket(freshness["age_days"])] += 1
+        if freshness["state"] == "stale":
+            stale[opportunity_class] += 1
+        if qualification["duplication_risk"]["level"] in {"medium", "high"}:
+            duplicate[qualification["duplication_risk"]["level"]] += 1
+        if not qualification["required_evidence_profiles"]:
+            missing_environment[opportunity_class] += 1
+        if qualification["supply_quality"]["missing_patch_head_base"]:
+            missing_patch_identity[opportunity_class] += 1
+        if qualification["supply_quality"]["screenshot_candidate"]:
+            screenshot += 1
+        if qualification["supply_quality"]["backend_only_candidate"]:
+            backend_only += 1
+        if record.get("radar_state", {}).get("status") in {"tested", "commented", "committed"} or record.get("radar_state", {}).get("received_props") is True:
+            already_satisfied += 1
+
+    query_rows = {
+        item["query_slug"]: item["row_count"]
+        for item in collection["query_evidence"]
+    }
+    diagnostics = {
+        "schema": "supply-diagnostics.v1",
+        "version": 1,
+        "collection_id": collection["collection_id"],
+        "snapshot_id": snapshot_id,
+        "opportunity_count": len(opportunity_set["opportunities"]),
+        "query_rows": query_rows,
+        "qualified_candidates_by_class": counted(by_class),
+        "rejected_candidates_by_reason": counted(rejected),
+        "stale_candidates_by_class": counted(stale),
+        "duplicate_candidates_by_risk": counted(duplicate),
+        "missing_reproducible_environments_by_class": counted(missing_environment),
+        "missing_patch_head_base_by_class": counted(missing_patch_identity),
+        "already_satisfied_count": already_satisfied,
+        "screenshot_suitable_count": screenshot,
+        "backend_only_evidence_count": backend_only,
+        "candidate_aging": counted(ages),
+        "bottleneck_by_lifecycle_stage": counted(lifecycle),
+    }
+    failures = validate_named(diagnostics, "supply-diagnostics.v1")
+    if failures:
+        raise CertificationError("; ".join(failures))
+    return diagnostics
 
 
 def opportunity_key(ticket_id: str) -> str:
@@ -544,6 +697,7 @@ def execution_result(
 class CertificationBundle:
     collection: dict[str, Any]
     opportunities: dict[str, Any]
+    diagnostics: dict[str, Any]
     snapshot: dict[str, Any]
     manifest_sha256: str
     result: dict[str, Any]
@@ -552,6 +706,7 @@ class CertificationBundle:
         return {
             "collection.json": canonical_json(self.collection),
             "opportunities.json": canonical_json(self.opportunities),
+            "supply-diagnostics.json": canonical_json(self.diagnostics),
             "snapshot.json": canonical_json(self.snapshot),
             "snapshot.sha256": (self.manifest_sha256 + "  snapshot.json\n").encode("ascii"),
         }
@@ -599,8 +754,10 @@ def build_certification_bundle(
         "snapshot_id": snapshot_id,
         "opportunities": records,
     }
+    diagnostics = build_supply_diagnostics(opportunity_set, collection, snapshot_id)
     collection_bytes = canonical_json(collection)
     opportunity_bytes = canonical_json(opportunity_set)
+    diagnostics_bytes = canonical_json(diagnostics)
     dataset_hash = sha256_bytes(opportunity_bytes)
     snapshot = {
         "schema": "snapshot.v1",
@@ -620,6 +777,7 @@ def build_certification_bundle(
         "artifacts": [
             {"path": "collection.json", "sha256": sha256_bytes(collection_bytes)},
             {"path": "opportunities.json", "sha256": dataset_hash},
+            {"path": "supply-diagnostics.json", "sha256": sha256_bytes(diagnostics_bytes)},
         ],
         "certification": {"state": "certified", "warnings": collection["warnings"], "errors": []},
     }
@@ -637,7 +795,7 @@ def build_certification_bundle(
     result_errors = validate_named(result, "execution-result.v1", schemas_dir)
     if result_errors:
         raise CertificationError("; ".join(result_errors))
-    return CertificationBundle(collection, opportunity_set, snapshot, manifest_hash, result)
+    return CertificationBundle(collection, opportunity_set, diagnostics, snapshot, manifest_hash, result)
 
 
 def certify(
@@ -687,14 +845,15 @@ def publish_bundle(bundle: CertificationBundle, current_dir: Path = CERTIFIED_CU
 
 
 def verify_certified(current_dir: Path = CERTIFIED_CURRENT, schemas_dir: Path = SCHEMAS_DIR) -> dict[str, Any]:
-    required = ("collection.json", "opportunities.json", "snapshot.json", "snapshot.sha256")
+    required = ("collection.json", "opportunities.json", "supply-diagnostics.json", "snapshot.json", "snapshot.sha256")
     missing = [name for name in required if not (current_dir / name).exists()]
     if missing:
         raise CertificationError(f"missing certified artifacts: {', '.join(missing)}")
     collection = json.loads((current_dir / "collection.json").read_text(encoding="utf-8"))
     opportunities = json.loads((current_dir / "opportunities.json").read_text(encoding="utf-8"))
+    diagnostics = json.loads((current_dir / "supply-diagnostics.json").read_text(encoding="utf-8"))
     snapshot = json.loads((current_dir / "snapshot.json").read_text(encoding="utf-8"))
-    errors = validate_named(collection, "collection.v1", schemas_dir) + validate_named(snapshot, "snapshot.v1", schemas_dir)
+    errors = validate_named(collection, "collection.v1", schemas_dir) + validate_named(snapshot, "snapshot.v1", schemas_dir) + validate_named(diagnostics, "supply-diagnostics.v1", schemas_dir)
     for index, record in enumerate(opportunities.get("opportunities", [])):
         errors.extend(f"opportunities[{index}] {error}" for error in validate_named(record, "opportunity.v1", schemas_dir))
     if collection.get("state") != "complete" or snapshot.get("certification", {}).get("state") != "certified":
@@ -713,6 +872,8 @@ def verify_certified(current_dir: Path = CERTIFIED_CURRENT, schemas_dir: Path = 
         errors.append("opportunity collection identity mismatch")
     if opportunities.get("snapshot_id") != snapshot.get("snapshot_id"):
         errors.append("opportunity snapshot identity mismatch")
+    if diagnostics.get("snapshot_id") != snapshot.get("snapshot_id") or diagnostics.get("collection_id") != collection.get("collection_id"):
+        errors.append("diagnostics identity mismatch")
     collection_preimage = dict(collection)
     collection_id = collection_preimage.pop("collection_id", "")
     if collection_id != f"collection-v1-{canonical_hash(collection_preimage)[:24]}":
@@ -734,6 +895,8 @@ def verify_certified(current_dir: Path = CERTIFIED_CURRENT, schemas_dir: Path = 
             errors.append(f"artifact hash mismatch: {artifact['path']}")
     if snapshot.get("dataset_sha256") != file_sha256(current_dir / "opportunities.json"):
         errors.append("dataset hash mismatch")
+    if diagnostics.get("opportunity_count") != snapshot.get("opportunity_count"):
+        errors.append("diagnostics opportunity count mismatch")
     expected_manifest = (current_dir / "snapshot.sha256").read_text(encoding="ascii").split()[0]
     if expected_manifest != file_sha256(current_dir / "snapshot.json"):
         errors.append("snapshot manifest hash mismatch")

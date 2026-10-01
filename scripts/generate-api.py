@@ -75,6 +75,7 @@ def machine_feed_payload(snapshot: dict, opportunity_set: dict, contribution_sta
                 "qualification": {
                     "opportunityClass": record["qualification"]["opportunity_class"],
                     "expectedContributionType": record["qualification"]["expected_contribution_type"],
+                    "contributionHypothesis": record["qualification"]["contribution_hypothesis"],
                     "requiredEvidenceProfiles": record["qualification"]["required_evidence_profiles"],
                     "visualEvidenceRelevance": record["qualification"]["visual_evidence"]["relevance"],
                     "relevantSkills": record["qualification"]["relevant_skills"],
@@ -82,6 +83,9 @@ def machine_feed_payload(snapshot: dict, opportunity_set: dict, contribution_sta
                     "duplicationRisk": record["qualification"]["duplication_risk"]["level"],
                     "likelyHwpChannel": record["qualification"]["likely_hwp_channel"],
                     "engineeringWeight": record["qualification"]["engineering_weight"],
+                    "screenshotCandidate": record["qualification"]["supply_quality"]["screenshot_candidate"],
+                    "backendOnlyCandidate": record["qualification"]["supply_quality"]["backend_only_candidate"],
+                    "missingPatchHeadBase": record["qualification"]["supply_quality"]["missing_patch_head_base"],
                     "eligibilityState": record["qualification"]["eligibility"]["state"],
                     "blockers": record["qualification"]["eligibility"]["blockers"],
                 },
@@ -126,6 +130,9 @@ def generate_api_assets(current_dir: Path = CERTIFIED_CURRENT, output_dir: Path 
         destination = output_dir / name
         destination.write_bytes((current_dir / name).read_bytes())
         paths.append(destination)
+    diagnostics_path = output_dir / "supply-diagnostics.json"
+    diagnostics_path.write_bytes((current_dir / "supply-diagnostics.json").read_bytes())
+    paths.append(diagnostics_path)
     contributions_path = output_dir / "contributions.json"
     contributions_path.write_bytes(canonical_json(contributions))
     paths.append(contributions_path)

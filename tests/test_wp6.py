@@ -36,7 +36,7 @@ class WP6MigrationTests(unittest.TestCase):
     def test_worker_routes_cover_human_and_machine_surfaces(self):
         for route in [
             "/api/v1/health", "/api/v1/snapshot", "/api/v1/collection",
-            "/api/v1/opportunities", "/admin/", "/admin/login",
+            "/api/v1/opportunities", "/api/v1/supply-diagnostics", "/admin/", "/admin/login",
             "/admin/save", "/admin/props",
         ]:
             self.assertIn(route, WORKER)
