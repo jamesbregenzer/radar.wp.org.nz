@@ -1,22 +1,22 @@
 {
-  "generated": "2026-10-02T13:29:46",
+  "generated": "2026-10-02T19:30:33",
   "summary": {
     "unique_tickets": 289,
     "priority_targets": 12,
     "immediate": 12,
     "strong": 0,
-    "watching": 61,
+    "watching": 60,
     "reviews_loaded": 21,
     "certification": {
-      "snapshot_id": "snapshot-v1-4ee7a869077a9f1f87414979",
-      "collection_id": "collection-v1-13c18c0e3b7370d5b36f0a6c",
-      "reference_time": "2026-10-02T13:29:46",
+      "snapshot_id": "snapshot-v1-23e31833c42dbb6637e0f366",
+      "collection_id": "collection-v1-620e4645cc22470e7a7e0b11",
+      "reference_time": "2026-10-02T19:30:33",
       "state": "certified",
       "opportunity_count": 289,
       "scoring_version": "radar-scoring-v1",
-      "source_revision": "6dc13c50440fe7289f8bc58c1de7016ed1758fef",
+      "source_revision": "648125e776e3fd91c5e47341bfb246b7db3e0aa5",
       "warnings": [],
-      "dataset_sha256": "d18894492b9a05b91e6abf942a774362002550c066256f847c8027f8604c02dd"
+      "dataset_sha256": "cde89a40cd1cb5646996e92807817fc01f78ac7c23ce64085adfae5104e93593"
     }
   },
   "groups": {
@@ -320,7 +320,7 @@
         "owner": "audrasjb",
         "comments": "",
         "created": "06/14/2025 01:01:14 PM",
-        "modified": "09/28/2026 04:07:39 PM",
+        "modified": "10/02/2026 06:18:32 PM",
         "keywords": "dev-feedback has-patch has-screenshots has-test-info has-unit-tests needs-testing",
         "signals": [
           {
@@ -2180,6 +2180,83 @@
         "review": {}
       },
       {
+        "ticket_id": "65395",
+        "url": "https://core.trac.wordpress.org/ticket/65395",
+        "score": 158,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Site Health falsely reports \"Opcode cache is not enabled\" on shared hosting (WP 7.0)",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Site Health",
+        "owner": "",
+        "comments": "",
+        "created": "06/02/2026 09:05:13 PM",
+        "modified": "10/02/2026 04:27:00 PM",
+        "keywords": "has-patch has-unit-tests needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          },
+          {
+            "label": "Ticket Age: Mature But Not Ancient +8",
+            "class": "age"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Ticket Age",
+            "detail": "Mature But Not Ancient",
+            "display": "Ticket Age: Mature But Not Ancient",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
         "ticket_id": "65734",
         "url": "https://core.trac.wordpress.org/ticket/65734",
         "score": 158,
@@ -3566,83 +3643,6 @@
         "review": {}
       },
       {
-        "ticket_id": "65395",
-        "url": "https://core.trac.wordpress.org/ticket/65395",
-        "score": 148,
-        "tier_class": "watching",
-        "tier_label": "Worth Watching",
-        "summary": "Site Health falsely reports \"Opcode cache is not enabled\" on shared hosting (WP 7.0)",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Site Health",
-        "owner": "",
-        "comments": "",
-        "created": "06/02/2026 09:05:13 PM",
-        "modified": "08/24/2026 06:34:56 AM",
-        "keywords": "has-patch has-unit-tests needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          },
-          {
-            "label": "Ticket Age: Mature But Not Ancient +8",
-            "class": "age"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Ticket Age",
-            "detail": "Mature But Not Ancient",
-            "display": "Ticket Age: Mature But Not Ancient",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
         "ticket_id": "65496",
         "url": "https://core.trac.wordpress.org/ticket/65496",
         "score": 148,
@@ -3805,72 +3805,6 @@
           }
         ],
         "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
-        "ticket_id": "47456",
-        "url": "https://core.trac.wordpress.org/ticket/47456",
-        "score": 146,
-        "tier_class": "watching",
-        "tier_label": "Worth Watching",
-        "summary": "Improve the user interface to ensure correct usage of the image alt text",
-        "track": "Media: Has Patch",
-        "status": "Accepted",
-        "component": "Media",
-        "owner": "joedolson",
-        "comments": "",
-        "created": "06/01/2019 11:15:23 AM",
-        "modified": "09/17/2026 03:24:57 PM",
-        "keywords": "needs-patch phase-3-media-triage wpcampus-report",
-        "signals": [
-          {
-            "label": "Track Priority: Media: Has Patch +100",
-            "class": "priority"
-          },
-          {
-            "label": "Preferred Component: Media +20",
-            "class": "component"
-          },
-          {
-            "label": "Has Owner +6",
-            "class": "owner"
-          },
-          {
-            "label": "Freshness: Recently Updated <=14 Days +20",
-            "class": "freshness"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+100",
-            "label": "Track Priority",
-            "detail": "Media: Has Patch",
-            "display": "Track Priority: Media: Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+20",
-            "label": "Preferred Component",
-            "detail": "Media",
-            "display": "Preferred Component: Media",
-            "polarity": "positive"
-          },
-          {
-            "points": "+6",
-            "label": "Has Owner",
-            "detail": "",
-            "display": "Has Owner",
-            "polarity": "positive"
-          },
-          {
-            "points": "+20",
-            "label": "Freshness",
-            "detail": "Recently Updated <=14 Days",
-            "display": "Freshness: Recently Updated <=14 Days",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "Media Has Patch",
         "review": {}
       },
       {
@@ -6500,6 +6434,72 @@
           }
         ],
         "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "47456",
+        "url": "https://core.trac.wordpress.org/ticket/47456",
+        "score": 136,
+        "tier_class": "watching",
+        "tier_label": "Worth Watching",
+        "summary": "Improve the user interface to ensure correct usage of the image alt text",
+        "track": "Media: Has Patch",
+        "status": "Accepted",
+        "component": "Media",
+        "owner": "joedolson",
+        "comments": "",
+        "created": "06/01/2019 11:15:23 AM",
+        "modified": "09/17/2026 03:24:57 PM",
+        "keywords": "needs-patch phase-3-media-triage wpcampus-report",
+        "signals": [
+          {
+            "label": "Track Priority: Media: Has Patch +100",
+            "class": "priority"
+          },
+          {
+            "label": "Preferred Component: Media +20",
+            "class": "component"
+          },
+          {
+            "label": "Has Owner +6",
+            "class": "owner"
+          },
+          {
+            "label": "Freshness: Updated Within 60 Days +10",
+            "class": "freshness"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+100",
+            "label": "Track Priority",
+            "detail": "Media: Has Patch",
+            "display": "Track Priority: Media: Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Preferred Component",
+            "detail": "Media",
+            "display": "Preferred Component: Media",
+            "polarity": "positive"
+          },
+          {
+            "points": "+6",
+            "label": "Has Owner",
+            "detail": "",
+            "display": "Has Owner",
+            "polarity": "positive"
+          },
+          {
+            "points": "+10",
+            "label": "Freshness",
+            "detail": "Updated Within 60 Days",
+            "display": "Freshness: Updated Within 60 Days",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "Media Has Patch",
         "review": {}
       },
       {
