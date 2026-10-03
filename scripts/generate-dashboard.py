@@ -35,6 +35,25 @@ from radarlib import (
 
 PUBLIC_TOP_LIMIT = 50
 CONTRIBUTION_STATE = Path("data") / "contributions" / "contribution-state.json"
+PUBLIC_CONTRIBUTIONS = Path("data") / "public-contributions.json"
+PUBLIC_CONTRIBUTION_SOURCE_KINDS = {
+    "wordpress_core_trac",
+    "wordpress_trac_mail_archive",
+    "wordpress_github",
+    "wordpress_org_profile",
+}
+PRIVATE_CONTRIBUTION_TERMS = (
+    "contributor automation",
+    "contributor controller",
+    "automation identity",
+    "thor",
+    "sentinel",
+    "eden",
+    "private hwp",
+    "private queue",
+    "internal ledger",
+    "authorization hash",
+)
 
 
 def opportunity_data(context: RunContext, selection: DatasetSelection | None = None):
@@ -578,6 +597,103 @@ def contribution_records(
 
     return sorted(records, key=lambda record: record["updated_dt"] or datetime.min, reverse=True)
 
+
+def all_public_source_kinds(record: dict[str, Any]) -> list[str]:
+    """Return every declared evidence source kind for a public contribution."""
+    kinds: list[str] = []
+    for evidence in record.get("evidence", []):
+        kinds.append(str(evidence.get("kind", "")))
+    for outcome in record.get("outcomes", []):
+        for evidence in outcome.get("evidence", []):
+            kinds.append(str(evidence.get("kind", "")))
+    return kinds
+
+
+def validate_public_contribution_record(record: dict[str, Any]) -> None:
+    """Fail closed when a public contribution record leaks private provenance."""
+    required = {
+        "id", "ticket_id", "ticket_url", "title", "component", "public_status",
+        "contribution_type", "contribution_date", "contribution_link",
+        "contribution_summary", "evidence", "opportunity", "outcomes",
+        "outcome_flags",
+    }
+    missing = sorted(required - set(record))
+    if missing:
+        raise ValueError(f"public contribution {record.get('id', '<unknown>')} missing {', '.join(missing)}")
+
+    serialized = json.dumps(record, sort_keys=True).lower()
+    for term in PRIVATE_CONTRIBUTION_TERMS:
+        if term in serialized:
+            raise ValueError(f"public contribution {record['id']} contains private implementation term")
+
+    for source_kind in all_public_source_kinds(record):
+        if source_kind not in PUBLIC_CONTRIBUTION_SOURCE_KINDS:
+            raise ValueError(f"public contribution {record['id']} uses unsupported source {source_kind}")
+
+    opportunity = record.get("opportunity", {})
+    if opportunity.get("source") != "deterministic_ticket_id":
+        raise ValueError(f"public contribution {record['id']} lacks deterministic opportunity identity")
+    if str(opportunity.get("identity", "")) != f"core-trac:{record['ticket_id']}":
+        raise ValueError(f"public contribution {record['id']} has mismatched opportunity identity")
+
+    flags = record.get("outcome_flags", {})
+    if flags.get("merged") and not any(outcome.get("type") == "merged" for outcome in record.get("outcomes", [])):
+        raise ValueError(f"public contribution {record['id']} claims merge without public merge outcome")
+    if flags.get("resolved") and not any(outcome.get("type") == "resolved" for outcome in record.get("outcomes", [])):
+        raise ValueError(f"public contribution {record['id']} claims resolution without public resolution outcome")
+
+
+def load_public_contribution_payload(path: Path = PUBLIC_CONTRIBUTIONS) -> dict[str, Any]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("schema") != "radar-public-contributions.v1":
+        raise ValueError("public contributions payload has an unsupported schema")
+    allowed = set(payload.get("source_contract", {}).get("allowed_source_kinds", []))
+    if not allowed.issubset(PUBLIC_CONTRIBUTION_SOURCE_KINDS):
+        raise ValueError("public contributions source contract includes unsupported source kinds")
+    if payload.get("source_contract", {}).get("private_source_kinds"):
+        raise ValueError("public contributions source contract cannot declare private sources")
+    for record in payload.get("contributions", []):
+        validate_public_contribution_record(record)
+    return payload
+
+
+def parse_public_date(value: str) -> datetime | None:
+    try:
+        return datetime.fromisoformat(value.strip())
+    except ValueError:
+        return None
+
+
+def public_contribution_records(path: Path = PUBLIC_CONTRIBUTIONS) -> list[dict[str, Any]]:
+    payload = load_public_contribution_payload(path)
+    records: dict[str, dict[str, Any]] = {}
+    for record in payload.get("contributions", []):
+        current = records.get(record["id"])
+        if current is None:
+            records[record["id"]] = record
+            continue
+        current_date = parse_public_date(current["contribution_date"]) or datetime.min
+        next_date = parse_public_date(record["contribution_date"]) or datetime.min
+        if next_date > current_date:
+            records[record["id"]] = record
+    return sorted(
+        records.values(),
+        key=lambda record: parse_public_date(record["contribution_date"]) or datetime.min,
+        reverse=True,
+    )
+
+
+def latest_public_outcome(record: dict[str, Any]) -> dict[str, Any] | None:
+    outcomes = record.get("outcomes", [])
+    if not outcomes:
+        return None
+    return sorted(
+        outcomes,
+        key=lambda outcome: parse_public_date(str(outcome.get("date", ""))) or datetime.min,
+        reverse=True,
+    )[0]
+
+
 def contribution_css() -> str:
     return dashboard_css() + """
     .hero-grid {
@@ -663,6 +779,83 @@ def contribution_css() -> str:
     .timeline-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     .changeset-link { color: #2271b1; font-size: 12px; font-weight: 700; white-space: nowrap; }
     .note-preview { margin-top: 8px; color: #50575e; line-height: 1.45; max-width: 860px; }
+    .record-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .contribution-record {
+      background: white;
+      border: 1px solid #dcdcde;
+      border-left: 6px solid #2563eb;
+      border-radius: 10px;
+      padding: 18px;
+    }
+    .contribution-record h3 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      line-height: 1.25;
+    }
+    .record-meta,
+    .source-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .record-summary,
+    .outcome-summary {
+      color: #50575e;
+      line-height: 1.55;
+    }
+    .record-outcome {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid #dbeafe;
+      border-radius: 8px;
+      background: #f8fbff;
+    }
+    .record-outcome strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+    .source-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 10px;
+      border: 1px solid #dcdcde;
+      border-radius: 999px;
+      background: #fff;
+      color: #2271b1;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .source-link:hover {
+      border-color: #2271b1;
+      background: #f0f6fc;
+      color: #135e96;
+      text-decoration: none;
+    }
+    .lifecycle {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .lifecycle-step {
+      border: 1px solid #dcdcde;
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+    }
+    .lifecycle-step strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+    .lifecycle-step span {
+      color: #646970;
+      font-size: 13px;
+    }
     .component-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
     .component-card { background: white; border: 1px solid #dcdcde; border-radius: 10px; padding: 16px; }
     .component-card strong { display: block; font-size: 22px; }
@@ -698,6 +891,7 @@ def contribution_css() -> str:
       .hero-grid { grid-template-columns: 1fr; }
       .bar-row { grid-template-columns: 110px minmax(0, 1fr) 36px; }
       .timeline-item { grid-template-columns: 1fr; }
+      .lifecycle { grid-template-columns: 1fr; }
     }
     """
 
@@ -721,18 +915,17 @@ def contribution_bar_chart(title: str, counts: Counter[str], labeler=status_labe
 
 def build_contributions_page(context: RunContext | None = None, selection: DatasetSelection | None = None) -> str:
     context = context or parse_run_time(None)
-    ranked, duplicate_sources, summary = opportunity_data(context, selection)
-    contribution_state = load_contribution_state()
-    records = contribution_records(ranked, contribution_state)
+    records = public_contribution_records()
     generated = context.generated_display
 
-    status_counts = Counter(record["status"] for record in records)
+    type_counts = Counter(record["contribution_type"] for record in records)
     component_counts = Counter(record["component"] for record in records)
-    month_counts = Counter(record["month_label"] for record in records)
-    month_order = Counter(dict(sorted(month_counts.items(), key=lambda item: next((record["updated_dt"] for record in records if record["month_label"] == item[0]), datetime.min), reverse=True)))
-    props_count = sum(1 for record in records if record["received_props"])
-    acted_on_count = sum(status_counts.get(status, 0) for status in ("tested", "commented", "committed"))
-    props_rate = round((props_count / acted_on_count) * 100) if acted_on_count else 0
+    status_counts = Counter(record["public_status"] for record in records)
+    confirmed_count = sum(1 for record in records if record["outcome_flags"].get("confirmed"))
+    incorporated_count = sum(1 for record in records if record["outcome_flags"].get("incorporated"))
+    merged_count = sum(1 for record in records if record["outcome_flags"].get("merged"))
+    resolved_count = sum(1 for record in records if record["outcome_flags"].get("resolved"))
+    linked_count = sum(1 for record in records if record.get("opportunity", {}).get("source") == "deterministic_ticket_id")
     latest = records[0] if records else None
 
     component_cards = "".join(
@@ -740,41 +933,70 @@ def build_contributions_page(context: RunContext | None = None, selection: Datas
         for component, count in component_counts.most_common(8)
     ) or '<p class="empty">No components recorded yet.</p>'
 
-    timeline_rows = []
-    for record in records[:20]:
-        note = record["notes"].replace("\r\n", "\n").replace("\r", "\n").strip()
-        note_preview = " ".join(line.strip() for line in note.splitlines() if line.strip())
-        if len(note_preview) > 260:
-            note_preview = note_preview[:257].rstrip() + "..."
+    record_cards = []
+    for record in records:
+        parsed_date = parse_public_date(record["contribution_date"])
+        contribution_date = parsed_date.strftime("%b %d, %Y") if parsed_date else html.escape(record["contribution_date"])
+        outcome = latest_public_outcome(record)
+        outcome_html = '<p class="empty">No downstream public outcome recorded yet.</p>'
+        if outcome:
+            outcome_date = parse_public_date(str(outcome.get("date", "")))
+            outcome_label = outcome_date.strftime("%b %d, %Y") if outcome_date else str(outcome.get("date", ""))
+            outcome_sources = "".join(
+                f'<a class="source-link" href="{html.escape(source["url"])}">{html.escape(source["label"])}</a>'
+                for source in outcome.get("evidence", [])
+            )
+            outcome_html = f'''<div class="record-outcome">
+  <strong>{html.escape(outcome["label"])}</strong>
+  <div class="timeline-date">{html.escape(outcome_label)}</div>
+  <p class="outcome-summary">{html.escape(outcome["summary"])}</p>
+  <div class="source-list">{outcome_sources}</div>
+</div>'''
 
-        props_badge = html_badge("🏆 Props Received", "signal") if record["received_props"] else ""
-        changeset_link = ""
-        if record["changeset"]:
-            changeset = html.escape(record["changeset"])
-            changeset_link = f'<a class="changeset-link" href="https://core.trac.wordpress.org/changeset/{changeset}">Changeset {changeset}</a>'
+        evidence_links = "".join(
+            f'<a class="source-link" href="{html.escape(source["url"])}">{html.escape(source["label"])}</a>'
+            for source in record.get("evidence", [])
+        )
+        flags = record["outcome_flags"]
+        flag_badges = "".join(
+            html_badge(label, "signal")
+            for label, active in (
+                ("Confirmed", flags.get("confirmed")),
+                ("Incorporated", flags.get("incorporated")),
+                ("Merged", flags.get("merged")),
+                ("Resolved", flags.get("resolved")),
+                ("Props", flags.get("public_props")),
+            )
+            if active
+        ) or html_badge("Outcome pending", "signal")
+        opportunity_url = record["opportunity"]["url"]
 
-        timeline_rows.append(
-            f'''<article class="timeline-item tier-{html.escape(record["tier_class"])}">
-  <div class="timeline-date">{html.escape(record["updated_label"])}</div>
-  <div class="timeline-main">
-    <strong><a href="{html.escape(record["url"])}">#{html.escape(record["ticket_id"])}</a> {html.escape(record["summary"])}</strong>
-    <div class="timeline-meta">
-      {html_badge(status_label(record["status"]), "signal")}
-      {html_badge(record["component"], "signal")}
-      {html_badge(record["tier_label"], "tier-label")}
-      {props_badge}
-      {changeset_link}
-    </div>
-    <p class="note-preview">{html.escape(record["reason"] or note_preview or "Review recorded.")}</p>
+        record_cards.append(
+            f'''<article class="contribution-record">
+  <h3><a href="{html.escape(record["ticket_url"])}">#{html.escape(record["ticket_id"])}</a> {html.escape(record["title"])}</h3>
+  <div class="record-meta">
+    {html_badge(record["contribution_type"], "signal")}
+    {html_badge(record["component"], "signal")}
+    {html_badge(status_label(record["public_status"]), "signal")}
+    {flag_badges}
   </div>
+  <p class="record-summary">{html.escape(record["contribution_summary"])}</p>
+  <div class="source-list">
+    <a class="source-link" href="{html.escape(record["contribution_link"])}">Public contribution</a>
+    <a class="source-link" href="{html.escape(opportunity_url)}">Radar opportunity</a>
+    {evidence_links}
+  </div>
+  <div class="timeline-date">{html.escape(contribution_date)}</div>
+  {outcome_html}
 </article>'''
         )
 
-    timeline = "".join(timeline_rows) or '<p class="empty">No review activity recorded yet.</p>'
-    latest_html = '<p>No activity recorded yet.</p>'
+    record_grid = "".join(record_cards) or '<p class="empty">No public contributions recorded yet.</p>'
+    latest_html = '<p>No public contribution recorded yet.</p>'
     if latest:
-        latest_props = '<br>🏆 Props received' if latest["received_props"] else ''
-        latest_html = f'''<p><strong><a href="{html.escape(latest["url"])}">#{html.escape(latest["ticket_id"])}</a></strong><br>{html.escape(status_label(latest["status"]))}: {html.escape(latest["summary"])}{latest_props}</p><p>{html.escape(latest["updated_label"])}</p>'''
+        latest_outcome = latest_public_outcome(latest)
+        latest_outcome_text = latest_outcome["label"] if latest_outcome else "Outcome pending"
+        latest_html = f'''<p><strong><a href="{html.escape(latest["ticket_url"])}">#{html.escape(latest["ticket_id"])}</a></strong><br>{html.escape(latest["title"])}</p><p>{html.escape(latest_outcome_text)}</p>'''
 
     return f'''<!doctype html>
 <html lang="en">
@@ -790,52 +1012,57 @@ def build_contributions_page(context: RunContext | None = None, selection: Datas
   <header>
     <div class="header-content">
       <h1>WP Core Radar Contributions</h1>
-      <p>Generated {html.escape(generated)}. A public-safe record of verified WordPress Core contributions powered by WP Core Radar.</p>
+      <p>Generated {html.escape(generated)}. Public WordPress contribution history with downstream outcomes.</p>
     </div>
     <div class="header-actions">
       <a class="header-pill" href="/">Dashboard</a>
       <a class="header-pill" href="/contributions/">Contributions</a>
-      <a class="admin-link" href="/admin/">Admin Console</a>
     </div>
   </header>
 
   <main>
     <div class="hero-grid">
       <section class="hero-card">
-        <h2>Contribution history</h2>
-        <p>This page lists only contribution activity that reached <code>PUBLIC_DELIVERY_VERIFIED</code>. Radar reviews, watches, rejections, and unfinished testing are intentionally excluded.</p>
+        <h2>Contribution outcomes</h2>
+        <p>This page tracks public WordPress contributions from James and the public response that followed. Each record is built from WordPress Core Trac, public WordPress GitHub activity, or other public WordPress sources.</p>
+        <div class="lifecycle">
+          <div class="lifecycle-step"><strong>Opportunity</strong><span>Radar identifies a public ticket or PR.</span></div>
+          <div class="lifecycle-step"><strong>Public contribution</strong><span>James contributes public evidence, diagnosis, review, patch, or validation.</span></div>
+          <div class="lifecycle-step"><strong>Upstream response</strong><span>Other contributors respond, test, update, or adopt the work.</span></div>
+          <div class="lifecycle-step"><strong>Outcome</strong><span>The ticket moves toward confirmation, merge, resolution, or credit.</span></div>
+        </div>
         <div class="metric-row">
-          <div class="mini-metric"><strong>{len(records)}</strong><span>Verified contributions</span></div>
-          <div class="mini-metric"><strong>{status_counts.get("tested", 0)}</strong><span>Verified test reports</span></div>
-          <div class="mini-metric"><strong>{acted_on_count}</strong><span>Public actions</span></div>
-          <div class="mini-metric props-card"><strong>{props_count}</strong><span>Props received</span><div class="props-note">{props_rate}% of acted-on tickets</div></div>
-          <div class="mini-metric"><strong>{len(component_counts)}</strong><span>Components touched</span></div>
+          <div class="mini-metric"><strong>{len(records)}</strong><span>Public contributions</span></div>
+          <div class="mini-metric"><strong>{linked_count}</strong><span>Linked opportunities</span></div>
+          <div class="mini-metric"><strong>{confirmed_count}</strong><span>Confirmed outcomes</span></div>
+          <div class="mini-metric"><strong>{incorporated_count}</strong><span>Incorporated outcomes</span></div>
+          <div class="mini-metric"><strong>{merged_count}</strong><span>Merged</span></div>
+          <div class="mini-metric"><strong>{resolved_count}</strong><span>Resolved</span></div>
         </div>
       </section>
       <aside class="hero-card latest-card">
-        <h3>Latest activity</h3>
+        <h3>Latest contribution</h3>
         {latest_html}
       </aside>
     </div>
 
     <div class="summary">
-      <div class="card card-blue"><strong>{status_counts.get("tested", 0)}</strong>Tested</div>
-      <div class="card"><strong>{status_counts.get("commented", 0)}</strong>Commented</div>
-      <div class="card"><strong>{status_counts.get("watch", 0)}</strong>Watching</div>
-      <div class="card"><strong>{status_counts.get("shortlist", 0)}</strong>Shortlisted</div>
-      <div class="card"><strong>{status_counts.get("reject", 0)}</strong>Rejected</div>
-      <div class="card card-purple"><strong>{status_counts.get("committed", 0)}</strong>Committed</div>
-      <div class="card card-amber"><strong>{props_count}</strong>Props received</div>
+      <div class="card card-blue"><strong>{type_counts.get("observation / diagnosis", 0)}</strong>Observation / diagnosis</div>
+      <div class="card"><strong>{type_counts.get("reproduction", 0)}</strong>Reproduction</div>
+      <div class="card"><strong>{type_counts.get("test report", 0)}</strong>Test report</div>
+      <div class="card"><strong>{type_counts.get("patch", 0)}</strong>Patch</div>
+      <div class="card card-purple"><strong>{type_counts.get("review / verification", 0)}</strong>Review / verification</div>
+      <div class="card card-amber"><strong>{confirmed_count}</strong>Confirmed</div>
     </div>
 
     <section>
-      <h2>Decision breakdown <span>{len(records)}</span></h2>
-      {contribution_bar_chart("Reviews by decision", status_counts)}
+      <h2>Contribution types <span>{len(records)}</span></h2>
+      {contribution_bar_chart("Types by public evidence", type_counts, lambda value: value)}
     </section>
 
     <section>
-      <h2>Activity by month <span>{sum(month_counts.values())}</span></h2>
-      {contribution_bar_chart("Review activity over time", month_order, lambda value: value)}
+      <h2>Public ticket status <span>{len(status_counts)}</span></h2>
+      {contribution_bar_chart("Status by public ticket state", status_counts)}
     </section>
 
     <section>
@@ -844,13 +1071,13 @@ def build_contributions_page(context: RunContext | None = None, selection: Datas
     </section>
 
     <section>
-      <h2>Recent activity <span>{len(records)}</span></h2>
-      <div class="timeline">{timeline}</div>
+      <h2>Public contributions and outcomes <span>{len(records)}</span></h2>
+      <div class="record-grid">{record_grid}</div>
     </section>
   </main>
 
   <footer class="contribution-footer">
-    <span>Generated from <code>data/contributions/contribution-state.json</code>; only <code>PUBLIC_DELIVERY_VERIFIED</code> records are eligible.</span>
+    <span>Generated from public WordPress source records in <code>data/public-contributions.json</code>.</span>
     <a class="footer-pill" href="/">Back to dashboard</a>
   </footer>
 </body>
@@ -863,12 +1090,7 @@ def build_dashboard(context: RunContext | None = None, selection: DatasetSelecti
     groups = group_items(ranked)
     certification = summary["certification"]
     generated = certification["reference_time"]
-    contribution_state = load_contribution_state()
-    verified_contributions = sum(
-        1
-        for item in contribution_state.get("contributions", [])
-        if item.get("lifecycle_state") == "PUBLIC_DELIVERY_VERIFIED"
-    )
+    verified_contributions = len(public_contribution_records())
 
     immediate_count = sum(1 for item in groups["priority"] if priority_tier(item)[0] == "immediate")
     strong_count = sum(1 for item in groups["priority"] if priority_tier(item)[0] == "strong")
@@ -891,7 +1113,7 @@ def build_dashboard(context: RunContext | None = None, selection: DatasetSelecti
   <header>
     <div class="header-content">
       <h1>WP Core Radar Dashboard</h1>
-      <p>Updated {html.escape(generated)}. Radar highlights contribution opportunities; contributors make the final call.</p>
+      <p>Updated {html.escape(generated)}. Public WordPress Core opportunity intelligence.</p>
     </div>
     <div class="header-actions">
       <a class="header-pill" href="/contributions/">Contributions</a>
@@ -949,7 +1171,7 @@ def build_dashboard(context: RunContext | None = None, selection: DatasetSelecti
   </main>
 
   <footer>
-    WP Core Radar recommends opportunities and records verified contribution outcomes.
+    WP Core Radar publishes public WordPress Core opportunity and contribution intelligence.
   </footer>
 </body>
 </html>

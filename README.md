@@ -17,7 +17,7 @@ I regularly collect and upload public ticket data from [WordPress Core Trac](htt
 
 The aim is simple: make promising testing, review, documentation, accessibility, and development opportunities easier to identify.
 
-Radar is a standalone public project built around human review. Its machine-readable API is a general public data interface; downstream tools or systems that choose to read it are outside Radar's product boundary and are not part of Radar's public architecture.
+Radar is a standalone public project built around public WordPress evidence. Its machine-readable API is a general public data interface; downstream tools or systems that choose to read it are outside Radar's product boundary and are not part of Radar's public architecture.
 
 ## How scoring works
 
@@ -34,9 +34,12 @@ GitHub is the durable source of truth after a collection is published. Raw impor
 The same certified opportunity data powers:
 
 - the public dashboard;
-- the contribution history and admin views;
+- the public contribution outcome view at `/contributions/`;
+- the admin view;
 - generated reports; and
 - the versioned read-only API at `/api/v1/`.
+
+Public contribution outcomes are recorded in `data/public-contributions.json` from independently verifiable public WordPress sources such as Core Trac, WordPress GitHub pull requests, public patches, public reviews, and public ticket discussion.
 
 Radar does not modify WordPress.org, comment on Trac, submit patches, or hold WordPress.org contribution credentials.
 
