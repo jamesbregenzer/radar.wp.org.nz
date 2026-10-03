@@ -1,0 +1,119 @@
+{
+  "schema": "radar-public-contributions.v1",
+  "version": 1,
+  "updated_at": "2026-10-03T00:00:00Z",
+  "source_contract": {
+    "allowed_source_kinds": [
+      "wordpress_core_trac",
+      "wordpress_trac_mail_archive",
+      "wordpress_github"
+    ],
+    "private_source_kinds": []
+  },
+  "contributions": [
+    {
+      "id": "core-trac-63568-comment-61",
+      "ticket_id": "63568",
+      "ticket_url": "https://core.trac.wordpress.org/ticket/63568",
+      "title": "WP_Font_Face: Font names that contain single quotes are not wrapped in double quotes",
+      "component": "Editor",
+      "areas": [
+        "editor",
+        "fonts",
+        "testing"
+      ],
+      "public_status": "accepted",
+      "contribution_type": "review / verification",
+      "contribution_date": "2026-09-28",
+      "contribution_link": "https://core.trac.wordpress.org/ticket/63568#comment:61",
+      "contribution_summary": "Published independent focused test results against PR #13610.",
+      "evidence": [
+        {
+          "kind": "wordpress_core_trac",
+          "url": "https://core.trac.wordpress.org/ticket/63568#comment:61",
+          "label": "Core Trac comment #61",
+          "supports": "Public contribution link for the focused test report."
+        }
+      ],
+      "opportunity": {
+        "identity": "core-trac:63568",
+        "source": "deterministic_ticket_id",
+        "url": "https://core.trac.wordpress.org/ticket/63568"
+      },
+      "outcomes": [],
+      "outcome_flags": {
+        "confirmed": false,
+        "incorporated": false,
+        "merged": false,
+        "resolved": false,
+        "public_props": false
+      }
+    },
+    {
+      "id": "core-trac-64670-comment-5",
+      "ticket_id": "64670",
+      "ticket_url": "https://core.trac.wordpress.org/ticket/64670",
+      "title": "WP_REST_Posts_Controller::update_item() not passing parent to wp_unique_post_slug() for draft child",
+      "component": "REST API",
+      "areas": [
+        "ui",
+        "administration",
+        "rest-api"
+      ],
+      "public_status": "new",
+      "contribution_type": "observation / diagnosis",
+      "contribution_date": "2026-07-15",
+      "contribution_link": "https://core.trac.wordpress.org/ticket/64670#comment:5",
+      "contribution_summary": "Identified the explicit parent:0 edge case in the REST API draft-child slug behavior.",
+      "evidence": [
+        {
+          "kind": "wordpress_core_trac",
+          "url": "https://core.trac.wordpress.org/ticket/64670#comment:5",
+          "label": "Core Trac comment #5",
+          "supports": "Public contribution link for the parent:0 edge-case diagnosis."
+        },
+        {
+          "kind": "wordpress_trac_mail_archive",
+          "url": "https://lists.automattic.com/pipermail/wp-trac/2026-February/557809.html",
+          "label": "Initial public ticket report",
+          "supports": "Public ticket title, component history, reproduction scope, expected behavior, and possible parent fallback direction."
+        }
+      ],
+      "opportunity": {
+        "identity": "core-trac:64670",
+        "source": "deterministic_ticket_id",
+        "url": "https://core.trac.wordpress.org/ticket/64670"
+      },
+      "outcomes": [
+        {
+          "type": "confirmed",
+          "date": "2026-05-26",
+          "label": "Issue confirmed by a public test report",
+          "summary": "A public test report confirmed the draft child page keeps its stored parent while the REST update changes the requested slug as if the parent were 0, then verified PR #10973 preserved the parent-aware slug.",
+          "url": "https://lists.wordpress.org/pipermail/wp-trac/2026-May/564007.html",
+          "evidence": [
+            {
+              "kind": "wordpress_trac_mail_archive",
+              "url": "https://lists.wordpress.org/pipermail/wp-trac/2026-May/564007.html",
+              "label": "Core Trac test report",
+              "supports": "Public reproduction on trunk, patch verification against PR #10973, and related REST pages controller PHPUnit result."
+            },
+            {
+              "kind": "wordpress_github",
+              "url": "https://github.com/WordPress/wordpress-develop/pull/10973",
+              "label": "WordPress/wordpress-develop PR #10973",
+              "supports": "Public patch associated with the ticket."
+            }
+          ]
+        }
+      ],
+      "outcome_flags": {
+        "confirmed": true,
+        "incorporated": false,
+        "merged": false,
+        "resolved": false,
+        "public_props": false
+      }
+    }
+  ]
+}

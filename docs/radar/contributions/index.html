@@ -358,6 +358,83 @@
     .timeline-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     .changeset-link { color: #2271b1; font-size: 12px; font-weight: 700; white-space: nowrap; }
     .note-preview { margin-top: 8px; color: #50575e; line-height: 1.45; max-width: 860px; }
+    .record-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .contribution-record {
+      background: white;
+      border: 1px solid #dcdcde;
+      border-left: 6px solid #2563eb;
+      border-radius: 10px;
+      padding: 18px;
+    }
+    .contribution-record h3 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      line-height: 1.25;
+    }
+    .record-meta,
+    .source-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .record-summary,
+    .outcome-summary {
+      color: #50575e;
+      line-height: 1.55;
+    }
+    .record-outcome {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid #dbeafe;
+      border-radius: 8px;
+      background: #f8fbff;
+    }
+    .record-outcome strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+    .source-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 10px;
+      border: 1px solid #dcdcde;
+      border-radius: 999px;
+      background: #fff;
+      color: #2271b1;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .source-link:hover {
+      border-color: #2271b1;
+      background: #f0f6fc;
+      color: #135e96;
+      text-decoration: none;
+    }
+    .lifecycle {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .lifecycle-step {
+      border: 1px solid #dcdcde;
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+    }
+    .lifecycle-step strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+    .lifecycle-step span {
+      color: #646970;
+      font-size: 13px;
+    }
     .component-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
     .component-card { background: white; border: 1px solid #dcdcde; border-radius: 10px; padding: 16px; }
     .component-card strong { display: block; font-size: 22px; }
@@ -393,6 +470,7 @@
       .hero-grid { grid-template-columns: 1fr; }
       .bar-row { grid-template-columns: 110px minmax(0, 1fr) 36px; }
       .timeline-item { grid-template-columns: 1fr; }
+      .lifecycle { grid-template-columns: 1fr; }
     }
     
   </style>
@@ -401,88 +479,125 @@
   <header>
     <div class="header-content">
       <h1>WP Core Radar Contributions</h1>
-      <p>Generated 2026-10-03 13:33. A public-safe record of verified WordPress Core contributions powered by WP Core Radar.</p>
+      <p>Generated 2026-10-03 00:00. Public WordPress contribution history with downstream outcomes.</p>
     </div>
     <div class="header-actions">
       <a class="header-pill" href="/">Dashboard</a>
       <a class="header-pill" href="/contributions/">Contributions</a>
-      <a class="admin-link" href="/admin/">Admin Console</a>
     </div>
   </header>
 
   <main>
     <div class="hero-grid">
       <section class="hero-card">
-        <h2>Contribution history</h2>
-        <p>This page lists only contribution activity that reached <code>PUBLIC_DELIVERY_VERIFIED</code>. Radar reviews, watches, rejections, and unfinished testing are intentionally excluded.</p>
+        <h2>Contribution outcomes</h2>
+        <p>This page tracks public WordPress contributions from James and the public response that followed. Each record is built from WordPress Core Trac, public WordPress GitHub activity, or other public WordPress sources.</p>
+        <div class="lifecycle">
+          <div class="lifecycle-step"><strong>Opportunity</strong><span>Radar identifies a public ticket or PR.</span></div>
+          <div class="lifecycle-step"><strong>Public contribution</strong><span>James contributes public evidence, diagnosis, review, patch, or validation.</span></div>
+          <div class="lifecycle-step"><strong>Upstream response</strong><span>Other contributors respond, test, update, or adopt the work.</span></div>
+          <div class="lifecycle-step"><strong>Outcome</strong><span>The ticket moves toward confirmation, merge, resolution, or credit.</span></div>
+        </div>
         <div class="metric-row">
-          <div class="mini-metric"><strong>1</strong><span>Verified contributions</span></div>
-          <div class="mini-metric"><strong>0</strong><span>Verified test reports</span></div>
-          <div class="mini-metric"><strong>1</strong><span>Public actions</span></div>
-          <div class="mini-metric props-card"><strong>0</strong><span>Props received</span><div class="props-note">0% of acted-on tickets</div></div>
-          <div class="mini-metric"><strong>1</strong><span>Components touched</span></div>
+          <div class="mini-metric"><strong>2</strong><span>Public contributions</span></div>
+          <div class="mini-metric"><strong>2</strong><span>Linked opportunities</span></div>
+          <div class="mini-metric"><strong>1</strong><span>Confirmed outcomes</span></div>
+          <div class="mini-metric"><strong>0</strong><span>Incorporated outcomes</span></div>
+          <div class="mini-metric"><strong>0</strong><span>Merged</span></div>
+          <div class="mini-metric"><strong>0</strong><span>Resolved</span></div>
         </div>
       </section>
       <aside class="hero-card latest-card">
-        <h3>Latest activity</h3>
-        <p><strong><a href="https://core.trac.wordpress.org/ticket/63568#comment:61">#63568</a></strong><br>Commented: WP_Font_Face: Font names that contain single quotes are not wrapped in double quotes</p><p>Sep 28, 2026</p>
+        <h3>Latest contribution</h3>
+        <p><strong><a href="https://core.trac.wordpress.org/ticket/63568">#63568</a></strong><br>WP_Font_Face: Font names that contain single quotes are not wrapped in double quotes</p><p>Outcome pending</p>
       </aside>
     </div>
 
     <div class="summary">
-      <div class="card card-blue"><strong>0</strong>Tested</div>
-      <div class="card"><strong>1</strong>Commented</div>
-      <div class="card"><strong>0</strong>Watching</div>
-      <div class="card"><strong>0</strong>Shortlisted</div>
-      <div class="card"><strong>0</strong>Rejected</div>
-      <div class="card card-purple"><strong>0</strong>Committed</div>
-      <div class="card card-amber"><strong>0</strong>Props received</div>
+      <div class="card card-blue"><strong>1</strong>Observation / diagnosis</div>
+      <div class="card"><strong>0</strong>Reproduction</div>
+      <div class="card"><strong>0</strong>Test report</div>
+      <div class="card"><strong>0</strong>Patch</div>
+      <div class="card card-purple"><strong>1</strong>Review / verification</div>
+      <div class="card card-amber"><strong>1</strong>Confirmed</div>
     </div>
 
     <section>
-      <h2>Decision breakdown <span>1</span></h2>
-      <div class="chart-card"><h3>Reviews by decision</h3><div class="bar-list"><div class="bar-row">
-  <div class="bar-label">Commented</div>
+      <h2>Contribution types <span>2</span></h2>
+      <div class="chart-card"><h3>Types by public evidence</h3><div class="bar-list"><div class="bar-row">
+  <div class="bar-label">review / verification</div>
+  <div class="bar-track"><span class="bar-fill" style="width: 100%"></span></div>
+  <div>1</div>
+</div><div class="bar-row">
+  <div class="bar-label">observation / diagnosis</div>
   <div class="bar-track"><span class="bar-fill" style="width: 100%"></span></div>
   <div>1</div>
 </div></div></div>
     </section>
 
     <section>
-      <h2>Activity by month <span>1</span></h2>
-      <div class="chart-card"><h3>Review activity over time</h3><div class="bar-list"><div class="bar-row">
-  <div class="bar-label">Sep 2026</div>
+      <h2>Public ticket status <span>2</span></h2>
+      <div class="chart-card"><h3>Status by public ticket state</h3><div class="bar-list"><div class="bar-row">
+  <div class="bar-label">Accepted</div>
+  <div class="bar-track"><span class="bar-fill" style="width: 100%"></span></div>
+  <div>1</div>
+</div><div class="bar-row">
+  <div class="bar-label">New</div>
   <div class="bar-track"><span class="bar-fill" style="width: 100%"></span></div>
   <div>1</div>
 </div></div></div>
     </section>
 
     <section>
-      <h2>Component focus <span>1</span></h2>
-      <div class="component-grid"><div class="component-card"><strong>1</strong><span>Editor</span></div></div>
+      <h2>Component focus <span>2</span></h2>
+      <div class="component-grid"><div class="component-card"><strong>1</strong><span>Editor</span></div><div class="component-card"><strong>1</strong><span>REST API</span></div></div>
     </section>
 
     <section>
-      <h2>Recent activity <span>1</span></h2>
-      <div class="timeline"><article class="timeline-item tier-immediate">
-  <div class="timeline-date">Sep 28, 2026</div>
-  <div class="timeline-main">
-    <strong><a href="https://core.trac.wordpress.org/ticket/63568#comment:61">#63568</a> WP_Font_Face: Font names that contain single quotes are not wrapped in double quotes</strong>
-    <div class="timeline-meta">
-      <span class="signal-badge signal-standard">Commented</span>
-      <span class="signal-badge signal-standard">Editor</span>
-      <span class="tier-label-badge tier-label-standard">Immediate Review</span>
-      
-      
-    </div>
-    <p class="note-preview">Published independent focused test results against PR #13610.</p>
+      <h2>Public contributions and outcomes <span>2</span></h2>
+      <div class="record-grid"><article class="contribution-record">
+  <h3><a href="https://core.trac.wordpress.org/ticket/63568">#63568</a> WP_Font_Face: Font names that contain single quotes are not wrapped in double quotes</h3>
+  <div class="record-meta">
+    <span class="signal-badge signal-standard">review / verification</span>
+    <span class="signal-badge signal-standard">Editor</span>
+    <span class="signal-badge signal-standard">Accepted</span>
+    <span class="signal-badge signal-standard">Outcome pending</span>
   </div>
+  <p class="record-summary">Published independent focused test results against PR #13610.</p>
+  <div class="source-list">
+    <a class="source-link" href="https://core.trac.wordpress.org/ticket/63568#comment:61">Public contribution</a>
+    <a class="source-link" href="https://core.trac.wordpress.org/ticket/63568">Radar opportunity</a>
+    <a class="source-link" href="https://core.trac.wordpress.org/ticket/63568#comment:61">Core Trac comment #61</a>
+  </div>
+  <div class="timeline-date">Sep 28, 2026</div>
+  <p class="empty">No downstream public outcome recorded yet.</p>
+</article><article class="contribution-record">
+  <h3><a href="https://core.trac.wordpress.org/ticket/64670">#64670</a> WP_REST_Posts_Controller::update_item() not passing parent to wp_unique_post_slug() for draft child</h3>
+  <div class="record-meta">
+    <span class="signal-badge signal-standard">observation / diagnosis</span>
+    <span class="signal-badge signal-standard">REST API</span>
+    <span class="signal-badge signal-standard">New</span>
+    <span class="signal-badge signal-standard">Confirmed</span>
+  </div>
+  <p class="record-summary">Identified the explicit parent:0 edge case in the REST API draft-child slug behavior.</p>
+  <div class="source-list">
+    <a class="source-link" href="https://core.trac.wordpress.org/ticket/64670#comment:5">Public contribution</a>
+    <a class="source-link" href="https://core.trac.wordpress.org/ticket/64670">Radar opportunity</a>
+    <a class="source-link" href="https://core.trac.wordpress.org/ticket/64670#comment:5">Core Trac comment #5</a><a class="source-link" href="https://lists.automattic.com/pipermail/wp-trac/2026-February/557809.html">Initial public ticket report</a>
+  </div>
+  <div class="timeline-date">Jul 15, 2026</div>
+  <div class="record-outcome">
+  <strong>Issue confirmed by a public test report</strong>
+  <div class="timeline-date">May 26, 2026</div>
+  <p class="outcome-summary">A public test report confirmed the draft child page keeps its stored parent while the REST update changes the requested slug as if the parent were 0, then verified PR #10973 preserved the parent-aware slug.</p>
+  <div class="source-list"><a class="source-link" href="https://lists.wordpress.org/pipermail/wp-trac/2026-May/564007.html">Core Trac test report</a><a class="source-link" href="https://github.com/WordPress/wordpress-develop/pull/10973">WordPress/wordpress-develop PR #10973</a></div>
+</div>
 </article></div>
     </section>
   </main>
 
   <footer class="contribution-footer">
-    <span>Generated from <code>data/contributions/contribution-state.json</code>; only <code>PUBLIC_DELIVERY_VERIFIED</code> records are eligible.</span>
+    <span>Generated from public WordPress source records in <code>data/public-contributions.json</code>.</span>
     <a class="footer-pill" href="/">Back to dashboard</a>
   </footer>
 </body>
