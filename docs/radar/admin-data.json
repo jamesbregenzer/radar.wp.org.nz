@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-02T19:30:33",
+  "generated": "2026-10-03T01:31:20",
   "summary": {
     "unique_tickets": 289,
     "priority_targets": 12,
@@ -8,15 +8,15 @@
     "watching": 60,
     "reviews_loaded": 21,
     "certification": {
-      "snapshot_id": "snapshot-v1-23e31833c42dbb6637e0f366",
-      "collection_id": "collection-v1-620e4645cc22470e7a7e0b11",
-      "reference_time": "2026-10-02T19:30:33",
+      "snapshot_id": "snapshot-v1-5a5c46b770275520d925a4e9",
+      "collection_id": "collection-v1-13df5b6180600fc678bc7bd9",
+      "reference_time": "2026-10-03T01:31:20",
       "state": "certified",
       "opportunity_count": 289,
       "scoring_version": "radar-scoring-v1",
-      "source_revision": "648125e776e3fd91c5e47341bfb246b7db3e0aa5",
+      "source_revision": "903ef1b1eef03bc5c2e371d48433a231bb584695",
       "warnings": [],
-      "dataset_sha256": "cde89a40cd1cb5646996e92807817fc01f78ac7c23ce64085adfae5104e93593"
+      "dataset_sha256": "fbbf6c30692b10919287a83cfb43b50babaca0e74b495120685b2529aa074e7e"
     }
   },
   "groups": {
@@ -1524,6 +1524,94 @@
             "label": "Freshness",
             "detail": "Updated Within 60 Days",
             "display": "Freshness: Updated Within 60 Days",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "review": {}
+      },
+      {
+        "ticket_id": "45910",
+        "url": "https://core.trac.wordpress.org/ticket/45910",
+        "score": 164,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Improve and extend focus styles for Windows High Contrast mode",
+        "track": "General: Needs Testing",
+        "status": "Assigned",
+        "component": "Administration",
+        "owner": "rcreators",
+        "comments": "",
+        "created": "01/10/2019 04:54:41 PM",
+        "modified": "10/03/2026 01:11:40 AM",
+        "keywords": "has-patch needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Has Concrete Milestone +8",
+            "class": "standard"
+          },
+          {
+            "label": "Has Owner +6",
+            "class": "owner"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+8",
+            "label": "Has Concrete Milestone",
+            "detail": "",
+            "display": "Has Concrete Milestone",
+            "polarity": "positive"
+          },
+          {
+            "points": "+6",
+            "label": "Has Owner",
+            "detail": "",
+            "display": "Has Owner",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
             "polarity": "positive"
           }
         ],
@@ -9434,83 +9522,6 @@
             "detail": "Stale Activity >730 Days",
             "display": "Freshness: Stale Activity >730 Days",
             "polarity": "negative"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "review": {}
-      },
-      {
-        "ticket_id": "45910",
-        "url": "https://core.trac.wordpress.org/ticket/45910",
-        "score": 119,
-        "tier_class": "standard",
-        "tier_label": "Standard",
-        "summary": "Improve and extend focus styles for Windows High Contrast mode",
-        "track": "General: Needs Testing",
-        "status": "Assigned",
-        "component": "Administration",
-        "owner": "rcreators",
-        "comments": "",
-        "created": "01/10/2019 04:54:41 PM",
-        "modified": "09/08/2026 04:49:37 PM",
-        "keywords": "needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Has Concrete Milestone +8",
-            "class": "standard"
-          },
-          {
-            "label": "Has Owner +6",
-            "class": "owner"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+8",
-            "label": "Has Concrete Milestone",
-            "detail": "",
-            "display": "Has Concrete Milestone",
-            "polarity": "positive"
-          },
-          {
-            "points": "+6",
-            "label": "Has Owner",
-            "detail": "",
-            "display": "Has Owner",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
-            "polarity": "positive"
           }
         ],
         "discovery_track": "General Needs Testing",
