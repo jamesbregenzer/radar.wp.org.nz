@@ -92,6 +92,37 @@ A ticket appears in **Priority Targets** only when all of these are true:
 
 Only the first 12 matching tickets are shown as Priority Targets.
 
+## Contribution Hypothesis
+
+Score answers "how promising is this ticket relative to the current Radar
+policy?" The contribution hypothesis answers "what useful public contribution
+appears to be missing?"
+
+The hypothesis is derived from certified public signals, including Trac ticket
+fields, keywords, status, component, public patch signals, linked public PR
+signals when available, public review or CI evidence, changed files or diffs,
+related tickets, and freshness. It does not change the ticket score by itself.
+
+Current hypothesis classes are:
+
+- `TEST_EXISTING_PR`
+- `ADD_REGRESSION_TEST`
+- `REPRODUCE_BUG`
+- `VERIFY_EXISTING_PATCH`
+- `REVIEW_EXISTING_PR`
+- `REVIEW_API_EDGE_CASE`
+- `BENCHMARK_PERFORMANCE_CHANGE`
+- `VERIFY_PHP_COMPATIBILITY`
+- `ACCESSIBILITY_UI_VERIFY`
+- `DOCUMENT_TECHNICAL_BEHAVIOR`
+- `FOLLOW_UP_AFTER_UPSTREAM_CHANGE`
+- `STALE_BUT_ACTIONABLE`
+- `NO_CLEAR_CONTRIBUTION`
+
+`NO_CLEAR_CONTRIBUTION` is the noise-control class. It is used when public
+evidence indicates the ticket is resolved, superseded, already covered, or does
+not reveal a concrete nonduplicative contribution path.
+
 ## Review Grouping
 
 Review decisions live in `data/reviews/reviews.json` and move tickets into workflow sections. Props are recorded separately as `received_props: true` and are included in contribution-history reporting without becoming a review status:
@@ -106,4 +137,6 @@ Review decisions live in `data/reviews/reviews.json` and move tickets into workf
 
 ## Guardrail
 
-Scores are recommendations only. WP Core Radar does not auto-comment on Trac or perform contribution activity. A human reviewer opens the ticket, verifies current state, tests locally where appropriate, and decides what to do next.
+Scores and hypotheses are recommendations only. WP Core Radar does not comment
+on Trac, submit patches, or perform contribution activity. Current WordPress
+state should be rechecked before acting on any opportunity.

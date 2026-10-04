@@ -78,6 +78,11 @@ test("machine feed exposes stable snapshot identity and opportunity revisions", 
   assert.equal(machine.verifiedContributions[0].opportunityKey, "core-trac:63568");
   assert.equal(machine.verifiedContributions[0].contributionType, "INDEPENDENT_CONFIRMATION");
   assert.equal(typeof machine.opportunities[0].qualification.opportunityClass, "string");
+  assert.match(machine.opportunities[0].qualification.recommendedContributionClass, /^[A-Z_]+$/);
+  assert.match(machine.opportunities[0].qualification.confidence, /^(high|medium|low)$/);
+  assert.equal(typeof machine.opportunities[0].qualification.reason, "string");
+  assert.equal(typeof machine.opportunities[0].qualification.evidenceFreshness.state, "string");
+  assert.equal(typeof machine.opportunities[0].qualification.sourceCoverage.trac_ticket, "boolean");
   assert.equal(Array.isArray(machine.opportunities[0].qualification.requiredEvidenceProfiles), true);
   assert.match(machine.opportunities[0].qualification.visualEvidenceRelevance, /^(required|useful|not-relevant)$/);
 });

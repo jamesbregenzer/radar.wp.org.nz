@@ -90,6 +90,25 @@ def signal_badges(keywords: str, reasons: list[str]) -> str:
     return rendered
 
 
+def contribution_label(value: str) -> str:
+    return pretty_label(value.replace("_", " ").lower())
+
+
+def contribution_summary(qualification: dict[str, Any]) -> str:
+    contribution_class = contribution_label(str(qualification.get("recommendedContributionClass") or "NO_CLEAR_CONTRIBUTION"))
+    confidence = pretty_label(str(qualification.get("confidence") or "unknown"))
+    freshness = qualification.get("evidenceFreshness") or {}
+    freshness_state = pretty_label(str(freshness.get("state") or "unknown"))
+    reason = str(qualification.get("reason") or qualification.get("contribution_hypothesis") or "")
+    return (
+        f'<div class="contribution-hypothesis">'
+        f'<strong>{html.escape(contribution_class)}</strong>'
+        f'<span>{html.escape(confidence)} confidence · {html.escape(freshness_state)} evidence</span>'
+        f'<p>{html.escape(reason)}</p>'
+        f'</div>'
+    )
+
+
 def ticket_row(item: dict[str, Any], duplicate_sources: dict[str, set[str]]) -> str:
     row = item["row"]
     ticket_id = item["ticket_id"]
@@ -101,6 +120,7 @@ def ticket_row(item: dict[str, Any], duplicate_sources: dict[str, set[str]]) -> 
     trac_status = pretty_label(first_value(row, STATUS_KEYS, ""))
     discovery_track = discovery_track_label(duplicate_sources[ticket_id])
     track = item["query"].get("name", item["query"].get("track", "unknown"))
+    useful_contribution = contribution_summary(item.get("qualification", {}))
 
     return f"""
 <tr class="tier-{html.escape(tier_class)}">
@@ -111,6 +131,7 @@ def ticket_row(item: dict[str, Any], duplicate_sources: dict[str, set[str]]) -> 
   <td data-label="Track">{html.escape(track)}</td>
   <td data-label="Trac Status">{html.escape(trac_status)}</td>
   <td data-label="Discovery Track">{html.escape(discovery_track)}</td>
+  <td data-label="Useful Contribution">{useful_contribution}</td>
   <td data-label="Signals" class="signals">{signals}</td>
 </tr>
 """
@@ -126,7 +147,7 @@ def section_html(
     rows = "\n".join(ticket_row(item, duplicate_sources) for item in display_items)
 
     if not rows:
-        rows = '<tr><td colspan="8" class="empty">No tickets in this section.</td></tr>'
+        rows = '<tr><td colspan="9" class="empty">No tickets in this section.</td></tr>'
 
     return f"""
 <section>
@@ -142,6 +163,7 @@ def section_html(
           <th>Track</th>
           <th>Trac Status</th>
           <th>Discovery Track</th>
+          <th>Useful Contribution</th>
           <th>Signals</th>
         </tr>
       </thead>
@@ -275,6 +297,28 @@ def dashboard_css() -> str:
       font-size: 18px;
     }
     .signals { min-width: 300px; }
+    .contribution-hypothesis {
+      max-width: 360px;
+      min-width: 260px;
+      line-height: 1.35;
+    }
+    .contribution-hypothesis strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+    .contribution-hypothesis span {
+      display: block;
+      color: #646970;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    .contribution-hypothesis p {
+      margin: 0;
+      color: #50575e;
+      font-size: 13px;
+    }
     .signal-badge,
     .tier-label {
       display: inline-block;
@@ -462,6 +506,7 @@ def admin_item_payload(item: dict[str, Any], duplicate_sources: dict[str, set[st
     ticket_id = item["ticket_id"]
     tier_class, tier_label = priority_tier(item)
     keywords = first_value(row, KEYWORDS_KEYS, "")
+    qualification = item.get("qualification", {})
 
     return {
         "ticket_id": ticket_id,
@@ -484,6 +529,13 @@ def admin_item_payload(item: dict[str, Any], duplicate_sources: dict[str, set[st
         ],
         "score_breakdown": score_breakdown(item["reasons"]),
         "discovery_track": discovery_track_label(duplicate_sources[ticket_id]),
+        "qualification": {
+            "recommendedContributionClass": qualification.get("recommendedContributionClass", "NO_CLEAR_CONTRIBUTION"),
+            "confidence": qualification.get("confidence", "medium"),
+            "reason": qualification.get("reason", ""),
+            "evidenceFreshness": qualification.get("evidenceFreshness", {}),
+            "sourceCoverage": qualification.get("source_coverage", {}),
+        },
         "review": safe_review_projection(item.get("review")),
     }
 

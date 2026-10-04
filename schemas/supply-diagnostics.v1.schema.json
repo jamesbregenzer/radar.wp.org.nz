@@ -12,6 +12,8 @@
     "opportunity_count",
     "query_rows",
     "qualified_candidates_by_class",
+    "recommended_contribution_classes",
+    "recommended_contribution_confidence",
     "rejected_candidates_by_reason",
     "stale_candidates_by_class",
     "duplicate_candidates_by_risk",
@@ -34,6 +36,14 @@
       "additionalProperties": {"type": "integer"}
     },
     "qualified_candidates_by_class": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/countPair"}
+    },
+    "recommended_contribution_classes": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/countPair"}
+    },
+    "recommended_contribution_confidence": {
       "type": "array",
       "items": {"$ref": "#/$defs/countPair"}
     },

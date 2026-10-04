@@ -74,6 +74,11 @@ def machine_feed_payload(snapshot: dict, opportunity_set: dict, contribution_sta
                 "score": record["ranking"]["score"],
                 "qualification": {
                     "opportunityClass": record["qualification"]["opportunity_class"],
+                    "recommendedContributionClass": record["qualification"]["recommendedContributionClass"],
+                    "confidence": record["qualification"]["confidence"],
+                    "reason": record["qualification"]["reason"],
+                    "evidenceFreshness": record["qualification"]["evidenceFreshness"],
+                    "sourceCoverage": record["qualification"]["source_coverage"],
                     "expectedContributionType": record["qualification"]["expected_contribution_type"],
                     "contributionHypothesis": record["qualification"]["contribution_hypothesis"],
                     "requiredEvidenceProfiles": record["qualification"]["required_evidence_profiles"],

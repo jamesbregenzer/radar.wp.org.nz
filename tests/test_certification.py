@@ -114,6 +114,166 @@ class CertificationTests(unittest.TestCase):
                 self.assertTrue(profile["contribution_hypothesis"])
                 self.assertTrue(profile["supply_quality"]["fresh_upstream_read_required"])
 
+    def test_public_hypothesis_identifies_existing_pr_testing(self):
+        profile = derive_opportunity_profile(
+            ticket={
+                "summary": "Media upload flow needs current PR testing",
+                "component": "Media",
+                "type": "enhancement",
+                "keywords": ["has-patch", "needs-testing"],
+                "modified": "2026-01-14",
+                "status": "new",
+                "resolution": None,
+                "comment_count": 2,
+                "github_pr_url": "https://github.com/WordPress/wordpress-develop/pull/999",
+            },
+            discovery={"tracks": ["testing"]},
+            radar_state={},
+            reference_time=datetime(2026, 1, 15, tzinfo=timezone.utc),
+        )
+        self.assertEqual(profile["recommendedContributionClass"], "TEST_EXISTING_PR")
+        self.assertEqual(profile["confidence"], "high")
+        self.assertTrue(profile["source_coverage"]["wordpress_develop_pr"])
+
+    def test_public_hypothesis_identifies_regression_test_gap(self):
+        profile = derive_opportunity_profile(
+            ticket={
+                "summary": "Bug fix changes behavior without regression coverage",
+                "component": "REST API",
+                "type": "defect",
+                "keywords": ["has-patch", "needs-unit-tests"],
+                "modified": "2026-01-14",
+                "status": "new",
+                "resolution": None,
+                "comment_count": 3,
+                "changed_files": "tests/phpunit/tests/rest-api/rest-posts-controller.php",
+            },
+            discovery={"tracks": ["unit-tests"]},
+            radar_state={},
+            reference_time=datetime(2026, 1, 15, tzinfo=timezone.utc),
+        )
+        self.assertEqual(profile["recommendedContributionClass"], "ADD_REGRESSION_TEST")
+        self.assertTrue(profile["source_coverage"]["changed_files_or_diff"])
+
+    def test_public_hypothesis_identifies_reproduction_gap(self):
+        profile = derive_opportunity_profile(
+            ticket={
+                "summary": "Need exact steps to reproduce before patch review",
+                "component": "General",
+                "type": "defect",
+                "keywords": ["needs-reproduction"],
+                "modified": "2026-01-14",
+                "status": "new",
+                "resolution": None,
+                "comment_count": 1,
+            },
+            discovery={"tracks": ["reproduction"]},
+            radar_state={},
+            reference_time=datetime(2026, 1, 15, tzinfo=timezone.utc),
+        )
+        self.assertEqual(profile["recommendedContributionClass"], "REPRODUCE_BUG")
+        self.assertEqual(profile["confidence"], "high")
+
+    def test_public_hypothesis_identifies_rest_api_edge_case(self):
+        profile = derive_opportunity_profile(
+            ticket={
+                "summary": "REST API update should distinguish omitted parent from explicit parent:0",
+                "component": "REST API",
+                "type": "defect",
+                "keywords": ["has-patch", "dev-feedback"],
+                "modified": "2026-01-14",
+                "status": "new",
+                "resolution": None,
+                "comment_count": 6,
+            },
+            discovery={"tracks": ["rest-api"]},
+            radar_state={},
+            reference_time=datetime(2026, 1, 15, tzinfo=timezone.utc),
+        )
+        self.assertEqual(profile["recommendedContributionClass"], "REVIEW_API_EDGE_CASE")
+        self.assertEqual(profile["confidence"], "high")
+
+    def test_public_hypothesis_suppresses_fully_covered_patch(self):
+        profile = derive_opportunity_profile(
+            ticket={
+                "summary": "Patch already has current test report and maintainer confirmation",
+                "component": "General",
+                "type": "defect",
+                "keywords": ["has-patch", "needs-testing"],
+                "modified": "2026-01-14",
+                "status": "new",
+                "resolution": None,
+                "comment_count": 4,
+                "upstream_coverage_complete": True,
+            },
+            discovery={"tracks": ["testing"]},
+            radar_state={},
+            reference_time=datetime(2026, 1, 15, tzinfo=timezone.utc),
+        )
+        self.assertEqual(profile["recommendedContributionClass"], "NO_CLEAR_CONTRIBUTION")
+        self.assertEqual(profile["confidence"], "high")
+        self.assertIn("no-clear-nonduplicative-contribution", profile["eligibility"]["blockers"])
+
+    def test_public_hypothesis_renews_after_pr_head_change(self):
+        profile = derive_opportunity_profile(
+            ticket={
+                "summary": "Existing PR needs retest after latest commit",
+                "component": "Editor",
+                "type": "defect",
+                "keywords": ["has-patch", "needs-testing"],
+                "modified": "2026-01-14",
+                "status": "new",
+                "resolution": None,
+                "comment_count": 5,
+                "github_pr_url": "https://github.com/WordPress/wordpress-develop/pull/1000",
+                "pr_head_sha": "a" * 40,
+                "last_tested_sha": "b" * 40,
+            },
+            discovery={"tracks": ["testing"]},
+            radar_state={},
+            reference_time=datetime(2026, 1, 15, tzinfo=timezone.utc),
+        )
+        self.assertEqual(profile["recommendedContributionClass"], "FOLLOW_UP_AFTER_UPSTREAM_CHANGE")
+        self.assertEqual(profile["confidence"], "high")
+
+    def test_public_hypothesis_identifies_accessibility_ui_verification(self):
+        profile = derive_opportunity_profile(
+            ticket={
+                "summary": "Button focus state needs browser and keyboard verification",
+                "component": "Accessibility",
+                "type": "defect",
+                "keywords": ["has-patch", "needs-testing", "accessibility"],
+                "modified": "2026-01-14",
+                "status": "new",
+                "resolution": None,
+                "comment_count": 2,
+            },
+            discovery={"tracks": ["accessibility"]},
+            radar_state={},
+            reference_time=datetime(2026, 1, 15, tzinfo=timezone.utc),
+        )
+        self.assertEqual(profile["recommendedContributionClass"], "ACCESSIBILITY_UI_VERIFY")
+        self.assertEqual(profile["confidence"], "high")
+
+    def test_public_hypothesis_identifies_performance_benchmark_gap(self):
+        profile = derive_opportunity_profile(
+            ticket={
+                "summary": "Improve query performance for large term counts",
+                "component": "Performance",
+                "type": "enhancement",
+                "keywords": ["has-patch"],
+                "modified": "2026-01-14",
+                "status": "new",
+                "resolution": None,
+                "comment_count": 2,
+            },
+            discovery={"tracks": ["performance"]},
+            radar_state={},
+            reference_time=datetime(2026, 1, 15, tzinfo=timezone.utc),
+        )
+        self.assertEqual(profile["recommendedContributionClass"], "BENCHMARK_PERFORMANCE_CHANGE")
+        self.assertEqual(profile["confidence"], "medium")
+
     def test_all_schema_documents_have_stable_ids(self):
         for name in SCHEMA_FILES:
             schema = load_schema(name)
