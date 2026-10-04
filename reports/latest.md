@@ -1,6 +1,6 @@
 # WP Core Radar Report
 
-Generated: 2026-10-04 13:36
+Generated: 2026-10-04 19:37
 
 ## Summary
 
@@ -9,8 +9,8 @@ Generated: 2026-10-04 13:36
 - Outcomes loaded: 4
 - Reviews loaded: 21
 - Top opportunity limit: 50
-- Certified snapshot: snapshot-v1-3f93233893ed30c951ecee3d
-- Certified collection: collection-v1-e919dbeaf52f731a5ec4e4d5
+- Certified snapshot: snapshot-v1-3f787f44d2eb72ab98c69430
+- Certified collection: collection-v1-d42c24891eefab454bb23eff
 - Scoring version: radar-scoring-v1
 
 ## Review Workflow
@@ -950,7 +950,7 @@ Generated: 2026-10-04 13:36
 - Milestone: Awaiting Review
 - Keywords: has-patch has-unit-tests needs-testing
 - Created: 10/04/2026 10:56:30 AM
-- Modified: 10/04/2026 10:59:12 AM
+- Modified: 10/04/2026 05:17:29 PM
 - Why it ranked: track priority: General: Needs Testing +65, has patch +35, needs testing +30, freshness: recently updated <=14 days +20
 - Score breakdown:
   - +65: Track Priority

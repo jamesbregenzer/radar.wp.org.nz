@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-04T13:36:52",
+  "generated": "2026-10-04T19:37:42",
   "summary": {
     "unique_tickets": 290,
     "priority_targets": 12,
@@ -8,15 +8,15 @@
     "watching": 59,
     "reviews_loaded": 21,
     "certification": {
-      "snapshot_id": "snapshot-v1-3f93233893ed30c951ecee3d",
-      "collection_id": "collection-v1-e919dbeaf52f731a5ec4e4d5",
-      "reference_time": "2026-10-04T13:36:52",
+      "snapshot_id": "snapshot-v1-3f787f44d2eb72ab98c69430",
+      "collection_id": "collection-v1-d42c24891eefab454bb23eff",
+      "reference_time": "2026-10-04T19:37:42",
       "state": "certified",
       "opportunity_count": 290,
       "scoring_version": "radar-scoring-v1",
-      "source_revision": "b9f0baa538c5d1a133d0513f1a71b6de18e3710b",
+      "source_revision": "cea4d8d252090e945041d33d4f14d9164af2aded",
       "warnings": [],
-      "dataset_sha256": "dc88ac21b85870e019bc283c8c9af44b4cec285d86f0739be2ae4f7b128b5fce"
+      "dataset_sha256": "9a699f34c9d1176a5b0075e7029c1dadb59928345598eef1a784ded2632a8a7b"
     }
   },
   "groups": {
@@ -4502,7 +4502,7 @@
         "owner": "",
         "comments": "",
         "created": "10/04/2026 10:56:30 AM",
-        "modified": "10/04/2026 10:59:12 AM",
+        "modified": "10/04/2026 05:17:29 PM",
         "keywords": "has-patch has-unit-tests needs-testing",
         "signals": [
           {
@@ -4559,7 +4559,7 @@
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
             "ageDays": 0,
-            "modifiedAt": "10/04/2026 10:59:12 AM",
+            "modifiedAt": "10/04/2026 05:17:29 PM",
             "state": "fresh"
           },
           "sourceCoverage": {
