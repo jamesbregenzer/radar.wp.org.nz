@@ -15,17 +15,19 @@ I regularly collect and upload public ticket data from [WordPress Core Trac](htt
 3. scores and ranks opportunities with deterministic, explainable rules; and
 4. publishes the current dashboard, reports, and machine-readable feed.
 
-The aim is simple: make promising testing, review, documentation, accessibility, and development opportunities easier to identify.
+The aim is simple: make promising testing, review, documentation, accessibility, and development opportunities easier to identify, and explain what useful public contribution appears to be missing.
 
 Radar is a standalone public project built around public WordPress evidence. Its machine-readable API is a general public data interface; downstream tools or systems that choose to read it are outside Radar's product boundary and are not part of Radar's public architecture.
 
 ## How scoring works
 
-Each configured Trac search provides a baseline priority. Ticket-level signals then adjust that score. Useful signals include an existing patch, a request for testing or feedback, recent activity, a clear owner, and a manageable discussion size. Stale, closed, previously completed, or unusually complex tickets receive penalties.
+Each configured Trac search provides a baseline priority. Ticket-level signals then adjust that score. Useful signals include an existing patch, a linked public PR, a request for testing or feedback, recent activity, a clear owner, and a manageable discussion size. Stale, closed, previously completed, or unusually complex tickets receive penalties.
+
+Radar also derives a public contribution hypothesis for each certified opportunity. The hypothesis names the likely useful contribution class, confidence, reason, evidence freshness, and public source coverage. Examples include `TEST_EXISTING_PR`, `ADD_REGRESSION_TEST`, `REPRODUCE_BUG`, `REVIEW_API_EDGE_CASE`, `ACCESSIBILITY_UI_VERIFY`, `FOLLOW_UP_AFTER_UPSTREAM_CHANGE`, and `NO_CLEAR_CONTRIBUTION`.
 
 Scoring is deterministic. The same inputs, configuration, and reference time produce the same ordering. Every score includes a breakdown of the rules that contributed to it. The executable policy lives in [`config/scoring.json`](config/scoring.json), with a plain-language explanation in [`docs/scoring-rubric.md`](docs/scoring-rubric.md).
 
-Scores are recommendations, not a substitute for reading the ticket. WordPress Core changes quickly, so current Trac state should always be checked before acting.
+Scores and hypotheses are discovery intelligence, not a substitute for reading the ticket. WordPress Core changes quickly, so current Trac state should always be checked before acting.
 
 ## Data and outputs
 

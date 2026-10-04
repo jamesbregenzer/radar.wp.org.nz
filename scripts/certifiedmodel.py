@@ -66,6 +66,7 @@ def load_certified_projection(
             "row": row,
             "query": primary_query,
             "review": reviews.get(ticket_id) or dict(record.get("radar_state") or {}),
+            "qualification": record["qualification"],
             "certified_record": record,
         })
 

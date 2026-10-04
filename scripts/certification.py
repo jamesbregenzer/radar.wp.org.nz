@@ -200,6 +200,186 @@ def _score_breakdown(reasons: tuple[str, ...]) -> list[dict[str, Any]]:
     return values
 
 
+PUBLIC_CONTRIBUTION_CLASSES = {
+    "TEST_EXISTING_PR",
+    "ADD_REGRESSION_TEST",
+    "REPRODUCE_BUG",
+    "VERIFY_EXISTING_PATCH",
+    "REVIEW_EXISTING_PR",
+    "REVIEW_API_EDGE_CASE",
+    "BENCHMARK_PERFORMANCE_CHANGE",
+    "VERIFY_PHP_COMPATIBILITY",
+    "ACCESSIBILITY_UI_VERIFY",
+    "DOCUMENT_TECHNICAL_BEHAVIOR",
+    "FOLLOW_UP_AFTER_UPSTREAM_CHANGE",
+    "STALE_BUT_ACTIONABLE",
+    "NO_CLEAR_CONTRIBUTION",
+}
+
+
+def _truthy_ticket_signal(ticket: dict[str, Any], *keys: str) -> bool:
+    for key in keys:
+        value = ticket.get(key)
+        if value in (True, "true", "yes", "1", 1):
+            return True
+        if isinstance(value, str) and value.strip() and value.strip().lower() not in {"false", "no", "0", "none", "unknown"}:
+            return True
+    return False
+
+
+def _ticket_text(ticket: dict[str, Any], *keys: str) -> str:
+    return " ".join(str(ticket.get(key) or "").lower() for key in keys)
+
+
+def _derive_public_source_coverage(
+    *,
+    ticket: dict[str, Any],
+    keywords: set[str],
+    has_patch: bool,
+    open_pr: bool,
+) -> dict[str, bool]:
+    """Summarize which public evidence families informed the hypothesis."""
+    return {
+        "trac_ticket": True,
+        "trac_keywords_status_component": bool(keywords or ticket.get("status") or ticket.get("component") or ticket.get("milestone")),
+        "public_patch_or_attachment": has_patch or _truthy_ticket_signal(ticket, "patch_url", "attachment_url", "attachment_count", "public_patch_available"),
+        "wordpress_develop_pr": open_pr,
+        "public_pr_discussion_or_review": _truthy_ticket_signal(ticket, "public_review_request", "public_pr_review", "review_request", "discussion_request"),
+        "changed_files_or_diff": _truthy_ticket_signal(ticket, "changed_files", "diff_summary", "diff_files", "public_diff_available"),
+        "public_test_or_ci_evidence": _truthy_ticket_signal(ticket, "public_ci_state", "test_evidence", "tested_environment_count", "public_test_report"),
+        "related_or_referenced_ticket": _truthy_ticket_signal(ticket, "related_ticket", "referenced_ticket", "related_tickets"),
+    }
+
+
+def _derive_recommended_contribution(
+    *,
+    ticket: dict[str, Any],
+    signals: str,
+    keywords: set[str],
+    freshness_state: str,
+    age_days: int | None,
+    has_patch: bool,
+    needs_testing: bool,
+    unit_tests: bool,
+    visual: bool,
+    accessibility: bool,
+    documentation: bool,
+    performance: bool,
+    php_runtime: bool,
+    reproduction: bool,
+    dev_feedback: bool,
+    feedback: bool,
+) -> tuple[str, str, str]:
+    """Return public opportunity intelligence, not an instruction to contribute."""
+    status = str(ticket.get("status") or "").lower()
+    has_resolution = bool(ticket.get("resolution"))
+    open_pr = _truthy_ticket_signal(ticket, "github_pr", "github_pr_url", "pr_url", "pull_request")
+    review_request = _truthy_ticket_signal(ticket, "public_review_request", "review_request", "public_pr_review")
+    coverage_complete = _truthy_ticket_signal(ticket, "upstream_coverage_complete", "coverage_complete", "fully_covered")
+    obsolete = any(marker in signals for marker in ("obsolete", "superseded", "duplicate", "wontfix", "invalid"))
+    pr_head = str(ticket.get("pr_head_sha") or ticket.get("head_sha") or "").strip()
+    tested_head = str(ticket.get("last_tested_sha") or ticket.get("tested_head_sha") or "").strip()
+    upstream_changed = bool(pr_head and tested_head and pr_head != tested_head) or _truthy_ticket_signal(ticket, "pr_head_changed", "upstream_changed_after_test")
+    benchmark_present = _truthy_ticket_signal(ticket, "benchmark_evidence", "performance_measurement", "query_count_evidence")
+    rest_edge = any(marker in signals for marker in (
+        "rest api", "rest-api", "wp rest", "api", "parent:0", "parent 0", "explicit parent",
+        "omitted", "explicitly supplied", "null", "false", "0 semantics", "state transition",
+        "create/update", "create update", "schema", "serialization", "parent/child",
+    ))
+    test_stale = freshness_state == "stale" or _truthy_ticket_signal(ticket, "stale_test_evidence", "test_stale")
+
+    if status in {"closed", "fixed", "wontfix", "duplicate", "invalid"} or has_resolution or coverage_complete or obsolete:
+        return (
+            "NO_CLEAR_CONTRIBUTION",
+            "high",
+            "Public evidence indicates the ticket is resolved, superseded, fully covered, or otherwise unlikely to need a nonduplicative contribution.",
+        )
+    if upstream_changed:
+        return (
+            "FOLLOW_UP_AFTER_UPSTREAM_CHANGE",
+            "high",
+            "Public evidence shows the PR or patch changed after prior evaluation, so stale verification may be useful again.",
+        )
+    if open_pr and needs_testing:
+        confidence = "high" if not test_stale else "medium"
+        return (
+            "TEST_EXISTING_PR",
+            confidence,
+            "A public PR or patch exists and current public ticket signals still ask for testing or verification.",
+        )
+    if unit_tests:
+        return (
+            "ADD_REGRESSION_TEST",
+            "high" if has_patch else "medium",
+            "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
+        )
+    if rest_edge:
+        return (
+            "REVIEW_API_EDGE_CASE",
+            "high" if has_patch or dev_feedback else "medium",
+            "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
+        )
+    if performance:
+        return (
+            "BENCHMARK_PERFORMANCE_CHANGE",
+            "medium" if not benchmark_present else "low",
+            "The ticket includes a performance-sensitive claim where measured evidence is needed before treating the change as proven.",
+        )
+    if accessibility or (visual and any(marker in signals for marker in ("focus", "keyboard", "screen reader", "aria", "accessible name"))):
+        return (
+            "ACCESSIBILITY_UI_VERIFY",
+            "high" if has_patch or needs_testing else "medium",
+            "The public ticket describes accessibility or UI behavior where browser, keyboard, or semantic verification could add useful evidence.",
+        )
+    if php_runtime:
+        return (
+            "VERIFY_PHP_COMPATIBILITY",
+            "medium",
+            "The ticket includes PHP/runtime compatibility signals that need exact-version confirmation or focused regression coverage.",
+        )
+    if documentation:
+        return (
+            "DOCUMENT_TECHNICAL_BEHAVIOR",
+            "medium",
+            "Public signals point to documentation, inline docs, or DocBlock behavior that can be reviewed against current source behavior.",
+        )
+    if reproduction:
+        return (
+            "REPRODUCE_BUG",
+            "high",
+            "The ticket appears to need exact reproduction, a minimal fixture, or clearer expected-versus-actual behavior.",
+        )
+    if has_patch and freshness_state == "stale":
+        return (
+            "STALE_BUT_ACTIONABLE",
+            "medium",
+            "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
+        )
+    if open_pr and (review_request or dev_feedback):
+        return (
+            "REVIEW_EXISTING_PR",
+            "medium",
+            "A public PR appears to need review or an answer to an open public discussion point.",
+        )
+    if has_patch:
+        return (
+            "VERIFY_EXISTING_PATCH",
+            "medium" if age_days is None or age_days > 90 else "high",
+            "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
+        )
+    if needs_testing or feedback:
+        return (
+            "REPRODUCE_BUG",
+            "medium",
+            "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
+        )
+    return (
+        "NO_CLEAR_CONTRIBUTION",
+        "medium",
+        "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
+    )
+
+
 def derive_opportunity_profile(
     *,
     ticket: dict[str, Any],
@@ -218,7 +398,18 @@ def derive_opportunity_profile(
     component = str(ticket.get("component") or "").lower()
     summary = str(ticket.get("summary") or "").lower()
     ticket_type = str(ticket.get("type") or "").lower()
-    signals = " ".join(sorted(keywords | tracks | {component, summary, ticket_type}))
+    optional_public_text = _ticket_text(
+        ticket,
+        "github_pr_url",
+        "pr_url",
+        "public_review_request",
+        "public_ci_state",
+        "changed_files",
+        "diff_summary",
+        "related_ticket",
+        "public_discussion",
+    )
+    signals = " ".join(sorted(keywords | tracks | {component, summary, ticket_type, optional_public_text}))
 
     accessibility = "accessibility" in signals or "a11y" in signals
     documentation = any(marker in signals for marker in ("documentation", "docs", "docblock", "inline docs", "docs-focus"))
@@ -238,6 +429,7 @@ def derive_opportunity_profile(
     feedback = any(marker in keywords for marker in ("dev-feedback", "reporter-feedback"))
     dev_feedback = "dev-feedback" in keywords or "2nd-opinion" in keywords or "second-opinion" in keywords
     good_first_bug = "good-first-bug" in keywords or "good first bug" in signals
+    open_pr = _truthy_ticket_signal(ticket, "github_pr", "github_pr_url", "pr_url", "pull_request")
 
     modified = parse_datetime(str(ticket.get("modified") or ""))
     age_days = max(0, (reference_time - modified.astimezone(timezone.utc)).days) if modified else None
@@ -377,10 +569,42 @@ def derive_opportunity_profile(
     if documentation:
         skills.append("documentation")
 
+    recommended_class, confidence, public_reason = _derive_recommended_contribution(
+        ticket=ticket,
+        signals=signals,
+        keywords=keywords,
+        freshness_state=freshness_state,
+        age_days=age_days,
+        has_patch=has_patch,
+        needs_testing=needs_testing,
+        unit_tests=unit_tests,
+        visual=visual,
+        accessibility=accessibility,
+        documentation=documentation,
+        performance=performance,
+        php_runtime=php_runtime,
+        reproduction=reproduction,
+        dev_feedback=dev_feedback,
+        feedback=feedback,
+    )
+    source_coverage = _derive_public_source_coverage(ticket=ticket, keywords=keywords, has_patch=has_patch, open_pr=open_pr)
+    if recommended_class == "NO_CLEAR_CONTRIBUTION" and "ticket-not-open" not in blockers:
+        blockers.append("no-clear-nonduplicative-contribution")
+        eligibility_state = "blocked"
+
     return {
         "opportunity_class": opportunity_class,
         "expected_contribution_type": expected_type,
         "contribution_hypothesis": hypothesis,
+        "recommendedContributionClass": recommended_class,
+        "confidence": confidence,
+        "reason": public_reason,
+        "evidenceFreshness": {
+            "state": freshness_state,
+            "modifiedAt": ticket.get("modified"),
+            "ageDays": age_days,
+        },
+        "source_coverage": source_coverage,
         "required_evidence_profiles": profiles,
         "visual_evidence": {"relevance": visual_relevance, "reason": visual_reason},
         "relevant_skills": skills,
@@ -429,6 +653,8 @@ def build_supply_diagnostics(
     snapshot_id: str,
 ) -> dict[str, Any]:
     by_class: Counter[str] = Counter()
+    by_recommended_class: Counter[str] = Counter()
+    by_confidence: Counter[str] = Counter()
     rejected: Counter[str] = Counter()
     stale: Counter[str] = Counter()
     duplicate: Counter[str] = Counter()
@@ -444,6 +670,8 @@ def build_supply_diagnostics(
         qualification = record["qualification"]
         opportunity_class = qualification["opportunity_class"]
         by_class[opportunity_class] += 1
+        by_recommended_class[qualification["recommendedContributionClass"]] += 1
+        by_confidence[qualification["confidence"]] += 1
         lifecycle[qualification["eligibility"]["state"]] += 1
         for blocker in qualification["eligibility"]["blockers"]:
             rejected[blocker] += 1
@@ -476,6 +704,8 @@ def build_supply_diagnostics(
         "opportunity_count": len(opportunity_set["opportunities"]),
         "query_rows": query_rows,
         "qualified_candidates_by_class": counted(by_class),
+        "recommended_contribution_classes": counted(by_recommended_class),
+        "recommended_contribution_confidence": counted(by_confidence),
         "rejected_candidates_by_reason": counted(rejected),
         "stale_candidates_by_class": counted(stale),
         "duplicate_candidates_by_risk": counted(duplicate),

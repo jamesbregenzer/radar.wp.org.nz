@@ -45,19 +45,41 @@ ranking inputs. It excludes generated timestamps, collection artifact paths,
 snapshot identity, and API publication details. These fields allow any API user
 to distinguish stable opportunity identity from a materially changed record.
 
-Current certified records may also include an advisory `qualification` object.
-It describes the likely opportunity class and contribution type, proportionate
+Current certified records include an advisory `qualification` object. It
+describes the likely opportunity class and contribution type, proportionate
 evidence profiles, visual-evidence relevance, useful skills, freshness,
-duplication risk, likely public channel, engineering weight, and preliminary
-eligibility blockers. Qualification is derived only from certified public
-ticket signals. It is discovery guidance, not proof that work is still needed,
-and does not by itself change a stable opportunity revision.
+duplication risk, likely public channel, engineering weight, preliminary
+eligibility blockers, and public contribution hypothesis. Qualification is
+derived only from certified public WordPress and GitHub evidence. It is
+discovery guidance, not proof that work is still needed, and does not by itself
+change a stable opportunity revision.
+
+The public contribution hypothesis adds:
+
+- `recommendedContributionClass`: one of `TEST_EXISTING_PR`,
+  `ADD_REGRESSION_TEST`, `REPRODUCE_BUG`, `VERIFY_EXISTING_PATCH`,
+  `REVIEW_EXISTING_PR`, `REVIEW_API_EDGE_CASE`,
+  `BENCHMARK_PERFORMANCE_CHANGE`, `VERIFY_PHP_COMPATIBILITY`,
+  `ACCESSIBILITY_UI_VERIFY`, `DOCUMENT_TECHNICAL_BEHAVIOR`,
+  `FOLLOW_UP_AFTER_UPSTREAM_CHANGE`, `STALE_BUT_ACTIONABLE`, or
+  `NO_CLEAR_CONTRIBUTION`;
+- `confidence`: high, medium, or low;
+- `reason`: public-safe explanation of the missing contribution hypothesis;
+- `evidenceFreshness`: freshness state and ticket modified age;
+- `sourceCoverage`: public evidence families that informed the hypothesis,
+  including Trac ticket fields, public patches or attachments, linked
+  WordPress GitHub PRs, public PR discussion or review, changed files or diffs,
+  public test or CI evidence, and related tickets when available.
+
+`NO_CLEAR_CONTRIBUTION` is a suppression signal. It means Radar did not find a
+clear, useful, nonduplicative contribution path from the certified public
+evidence.
 
 `/api/v1/machine-feed` contains:
 
 - current snapshot identity and dataset hash;
 - ordered `{ticketId, opportunityKey, opportunityRevision, rank, tier, score}`
-  records, with the advisory `qualification` projection when available;
+  records, with the advisory `qualification` projection;
 - verified public contribution outcomes.
 
 The machine feed is read-only public data. It grants no execution or contribution

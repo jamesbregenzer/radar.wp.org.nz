@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Shared utilities for WP Core Radar.
 
-The project intentionally stays deterministic and human-in-the-loop:
-Radar collects, normalizes, scores, and reports. Humans decide what to test
-or comment on in WordPress Trac.
+Radar stays deterministic and public-source based: it collects, normalizes,
+scores, and reports WordPress Core contribution opportunities. It does not
+perform the contribution itself.
 """
 
 from __future__ import annotations
