@@ -1,6 +1,6 @@
 # WP Core Radar Report
 
-Generated: 2026-10-04 01:35
+Generated: 2026-10-04 07:35
 
 ## Summary
 
@@ -9,8 +9,8 @@ Generated: 2026-10-04 01:35
 - Outcomes loaded: 4
 - Reviews loaded: 21
 - Top opportunity limit: 50
-- Certified snapshot: snapshot-v1-1650f551d6e4da75870e41fd
-- Certified collection: collection-v1-9c0afde0c0a73aa90d75b1c7
+- Certified snapshot: snapshot-v1-d914d3d63074e5a290984e18
+- Certified collection: collection-v1-3cc6e784f96617e5ec9f8c61
 - Scoring version: radar-scoring-v1
 
 ## Review Workflow
