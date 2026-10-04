@@ -1,22 +1,22 @@
 {
-  "generated": "2026-10-04T12:17:50",
+  "generated": "2026-10-04T13:36:52",
   "summary": {
-    "unique_tickets": 289,
+    "unique_tickets": 290,
     "priority_targets": 12,
     "immediate": 12,
     "strong": 0,
     "watching": 59,
     "reviews_loaded": 21,
     "certification": {
-      "snapshot_id": "snapshot-v1-f7d9112e0aebbbb7eb5b7671",
-      "collection_id": "collection-v1-010bca66179d41c398a511ca",
-      "reference_time": "2026-10-04T00:00:00",
+      "snapshot_id": "snapshot-v1-3f93233893ed30c951ecee3d",
+      "collection_id": "collection-v1-e919dbeaf52f731a5ec4e4d5",
+      "reference_time": "2026-10-04T13:36:52",
       "state": "certified",
-      "opportunity_count": 289,
+      "opportunity_count": 290,
       "scoring_version": "radar-scoring-v1",
-      "source_revision": "53a950067af97886d420e79fe88a20d5e949f959",
+      "source_revision": "b9f0baa538c5d1a133d0513f1a71b6de18e3710b",
       "warnings": [],
-      "dataset_sha256": "13d9d8883e0b01d573bd1429457c250f39ea077c58c31e96ac36b9c7de00e748"
+      "dataset_sha256": "dc88ac21b85870e019bc283c8c9af44b4cec285d86f0739be2ae4f7b128b5fce"
     }
   },
   "groups": {
@@ -123,7 +123,7 @@
           "confidence": "high",
           "reason": "The public ticket describes accessibility or UI behavior where browser, keyboard, or semantic verification could add useful evidence.",
           "evidenceFreshness": {
-            "ageDays": 8,
+            "ageDays": 9,
             "modifiedAt": "09/24/2026 02:32:59 PM",
             "state": "fresh"
           },
@@ -231,7 +231,7 @@
           "confidence": "high",
           "reason": "The public ticket describes accessibility or UI behavior where browser, keyboard, or semantic verification could add useful evidence.",
           "evidenceFreshness": {
-            "ageDays": 8,
+            "ageDays": 9,
             "modifiedAt": "09/24/2026 02:33:55 PM",
             "state": "fresh"
           },
@@ -350,7 +350,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 7,
+            "ageDays": 8,
             "modifiedAt": "09/25/2026 04:59:32 AM",
             "state": "fresh"
           },
@@ -469,7 +469,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 0,
+            "ageDays": 1,
             "modifiedAt": "10/02/2026 06:18:32 PM",
             "state": "fresh"
           },
@@ -588,7 +588,7 @@
           "confidence": "high",
           "reason": "The public ticket describes accessibility or UI behavior where browser, keyboard, or semantic verification could add useful evidence.",
           "evidenceFreshness": {
-            "ageDays": 1,
+            "ageDays": 2,
             "modifiedAt": "10/01/2026 09:04:52 AM",
             "state": "fresh"
           },
@@ -685,7 +685,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 50,
+            "ageDays": 51,
             "modifiedAt": "08/13/2026 08:08:14 PM",
             "state": "recent"
           },
@@ -782,7 +782,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 1,
+            "ageDays": 2,
             "modifiedAt": "10/01/2026 08:47:39 AM",
             "state": "fresh"
           },
@@ -879,7 +879,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 1,
+            "ageDays": 2,
             "modifiedAt": "10/01/2026 05:36:15 PM",
             "state": "fresh"
           },
@@ -976,7 +976,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 1,
+            "ageDays": 2,
             "modifiedAt": "10/01/2026 02:01:22 PM",
             "state": "fresh"
           },
@@ -1073,7 +1073,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 1,
+            "ageDays": 2,
             "modifiedAt": "10/01/2026 01:54:02 PM",
             "state": "fresh"
           },
@@ -1170,7 +1170,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 1,
+            "ageDays": 2,
             "modifiedAt": "10/01/2026 06:07:44 PM",
             "state": "fresh"
           },
@@ -1278,7 +1278,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 12,
+            "ageDays": 13,
             "modifiedAt": "09/20/2026 11:29:52 AM",
             "state": "fresh"
           },
@@ -1410,7 +1410,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 0,
+            "ageDays": 1,
             "modifiedAt": "10/02/2026 08:57:59 AM",
             "state": "fresh"
           },
@@ -1529,7 +1529,7 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 1,
+            "ageDays": 2,
             "modifiedAt": "10/01/2026 07:55:59 PM",
             "state": "fresh"
           },
@@ -1637,7 +1637,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 4,
+            "ageDays": 5,
             "modifiedAt": "09/28/2026 04:41:12 AM",
             "state": "fresh"
           },
@@ -1745,7 +1745,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 1,
+            "ageDays": 2,
             "modifiedAt": "10/01/2026 11:36:28 PM",
             "state": "fresh"
           },
@@ -1853,7 +1853,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 48,
+            "ageDays": 49,
             "modifiedAt": "08/15/2026 10:51:53 AM",
             "state": "recent"
           },
@@ -2080,7 +2080,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 53,
+            "ageDays": 54,
             "modifiedAt": "08/10/2026 12:18:08 PM",
             "state": "recent"
           },
@@ -2177,7 +2177,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 16,
+            "ageDays": 17,
             "modifiedAt": "09/16/2026 09:04:44 AM",
             "state": "recent"
           },
@@ -2285,7 +2285,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 865,
+            "ageDays": 866,
             "modifiedAt": "05/20/2024 05:16:01 PM",
             "state": "stale"
           },
@@ -2382,7 +2382,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 3,
+            "ageDays": 4,
             "modifiedAt": "09/29/2026 08:40:05 AM",
             "state": "fresh"
           },
@@ -2479,7 +2479,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 12,
+            "ageDays": 13,
             "modifiedAt": "09/20/2026 12:08:52 PM",
             "state": "fresh"
           },
@@ -2576,7 +2576,7 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 366,
+            "ageDays": 367,
             "modifiedAt": "10/01/2025 08:28:56 AM",
             "state": "stale"
           },
@@ -2770,7 +2770,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 12,
+            "ageDays": 13,
             "modifiedAt": "09/20/2026 11:38:39 AM",
             "state": "fresh"
           },
@@ -2867,7 +2867,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 1,
+            "ageDays": 2,
             "modifiedAt": "10/01/2026 02:17:27 PM",
             "state": "fresh"
           },
@@ -2964,7 +2964,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 3,
+            "ageDays": 4,
             "modifiedAt": "09/29/2026 10:08:00 AM",
             "state": "fresh"
           },
@@ -3061,7 +3061,7 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 0,
+            "ageDays": 1,
             "modifiedAt": "10/02/2026 04:27:00 PM",
             "state": "fresh"
           },
@@ -3158,7 +3158,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 3,
+            "ageDays": 4,
             "modifiedAt": "09/29/2026 11:21:47 AM",
             "state": "fresh"
           },
@@ -3255,7 +3255,7 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 7,
+            "ageDays": 8,
             "modifiedAt": "09/25/2026 09:38:55 AM",
             "state": "fresh"
           },
@@ -3352,7 +3352,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 4,
+            "ageDays": 5,
             "modifiedAt": "09/28/2026 11:28:22 PM",
             "state": "fresh"
           },
@@ -3449,7 +3449,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 305,
+            "ageDays": 306,
             "modifiedAt": "12/01/2025 02:58:51 AM",
             "state": "stale"
           },
@@ -3546,7 +3546,7 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 305,
+            "ageDays": 306,
             "modifiedAt": "12/01/2025 03:01:29 AM",
             "state": "stale"
           },
@@ -3643,7 +3643,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 695,
+            "ageDays": 696,
             "modifiedAt": "11/06/2024 03:36:54 PM",
             "state": "stale"
           },
@@ -3740,7 +3740,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 226,
+            "ageDays": 227,
             "modifiedAt": "02/18/2026 04:03:26 PM",
             "state": "stale"
           },
@@ -3848,7 +3848,7 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 63,
+            "ageDays": 64,
             "modifiedAt": "07/31/2026 03:40:57 AM",
             "state": "recent"
           },
@@ -3956,7 +3956,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 15,
+            "ageDays": 16,
             "modifiedAt": "09/17/2026 07:34:13 AM",
             "state": "recent"
           },
@@ -4042,7 +4042,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 8,
+            "ageDays": 9,
             "modifiedAt": "09/24/2026 03:03:01 AM",
             "state": "fresh"
           },
@@ -4128,7 +4128,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 1,
+            "ageDays": 2,
             "modifiedAt": "10/01/2026 07:14:49 PM",
             "state": "fresh"
           },
@@ -4214,7 +4214,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 3,
+            "ageDays": 4,
             "modifiedAt": "09/29/2026 11:21:18 AM",
             "state": "fresh"
           },
@@ -4300,7 +4300,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:38:09 AM",
             "state": "stale"
           },
@@ -4386,7 +4386,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 7,
+            "ageDays": 8,
             "modifiedAt": "09/25/2026 10:16:15 PM",
             "state": "fresh"
           },
@@ -4472,8 +4472,94 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 4,
+            "ageDays": 5,
             "modifiedAt": "09/28/2026 08:17:29 AM",
+            "state": "fresh"
+          },
+          "sourceCoverage": {
+            "changed_files_or_diff": false,
+            "public_patch_or_attachment": true,
+            "public_pr_discussion_or_review": false,
+            "public_test_or_ci_evidence": false,
+            "related_or_referenced_ticket": false,
+            "trac_keywords_status_component": true,
+            "trac_ticket": true,
+            "wordpress_develop_pr": false
+          }
+        },
+        "review": {}
+      },
+      {
+        "ticket_id": "66239",
+        "url": "https://core.trac.wordpress.org/ticket/66239",
+        "score": 150,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "Integrate WordPress.org closed, suspended, and outdated plugins and themes API data into Core",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Upgrade/Install",
+        "owner": "",
+        "comments": "",
+        "created": "10/04/2026 10:56:30 AM",
+        "modified": "10/04/2026 10:59:12 AM",
+        "keywords": "has-patch has-unit-tests needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "qualification": {
+          "recommendedContributionClass": "REVIEW_API_EDGE_CASE",
+          "confidence": "high",
+          "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
+          "evidenceFreshness": {
+            "ageDays": 0,
+            "modifiedAt": "10/04/2026 10:59:12 AM",
             "state": "fresh"
           },
           "sourceCoverage": {
@@ -4558,7 +4644,7 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 268,
+            "ageDays": 269,
             "modifiedAt": "01/07/2026 11:13:30 PM",
             "state": "stale"
           },
@@ -4644,7 +4730,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 578,
+            "ageDays": 579,
             "modifiedAt": "03/03/2025 09:47:03 AM",
             "state": "stale"
           },
@@ -4741,7 +4827,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 52,
+            "ageDays": 53,
             "modifiedAt": "08/11/2026 11:13:00 AM",
             "state": "recent"
           },
@@ -4838,7 +4924,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 16,
+            "ageDays": 17,
             "modifiedAt": "09/16/2026 12:54:50 PM",
             "state": "recent"
           },
@@ -4946,7 +5032,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1706,
+            "ageDays": 1707,
             "modifiedAt": "01/30/2022 04:52:29 PM",
             "state": "stale"
           },
@@ -5043,7 +5129,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 484,
+            "ageDays": 485,
             "modifiedAt": "06/05/2025 12:56:32 PM",
             "state": "stale"
           },
@@ -5140,7 +5226,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:37:56 AM",
             "state": "stale"
           },
@@ -5248,7 +5334,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 766,
+            "ageDays": 767,
             "modifiedAt": "08/27/2024 09:11:53 PM",
             "state": "stale"
           },
@@ -5345,7 +5431,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 162,
+            "ageDays": 163,
             "modifiedAt": "04/23/2026 04:22:59 AM",
             "state": "stale"
           },
@@ -5442,7 +5528,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 136,
+            "ageDays": 137,
             "modifiedAt": "05/19/2026 08:54:37 PM",
             "state": "stale"
           },
@@ -5539,7 +5625,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 76,
+            "ageDays": 77,
             "modifiedAt": "07/18/2026 12:12:21 PM",
             "state": "recent"
           },
@@ -5636,7 +5722,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 107,
+            "ageDays": 108,
             "modifiedAt": "06/17/2026 12:45:20 PM",
             "state": "stale"
           },
@@ -5722,7 +5808,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 45,
+            "ageDays": 46,
             "modifiedAt": "08/18/2026 08:40:19 AM",
             "state": "recent"
           },
@@ -5808,7 +5894,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 30,
+            "ageDays": 31,
             "modifiedAt": "09/02/2026 11:25:30 PM",
             "state": "recent"
           },
@@ -5894,7 +5980,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 44,
+            "ageDays": 45,
             "modifiedAt": "08/19/2026 06:26:11 AM",
             "state": "recent"
           },
@@ -5991,7 +6077,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1783,
+            "ageDays": 1784,
             "modifiedAt": "11/14/2021 01:59:45 PM",
             "state": "stale"
           },
@@ -6077,7 +6163,7 @@
           "confidence": "medium",
           "reason": "The ticket includes PHP/runtime compatibility signals that need exact-version confirmation or focused regression coverage.",
           "evidenceFreshness": {
-            "ageDays": 37,
+            "ageDays": 38,
             "modifiedAt": "08/26/2026 11:33:10 AM",
             "state": "recent"
           },
@@ -6163,7 +6249,7 @@
           "confidence": "medium",
           "reason": "The ticket includes PHP/runtime compatibility signals that need exact-version confirmation or focused regression coverage.",
           "evidenceFreshness": {
-            "ageDays": 45,
+            "ageDays": 46,
             "modifiedAt": "08/18/2026 08:18:24 AM",
             "state": "recent"
           },
@@ -6249,7 +6335,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 50,
+            "ageDays": 51,
             "modifiedAt": "08/13/2026 07:47:02 AM",
             "state": "recent"
           },
@@ -6346,7 +6432,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:35:38 AM",
             "state": "stale"
           },
@@ -6443,7 +6529,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 2717,
+            "ageDays": 2718,
             "modifiedAt": "04/25/2019 07:36:14 AM",
             "state": "stale"
           },
@@ -6540,7 +6626,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1474,
+            "ageDays": 1475,
             "modifiedAt": "09/19/2022 05:02:17 PM",
             "state": "stale"
           },
@@ -6637,7 +6723,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 986,
+            "ageDays": 987,
             "modifiedAt": "01/20/2024 03:01:13 PM",
             "state": "stale"
           },
@@ -6734,7 +6820,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 2152,
+            "ageDays": 2153,
             "modifiedAt": "11/10/2020 02:05:09 AM",
             "state": "stale"
           },
@@ -6831,7 +6917,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1111,
+            "ageDays": 1112,
             "modifiedAt": "09/17/2023 10:53:12 AM",
             "state": "stale"
           },
@@ -6928,7 +7014,7 @@
           "confidence": "medium",
           "reason": "The ticket includes PHP/runtime compatibility signals that need exact-version confirmation or focused regression coverage.",
           "evidenceFreshness": {
-            "ageDays": 1494,
+            "ageDays": 1495,
             "modifiedAt": "08/30/2022 10:11:49 AM",
             "state": "stale"
           },
@@ -7025,7 +7111,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1113,
+            "ageDays": 1114,
             "modifiedAt": "09/15/2023 03:57:43 AM",
             "state": "stale"
           },
@@ -7111,7 +7197,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 402,
+            "ageDays": 403,
             "modifiedAt": "08/26/2025 06:29:20 PM",
             "state": "stale"
           },
@@ -7197,7 +7283,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 314,
+            "ageDays": 315,
             "modifiedAt": "11/22/2025 03:41:42 AM",
             "state": "stale"
           },
@@ -7283,7 +7369,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 352,
+            "ageDays": 353,
             "modifiedAt": "10/15/2025 02:37:09 PM",
             "state": "stale"
           },
@@ -7369,7 +7455,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 252,
+            "ageDays": 253,
             "modifiedAt": "01/23/2026 05:36:40 AM",
             "state": "stale"
           },
@@ -7455,7 +7541,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 88,
+            "ageDays": 89,
             "modifiedAt": "07/06/2026 07:48:19 AM",
             "state": "recent"
           },
@@ -7541,7 +7627,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 206,
+            "ageDays": 207,
             "modifiedAt": "03/10/2026 07:31:50 AM",
             "state": "stale"
           },
@@ -7627,7 +7713,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 197,
+            "ageDays": 198,
             "modifiedAt": "03/19/2026 10:17:02 PM",
             "state": "stale"
           },
@@ -7713,7 +7799,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 155,
+            "ageDays": 156,
             "modifiedAt": "04/30/2026 06:36:50 AM",
             "state": "stale"
           },
@@ -7799,7 +7885,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 79,
+            "ageDays": 80,
             "modifiedAt": "07/15/2026 08:24:27 AM",
             "state": "recent"
           },
@@ -7885,7 +7971,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 135,
+            "ageDays": 136,
             "modifiedAt": "05/20/2026 05:57:15 AM",
             "state": "stale"
           },
@@ -7971,7 +8057,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 109,
+            "ageDays": 110,
             "modifiedAt": "06/15/2026 02:26:48 PM",
             "state": "stale"
           },
@@ -8057,7 +8143,7 @@
           "confidence": "high",
           "reason": "Public evidence indicates the ticket is resolved, superseded, fully covered, or otherwise unlikely to need a nonduplicative contribution.",
           "evidenceFreshness": {
-            "ageDays": 64,
+            "ageDays": 65,
             "modifiedAt": "07/30/2026 06:21:00 PM",
             "state": "recent"
           },
@@ -8143,7 +8229,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 213,
+            "ageDays": 214,
             "modifiedAt": "03/03/2026 04:37:11 PM",
             "state": "stale"
           },
@@ -8229,7 +8315,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 622,
+            "ageDays": 623,
             "modifiedAt": "01/18/2025 03:10:57 PM",
             "state": "stale"
           },
@@ -8315,7 +8401,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 15,
+            "ageDays": 16,
             "modifiedAt": "09/17/2026 03:24:57 PM",
             "state": "recent"
           },
@@ -8423,7 +8509,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 42,
+            "ageDays": 43,
             "modifiedAt": "08/21/2026 07:10:21 AM",
             "state": "recent"
           },
@@ -8520,7 +8606,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 46,
+            "ageDays": 47,
             "modifiedAt": "08/17/2026 01:54:42 PM",
             "state": "recent"
           },
@@ -8628,7 +8714,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 897,
+            "ageDays": 898,
             "modifiedAt": "04/18/2024 12:18:39 PM",
             "state": "stale"
           },
@@ -8703,7 +8789,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 407,
+            "ageDays": 408,
             "modifiedAt": "08/21/2025 03:55:32 PM",
             "state": "stale"
           },
@@ -8778,7 +8864,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 569,
+            "ageDays": 570,
             "modifiedAt": "03/12/2025 06:45:16 AM",
             "state": "stale"
           },
@@ -8853,7 +8939,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 358,
+            "ageDays": 359,
             "modifiedAt": "10/09/2025 02:36:25 PM",
             "state": "stale"
           },
@@ -8928,7 +9014,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 549,
+            "ageDays": 550,
             "modifiedAt": "04/01/2025 05:28:43 PM",
             "state": "stale"
           },
@@ -9003,7 +9089,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 241,
+            "ageDays": 242,
             "modifiedAt": "02/03/2026 03:56:47 PM",
             "state": "stale"
           },
@@ -9078,7 +9164,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 305,
+            "ageDays": 306,
             "modifiedAt": "12/01/2025 02:28:44 AM",
             "state": "stale"
           },
@@ -9153,7 +9239,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 562,
+            "ageDays": 563,
             "modifiedAt": "03/19/2025 04:22:34 PM",
             "state": "stale"
           },
@@ -9239,7 +9325,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 43,
+            "ageDays": 44,
             "modifiedAt": "08/20/2026 12:18:38 PM",
             "state": "recent"
           },
@@ -9314,7 +9400,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 424,
+            "ageDays": 425,
             "modifiedAt": "08/04/2025 01:09:21 PM",
             "state": "stale"
           },
@@ -9389,7 +9475,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 66,
+            "ageDays": 67,
             "modifiedAt": "07/28/2026 05:19:03 PM",
             "state": "recent"
           },
@@ -9464,7 +9550,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 367,
+            "ageDays": 368,
             "modifiedAt": "09/30/2025 09:03:10 AM",
             "state": "stale"
           },
@@ -9539,7 +9625,7 @@
           "confidence": "high",
           "reason": "Public evidence indicates the ticket is resolved, superseded, fully covered, or otherwise unlikely to need a nonduplicative contribution.",
           "evidenceFreshness": {
-            "ageDays": 50,
+            "ageDays": 51,
             "modifiedAt": "08/13/2026 09:00:36 PM",
             "state": "recent"
           },
@@ -9614,7 +9700,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 399,
+            "ageDays": 400,
             "modifiedAt": "08/29/2025 12:21:16 PM",
             "state": "stale"
           },
@@ -9689,7 +9775,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 522,
+            "ageDays": 523,
             "modifiedAt": "04/28/2025 05:46:54 AM",
             "state": "stale"
           },
@@ -9786,7 +9872,7 @@
           "confidence": "medium",
           "reason": "Public signals point to documentation, inline docs, or DocBlock behavior that can be reviewed against current source behavior.",
           "evidenceFreshness": {
-            "ageDays": 84,
+            "ageDays": 85,
             "modifiedAt": "07/10/2026 08:32:55 AM",
             "state": "recent"
           },
@@ -9883,7 +9969,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 50,
+            "ageDays": 51,
             "modifiedAt": "08/13/2026 07:45:06 PM",
             "state": "recent"
           },
@@ -9980,7 +10066,7 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 446,
+            "ageDays": 447,
             "modifiedAt": "07/13/2025 06:12:47 PM",
             "state": "stale"
           },
@@ -10066,7 +10152,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 3,
+            "ageDays": 4,
             "modifiedAt": "09/29/2026 01:48:21 PM",
             "state": "fresh"
           },
@@ -10141,7 +10227,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 373,
+            "ageDays": 374,
             "modifiedAt": "09/24/2025 01:46:32 AM",
             "state": "stale"
           },
@@ -10238,7 +10324,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 2216,
+            "ageDays": 2217,
             "modifiedAt": "09/07/2020 08:30:09 AM",
             "state": "stale"
           },
@@ -10335,7 +10421,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1837,
+            "ageDays": 1838,
             "modifiedAt": "09/21/2021 12:16:01 PM",
             "state": "stale"
           },
@@ -10432,7 +10518,7 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 172,
+            "ageDays": 173,
             "modifiedAt": "04/13/2026 08:34:34 AM",
             "state": "stale"
           },
@@ -10518,7 +10604,7 @@
           "confidence": "medium",
           "reason": "The ticket includes PHP/runtime compatibility signals that need exact-version confirmation or focused regression coverage.",
           "evidenceFreshness": {
-            "ageDays": 183,
+            "ageDays": 184,
             "modifiedAt": "04/02/2026 10:52:23 AM",
             "state": "stale"
           },
@@ -10604,7 +10690,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 241,
+            "ageDays": 242,
             "modifiedAt": "02/03/2026 04:40:36 PM",
             "state": "stale"
           },
@@ -10690,7 +10776,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 451,
+            "ageDays": 452,
             "modifiedAt": "07/08/2025 03:20:35 AM",
             "state": "stale"
           },
@@ -10776,7 +10862,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 176,
+            "ageDays": 177,
             "modifiedAt": "04/09/2026 06:08:02 AM",
             "state": "stale"
           },
@@ -10862,7 +10948,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 183,
+            "ageDays": 184,
             "modifiedAt": "04/02/2026 11:39:44 PM",
             "state": "stale"
           },
@@ -10948,7 +11034,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 63,
+            "ageDays": 64,
             "modifiedAt": "07/31/2026 11:26:56 AM",
             "state": "recent"
           },
@@ -11034,7 +11120,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 197,
+            "ageDays": 198,
             "modifiedAt": "03/19/2026 10:56:23 AM",
             "state": "stale"
           },
@@ -11120,7 +11206,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 403,
+            "ageDays": 404,
             "modifiedAt": "08/25/2025 11:19:42 PM",
             "state": "stale"
           },
@@ -11206,7 +11292,7 @@
           "confidence": "high",
           "reason": "Public evidence indicates the ticket is resolved, superseded, fully covered, or otherwise unlikely to need a nonduplicative contribution.",
           "evidenceFreshness": {
-            "ageDays": 762,
+            "ageDays": 763,
             "modifiedAt": "08/31/2024 10:43:32 AM",
             "state": "stale"
           },
@@ -11292,7 +11378,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1269,
+            "ageDays": 1270,
             "modifiedAt": "04/12/2023 04:51:08 AM",
             "state": "stale"
           },
@@ -11378,7 +11464,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1800,
+            "ageDays": 1801,
             "modifiedAt": "10/28/2021 03:26:41 AM",
             "state": "stale"
           },
@@ -11464,7 +11550,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 2622,
+            "ageDays": 2623,
             "modifiedAt": "07/29/2019 04:43:09 PM",
             "state": "stale"
           },
@@ -11550,7 +11636,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1951,
+            "ageDays": 1952,
             "modifiedAt": "05/30/2021 07:49:09 PM",
             "state": "stale"
           },
@@ -11636,7 +11722,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 2072,
+            "ageDays": 2073,
             "modifiedAt": "01/29/2021 06:12:20 PM",
             "state": "stale"
           },
@@ -11722,7 +11808,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 2047,
+            "ageDays": 2048,
             "modifiedAt": "02/23/2021 01:04:05 AM",
             "state": "stale"
           },
@@ -11808,7 +11894,7 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 1094,
+            "ageDays": 1095,
             "modifiedAt": "10/04/2023 08:36:17 AM",
             "state": "stale"
           },
@@ -11894,7 +11980,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1835,
+            "ageDays": 1836,
             "modifiedAt": "09/23/2021 12:24:38 PM",
             "state": "stale"
           },
@@ -11980,7 +12066,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1729,
+            "ageDays": 1730,
             "modifiedAt": "01/07/2022 09:11:15 AM",
             "state": "stale"
           },
@@ -12066,7 +12152,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1083,
+            "ageDays": 1084,
             "modifiedAt": "10/15/2023 02:56:16 PM",
             "state": "stale"
           },
@@ -12152,7 +12238,7 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 1650,
+            "ageDays": 1651,
             "modifiedAt": "03/27/2022 05:13:32 PM",
             "state": "stale"
           },
@@ -12260,7 +12346,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1913,
+            "ageDays": 1914,
             "modifiedAt": "07/07/2021 06:20:53 PM",
             "state": "stale"
           },
@@ -12368,7 +12454,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 1523,
+            "ageDays": 1524,
             "modifiedAt": "08/01/2022 07:50:23 PM",
             "state": "stale"
           },
@@ -12487,7 +12573,7 @@
           "confidence": "high",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 967,
+            "ageDays": 968,
             "modifiedAt": "02/08/2024 08:18:09 PM",
             "state": "stale"
           },
@@ -12573,7 +12659,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 822,
+            "ageDays": 823,
             "modifiedAt": "07/02/2024 03:35:19 PM",
             "state": "stale"
           },
@@ -12659,7 +12745,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 732,
+            "ageDays": 733,
             "modifiedAt": "09/30/2024 02:37:11 AM",
             "state": "stale"
           },
@@ -12734,7 +12820,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 9,
+            "ageDays": 10,
             "modifiedAt": "09/23/2026 09:04:22 AM",
             "state": "fresh"
           },
@@ -12809,7 +12895,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:37:52 AM",
             "state": "stale"
           },
@@ -12884,7 +12970,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 10,
+            "ageDays": 11,
             "modifiedAt": "09/22/2026 11:24:59 AM",
             "state": "fresh"
           },
@@ -12970,7 +13056,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 437,
+            "ageDays": 438,
             "modifiedAt": "07/22/2025 03:13:20 AM",
             "state": "stale"
           },
@@ -13067,7 +13153,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:35:34 AM",
             "state": "stale"
           },
@@ -13153,7 +13239,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 113,
+            "ageDays": 114,
             "modifiedAt": "06/11/2026 10:45:49 PM",
             "state": "stale"
           },
@@ -13239,7 +13325,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 78,
+            "ageDays": 79,
             "modifiedAt": "07/16/2026 09:43:07 AM",
             "state": "recent"
           },
@@ -13336,7 +13422,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2525,
+            "ageDays": 2526,
             "modifiedAt": "11/03/2019 07:46:59 PM",
             "state": "stale"
           },
@@ -13411,7 +13497,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 1073,
+            "ageDays": 1074,
             "modifiedAt": "10/25/2023 05:04:49 AM",
             "state": "stale"
           },
@@ -13486,7 +13572,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 1080,
+            "ageDays": 1081,
             "modifiedAt": "10/18/2023 04:01:34 PM",
             "state": "stale"
           },
@@ -13561,7 +13647,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 841,
+            "ageDays": 842,
             "modifiedAt": "06/13/2024 01:56:59 AM",
             "state": "stale"
           },
@@ -13636,7 +13722,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 1080,
+            "ageDays": 1081,
             "modifiedAt": "10/18/2023 04:51:19 PM",
             "state": "stale"
           },
@@ -13711,7 +13797,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 786,
+            "ageDays": 787,
             "modifiedAt": "08/07/2024 03:49:27 PM",
             "state": "stale"
           },
@@ -13786,7 +13872,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 897,
+            "ageDays": 898,
             "modifiedAt": "04/18/2024 08:37:08 PM",
             "state": "stale"
           },
@@ -13883,7 +13969,7 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 840,
+            "ageDays": 841,
             "modifiedAt": "06/14/2024 08:56:33 PM",
             "state": "stale"
           },
@@ -13980,7 +14066,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 884,
+            "ageDays": 885,
             "modifiedAt": "05/01/2024 06:42:48 PM",
             "state": "stale"
           },
@@ -14055,7 +14141,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 718,
+            "ageDays": 719,
             "modifiedAt": "10/14/2024 03:34:48 PM",
             "state": "stale"
           },
@@ -14130,7 +14216,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 338,
+            "ageDays": 339,
             "modifiedAt": "10/29/2025 02:15:01 PM",
             "state": "stale"
           },
@@ -14216,7 +14302,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1231,
+            "ageDays": 1232,
             "modifiedAt": "05/20/2023 07:27:13 AM",
             "state": "stale"
           },
@@ -14291,7 +14377,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 53,
+            "ageDays": 54,
             "modifiedAt": "08/10/2026 08:34:59 AM",
             "state": "recent"
           },
@@ -14366,7 +14452,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:38:03 AM",
             "state": "stale"
           },
@@ -14441,7 +14527,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 584,
+            "ageDays": 585,
             "modifiedAt": "02/25/2025 09:22:21 AM",
             "state": "stale"
           },
@@ -14516,7 +14602,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:38:06 AM",
             "state": "stale"
           },
@@ -14591,7 +14677,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 571,
+            "ageDays": 572,
             "modifiedAt": "03/10/2025 09:20:34 PM",
             "state": "stale"
           },
@@ -14699,7 +14785,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 08:06:26 PM",
             "state": "stale"
           },
@@ -14785,7 +14871,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1386,
+            "ageDays": 1387,
             "modifiedAt": "12/16/2022 08:17:47 AM",
             "state": "stale"
           },
@@ -14871,7 +14957,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2183,
+            "ageDays": 2184,
             "modifiedAt": "10/10/2020 01:08:00 PM",
             "state": "stale"
           },
@@ -14957,7 +15043,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 11,
+            "ageDays": 12,
             "modifiedAt": "09/21/2026 11:48:10 PM",
             "state": "fresh"
           },
@@ -15043,7 +15129,7 @@
           "confidence": "medium",
           "reason": "The ticket includes PHP/runtime compatibility signals that need exact-version confirmation or focused regression coverage.",
           "evidenceFreshness": {
-            "ageDays": 1642,
+            "ageDays": 1643,
             "modifiedAt": "04/04/2022 05:25:30 AM",
             "state": "stale"
           },
@@ -15129,7 +15215,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1312,
+            "ageDays": 1313,
             "modifiedAt": "02/28/2023 07:54:51 PM",
             "state": "stale"
           },
@@ -15204,7 +15290,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 605,
+            "ageDays": 606,
             "modifiedAt": "02/04/2025 01:03:46 PM",
             "state": "stale"
           },
@@ -15279,7 +15365,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 474,
+            "ageDays": 475,
             "modifiedAt": "06/15/2025 05:16:44 PM",
             "state": "stale"
           },
@@ -15354,7 +15440,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 305,
+            "ageDays": 306,
             "modifiedAt": "12/01/2025 03:40:22 AM",
             "state": "stale"
           },
@@ -15429,7 +15515,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 375,
+            "ageDays": 376,
             "modifiedAt": "09/22/2025 10:29:13 PM",
             "state": "stale"
           },
@@ -15504,7 +15590,7 @@
           "confidence": "high",
           "reason": "Public evidence indicates the ticket is resolved, superseded, fully covered, or otherwise unlikely to need a nonduplicative contribution.",
           "evidenceFreshness": {
-            "ageDays": 118,
+            "ageDays": 119,
             "modifiedAt": "06/06/2026 03:27:02 AM",
             "state": "stale"
           },
@@ -15579,7 +15665,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 94,
+            "ageDays": 95,
             "modifiedAt": "06/30/2026 04:18:18 PM",
             "state": "stale"
           },
@@ -15665,7 +15751,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 1073,
+            "ageDays": 1074,
             "modifiedAt": "10/25/2023 03:39:32 PM",
             "state": "stale"
           },
@@ -15751,7 +15837,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 1080,
+            "ageDays": 1081,
             "modifiedAt": "10/18/2023 04:05:38 PM",
             "state": "stale"
           },
@@ -15837,7 +15923,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 1080,
+            "ageDays": 1081,
             "modifiedAt": "10/18/2023 03:53:15 PM",
             "state": "stale"
           },
@@ -15923,7 +16009,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 1080,
+            "ageDays": 1081,
             "modifiedAt": "10/18/2023 04:08:48 PM",
             "state": "stale"
           },
@@ -16009,7 +16095,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 1080,
+            "ageDays": 1081,
             "modifiedAt": "10/18/2023 04:17:30 PM",
             "state": "stale"
           },
@@ -16095,7 +16181,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 1080,
+            "ageDays": 1081,
             "modifiedAt": "10/18/2023 04:27:12 PM",
             "state": "stale"
           },
@@ -16181,7 +16267,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 1080,
+            "ageDays": 1081,
             "modifiedAt": "10/18/2023 04:35:53 PM",
             "state": "stale"
           },
@@ -16267,7 +16353,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 1080,
+            "ageDays": 1081,
             "modifiedAt": "10/18/2023 03:52:00 PM",
             "state": "stale"
           },
@@ -16353,7 +16439,7 @@
           "confidence": "medium",
           "reason": "The certified public signals do not yet identify a concrete, nonduplicative contribution beyond continued monitoring.",
           "evidenceFreshness": {
-            "ageDays": 1073,
+            "ageDays": 1074,
             "modifiedAt": "10/25/2023 04:35:24 AM",
             "state": "stale"
           },
@@ -16461,7 +16547,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1263,
+            "ageDays": 1264,
             "modifiedAt": "04/18/2023 12:45:36 PM",
             "state": "stale"
           },
@@ -16569,7 +16655,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2340,
+            "ageDays": 2341,
             "modifiedAt": "05/06/2020 09:00:39 PM",
             "state": "stale"
           },
@@ -16666,7 +16752,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2039,
+            "ageDays": 2040,
             "modifiedAt": "03/03/2021 05:04:28 PM",
             "state": "stale"
           },
@@ -16763,7 +16849,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 08:08:45 PM",
             "state": "stale"
           },
@@ -16849,7 +16935,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 12,
+            "ageDays": 13,
             "modifiedAt": "09/20/2026 11:07:32 AM",
             "state": "fresh"
           },
@@ -16913,7 +16999,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 597,
+            "ageDays": 598,
             "modifiedAt": "02/12/2025 04:45:53 PM",
             "state": "stale"
           },
@@ -16977,7 +17063,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 360,
+            "ageDays": 361,
             "modifiedAt": "10/07/2025 10:45:45 AM",
             "state": "stale"
           },
@@ -17063,7 +17149,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1624,
+            "ageDays": 1625,
             "modifiedAt": "04/22/2022 03:50:54 AM",
             "state": "stale"
           },
@@ -17127,7 +17213,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 648,
+            "ageDays": 649,
             "modifiedAt": "12/23/2024 06:39:08 PM",
             "state": "stale"
           },
@@ -17191,7 +17277,7 @@
           "confidence": "medium",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:37:48 AM",
             "state": "stale"
           },
@@ -17255,7 +17341,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 591,
+            "ageDays": 592,
             "modifiedAt": "02/18/2025 09:58:53 AM",
             "state": "stale"
           },
@@ -17319,7 +17405,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:37:50 AM",
             "state": "stale"
           },
@@ -17405,7 +17491,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1858,
+            "ageDays": 1859,
             "modifiedAt": "08/31/2021 02:06:33 PM",
             "state": "stale"
           },
@@ -17491,7 +17577,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1897,
+            "ageDays": 1898,
             "modifiedAt": "07/23/2021 11:06:23 AM",
             "state": "stale"
           },
@@ -17577,7 +17663,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1700,
+            "ageDays": 1701,
             "modifiedAt": "02/05/2022 03:02:59 PM",
             "state": "stale"
           },
@@ -17641,7 +17727,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:37:55 AM",
             "state": "stale"
           },
@@ -17705,7 +17791,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:37:57 AM",
             "state": "stale"
           },
@@ -17769,7 +17855,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:37:57 AM",
             "state": "stale"
           },
@@ -17833,7 +17919,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 186,
+            "ageDays": 187,
             "modifiedAt": "03/30/2026 07:34:21 AM",
             "state": "stale"
           },
@@ -17897,7 +17983,7 @@
           "confidence": "medium",
           "reason": "The ticket includes a performance-sensitive claim where measured evidence is needed before treating the change as proven.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:38:00 AM",
             "state": "stale"
           },
@@ -17983,7 +18069,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1416,
+            "ageDays": 1417,
             "modifiedAt": "11/16/2022 01:24:41 PM",
             "state": "stale"
           },
@@ -18047,7 +18133,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 508,
+            "ageDays": 509,
             "modifiedAt": "05/12/2025 01:38:05 AM",
             "state": "stale"
           },
@@ -18133,7 +18219,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 506,
+            "ageDays": 507,
             "modifiedAt": "05/14/2025 04:51:42 PM",
             "state": "stale"
           },
@@ -18241,7 +18327,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1241,
+            "ageDays": 1242,
             "modifiedAt": "05/10/2023 03:13:27 PM",
             "state": "stale"
           },
@@ -18327,7 +18413,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 2074,
+            "ageDays": 2075,
             "modifiedAt": "01/27/2021 06:28:38 AM",
             "state": "stale"
           },
@@ -18413,7 +18499,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2139,
+            "ageDays": 2140,
             "modifiedAt": "11/23/2020 02:56:44 AM",
             "state": "stale"
           },
@@ -18499,7 +18585,7 @@
           "confidence": "medium",
           "reason": "The ticket includes PHP/runtime compatibility signals that need exact-version confirmation or focused regression coverage.",
           "evidenceFreshness": {
-            "ageDays": 2048,
+            "ageDays": 2049,
             "modifiedAt": "02/22/2021 03:04:43 PM",
             "state": "stale"
           },
@@ -18574,7 +18660,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 87,
+            "ageDays": 88,
             "modifiedAt": "07/07/2026 09:09:30 AM",
             "state": "recent"
           },
@@ -18649,7 +18735,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 309,
+            "ageDays": 310,
             "modifiedAt": "11/27/2025 03:55:39 PM",
             "state": "stale"
           },
@@ -18724,7 +18810,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 150,
+            "ageDays": 151,
             "modifiedAt": "05/05/2026 06:38:40 PM",
             "state": "stale"
           },
@@ -18799,7 +18885,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 406,
+            "ageDays": 407,
             "modifiedAt": "08/22/2025 04:41:22 PM",
             "state": "stale"
           },
@@ -18874,7 +18960,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 373,
+            "ageDays": 374,
             "modifiedAt": "09/24/2025 01:42:11 AM",
             "state": "stale"
           },
@@ -18949,7 +19035,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 302,
+            "ageDays": 303,
             "modifiedAt": "12/04/2025 03:23:37 PM",
             "state": "stale"
           },
@@ -19035,7 +19121,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 553,
+            "ageDays": 554,
             "modifiedAt": "03/28/2025 10:19:47 PM",
             "state": "stale"
           },
@@ -19110,7 +19196,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2257,
+            "ageDays": 2258,
             "modifiedAt": "07/28/2020 05:59:17 AM",
             "state": "stale"
           },
@@ -19185,7 +19271,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2146,
+            "ageDays": 2147,
             "modifiedAt": "11/16/2020 06:48:14 AM",
             "state": "stale"
           },
@@ -19260,7 +19346,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1837,
+            "ageDays": 1838,
             "modifiedAt": "09/21/2021 05:42:11 AM",
             "state": "stale"
           },
@@ -19335,7 +19421,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 3032,
+            "ageDays": 3033,
             "modifiedAt": "06/14/2018 01:40:20 PM",
             "state": "stale"
           },
@@ -19410,7 +19496,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1837,
+            "ageDays": 1838,
             "modifiedAt": "09/21/2021 06:59:07 AM",
             "state": "stale"
           },
@@ -19485,7 +19571,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1943,
+            "ageDays": 1944,
             "modifiedAt": "06/07/2021 09:58:21 AM",
             "state": "stale"
           },
@@ -19560,7 +19646,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2998,
+            "ageDays": 2999,
             "modifiedAt": "07/18/2018 05:29:14 PM",
             "state": "stale"
           },
@@ -19635,7 +19721,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2578,
+            "ageDays": 2579,
             "modifiedAt": "09/11/2019 03:56:51 PM",
             "state": "stale"
           },
@@ -19710,7 +19796,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2931,
+            "ageDays": 2932,
             "modifiedAt": "09/23/2018 02:50:24 PM",
             "state": "stale"
           },
@@ -19785,7 +19871,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2771,
+            "ageDays": 2772,
             "modifiedAt": "03/02/2019 06:35:18 AM",
             "state": "stale"
           },
@@ -19860,7 +19946,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2914,
+            "ageDays": 2915,
             "modifiedAt": "10/10/2018 04:23:16 PM",
             "state": "stale"
           },
@@ -19935,7 +20021,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2146,
+            "ageDays": 2147,
             "modifiedAt": "11/16/2020 06:43:02 AM",
             "state": "stale"
           },
@@ -20010,7 +20096,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2813,
+            "ageDays": 2814,
             "modifiedAt": "01/19/2019 10:32:26 PM",
             "state": "stale"
           },
@@ -20085,7 +20171,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2684,
+            "ageDays": 2685,
             "modifiedAt": "05/28/2019 06:01:17 PM",
             "state": "stale"
           },
@@ -20160,7 +20246,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2727,
+            "ageDays": 2728,
             "modifiedAt": "04/15/2019 05:13:16 AM",
             "state": "stale"
           },
@@ -20235,7 +20321,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 744,
+            "ageDays": 745,
             "modifiedAt": "09/18/2024 11:53:22 AM",
             "state": "stale"
           },
@@ -20310,7 +20396,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 846,
+            "ageDays": 847,
             "modifiedAt": "06/08/2024 05:22:00 PM",
             "state": "stale"
           },
@@ -20385,7 +20471,7 @@
           "confidence": "medium",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 2250,
+            "ageDays": 2251,
             "modifiedAt": "08/04/2020 04:34:55 PM",
             "state": "stale"
           },
@@ -20460,7 +20546,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 1315,
+            "ageDays": 1316,
             "modifiedAt": "02/25/2023 05:22:45 AM",
             "state": "stale"
           },
@@ -20535,7 +20621,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2024,
+            "ageDays": 2025,
             "modifiedAt": "03/18/2021 12:59:43 PM",
             "state": "stale"
           },
@@ -20610,7 +20696,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1619,
+            "ageDays": 1620,
             "modifiedAt": "04/27/2022 04:53:22 AM",
             "state": "stale"
           },
@@ -20685,7 +20771,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1995,
+            "ageDays": 1996,
             "modifiedAt": "04/16/2021 04:47:18 AM",
             "state": "stale"
           },
@@ -20760,7 +20846,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1926,
+            "ageDays": 1927,
             "modifiedAt": "06/24/2021 11:44:00 PM",
             "state": "stale"
           },
@@ -20835,7 +20921,7 @@
           "confidence": "medium",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 1796,
+            "ageDays": 1797,
             "modifiedAt": "11/01/2021 10:05:49 PM",
             "state": "stale"
           },
@@ -20910,7 +20996,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1080,
+            "ageDays": 1081,
             "modifiedAt": "10/18/2023 03:18:47 PM",
             "state": "stale"
           },
@@ -20985,7 +21071,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1606,
+            "ageDays": 1607,
             "modifiedAt": "05/10/2022 10:18:06 AM",
             "state": "stale"
           },
@@ -21060,7 +21146,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1592,
+            "ageDays": 1593,
             "modifiedAt": "05/24/2022 06:46:49 PM",
             "state": "stale"
           },
@@ -21135,7 +21221,7 @@
           "confidence": "high",
           "reason": "Public evidence indicates the ticket is resolved, superseded, fully covered, or otherwise unlikely to need a nonduplicative contribution.",
           "evidenceFreshness": {
-            "ageDays": 1367,
+            "ageDays": 1368,
             "modifiedAt": "01/04/2023 07:00:30 PM",
             "state": "stale"
           },
@@ -21210,7 +21296,7 @@
           "confidence": "medium",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 1449,
+            "ageDays": 1450,
             "modifiedAt": "10/14/2022 11:59:24 AM",
             "state": "stale"
           },
@@ -21285,7 +21371,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 900,
+            "ageDays": 901,
             "modifiedAt": "04/15/2024 10:10:05 AM",
             "state": "stale"
           },
@@ -21360,7 +21446,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 815,
+            "ageDays": 816,
             "modifiedAt": "07/09/2024 07:15:50 AM",
             "state": "stale"
           },
@@ -21435,7 +21521,7 @@
           "confidence": "medium",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 1188,
+            "ageDays": 1189,
             "modifiedAt": "07/02/2023 06:30:37 AM",
             "state": "stale"
           },
@@ -21510,7 +21596,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1058,
+            "ageDays": 1059,
             "modifiedAt": "11/09/2023 04:08:39 PM",
             "state": "stale"
           },
@@ -21585,7 +21671,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 798,
+            "ageDays": 799,
             "modifiedAt": "07/26/2024 10:05:13 AM",
             "state": "stale"
           },
@@ -21682,7 +21768,7 @@
           "confidence": "medium",
           "reason": "The ticket includes PHP/runtime compatibility signals that need exact-version confirmation or focused regression coverage.",
           "evidenceFreshness": {
-            "ageDays": 2193,
+            "ageDays": 2194,
             "modifiedAt": "09/30/2020 07:40:38 PM",
             "state": "stale"
           },
@@ -21779,7 +21865,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2173,
+            "ageDays": 2174,
             "modifiedAt": "10/20/2020 04:59:46 AM",
             "state": "stale"
           },
@@ -21865,7 +21951,7 @@
           "confidence": "medium",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 1163,
+            "ageDays": 1164,
             "modifiedAt": "07/27/2023 06:09:44 PM",
             "state": "stale"
           },
@@ -21951,7 +22037,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1540,
+            "ageDays": 1541,
             "modifiedAt": "07/15/2022 04:27:46 PM",
             "state": "stale"
           },
@@ -22037,7 +22123,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 07:43:19 PM",
             "state": "stale"
           },
@@ -22123,7 +22209,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2193,
+            "ageDays": 2194,
             "modifiedAt": "09/30/2020 07:43:43 PM",
             "state": "stale"
           },
@@ -22209,7 +22295,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 09:07:25 PM",
             "state": "stale"
           },
@@ -22295,7 +22381,7 @@
           "confidence": "medium",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 08:43:21 PM",
             "state": "stale"
           },
@@ -22381,7 +22467,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 07:23:18 PM",
             "state": "stale"
           },
@@ -22467,7 +22553,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 08:04:59 PM",
             "state": "stale"
           },
@@ -22553,7 +22639,7 @@
           "confidence": "medium",
           "reason": "The ticket includes PHP/runtime compatibility signals that need exact-version confirmation or focused regression coverage.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 09:09:22 PM",
             "state": "stale"
           },
@@ -22639,7 +22725,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 950,
+            "ageDays": 951,
             "modifiedAt": "02/25/2024 07:47:57 PM",
             "state": "stale"
           },
@@ -22725,7 +22811,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 07:25:09 PM",
             "state": "stale"
           },
@@ -22811,7 +22897,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 08:06:52 PM",
             "state": "stale"
           },
@@ -22897,7 +22983,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2855,
+            "ageDays": 2856,
             "modifiedAt": "12/08/2018 03:08:06 PM",
             "state": "stale"
           },
@@ -22983,7 +23069,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 3140,
+            "ageDays": 3141,
             "modifiedAt": "02/26/2018 03:52:39 PM",
             "state": "stale"
           },
@@ -23069,7 +23155,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2180,
+            "ageDays": 2181,
             "modifiedAt": "10/13/2020 03:28:39 PM",
             "state": "stale"
           },
@@ -23155,7 +23241,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2026,
+            "ageDays": 2027,
             "modifiedAt": "03/16/2021 04:01:41 PM",
             "state": "stale"
           },
@@ -23241,7 +23327,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1333,
+            "ageDays": 1334,
             "modifiedAt": "02/07/2023 06:53:00 PM",
             "state": "stale"
           },
@@ -23327,7 +23413,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 07:51:08 PM",
             "state": "stale"
           },
@@ -23413,7 +23499,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2027,
+            "ageDays": 2028,
             "modifiedAt": "03/15/2021 09:51:46 PM",
             "state": "stale"
           },
@@ -23499,7 +23585,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 07:32:44 PM",
             "state": "stale"
           },
@@ -23585,7 +23671,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1298,
+            "ageDays": 1299,
             "modifiedAt": "03/14/2023 07:20:01 PM",
             "state": "stale"
           },
@@ -23671,7 +23757,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 09:20:57 PM",
             "state": "stale"
           },
@@ -23757,7 +23843,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 832,
+            "ageDays": 833,
             "modifiedAt": "06/22/2024 08:36:23 PM",
             "state": "stale"
           },
@@ -23843,7 +23929,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 1549,
+            "ageDays": 1550,
             "modifiedAt": "07/06/2022 07:25:57 PM",
             "state": "stale"
           },
@@ -23929,7 +24015,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2178,
+            "ageDays": 2179,
             "modifiedAt": "10/15/2020 10:22:14 PM",
             "state": "stale"
           },
@@ -24026,7 +24112,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 944,
+            "ageDays": 945,
             "modifiedAt": "03/02/2024 04:55:21 PM",
             "state": "stale"
           },
@@ -24123,7 +24209,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2677,
+            "ageDays": 2678,
             "modifiedAt": "06/04/2019 08:03:50 PM",
             "state": "stale"
           },
@@ -24220,7 +24306,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 3283,
+            "ageDays": 3284,
             "modifiedAt": "10/06/2017 02:58:07 PM",
             "state": "stale"
           },
@@ -24317,7 +24403,7 @@
           "confidence": "medium",
           "reason": "Public ticket signals ask for testing or feedback, but no stronger patch or PR-specific hypothesis is visible in the certified data.",
           "evidenceFreshness": {
-            "ageDays": 2380,
+            "ageDays": 2381,
             "modifiedAt": "03/27/2020 02:11:01 PM",
             "state": "stale"
           },
@@ -24428,7 +24514,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 1,
+            "ageDays": 2,
             "modifiedAt": "10/01/2026 03:55:21 AM",
             "state": "fresh"
           },
@@ -24562,7 +24648,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 732,
+            "ageDays": 733,
             "modifiedAt": "09/30/2024 06:00:30 PM",
             "state": "stale"
           },
@@ -24652,7 +24738,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 72,
+            "ageDays": 73,
             "modifiedAt": "07/22/2026 11:42:03 AM",
             "state": "recent"
           },
@@ -24775,7 +24861,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 389,
+            "ageDays": 390,
             "modifiedAt": "09/08/2025 01:13:55 PM",
             "state": "stale"
           },
@@ -24878,7 +24964,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 1,
+            "ageDays": 2,
             "modifiedAt": "10/01/2026 08:39:52 AM",
             "state": "fresh"
           },
@@ -24979,7 +25065,7 @@
           "confidence": "medium",
           "reason": "The ticket includes PHP/runtime compatibility signals that need exact-version confirmation or focused regression coverage.",
           "evidenceFreshness": {
-            "ageDays": 79,
+            "ageDays": 80,
             "modifiedAt": "07/15/2026 05:18:08 PM",
             "state": "recent"
           },
@@ -25080,7 +25166,7 @@
           "confidence": "medium",
           "reason": "A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.",
           "evidenceFreshness": {
-            "ageDays": 109,
+            "ageDays": 110,
             "modifiedAt": "06/15/2026 09:46:17 PM",
             "state": "stale"
           },
@@ -25214,7 +25300,7 @@
           "confidence": "high",
           "reason": "The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.",
           "evidenceFreshness": {
-            "ageDays": 5,
+            "ageDays": 6,
             "modifiedAt": "09/27/2026 10:49:56 PM",
             "state": "fresh"
           },
@@ -25326,7 +25412,7 @@
           "confidence": "high",
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
-            "ageDays": 44,
+            "ageDays": 45,
             "modifiedAt": "08/19/2026 12:56:53 PM",
             "state": "recent"
           },

@@ -1,16 +1,16 @@
 # WP Core Radar Report
 
-Generated: 2026-10-04 00:00
+Generated: 2026-10-04 13:36
 
 ## Summary
 
 - Datasets discovered: 5
-- Unique tickets scored: 289
+- Unique tickets scored: 290
 - Outcomes loaded: 4
 - Reviews loaded: 21
 - Top opportunity limit: 50
-- Certified snapshot: snapshot-v1-f7d9112e0aebbbb7eb5b7671
-- Certified collection: collection-v1-010bca66179d41c398a511ca
+- Certified snapshot: snapshot-v1-3f93233893ed30c951ecee3d
+- Certified collection: collection-v1-e919dbeaf52f731a5ec4e4d5
 - Scoring version: radar-scoring-v1
 
 ## Review Workflow
@@ -18,7 +18,7 @@ Generated: 2026-10-04 00:00
 | Section | Count | Meaning |
 |---|---:|---|
 | Priority Targets | 12 | Highest-scoring unreviewed tickets with clear action and manageability signals. |
-| Top Opportunities | 268 | Remaining unreviewed tickets ranked by score. |
+| Top Opportunities | 269 | Remaining unreviewed tickets ranked by score. |
 | Shortlisted | 0 | Tickets manually marked as strong candidates. |
 | Watching | 4 | Tickets worth monitoring but not acting on yet. |
 | Completed / Acted On | 5 | Tickets already tested, commented on, propped, or committed. |
@@ -940,7 +940,26 @@ Generated: 2026-10-04 00:00
   - +20: Freshness
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 33. [#41358](https://core.trac.wordpress.org/ticket/41358) — Shutdown hooks can significantly slow down REST API responses
+#### 33. [#66239](https://core.trac.wordpress.org/ticket/66239) — Integrate WordPress.org closed, suspended, and outdated plugins and themes API data into Core
+
+- Score: **150**
+- Track/query: General: Needs Testing
+- Discovery track: General Needs Testing
+- Component: Upgrade/Install
+- Trac status: New
+- Milestone: Awaiting Review
+- Keywords: has-patch has-unit-tests needs-testing
+- Created: 10/04/2026 10:56:30 AM
+- Modified: 10/04/2026 10:59:12 AM
+- Why it ranked: track priority: General: Needs Testing +65, has patch +35, needs testing +30, freshness: recently updated <=14 days +20
+- Score breakdown:
+  - +65: Track Priority
+  - +35: Has Patch
+  - +30: Needs Testing
+  - +20: Freshness
+- Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
+
+#### 34. [#41358](https://core.trac.wordpress.org/ticket/41358) — Shutdown hooks can significantly slow down REST API responses
 
 - Score: **148**
 - Track/query: General: Needs Testing
@@ -959,7 +978,7 @@ Generated: 2026-10-04 00:00
   - +18: Dev Feedback
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 34. [#53450](https://core.trac.wordpress.org/ticket/53450) — [WP_Meta_Query] Add faster LIKE based 'STARTSWITH' and 'ENDSWITH' compare modes for value query
+#### 35. [#53450](https://core.trac.wordpress.org/ticket/53450) — [WP_Meta_Query] Add faster LIKE based 'STARTSWITH' and 'ENDSWITH' compare modes for value query
 
 - Score: **148**
 - Track/query: General: Needs Testing
@@ -978,7 +997,7 @@ Generated: 2026-10-04 00:00
   - +18: Dev Feedback
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 35. [#64376](https://core.trac.wordpress.org/ticket/64376) — redirect_canonical() causes unnecessary 301 redirects for query string encoding variants (+ vs %20)
+#### 36. [#64376](https://core.trac.wordpress.org/ticket/64376) — redirect_canonical() causes unnecessary 301 redirects for query string encoding variants (+ vs %20)
 
 - Score: **148**
 - Track/query: General: Needs Testing
@@ -998,7 +1017,7 @@ Generated: 2026-10-04 00:00
   - +8: Ticket Age
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 36. [#65496](https://core.trac.wordpress.org/ticket/65496) — Theme testing workflow will fail when multiple themes have uncommitted changes to built files.
+#### 37. [#65496](https://core.trac.wordpress.org/ticket/65496) — Theme testing workflow will fail when multiple themes have uncommitted changes to built files.
 
 - Score: **148**
 - Track/query: General: Needs Testing
@@ -1018,7 +1037,7 @@ Generated: 2026-10-04 00:00
   - +8: Ticket Age
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 37. [#44641](https://core.trac.wordpress.org/ticket/44641) — Customizing Button Text in Custom Media Manager Frame Doesn't Work Anymore
+#### 38. [#44641](https://core.trac.wordpress.org/ticket/44641) — Customizing Button Text in Custom Media Manager Frame Doesn't Work Anymore
 
 - Score: **146**
 - Track/query: General: Needs Testing
@@ -1040,7 +1059,7 @@ Generated: 2026-10-04 00:00
   - -10: Freshness
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 38. [#52464](https://core.trac.wordpress.org/ticket/52464) — The value of argument passed to the update_option_new_admin_email() is not a valid email.
+#### 39. [#52464](https://core.trac.wordpress.org/ticket/52464) — The value of argument passed to the update_option_new_admin_email() is not a valid email.
 
 - Score: **146**
 - Track/query: General: Needs Testing
@@ -1061,7 +1080,7 @@ Generated: 2026-10-04 00:00
   - +6: Has Owner
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 39. [#55691](https://core.trac.wordpress.org/ticket/55691) — New site editor uses WP_SITEURL instead of WP_HOME
+#### 40. [#55691](https://core.trac.wordpress.org/ticket/55691) — New site editor uses WP_SITEURL instead of WP_HOME
 
 - Score: **146**
 - Track/query: General: Needs Testing
@@ -1082,7 +1101,7 @@ Generated: 2026-10-04 00:00
   - +6: Has Owner
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 40. [#58801](https://core.trac.wordpress.org/ticket/58801) — Prefetch Block Editor from Posts page
+#### 41. [#58801](https://core.trac.wordpress.org/ticket/58801) — Prefetch Block Editor from Posts page
 
 - Score: **144**
 - Track/query: General: Needs Testing
@@ -1104,7 +1123,7 @@ Generated: 2026-10-04 00:00
   - -10: Freshness
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 41. [#65048](https://core.trac.wordpress.org/ticket/65048) — wp_ajax_fetch_list(): Sanitize $_GET input before nonce construction
+#### 42. [#65048](https://core.trac.wordpress.org/ticket/65048) — wp_ajax_fetch_list(): Sanitize $_GET input before nonce construction
 
 - Score: **144**
 - Track/query: General: Needs Testing
@@ -1125,7 +1144,7 @@ Generated: 2026-10-04 00:00
   - +8: Ticket Age
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 42. [#65052](https://core.trac.wordpress.org/ticket/65052) — Nonce check order flaw in post-quickdraft-save
+#### 43. [#65052](https://core.trac.wordpress.org/ticket/65052) — Nonce check order flaw in post-quickdraft-save
 
 - Score: **144**
 - Track/query: General: Needs Testing
@@ -1146,7 +1165,7 @@ Generated: 2026-10-04 00:00
   - +8: Ticket Age
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 43. [#65054](https://core.trac.wordpress.org/ticket/65054) — $_GET['pagenow'] and $_GET['widget'] unsanitized in dashboard AJAX handler
+#### 44. [#65054](https://core.trac.wordpress.org/ticket/65054) — $_GET['pagenow'] and $_GET['widget'] unsanitized in dashboard AJAX handler
 
 - Score: **144**
 - Track/query: General: Needs Testing
@@ -1167,7 +1186,7 @@ Generated: 2026-10-04 00:00
   - +8: Ticket Age
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 44. [#36201](https://core.trac.wordpress.org/ticket/36201) — Admin Pagination URLs Use Wrong Hostname
+#### 45. [#36201](https://core.trac.wordpress.org/ticket/36201) — Admin Pagination URLs Use Wrong Hostname
 
 - Score: **140**
 - Track/query: General: Needs Testing
@@ -1187,7 +1206,7 @@ Generated: 2026-10-04 00:00
   - -8: Ticket Age
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 45. [#40032](https://core.trac.wordpress.org/ticket/40032) — Automatic redirects with _wp_old_slug won't mantain GET parameters if present
+#### 46. [#40032](https://core.trac.wordpress.org/ticket/40032) — Automatic redirects with _wp_old_slug won't mantain GET parameters if present
 
 - Score: **140**
 - Track/query: General: Needs Testing
@@ -1206,7 +1225,7 @@ Generated: 2026-10-04 00:00
   - +10: Freshness
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 46. [#40339](https://core.trac.wordpress.org/ticket/40339) — If $home_path=='wp' then WP::parse_request() will remove 'wp' from 'wp-json/wc/v1/products' in $pathinfo
+#### 47. [#40339](https://core.trac.wordpress.org/ticket/40339) — If $home_path=='wp' then WP::parse_request() will remove 'wp' from 'wp-json/wc/v1/products' in $pathinfo
 
 - Score: **140**
 - Track/query: General: Needs Testing
@@ -1225,7 +1244,7 @@ Generated: 2026-10-04 00:00
   - +10: Freshness
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 47. [#49408](https://core.trac.wordpress.org/ticket/49408) — Why is the action wp_ajax_wp_link_ajax not using wp_send_json()
+#### 48. [#49408](https://core.trac.wordpress.org/ticket/49408) — Why is the action wp_ajax_wp_link_ajax not using wp_send_json()
 
 - Score: **140**
 - Track/query: General: Needs Testing
@@ -1244,7 +1263,7 @@ Generated: 2026-10-04 00:00
   - +10: Freshness
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 48. [#51058](https://core.trac.wordpress.org/ticket/51058) — attachment_url_to_postid does not retrieve post ID of really large images
+#### 49. [#51058](https://core.trac.wordpress.org/ticket/51058) — attachment_url_to_postid does not retrieve post ID of really large images
 
 - Score: **140**
 - Track/query: General: Needs Testing
@@ -1264,7 +1283,7 @@ Generated: 2026-10-04 00:00
   - -10: Freshness
 - Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
 
-#### 49. [#55523](https://core.trac.wordpress.org/ticket/55523) — Remove deprecation notice from get_the_excerpt
+#### 50. [#55523](https://core.trac.wordpress.org/ticket/55523) — Remove deprecation notice from get_the_excerpt
 
 - Score: **140**
 - Track/query: General: Needs Testing
@@ -1275,24 +1294,6 @@ Generated: 2026-10-04 00:00
 - Keywords: has-patch has-unit-tests needs-testing
 - Created: 04/04/2022 12:01:29 PM
 - Modified: 08/26/2026 11:33:10 AM
-- Why it ranked: track priority: General: Needs Testing +65, has patch +35, needs testing +30, freshness: updated within 60 days +10
-- Score breakdown:
-  - +65: Track Priority
-  - +35: Has Patch
-  - +30: Needs Testing
-  - +10: Freshness
-- Human next step: open ticket, verify current state, test locally if appropriate, then decide whether to comment manually.
-
-#### 50. [#59365](https://core.trac.wordpress.org/ticket/59365) — Deprecated notice when calling get_admin_page_title() on some dashboard pages.
-
-- Score: **140**
-- Track/query: General: Needs Testing
-- Discovery track: General Needs Testing
-- Component: Administration
-- Trac status: New
-- Keywords: has-patch needs-testing php81
-- Created: 09/15/2023 11:35:39 AM
-- Modified: 08/18/2026 08:18:24 AM
 - Why it ranked: track priority: General: Needs Testing +65, has patch +35, needs testing +30, freshness: updated within 60 days +10
 - Score breakdown:
   - +65: Track Priority
@@ -1548,11 +1549,11 @@ No tickets in this section.
 
 | Query | Date | Rows | File |
 |---|---:|---:|---|
-| accessibility_has_patch | 2026-10-04 | 0 | `data/raw/manual/2026-10-03/accessibility_has_patch.csv` |
-| docs_needs_testing | 2026-10-04 | 0 | `data/raw/manual/2026-10-03/docs_needs_testing.csv` |
-| general_needs_testing | 2026-10-04 | 263 | `data/raw/manual/2026-10-03/general_needs_testing.csv` |
-| good_first_bugs | 2026-10-04 | 0 | `data/raw/manual/2026-10-03/good_first_bugs.csv` |
-| media_has_patch | 2026-10-04 | 26 | `data/raw/manual/2026-10-03/media_has_patch.csv` |
+| accessibility_has_patch | 2026-10-04 | 0 | `data/raw/manual/2026-10-04/accessibility_has_patch.csv` |
+| docs_needs_testing | 2026-10-04 | 0 | `data/raw/manual/2026-10-04/docs_needs_testing.csv` |
+| general_needs_testing | 2026-10-04 | 264 | `data/raw/manual/2026-10-04/general_needs_testing.csv` |
+| good_first_bugs | 2026-10-04 | 0 | `data/raw/manual/2026-10-04/good_first_bugs.csv` |
+| media_has_patch | 2026-10-04 | 26 | `data/raw/manual/2026-10-04/media_has_patch.csv` |
 
 ## Guardrail
 
