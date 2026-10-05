@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 AUTHORED_PATHS = [ROOT / "README.md", ROOT / "wrangler.jsonc"]
 AUTHORED_PATHS.extend(sorted((ROOT / "docs").rglob("*.md")))
 AUTHORED_PATHS.extend(sorted((ROOT / "config").glob("*.json")))
+PUBLIC_API_PATHS = sorted((ROOT / "docs" / "radar" / "api" / "v2").glob("*.json"))
 
 # Hashes keep implementation-specific names out of Radar while preventing them
 # from silently returning to authored product documentation/configuration.
@@ -54,6 +55,21 @@ class PublicProductBoundaryTests(unittest.TestCase):
             config["access"]["machine_authentication"],
             "provider-managed-programmatic-access",
         )
+
+    def test_v2_public_api_does_not_name_private_architecture(self):
+        violations: list[str] = []
+        for path in PUBLIC_API_PATHS:
+            text = path.read_text(encoding="utf-8").lower()
+            words = re.findall(r"[a-z0-9]+", f"{path.relative_to(ROOT)} {text}")
+            candidates = set(words)
+            candidates.update(" ".join(words[index:index + 2]) for index in range(len(words) - 1))
+            candidates.update(" ".join(words[index:index + 3]) for index in range(len(words) - 2))
+            for candidate in candidates:
+                digest = hashlib.sha256(candidate.encode("utf-8")).hexdigest()
+                if digest in FORBIDDEN_NAME_HASHES:
+                    violations.append(f"{path.relative_to(ROOT)}: forbidden implementation name")
+
+        self.assertEqual(violations, [])
 
 
 if __name__ == "__main__":

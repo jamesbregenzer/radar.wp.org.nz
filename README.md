@@ -39,7 +39,12 @@ The same certified opportunity data powers:
 - the public contribution outcome view at `/contributions/`;
 - the admin view;
 - generated reports; and
-- the versioned read-only API at `/api/v1/`.
+- the versioned read-only APIs at `/api/v1/` and `/api/v2/`.
+
+`/api/v1/` remains frozen for compatibility. `/api/v2/` adds source-neutral
+resources, independently reported source-family health, source coverage, why-now
+qualification, deterministic material revisions, a public observation-change
+feed, and taxonomy/diagnostic endpoints.
 
 Public contribution outcomes are recorded in `data/public-contributions.json` from independently verifiable public WordPress sources such as Core Trac, WordPress GitHub pull requests, public patches, public reviews, and public ticket discussion.
 
@@ -74,7 +79,7 @@ Collection uses a browser-assisted local workflow because direct server-side Tra
 - [`docs/architecture.md`](docs/architecture.md): current data flow and component responsibilities
 - [`docs/scoring-rubric.md`](docs/scoring-rubric.md): explainable scoring policy
 - [`docs/contribution-tracks.md`](docs/contribution-tracks.md): configured opportunity tracks
-- [`docs/contracts/machine-feed.md`](docs/contracts/machine-feed.md): `/api/v1/` contract
+- [`docs/contracts/machine-feed.md`](docs/contracts/machine-feed.md): `/api/v1/` and `/api/v2/` contracts
 - [`docs/contracts/executor.md`](docs/contracts/executor.md): structured operation contract
 - [`docs/outcome-tracking.md`](docs/outcome-tracking.md): review and contribution-history state
 - [`docs/collection-operations.md`](docs/collection-operations.md): collection and scheduled-run operations

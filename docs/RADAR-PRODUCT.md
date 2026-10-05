@@ -14,6 +14,9 @@ Radar is a standalone public project built around human review. It is independen
 
 Its machine-readable interfaces are public data products. The identity, architecture, behavior, or existence of any downstream system that reads those interfaces is outside Radar's product boundary and should not be described as part of Radar.
 
+Radar observes and publishes public opportunity intelligence. Any human or tool
+may consume the public API. No consumer is part of Radar's architecture.
+
 ## Source of truth
 
 GitHub is durable truth after publication.
@@ -31,7 +34,8 @@ GitHub is durable truth after publication.
 | Public dashboard | `https://radar.wp.org.nz/` |
 | Contribution history | `https://radar.wp.org.nz/contributions/` |
 | Admin login | `https://radar.wp.org.nz/admin/` |
-| Machine-readable API | `https://radar.wp.org.nz/api/v1/` |
+| Frozen compatibility API | `https://radar.wp.org.nz/api/v1/` |
+| Source-neutral API | `https://radar.wp.org.nz/api/v2/` |
 
 The canonical repository is `jamesbregenzer/radar.wp.org.nz`.
 
@@ -55,10 +59,41 @@ The canonical repository is `jamesbregenzer/radar.wp.org.nz`.
 - Keep public output free of private notes, credentials, runtime details, and private downstream-system details.
 - Treat HTTP as a projection, never as a second source of truth.
 - Require users of machine-readable data to revalidate live Trac state before acting because Radar data can become stale.
-- Keep downstream consumers outside the Radar product model; public Radar documentation must not advertise or imply a private automation, AI agent, autonomous contributor, or other specific downstream consumer.
+- Keep downstream consumers outside the Radar product model; public Radar documentation must not advertise or imply any specific downstream consumer.
+- Separate public resources from contribution opportunities. A resource is an
+  upstream public object such as a Core Trac ticket, patch, wordpress-develop
+  pull request, review, test result, or release signal. An opportunity is a
+  source-neutral hypothesis that useful public contribution may be possible
+  based on one or more resources.
+- Certify source families independently. Fresh certified Core Trac data may be
+  published even when another source family is stale, missing, or degraded, as
+  long as the degraded family is reported truthfully.
+- Keep discovery supply separate from qualification. Discovery decides what
+  public work Radar observes. Qualification decides whether current public
+  evidence shows a clear, possible, stale, covered, changed, or no-clear
+  contribution opportunity.
+- Make why-now, evidence coverage, limitations, freshness, deterministic
+  ranking, and material opportunity revision part of public opportunity data.
 
 ## Collection boundary
 
 The current collector retrieves configured Trac CSV exports through a local browser session, imports them into the raw archive, and removes temporary downloads. This implementation remains behind a collection contract so downstream Radar logic does not depend on a browser, host, scheduler, or local path.
 
 Direct hosted HTTP collection is not supported unless it is separately proven reliable. Operational details belong in [`collection-operations.md`](collection-operations.md), not in the public product model.
+
+## Source-neutral v2 boundary
+
+`/api/v2/` is a public observation API. It preserves v1 Core Trac identity while
+presenting opportunities as source-neutral records with a canonical resource,
+supporting resources, contribution family, qualification state, coverage,
+limitations, freshness, ranking dimensions, and deterministic material revision.
+
+The current v2 source-family set is:
+
+- `CORE_TRAC`: certified from the existing fail-closed Trac collection.
+- `WORDPRESS_DEVELOP_GITHUB`: certified from a bounded public snapshot of
+  recently updated open `WordPress/wordpress-develop` pull requests.
+
+Gutenberg and public test/release signals should follow the same contract only
+when a stable public source can be certified without weakening the existing
+Trac collection.

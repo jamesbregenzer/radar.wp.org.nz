@@ -63,3 +63,21 @@ Do not use query subsets in the canonical pipeline. Do not replace the browser c
 ## Generated output
 
 Successful generation updates the committed dashboard, report, admin payload, safe review projection, contribution history, and API assets. Publication occurs only after the exact certified bundle verifies successfully.
+
+## Source-family snapshots
+
+The Trac collector remains the only source required for the existing certified
+current dataset. V2 may also use independently certified public source-family
+snapshots.
+
+Refresh the bounded wordpress-develop GitHub snapshot with:
+
+```bash
+python3 scripts/collect-wordpress-develop-github.py
+python3 scripts/generate-api.py
+```
+
+The GitHub snapshot is committed under `data/sources/`. It is read-only public
+data. If GitHub refresh fails, keep the last certified GitHub snapshot and let
+v2 source health report its freshness or degradation. Do not block a complete
+fresh Trac certification merely because a separate source family is unavailable.

@@ -125,6 +125,7 @@
       font-size: 18px;
     }
     .signals { min-width: 300px; }
+    .coverage { min-width: 220px; }
     .contribution-hypothesis {
       max-width: 360px;
       min-width: 260px;
@@ -147,6 +148,26 @@
       color: #50575e;
       font-size: 13px;
     }
+    .why-now {
+      margin: 0;
+      padding-left: 18px;
+      min-width: 260px;
+      color: #50575e;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .why-now li + li { margin-top: 4px; }
+    .coverage-pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 4px 8px;
+      margin: 0 4px 5px 0;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .coverage-complete { background: #dcfce7; color: #166534; }
+    .coverage-missing { background: #f3f4f6; color: #6b7280; }
     .signal-badge,
     .tier-label {
       display: inline-block;
@@ -367,6 +388,8 @@
           <th>Trac Status</th>
           <th>Discovery Track</th>
           <th>Useful Contribution</th>
+          <th>Why Now</th>
+          <th>Coverage</th>
           <th>Signals</th>
         </tr>
       </thead>
@@ -381,6 +404,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">Media Has Patch</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Accessibility UI Verify</strong><span>High confidence · Fresh evidence</span><p>The public ticket describes accessibility or UI behavior where browser, keyboard, or semantic verification could add useful evidence.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">A11y Media Toolbar</span> <span class="signal-badge signal-patch">Has Patch</span></span></details></td>
 </tr>
 
@@ -394,6 +419,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">Media Has Patch</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Accessibility UI Verify</strong><span>High confidence · Fresh evidence</span><p>The public ticket describes accessibility or UI behavior where browser, keyboard, or semantic verification could add useful evidence.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">A11y Media Toolbar</span> <span class="signal-badge signal-standard">A11y Visible Labels</span> <span class="signal-badge signal-patch">Has Patch</span></span></details></td>
 </tr>
 
@@ -407,6 +434,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -420,6 +449,8 @@
   <td data-label="Trac Status">Accepted</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+9 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Screenshots</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -433,6 +464,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Accessibility UI Verify</strong><span>High confidence · Fresh evidence</span><p>The public ticket describes accessibility or UI behavior where browser, keyboard, or semantic verification could add useful evidence.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -446,6 +479,8 @@
   <td data-label="Trac Status">Accepted</td>
   <td data-label="Discovery Track">Media Has Patch</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Recent evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-standard">Needs Design</span> <span class="signal-badge signal-standard">Phase 3 Media Triage</span></span></details></td>
 </tr>
 
@@ -459,6 +494,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-first">Good First Bug +20</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -472,6 +509,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Add Regression Test</strong><span>High confidence · Fresh evidence</span><p>Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></span></details></td>
 </tr>
 
@@ -485,6 +524,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -498,6 +539,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -511,6 +554,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -524,6 +569,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Screenshots</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -547,6 +594,8 @@
           <th>Trac Status</th>
           <th>Discovery Track</th>
           <th>Useful Contribution</th>
+          <th>Why Now</th>
+          <th>Coverage</th>
           <th>Signals</th>
         </tr>
       </thead>
@@ -561,6 +610,8 @@
   <td data-label="Trac Status">Reviewing</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+12 more</summary><span class="signal-more-items"><span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Very Old Ticket -8</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Screenshots</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -574,6 +625,8 @@
   <td data-label="Trac Status">Accepted</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Review Api Edge Case</strong><span>High confidence · Fresh evidence</span><p>The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Very Old Ticket -8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -587,6 +640,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -600,6 +655,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Recent evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -613,6 +670,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -626,6 +685,8 @@
   <td data-label="Trac Status">Reviewing</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Recent evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></span></details></td>
 </tr>
 
@@ -639,6 +700,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">Media Has Patch</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Recent evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: Media: Has Patch +100</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">Media</span> <span class="signal-badge signal-standard">Post</span> <span class="signal-badge signal-standard">Type</span> <span class="signal-badge signal-patch">Has Patch</span></span></details></td>
 </tr>
 
@@ -652,6 +715,8 @@
   <td data-label="Trac Status">Reopened</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-first">Good First Bug +20</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-freshness">Freshness: Stale Activity &gt;730 Days -10</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -665,6 +730,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -678,6 +745,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Review Api Edge Case</strong><span>High confidence · Stale evidence</span><p>The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">Close</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -691,6 +760,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Review Api Edge Case</strong><span>High confidence · Fresh evidence</span><p>The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -704,6 +775,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Add Regression Test</strong><span>High confidence · Fresh evidence</span><p>Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></span></details></td>
 </tr>
 
@@ -717,6 +790,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -730,6 +805,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Review Api Edge Case</strong><span>High confidence · Fresh evidence</span><p>The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -743,6 +820,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -756,6 +835,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Review Api Edge Case</strong><span>High confidence · Fresh evidence</span><p>The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -769,6 +850,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -782,6 +865,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -795,6 +880,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -808,6 +895,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Review Api Edge Case</strong><span>High confidence · Stale evidence</span><p>The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -821,6 +910,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -834,6 +925,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-standard">Changes Requested</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Needs Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -847,6 +940,8 @@
   <td data-label="Trac Status">Accepted</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Review Api Edge Case</strong><span>High confidence · Recent evidence</span><p>The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <details class="signal-more"><summary>+8 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></span></details></td>
 </tr>
 
@@ -860,6 +955,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Recent evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -873,6 +970,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+2 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -886,6 +985,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Add Regression Test</strong><span>High confidence · Fresh evidence</span><p>Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></span></details></td>
 </tr>
 
@@ -899,6 +1000,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -912,6 +1015,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Add Regression Test</strong><span>High confidence · Stale evidence</span><p>Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Screenshots</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></span></details></td>
 </tr>
 
@@ -925,6 +1030,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -938,6 +1045,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Review Api Edge Case</strong><span>High confidence · Fresh evidence</span><p>The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-standard">Close</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -951,6 +1060,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Review Api Edge Case</strong><span>High confidence · Fresh evidence</span><p>The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -964,6 +1075,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Review Api Edge Case</strong><span>High confidence · Stale evidence</span><p>The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -977,6 +1090,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-standard">Early Like Actually Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -990,6 +1105,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1003,6 +1120,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Recent evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1016,6 +1135,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1029,6 +1150,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Recent evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1042,6 +1165,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Stale Activity &gt;730 Days -10</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1055,6 +1180,8 @@
   <td data-label="Trac Status">Reviewing</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Add Regression Test</strong><span>High confidence · Stale evidence</span><p>Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Needs Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></span></details></td>
 </tr>
 
@@ -1068,6 +1195,8 @@
   <td data-label="Trac Status">Reviewing</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Needs Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></span></details></td>
 </tr>
 
@@ -1081,6 +1210,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Add Regression Test</strong><span>High confidence · Stale evidence</span><p>Public ticket signals call for regression or unit-test coverage around behavior that is not yet sufficiently covered.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Stale Activity &gt;730 Days -10</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-testing">Needs Unit Tests</span></span></details></td>
 </tr>
 
@@ -1094,6 +1225,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1107,6 +1240,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1120,6 +1255,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Recent evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1133,6 +1270,8 @@
   <td data-label="Trac Status">Reopened</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Very Old Ticket -8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1146,6 +1285,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Recent evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1159,6 +1300,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Recent evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1172,6 +1315,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Recent evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1185,6 +1330,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Stale Activity &gt;730 Days -10</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1198,6 +1345,8 @@
   <td data-label="Trac Status">Reviewing</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Php Compatibility</strong><span>Medium confidence · Recent evidence</span><p>The ticket includes PHP/runtime compatibility signals that need exact-version confirmation or focused regression coverage.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1221,11 +1370,13 @@
           <th>Trac Status</th>
           <th>Discovery Track</th>
           <th>Useful Contribution</th>
+          <th>Why Now</th>
+          <th>Coverage</th>
           <th>Signals</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td colspan="9" class="empty">No tickets in this section.</td></tr>
+        <tr><td colspan="11" class="empty">No tickets in this section.</td></tr>
       </tbody>
     </table>
   </div>
@@ -1246,6 +1397,8 @@
           <th>Trac Status</th>
           <th>Discovery Track</th>
           <th>Useful Contribution</th>
+          <th>Why Now</th>
+          <th>Coverage</th>
           <th>Signals</th>
         </tr>
       </thead>
@@ -1260,6 +1413,8 @@
   <td data-label="Trac Status">Accepted</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+5 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1273,6 +1428,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+9 more</summary><span class="signal-more-items"><span class="signal-badge signal-first">Good First Bug +20</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Stale Activity &gt;730 Days -10</span> <span class="signal-badge signal-age">Ticket Age: Very Old Ticket -8</span> <span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-refresh">Needs Refresh</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1286,6 +1443,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Recent evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Dev Feedback +18</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-feedback">Dev Feedback</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1299,6 +1458,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-feedback">Reporter Feedback +10</span> <details class="signal-more"><summary>+9 more</summary><span class="signal-more-items"><span class="signal-badge signal-component">Preferred Component: Media +20</span> <span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-complexity">Setup Complexity: Specialized Image Library -18</span> <span class="signal-badge signal-standard">Avif</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span> <span class="signal-badge signal-feedback">Reporter Feedback</span></span></details></td>
 </tr>
 
@@ -1322,6 +1483,8 @@
           <th>Trac Status</th>
           <th>Discovery Track</th>
           <th>Useful Contribution</th>
+          <th>Why Now</th>
+          <th>Coverage</th>
           <th>Signals</th>
         </tr>
       </thead>
@@ -1336,6 +1499,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-first">Good First Bug +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1349,6 +1514,8 @@
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Php Compatibility</strong><span>Medium confidence · Recent evidence</span><p>The ticket includes PHP/runtime compatibility signals that need exact-version confirmation or focused regression coverage.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-component">Preferred Component: Media +20</span> <details class="signal-more"><summary>+4 more</summary><span class="signal-more-items"><span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1362,6 +1529,8 @@
   <td data-label="Trac Status">Assigned</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Stale But Actionable</strong><span>Medium confidence · Stale evidence</span><p>A public patch exists, but public freshness signals suggest it needs current applicability or relevance review before ordinary testing.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists, but the current evidence is stale.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-first">Good First Bug +20</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-standard">2nd Opinion</span> <span class="signal-badge signal-first">Good First Bug</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-refresh">Needs Refresh</span> <span class="signal-badge signal-standard">Needs Screenshots</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1375,6 +1544,8 @@
   <td data-label="Trac Status">Accepted</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Review Api Edge Case</strong><span>High confidence · Fresh evidence</span><p>The public ticket evidence points to an API or state-transition edge case where precise expected-versus-actual analysis could help.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-standard">Has Concrete Milestone +8</span> <details class="signal-more"><summary>+6 more</summary><span class="signal-more-items"><span class="signal-badge signal-owner">Has Owner +6</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-complexity">Setup Complexity: Server/runtime Configuration -16</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1388,6 +1559,8 @@
   <td data-label="Trac Status">Reviewing</td>
   <td data-label="Discovery Track">General Needs Testing</td>
   <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Recent evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
   <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-owner">Has Owner +6</span> <details class="signal-more"><summary>+7 more</summary><span class="signal-more-items"><span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <span class="signal-badge signal-age">Ticket Age: Mature But Not Ancient +8</span> <span class="signal-badge signal-standard">Early</span> <span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-standard">Has Test Info</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
 </tr>
 
@@ -1411,11 +1584,13 @@
           <th>Trac Status</th>
           <th>Discovery Track</th>
           <th>Useful Contribution</th>
+          <th>Why Now</th>
+          <th>Coverage</th>
           <th>Signals</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td colspan="9" class="empty">No tickets in this section.</td></tr>
+        <tr><td colspan="11" class="empty">No tickets in this section.</td></tr>
       </tbody>
     </table>
   </div>
