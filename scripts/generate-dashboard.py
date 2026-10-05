@@ -109,6 +109,43 @@ def contribution_summary(qualification: dict[str, Any]) -> str:
     )
 
 
+def why_now_summary(qualification: dict[str, Any]) -> str:
+    coverage = qualification.get("source_coverage") or {}
+    freshness = qualification.get("evidenceFreshness") or {}
+    family = str(qualification.get("recommendedContributionClass") or "NO_CLEAR_CONTRIBUTION")
+    reasons: list[str] = []
+    if family == "FOLLOW_UP_AFTER_UPSTREAM_CHANGE":
+        reasons.append("Public upstream evidence changed after an earlier evaluation.")
+    if coverage.get("public_patch_or_attachment"):
+        if freshness.get("state") == "stale":
+            reasons.append("A public patch exists, but the current evidence is stale.")
+        else:
+            reasons.append("A public patch exists and current ticket signals still support verification.")
+    if coverage.get("wordpress_develop_pr"):
+        reasons.append("A linked wordpress-develop PR is visible in certified public evidence.")
+    if family == "NO_CLEAR_CONTRIBUTION":
+        reasons.append("Certified evidence does not show a clear nonduplicative contribution path.")
+    if not reasons:
+        reasons.append(str(qualification.get("reason") or "Current public signals support a bounded look before acting."))
+    return '<ul class="why-now">' + "".join(f"<li>{html.escape(reason)}</li>" for reason in reasons[:3]) + "</ul>"
+
+
+def coverage_summary(qualification: dict[str, Any]) -> str:
+    coverage = qualification.get("source_coverage") or {}
+    labels = [
+        ("Ticket", coverage.get("trac_ticket")),
+        ("Patch", coverage.get("public_patch_or_attachment")),
+        ("PR", coverage.get("wordpress_develop_pr")),
+        ("Review", coverage.get("public_pr_discussion_or_review")),
+        ("Diff", coverage.get("changed_files_or_diff")),
+        ("CI/Test", coverage.get("public_test_or_ci_evidence")),
+    ]
+    return " ".join(
+        f'<span class="coverage-pill coverage-{"complete" if value else "missing"}">{html.escape(label)}</span>'
+        for label, value in labels
+    )
+
+
 def ticket_row(item: dict[str, Any], duplicate_sources: dict[str, set[str]]) -> str:
     row = item["row"]
     ticket_id = item["ticket_id"]
@@ -120,7 +157,10 @@ def ticket_row(item: dict[str, Any], duplicate_sources: dict[str, set[str]]) -> 
     trac_status = pretty_label(first_value(row, STATUS_KEYS, ""))
     discovery_track = discovery_track_label(duplicate_sources[ticket_id])
     track = item["query"].get("name", item["query"].get("track", "unknown"))
-    useful_contribution = contribution_summary(item.get("qualification", {}))
+    qualification = item.get("qualification", {})
+    useful_contribution = contribution_summary(qualification)
+    why_now = why_now_summary(qualification)
+    coverage = coverage_summary(qualification)
 
     return f"""
 <tr class="tier-{html.escape(tier_class)}">
@@ -132,6 +172,8 @@ def ticket_row(item: dict[str, Any], duplicate_sources: dict[str, set[str]]) -> 
   <td data-label="Trac Status">{html.escape(trac_status)}</td>
   <td data-label="Discovery Track">{html.escape(discovery_track)}</td>
   <td data-label="Useful Contribution">{useful_contribution}</td>
+  <td data-label="Why Now">{why_now}</td>
+  <td data-label="Coverage" class="coverage">{coverage}</td>
   <td data-label="Signals" class="signals">{signals}</td>
 </tr>
 """
@@ -147,7 +189,7 @@ def section_html(
     rows = "\n".join(ticket_row(item, duplicate_sources) for item in display_items)
 
     if not rows:
-        rows = '<tr><td colspan="9" class="empty">No tickets in this section.</td></tr>'
+        rows = '<tr><td colspan="11" class="empty">No tickets in this section.</td></tr>'
 
     return f"""
 <section>
@@ -164,6 +206,8 @@ def section_html(
           <th>Trac Status</th>
           <th>Discovery Track</th>
           <th>Useful Contribution</th>
+          <th>Why Now</th>
+          <th>Coverage</th>
           <th>Signals</th>
         </tr>
       </thead>
@@ -297,6 +341,7 @@ def dashboard_css() -> str:
       font-size: 18px;
     }
     .signals { min-width: 300px; }
+    .coverage { min-width: 220px; }
     .contribution-hypothesis {
       max-width: 360px;
       min-width: 260px;
@@ -319,6 +364,26 @@ def dashboard_css() -> str:
       color: #50575e;
       font-size: 13px;
     }
+    .why-now {
+      margin: 0;
+      padding-left: 18px;
+      min-width: 260px;
+      color: #50575e;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .why-now li + li { margin-top: 4px; }
+    .coverage-pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 4px 8px;
+      margin: 0 4px 5px 0;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .coverage-complete { background: #dcfce7; color: #166534; }
+    .coverage-missing { background: #f3f4f6; color: #6b7280; }
     .signal-badge,
     .tier-label {
       display: inline-block;

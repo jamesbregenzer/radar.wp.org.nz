@@ -105,5 +105,74 @@ identify, document, or depend on specific downstream consumers.
 Anyone using Radar data to inform contribution work should independently
 revalidate current WordPress/Trac state before acting. Radar is discovery
 intelligence, may be stale when consumed, and does not authorize a contribution.
-Breaking changes require `/api/v2/` or an explicitly governed compatibility
-strategy.
+Breaking changes to v1 require `/api/v2/` or an explicitly governed
+compatibility strategy.
+
+## Source-neutral `/api/v2/`
+
+Status: **ACTIVE SOURCE-NEUTRAL CONTRACT**
+
+V2 is a public observation API. It keeps v1 compatibility intact while exposing
+resource, source-family, qualification, coverage, and change-feed data in terms
+that are useful to any public consumer.
+
+| Endpoint | Successful body source |
+| --- | --- |
+| `GET /api/v2/health` | v2 source-family and snapshot health |
+| `GET /api/v2/sources` | independently certified source-family state |
+| `GET /api/v2/snapshot` | source-neutral snapshot identity and hashes |
+| `GET /api/v2/opportunities` | ordered `radar-opportunity.v2` records |
+| `GET /api/v2/opportunities/{id}` | one v2 opportunity, such as `core-trac:63568` |
+| `GET /api/v2/changes` | reproducible public observation-change feed |
+| `GET /api/v2/contributions` | public contribution records |
+| `GET /api/v2/outcomes` | public outcome projection and attribution limits |
+| `GET /api/v2/taxonomy` | qualification states, contribution families, sources, and coverage states |
+| `GET /api/v2/diagnostics` | public supply and quality diagnostics |
+
+Every v2 opportunity separates:
+
+- canonical resource: the primary public upstream object;
+- supporting resources: linked public PRs, reviews, diffs, tests, or related
+  resources when certified;
+- contribution family: the likely useful public contribution path;
+- qualification state: one of `CLEAR_OPPORTUNITY`,
+  `POSSIBLE_OPPORTUNITY`, `NEEDS_MORE_EVIDENCE`, `UPSTREAM_CHANGED`,
+  `LIKELY_ALREADY_COVERED`, or `NO_CLEAR_CONTRIBUTION`;
+- why-now reasons: deterministic public reasons the contribution may be useful
+  now;
+- source coverage: `COMPLETE`, `PARTIAL`, `NONE`, or `STALE` for evidence
+  families such as ticket fields, patches, PR discussion, diffs, CI/test
+  evidence, related tickets, and release context;
+- limitations: missing or stale public evidence that should constrain action;
+- ranking dimensions: actionability, usefulness signal, evidence completeness,
+  freshness, duplication risk, effort, timeliness, and confidence.
+
+Core Trac v1 identities remain unchanged. The v2 `id` for existing Core Trac
+records is still `core-trac:{ticketId}`. V2 adds its own material revision so
+supporting-resource and qualification changes can be tracked without changing
+the frozen v1 schema.
+
+## Source-family certification
+
+Source families certify independently.
+
+`CORE_TRAC` remains fail-closed within the configured Trac collection. A
+certified Trac snapshot requires every enabled Trac query to be collected and
+validated.
+
+`WORDPRESS_DEVELOP_GITHUB` is certified from a bounded public snapshot of open
+`WordPress/wordpress-develop` pull requests. Its completeness and limitations
+are reported separately from Trac. If GitHub collection fails while Trac
+succeeds, Radar may keep publishing fresh Trac intelligence while reporting the
+GitHub family as stale, missing, or degraded. Partial GitHub data must never
+masquerade as complete.
+
+## Public observation changes
+
+`/api/v2/changes` is a reproducible observation-change feed derived from
+certified public data. Event classes describe public source observations such as
+opportunity changes, upstream reactivation, public tests, patch changes, PR
+merge/resolution, or suppression.
+
+The feed is not an execution log. It does not accept acknowledgements, assignment
+state, delivery state, or private lifecycle data.

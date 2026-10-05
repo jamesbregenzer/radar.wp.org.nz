@@ -99,6 +99,39 @@ test("verified contribution outcomes are projected as public safe machine data",
   assert.equal(Object.hasOwn(record, "reason"), false);
 });
 
+test("v2 API exposes source-neutral health, sources, taxonomy, and changes", async () => {
+  for (const name of ["health", "sources", "snapshot", "opportunities", "changes", "contributions", "outcomes", "taxonomy", "diagnostics"]) {
+    const response = await api(`/api/v2/${name}`);
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("content-type"), "application/json; charset=utf-8");
+    assert.ok(response.headers.get("x-radar-snapshot-id"));
+  }
+  const health = await (await api("/api/v2/health")).json();
+  assert.equal(health.schema, "radar-health.v2");
+  assert.equal(health.status, "healthy");
+  assert.equal(health.sourceFamilies.some((item) => item.sourceFamily === "CORE_TRAC" && item.health.state === "certified"), true);
+  assert.equal(health.sourceFamilies.some((item) => item.sourceFamily === "WORDPRESS_DEVELOP_GITHUB" && item.health.state === "certified"), true);
+});
+
+test("v2 opportunity records preserve core-trac identity and expose why-now coverage", async () => {
+  const feed = await (await api("/api/v2/opportunities")).json();
+  const expected = feed.opportunities[0];
+  assert.match(expected.id, /^core-trac:\d+$/);
+  assert.match(expected.revision, /^opportunity-revision-v2-[0-9a-f]{32}$/);
+  assert.equal(expected.canonicalResource.sourceFamily, "CORE_TRAC");
+  assert.equal(Array.isArray(expected.qualification.whyNow), true);
+  assert.equal(typeof expected.sourceCoverage.ticket_fields, "string");
+  const response = await api(`/api/v2/opportunities/${encodeURIComponent(expected.id)}`);
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), expected);
+});
+
+test("v2 rejects malformed opportunity ids and unsafe methods", async () => {
+  assert.equal((await api("/api/v2/opportunities/not-a-ticket")).status, 400);
+  assert.equal((await api("/api/v2/opportunities/core-trac:999999999")).status, 404);
+  assert.equal((await api("/api/v2/opportunities", { method: "POST" })).status, 405);
+});
+
 test("individual record is byte-equivalent in content to feed record", async () => {
   const feed = await (await api("/api/v1/opportunities")).json();
   const expected = feed.opportunities[0];

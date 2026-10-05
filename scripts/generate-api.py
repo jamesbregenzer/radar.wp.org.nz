@@ -7,9 +7,11 @@ import json
 from pathlib import Path
 
 from certification import CERTIFIED_CURRENT, canonical_json, file_sha256, validate_named, verify_certified
+from radarv2 import WORDPRESS_DEVELOP_SOURCE, load_wordpress_develop_source, payload_hashes, project_v2
 
 ROOT = Path(__file__).resolve().parents[1]
 API_DIR = ROOT / "docs" / "radar" / "api" / "v1"
+API_V2_DIR = ROOT / "docs" / "radar" / "api" / "v2"
 CONTRIBUTION_STATE = ROOT / "data" / "contributions" / "contribution-state.json"
 
 
@@ -150,6 +152,35 @@ def generate_api_assets(current_dir: Path = CERTIFIED_CURRENT, output_dir: Path 
     # Verification result is intentionally not published; it only gates output.
     if verified["status"] != "success" or any(not path.exists() for path in paths):
         raise RuntimeError("certified API projection failed")
+    paths.extend(generate_v2_api_assets(snapshot, collection=json.loads((current_dir / "collection.json").read_text(encoding="utf-8")),
+                                        opportunity_set=opportunity_set, contributions=contributions))
+    return paths
+
+
+def generate_v2_api_assets(
+    snapshot: dict,
+    collection: dict,
+    opportunity_set: dict,
+    contributions: dict,
+    output_dir: Path = API_V2_DIR,
+) -> list[Path]:
+    wordpress_develop = load_wordpress_develop_source(WORDPRESS_DEVELOP_SOURCE)
+    payloads = project_v2(
+        snapshot=snapshot,
+        collection=collection,
+        opportunities=opportunity_set,
+        contributions=contributions,
+        wordpress_develop=wordpress_develop,
+    )
+    hashes = payload_hashes(payloads)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    paths = []
+    for name, body in sorted(payloads.items()):
+        destination = output_dir / name
+        destination.write_bytes(body)
+        if file_sha256(destination) != hashes[name]:
+            raise RuntimeError(f"v2 API projection hash mismatch for {name}")
+        paths.append(destination)
     return paths
 
 

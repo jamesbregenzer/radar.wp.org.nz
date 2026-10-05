@@ -11,6 +11,16 @@ WordPress Core Trac CSV exports
   -> dashboard, admin, reports, and API projections
 ```
 
+The v2 API adds a source-neutral projection over the certified dataset:
+
+```text
+certified current dataset
+  + independently certified public source-family snapshots
+  -> source-neutral resources
+  -> qualified opportunities
+  -> /api/v2/ sources, snapshot, opportunities, changes, diagnostics, and taxonomy
+```
+
 ## Collection
 
 `config/queries.json` defines the enabled Trac searches. The current collector opens those CSV exports in a local browser, imports each downloaded `query.csv` into `data/raw/manual/<collection-id>/`, and removes the temporary browser file.
@@ -37,10 +47,16 @@ All current product views use the certified opportunity model:
 
 - `scripts/generate-dashboard.py` creates the dashboard, contribution history, admin payload, and safe review-state projection.
 - `scripts/generate-report.py` creates the Markdown opportunity report.
-- `scripts/generate-api.py` creates static API artifacts from the verified bundle.
+- `scripts/generate-api.py` creates static v1 and v2 API artifacts from the verified bundle.
 - `cloudflare/worker-radar.js` serves Static Assets, API routes, and the admin application.
 
 The Worker verifies manifest, hash, collection, snapshot, and opportunity relationships before reporting a healthy dataset. It does not fetch Trac data, rescore opportunities, or use GitHub for normal runtime reads.
+
+V2 source-family snapshots are static inputs to generation, not runtime fetches.
+`data/sources/wordpress-develop-github.json` is the current bounded public
+GitHub source snapshot. If that family cannot be refreshed, Trac certification
+can still publish fresh Trac intelligence while v2 reports the GitHub family as
+stale or degraded. No partial source family may report itself as complete.
 
 ## Review state
 

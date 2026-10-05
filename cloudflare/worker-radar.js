@@ -96,6 +96,30 @@ async function loadCertifiedBundle(env) {
     hashes: { snapshot: snapshotSha, collection: collectionSha, opportunities: opportunitiesSha, contributions: contributionsSha, machineFeed: machineFeedSha, diagnostics: diagnosticsSha } };
 }
 
+async function loadV2Bundle(env) {
+  const names = ["health", "sources", "snapshot", "opportunities", "changes", "contributions", "outcomes", "taxonomy", "diagnostics"];
+  const entries = await Promise.all(names.map(async (name) => {
+    const text = await assetText(env, `/api/v2/${name}.json`);
+    return [name, text, JSON.parse(text), await sha256Hex(text)];
+  }));
+  const bundle = Object.fromEntries(entries.map(([name, text, json, hash]) => [name, { text, json, hash }]));
+  const valid = bundle.health.json.schema === "radar-health.v2"
+    && bundle.sources.json.schema === "radar-sources.v2"
+    && bundle.snapshot.json.schema === "radar-snapshot.v2"
+    && bundle.opportunities.json.schema === "radar-opportunity-set.v2"
+    && bundle.changes.json.schema === "radar-changes.v2"
+    && bundle.contributions.json.schema === "radar-contributions.v2"
+    && bundle.outcomes.json.schema === "radar-outcomes.v2"
+    && bundle.taxonomy.json.schema === "radar-taxonomy.v2"
+    && bundle.diagnostics.json.schema === "radar-diagnostics.v2"
+    && bundle.health.json.snapshotId === bundle.snapshot.json.snapshotId
+    && bundle.sources.json.snapshotId === bundle.snapshot.json.snapshotId
+    && bundle.opportunities.json.snapshotId === bundle.snapshot.json.snapshotId
+    && bundle.opportunities.json.opportunities.length === bundle.snapshot.json.opportunityCount;
+  if (!valid) throw new Error("CERTIFIED_V2_BUNDLE_INVALID");
+  return bundle;
+}
+
 function apiJson(request, body, etagHash, snapshotId, status = 200) {
   const etag = `"sha256:${etagHash}"`;
   if (request.headers.get("if-none-match") === etag) {
@@ -114,6 +138,7 @@ function apiJson(request, body, etagHash, snapshotId, status = 200) {
 
 async function handleApiRequest(request, env) {
   const url = new URL(request.url);
+  if (url.pathname.startsWith("/api/v2/")) return handleV2ApiRequest(request, env);
   if (!url.pathname.startsWith("/api/v1/")) return null;
   if (!new Set(["GET", "HEAD"]).has(request.method)) return apiError(405, "METHOD_NOT_ALLOWED", "Only GET and HEAD are supported.");
   let bundle;
@@ -145,6 +170,43 @@ async function handleApiRequest(request, env) {
     if (!record) return apiError(404, "OPPORTUNITY_NOT_FOUND", "Opportunity is not present in the current snapshot.");
     const body = JSON.stringify(record) + "\n";
     return apiJson(request, body, await sha256Hex(body), snapshot.snapshot_id);
+  }
+  return apiError(404, "API_ROUTE_NOT_FOUND", "API route not found.");
+}
+
+async function handleV2ApiRequest(request, env) {
+  const url = new URL(request.url);
+  if (!new Set(["GET", "HEAD"]).has(request.method)) return apiError(405, "METHOD_NOT_ALLOWED", "Only GET and HEAD are supported.");
+  let bundle;
+  try {
+    bundle = await loadV2Bundle(env);
+  } catch (error) {
+    return apiError(503, error.message || "CERTIFIED_V2_BUNDLE_INVALID", "No valid certified Radar v2 snapshot is available.");
+  }
+  const snapshotId = bundle.snapshot.json.snapshotId;
+  const routeMap = {
+    "/api/v2/health": "health",
+    "/api/v2/sources": "sources",
+    "/api/v2/snapshot": "snapshot",
+    "/api/v2/opportunities": "opportunities",
+    "/api/v2/changes": "changes",
+    "/api/v2/contributions": "contributions",
+    "/api/v2/outcomes": "outcomes",
+    "/api/v2/taxonomy": "taxonomy",
+    "/api/v2/diagnostics": "diagnostics",
+  };
+  if (routeMap[url.pathname]) {
+    const item = bundle[routeMap[url.pathname]];
+    return apiJson(request, item.text, item.hash, snapshotId);
+  }
+  const match = url.pathname.match(/^\/api\/v2\/opportunities\/([^/]+)$/);
+  if (match) {
+    const id = decodeURIComponent(match[1]);
+    if (!/^core-trac:[0-9]+$/.test(id)) return apiError(400, "MALFORMED_OPPORTUNITY_ID", "Opportunity ID must use the core-trac:{ticketId} form.");
+    const record = bundle.opportunities.json.opportunities.find((item) => item.id === id);
+    if (!record) return apiError(404, "OPPORTUNITY_NOT_FOUND", "Opportunity is not present in the current snapshot.");
+    const body = JSON.stringify(record) + "\n";
+    return apiJson(request, body, await sha256Hex(body), snapshotId);
   }
   return apiError(404, "API_ROUTE_NOT_FOUND", "API route not found.");
 }
