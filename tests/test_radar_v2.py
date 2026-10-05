@@ -29,6 +29,33 @@ class RadarV2ProjectionTests(unittest.TestCase):
         source = load_wordpress_develop_source()
         self.assertEqual(self.payloads(source), self.payloads(source))
 
+    def test_change_event_ids_ignore_snapshot_timestamp_noise(self):
+        source = load_wordpress_develop_source()
+        snapshot = json.loads((ROOT / "data" / "certified" / "current" / "snapshot.json").read_text())
+        collection = json.loads((ROOT / "data" / "certified" / "current" / "collection.json").read_text())
+        opportunities = json.loads((ROOT / "data" / "certified" / "current" / "opportunities.json").read_text())
+        contributions = json.loads((ROOT / "docs" / "radar" / "api" / "v1" / "contributions.json").read_text())
+        first = project_v2(
+            snapshot=snapshot,
+            collection=collection,
+            opportunities=opportunities,
+            contributions=contributions,
+            wordpress_develop=source,
+        )
+        noisy_snapshot = dict(snapshot)
+        noisy_snapshot["snapshot_id"] = "snapshot-v1-ffffffffffffffffffffffff"
+        noisy_snapshot["reference_time"] = "2026-10-06T17:00:00"
+        second = project_v2(
+            snapshot=noisy_snapshot,
+            collection=collection,
+            opportunities=opportunities,
+            contributions=contributions,
+            wordpress_develop=source,
+        )
+        first_events = json.loads(first["changes.json"])["events"]
+        second_events = json.loads(second["changes.json"])["events"]
+        self.assertEqual([item["id"] for item in first_events], [item["id"] for item in second_events])
+
     def test_v2_reports_github_degradation_without_blocking_trac(self):
         payloads = self.payloads(None)
         health = json.loads(payloads["health.json"])

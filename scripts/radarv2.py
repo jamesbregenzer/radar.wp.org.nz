@@ -373,7 +373,6 @@ def changes_payload(snapshot: dict[str, Any], opportunities: list[dict[str, Any]
         elif opportunity["supportingResources"]:
             event_class = "OPPORTUNITY_CHANGED"
         material = {
-            "snapshot": snapshot["snapshot_id"],
             "opportunity": opportunity["id"],
             "revision": opportunity["revision"],
             "class": event_class,
