@@ -1,22 +1,22 @@
 {
-  "generated": "2026-10-06T03:27:33",
+  "generated": "2026-10-06T15:38:26",
   "summary": {
     "unique_tickets": 290,
     "priority_targets": 12,
     "immediate": 12,
     "strong": 0,
-    "watching": 61,
+    "watching": 60,
     "reviews_loaded": 21,
     "certification": {
-      "snapshot_id": "snapshot-v1-8c110b1387517c6e936edf6c",
-      "collection_id": "collection-v1-d3eda92b84961f175600e706",
-      "reference_time": "2026-10-06T03:27:33",
+      "snapshot_id": "snapshot-v1-26cd483de0376c96c0063b0c",
+      "collection_id": "collection-v1-2d1775c3f0c749dd226585e3",
+      "reference_time": "2026-10-06T15:38:26",
       "state": "certified",
       "opportunity_count": 290,
       "scoring_version": "radar-scoring-v1",
-      "source_revision": "eba6d9fb482b48f4844ea6b4439428db7ab9b4e8",
+      "source_revision": "42dcc48e04bb7068dba8d95f03fdaef7715c4275",
       "warnings": [],
-      "dataset_sha256": "9d3bacdf17d63caa9b5aa2e676f268d146a6e7ab5909a789f17c755e1ae9df31"
+      "dataset_sha256": "9a5b30228b530d1085cea59c3a4cd2666de81a60f61b6f98c55de251ac32107f"
     }
   },
   "groups": {
@@ -380,7 +380,7 @@
         "owner": "audrasjb",
         "comments": "",
         "created": "06/14/2025 01:01:14 PM",
-        "modified": "10/02/2026 06:18:32 PM",
+        "modified": "10/06/2026 01:06:46 PM",
         "keywords": "dev-feedback has-patch has-screenshots has-test-info has-unit-tests needs-testing",
         "signals": [
           {
@@ -470,7 +470,7 @@
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
             "ageDays": 0,
-            "modifiedAt": "10/02/2026 06:18:32 PM",
+            "modifiedAt": "10/06/2026 01:06:46 PM",
             "state": "fresh"
           },
           "sourceCoverage": {
@@ -1310,7 +1310,7 @@
         "owner": "SergeyBiryukov",
         "comments": "",
         "created": "06/23/2010 02:46:16 PM",
-        "modified": "10/02/2026 08:57:59 AM",
+        "modified": "10/06/2026 02:44:33 PM",
         "keywords": "2nd-opinion dev-feedback early has-patch has-screenshots has-test-info has-unit-tests needs-testing",
         "signals": [
           {
@@ -1411,7 +1411,7 @@
           "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
           "evidenceFreshness": {
             "ageDays": 0,
-            "modifiedAt": "10/02/2026 08:57:59 AM",
+            "modifiedAt": "10/06/2026 02:44:33 PM",
             "state": "fresh"
           },
           "sourceCoverage": {
@@ -3877,6 +3877,92 @@
         "review": {}
       },
       {
+        "ticket_id": "40339",
+        "url": "https://core.trac.wordpress.org/ticket/40339",
+        "score": 150,
+        "tier_class": "strong",
+        "tier_label": "Strong Candidate",
+        "summary": "If $home_path=='wp' then WP::parse_request() will remove 'wp' from 'wp-json/wc/v1/products' in $pathinfo",
+        "track": "General: Needs Testing",
+        "status": "New",
+        "component": "Rewrite Rules",
+        "owner": "",
+        "comments": "",
+        "created": "04/02/2017 01:32:06 PM",
+        "modified": "10/06/2026 03:45:20 AM",
+        "keywords": "has-patch has-unit-tests needs-testing",
+        "signals": [
+          {
+            "label": "Track Priority: General: Needs Testing +65",
+            "class": "priority"
+          },
+          {
+            "label": "Has Patch +35",
+            "class": "patch"
+          },
+          {
+            "label": "Needs Testing +30",
+            "class": "testing"
+          },
+          {
+            "label": "Freshness: Recently Updated <=14 Days +20",
+            "class": "freshness"
+          }
+        ],
+        "score_breakdown": [
+          {
+            "points": "+65",
+            "label": "Track Priority",
+            "detail": "General: Needs Testing",
+            "display": "Track Priority: General: Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+35",
+            "label": "Has Patch",
+            "detail": "",
+            "display": "Has Patch",
+            "polarity": "positive"
+          },
+          {
+            "points": "+30",
+            "label": "Needs Testing",
+            "detail": "",
+            "display": "Needs Testing",
+            "polarity": "positive"
+          },
+          {
+            "points": "+20",
+            "label": "Freshness",
+            "detail": "Recently Updated <=14 Days",
+            "display": "Freshness: Recently Updated <=14 Days",
+            "polarity": "positive"
+          }
+        ],
+        "discovery_track": "General Needs Testing",
+        "qualification": {
+          "recommendedContributionClass": "VERIFY_EXISTING_PATCH",
+          "confidence": "high",
+          "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
+          "evidenceFreshness": {
+            "ageDays": 0,
+            "modifiedAt": "10/06/2026 03:45:20 AM",
+            "state": "fresh"
+          },
+          "sourceCoverage": {
+            "changed_files_or_diff": false,
+            "public_patch_or_attachment": true,
+            "public_pr_discussion_or_review": false,
+            "public_test_or_ci_evidence": false,
+            "related_or_referenced_ticket": false,
+            "trac_keywords_status_component": true,
+            "trac_ticket": true,
+            "wordpress_develop_pr": false
+          }
+        },
+        "review": {}
+      },
+      {
         "ticket_id": "43010",
         "url": "https://core.trac.wordpress.org/ticket/43010",
         "score": 150,
@@ -5821,92 +5907,6 @@
           "evidenceFreshness": {
             "ageDays": 0,
             "modifiedAt": "08/18/2026 08:40:19 AM",
-            "state": "fresh"
-          },
-          "sourceCoverage": {
-            "changed_files_or_diff": false,
-            "public_patch_or_attachment": true,
-            "public_pr_discussion_or_review": false,
-            "public_test_or_ci_evidence": false,
-            "related_or_referenced_ticket": false,
-            "trac_keywords_status_component": true,
-            "trac_ticket": true,
-            "wordpress_develop_pr": false
-          }
-        },
-        "review": {}
-      },
-      {
-        "ticket_id": "40339",
-        "url": "https://core.trac.wordpress.org/ticket/40339",
-        "score": 140,
-        "tier_class": "watching",
-        "tier_label": "Worth Watching",
-        "summary": "If $home_path=='wp' then WP::parse_request() will remove 'wp' from 'wp-json/wc/v1/products' in $pathinfo",
-        "track": "General: Needs Testing",
-        "status": "New",
-        "component": "Rewrite Rules",
-        "owner": "",
-        "comments": "",
-        "created": "04/02/2017 01:32:06 PM",
-        "modified": "09/02/2026 11:25:30 PM",
-        "keywords": "has-patch has-unit-tests needs-testing",
-        "signals": [
-          {
-            "label": "Track Priority: General: Needs Testing +65",
-            "class": "priority"
-          },
-          {
-            "label": "Has Patch +35",
-            "class": "patch"
-          },
-          {
-            "label": "Needs Testing +30",
-            "class": "testing"
-          },
-          {
-            "label": "Freshness: Updated Within 60 Days +10",
-            "class": "freshness"
-          }
-        ],
-        "score_breakdown": [
-          {
-            "points": "+65",
-            "label": "Track Priority",
-            "detail": "General: Needs Testing",
-            "display": "Track Priority: General: Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+35",
-            "label": "Has Patch",
-            "detail": "",
-            "display": "Has Patch",
-            "polarity": "positive"
-          },
-          {
-            "points": "+30",
-            "label": "Needs Testing",
-            "detail": "",
-            "display": "Needs Testing",
-            "polarity": "positive"
-          },
-          {
-            "points": "+10",
-            "label": "Freshness",
-            "detail": "Updated Within 60 Days",
-            "display": "Freshness: Updated Within 60 Days",
-            "polarity": "positive"
-          }
-        ],
-        "discovery_track": "General Needs Testing",
-        "qualification": {
-          "recommendedContributionClass": "VERIFY_EXISTING_PATCH",
-          "confidence": "high",
-          "reason": "A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.",
-          "evidenceFreshness": {
-            "ageDays": 0,
-            "modifiedAt": "09/02/2026 11:25:30 PM",
             "state": "fresh"
           },
           "sourceCoverage": {

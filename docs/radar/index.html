@@ -324,7 +324,7 @@
   <header>
     <div class="header-content">
       <h1>WP Core Radar Dashboard</h1>
-      <p>Updated 2026-10-06T03:27:33. Public WordPress Core opportunity intelligence.</p>
+      <p>Updated 2026-10-06T15:38:26. Public WordPress Core opportunity intelligence.</p>
     </div>
     <div class="header-actions">
       <a class="header-pill" href="/contributions/">Contributions</a>
@@ -337,7 +337,7 @@
       <div class="card"><strong>290</strong>Opportunities scored</div>
       <div class="card card-blue"><strong>12</strong>Immediate Review</div>
       <div class="card card-purple"><strong>0</strong>Strong Candidates</div>
-      <div class="card card-amber"><strong>61</strong>Worth Watching</div>
+      <div class="card card-amber"><strong>60</strong>Worth Watching</div>
       <div class="card"><strong>2</strong>Verified contributions</div>
       <div class="card"><strong>2026-10-06</strong>Last updated</div>
     </div>
@@ -355,9 +355,9 @@
         <summary>Technical details</summary>
         <p>
           Scoring version <code>radar-scoring-v1</code> ·
-          Snapshot <code>snapshot-v1-8c110b1387517c6e936edf6c</code> ·
-          Collection <code>collection-v1-d3eda92b84961f175600e706</code> ·
-          Source <code>eba6d9fb482b48f4844ea6b4439428db7ab9b4e8</code>
+          Snapshot <code>snapshot-v1-26cd483de0376c96c0063b0c</code> ·
+          Collection <code>collection-v1-2d1775c3f0c749dd226585e3</code> ·
+          Source <code>42dcc48e04bb7068dba8d95f03fdaef7715c4275</code>
            · No data warnings
         </p>
       </details>
@@ -979,6 +979,21 @@
 <tr class="tier-strong">
   <td class="score" data-label="Score">150</td>
   <td data-label="Tier"><span class="tier-label tier-label-strong">Strong Candidate</span></td>
+  <td data-label="Ticket"><a href="https://core.trac.wordpress.org/ticket/40339">#40339</a></td>
+  <td data-label="Summary">If $home_path==&#x27;wp&#x27; then WP::parse_request() will remove &#x27;wp&#x27; from &#x27;wp-json/wc/v1/products&#x27; in $pathinfo</td>
+  <td data-label="Track">General: Needs Testing</td>
+  <td data-label="Trac Status">New</td>
+  <td data-label="Discovery Track">General Needs Testing</td>
+  <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
+  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
+  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
+  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Recently Updated &lt;=14 Days +20</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
+</tr>
+
+
+<tr class="tier-strong">
+  <td class="score" data-label="Score">150</td>
+  <td data-label="Tier"><span class="tier-label tier-label-strong">Strong Candidate</span></td>
   <td data-label="Ticket"><a href="https://core.trac.wordpress.org/ticket/43010">#43010</a></td>
   <td data-label="Summary">Attribute Name Escape</td>
   <td data-label="Track">General: Needs Testing</td>
@@ -1281,21 +1296,6 @@
   <td data-label="Tier"><span class="tier-label tier-label-watching">Worth Watching</span></td>
   <td data-label="Ticket"><a href="https://core.trac.wordpress.org/ticket/40032">#40032</a></td>
   <td data-label="Summary">Automatic redirects with _wp_old_slug won&#x27;t mantain GET parameters if present</td>
-  <td data-label="Track">General: Needs Testing</td>
-  <td data-label="Trac Status">New</td>
-  <td data-label="Discovery Track">General Needs Testing</td>
-  <td data-label="Useful Contribution"><div class="contribution-hypothesis"><strong>Verify Existing Patch</strong><span>High confidence · Fresh evidence</span><p>A public patch exists and the safest useful next step is verifying whether it still addresses the current ticket state.</p></div></td>
-  <td data-label="Why Now"><ul class="why-now"><li>A public patch exists and current ticket signals still support verification.</li></ul></td>
-  <td data-label="Coverage" class="coverage"><span class="coverage-pill coverage-complete">Ticket</span> <span class="coverage-pill coverage-complete">Patch</span> <span class="coverage-pill coverage-missing">PR</span> <span class="coverage-pill coverage-missing">Review</span> <span class="coverage-pill coverage-missing">Diff</span> <span class="coverage-pill coverage-missing">CI/Test</span></td>
-  <td data-label="Signals" class="signals"><span class="signal-badge signal-priority">Track Priority: General: Needs Testing +65</span> <span class="signal-badge signal-patch">Has Patch +35</span> <span class="signal-badge signal-testing">Needs Testing +30</span> <span class="signal-badge signal-freshness">Freshness: Updated Within 60 Days +10</span> <details class="signal-more"><summary>+3 more</summary><span class="signal-more-items"><span class="signal-badge signal-patch">Has Patch</span> <span class="signal-badge signal-testing">Has Unit Tests</span> <span class="signal-badge signal-testing">Needs Testing</span></span></details></td>
-</tr>
-
-
-<tr class="tier-watching">
-  <td class="score" data-label="Score">140</td>
-  <td data-label="Tier"><span class="tier-label tier-label-watching">Worth Watching</span></td>
-  <td data-label="Ticket"><a href="https://core.trac.wordpress.org/ticket/40339">#40339</a></td>
-  <td data-label="Summary">If $home_path==&#x27;wp&#x27; then WP::parse_request() will remove &#x27;wp&#x27; from &#x27;wp-json/wc/v1/products&#x27; in $pathinfo</td>
   <td data-label="Track">General: Needs Testing</td>
   <td data-label="Trac Status">New</td>
   <td data-label="Discovery Track">General Needs Testing</td>
