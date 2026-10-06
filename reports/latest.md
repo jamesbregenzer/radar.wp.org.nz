@@ -1,6 +1,6 @@
 # WP Core Radar Report
 
-Generated: 2026-10-06 01:30
+Generated: 2026-10-06 03:27
 
 ## Summary
 
@@ -9,8 +9,8 @@ Generated: 2026-10-06 01:30
 - Outcomes loaded: 4
 - Reviews loaded: 21
 - Top opportunity limit: 50
-- Certified snapshot: snapshot-v1-90f85bb05c3f63e1a7ddca2e
-- Certified collection: collection-v1-64d7207d88ff281f0e19a698
+- Certified snapshot: snapshot-v1-8c110b1387517c6e936edf6c
+- Certified collection: collection-v1-d3eda92b84961f175600e706
 - Scoring version: radar-scoring-v1
 
 ## Review Workflow
@@ -1550,11 +1550,11 @@ No tickets in this section.
 
 | Query | Date | Rows | File |
 |---|---:|---:|---|
-| accessibility_has_patch | 2026-10-06 | 0 | `data/raw/manual/2026-10-06T01-30-13Z/accessibility_has_patch.csv` |
-| docs_needs_testing | 2026-10-06 | 0 | `data/raw/manual/2026-10-06T01-30-13Z/docs_needs_testing.csv` |
-| general_needs_testing | 2026-10-06 | 264 | `data/raw/manual/2026-10-06T01-30-13Z/general_needs_testing.csv` |
-| good_first_bugs | 2026-10-06 | 0 | `data/raw/manual/2026-10-06T01-30-13Z/good_first_bugs.csv` |
-| media_has_patch | 2026-10-06 | 26 | `data/raw/manual/2026-10-06T01-30-13Z/media_has_patch.csv` |
+| accessibility_has_patch | 2026-10-06 | 0 | `data/raw/manual/2026-10-06T03-27-33Z/accessibility_has_patch.csv` |
+| docs_needs_testing | 2026-10-06 | 0 | `data/raw/manual/2026-10-06T03-27-33Z/docs_needs_testing.csv` |
+| general_needs_testing | 2026-10-06 | 264 | `data/raw/manual/2026-10-06T03-27-33Z/general_needs_testing.csv` |
+| good_first_bugs | 2026-10-06 | 0 | `data/raw/manual/2026-10-06T03-27-33Z/good_first_bugs.csv` |
+| media_has_patch | 2026-10-06 | 26 | `data/raw/manual/2026-10-06T03-27-33Z/media_has_patch.csv` |
 
 ## Guardrail
 
