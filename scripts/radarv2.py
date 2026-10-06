@@ -105,6 +105,9 @@ WAVE2_SOURCE_FAMILIES = [
     "CONTRIBUTOR_PATHWAYS",
     "CORE_DEVELOPER_DOCS",
     "ACCESSIBILITY_REQUESTS",
+    "THEME_CHECK_GITHUB",
+    "MAKE_THEMES_REQUESTS",
+    "WORDPRESS_RELEASES",
 ]
 
 WAVE2_SOURCE_LABELS = {
@@ -112,6 +115,14 @@ WAVE2_SOURCE_LABELS = {
     "CONTRIBUTOR_PATHWAYS": "public Contributor Pathways material",
     "CORE_DEVELOPER_DOCS": "Core and developer documentation opportunities",
     "ACCESSIBILITY_REQUESTS": "public accessibility contribution and test requests",
+    "THEME_CHECK_GITHUB": "Theme Check issues and pull requests",
+    "MAKE_THEMES_REQUESTS": "Make Themes public testing and review requests",
+    "WORDPRESS_RELEASES": "WordPress beta, release-candidate, and development builds",
+}
+
+WAVE2_SOURCE_PATHS = {
+    family_name: ROOT / "data" / "sources" / f"{family_name.lower().replace('_', '-')}.json"
+    for family_name in WAVE2_SOURCE_FAMILIES
 }
 
 
@@ -244,6 +255,15 @@ def load_gutenberg_source(path: Path = GUTENBERG_SOURCE) -> dict[str, Any] | Non
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_wave2_sources(paths: dict[str, Path] | None = None) -> dict[str, dict[str, Any] | None]:
+    configured = paths or WAVE2_SOURCE_PATHS
+    result: dict[str, dict[str, Any] | None] = {}
+    for family_name in WAVE2_SOURCE_FAMILIES:
+        path = configured.get(family_name)
+        result[family_name] = json.loads(path.read_text(encoding="utf-8")) if path and path.exists() else None
+    return result
+
+
 def github_ticket_index(source_snapshot: dict[str, Any] | None) -> dict[str, list[dict[str, Any]]]:
     if not source_snapshot:
         return {}
@@ -303,6 +323,51 @@ def github_resource(resource: dict[str, Any], source_family: dict[str, Any] | No
             "ambiguousTicketReferences": resource.get("ambiguousTicketReferences", []),
         },
     )
+
+
+def wave2_resource(resource: dict[str, Any], source_family: dict[str, Any] | None, family_name: str) -> dict[str, Any]:
+    family = source_family or {}
+    receipt = family.get("retrievalReceipt") or {}
+    return resource_payload(
+        source_family=family_name,
+        resource_type=str(resource.get("resourceType") or "PUBLIC_SOURCE_RESOURCE"),
+        identity=str(resource["nativeIdentity"]),
+        canonical_url=str(resource["url"]),
+        title=str(resource.get("title") or resource["nativeIdentity"]),
+        upstream_state=str(resource.get("state") or "unknown"),
+        observed_time=family.get("observedTime") or resource.get("updatedAt"),
+        source_family_snapshot_id=family.get("snapshotId") or UNKNOWN_OBSERVATION,
+        source_revision=resource.get("sourceRevision") or family.get("sourceRevision"),
+        provenance=[{
+            "source": family.get("authoritativeSource"),
+            "sourceIdentity": resource["nativeIdentity"],
+            "retrievalReceiptId": receipt.get("receiptId"),
+            "retrievalReceiptHash": receipt.get("canonicalHash"),
+        }],
+        completeness=family.get("completeness") or "PARTIAL",
+        limitations=list(family.get("limitations") or []),
+        observed_fields={
+            "nativeId": resource.get("nativeId"),
+            "number": resource.get("number"),
+            "createdAt": resource.get("createdAt"),
+            "updatedAt": resource.get("updatedAt"),
+            "labels": resource.get("labels", []),
+            "assignees": resource.get("assignees", []),
+            "requestedReviewers": resource.get("requestedReviewers", []),
+            "requestedTeams": resource.get("requestedTeams", []),
+            "draft": resource.get("draft"),
+            "bodyHash": resource.get("bodyHash"),
+            "bodyExcerpt": resource.get("bodyExcerpt"),
+            "outboundLinks": resource.get("outboundLinks", []),
+            "candidateSignals": resource.get("candidateSignals", []),
+        },
+    )
+
+
+def source_resource(resource: dict[str, Any], source_family: dict[str, Any] | None, family_name: str) -> dict[str, Any]:
+    if family_name in {WORDPRESS_DEVELOP_FAMILY, GUTENBERG_FAMILY}:
+        return github_resource(resource, source_family, family_name)
+    return wave2_resource(resource, source_family, family_name)
 
 
 def qualification_state(record: dict[str, Any], supporting_resources: list[dict[str, Any]]) -> str:
@@ -524,8 +589,8 @@ def attach_candidate_model(opportunity: dict[str, Any]) -> dict[str, Any]:
     source_family = updated["canonicalResource"]["sourceFamily"]
     confidence = updated["qualification"].get("confidence", "unknown")
     reason = updated["qualification"].get("reason", "")
-    updated["legacySignalFamily"] = signal_family
-    updated["familyCandidates"] = family_candidates(source_family, signal_family, confidence, reason)
+    updated.setdefault("legacySignalFamily", signal_family)
+    updated.setdefault("familyCandidates", family_candidates(source_family, signal_family, confidence, reason))
     updated["scoreVector"] = opportunity_score_vector(updated)
     updated["eligibilityGate"] = {
         "state": "failed" if updated["qualification"]["state"] in {"NO_CLEAR_CONTRIBUTION", "LIKELY_ALREADY_COVERED"} else "passed",
@@ -852,6 +917,124 @@ def native_opportunities(source_snapshot: dict[str, Any] | None, family_record: 
     return result
 
 
+def wave2_source_coverage(resource: dict[str, Any]) -> dict[str, str]:
+    return {
+        "source_metadata": "COMPLETE",
+        "source_native_identity": "COMPLETE",
+        "source_revision": "COMPLETE" if resource.get("sourceRevision") else "NONE",
+        "public_content": "COMPLETE" if resource.get("bodyHash") else "NONE",
+        "public_relationships": "PARTIAL" if resource.get("outboundLinks") else "NONE",
+        "candidate_signal": "COMPLETE" if resource.get("candidateSignals") else "NONE",
+        "authoritative_current_reread": "NONE",
+    }
+
+
+def wave2_opportunity(
+    resource: dict[str, Any],
+    family_record: dict[str, Any],
+    family_name: str,
+    signal: dict[str, Any],
+) -> dict[str, Any]:
+    canonical = wave2_resource(resource, family_record, family_name)
+    state = str(signal["state"])
+    contribution_family = str(signal["familyId"])
+    reason = str(signal["reason"])
+    confidence = str(signal["confidence"])
+    coverage = wave2_source_coverage(resource)
+    missing_increment = reason
+    dimensions = {
+        "actionability": "high" if state == "CLEAR_OPPORTUNITY" else "medium",
+        "usefulnessSignal": confidence,
+        "evidenceCompleteness": "medium",
+        "freshness": family_record.get("freshness") or "stale",
+        "duplicationRisk": "medium",
+        "noveltySignal": "source-native",
+        "effort": "unknown",
+        "timeliness": "near-term" if state == "CLEAR_OPPORTUNITY" else "watch",
+        "confidence": confidence,
+    }
+    revision_material = {
+        "schema": "radar-wave2-opportunity-v2-material-state.v1",
+        "canonicalResource": canonical["revision"],
+        "qualificationState": state,
+        "contributionFamily": contribution_family,
+        "missingIncrement": missing_increment,
+        "sourceCoverage": coverage,
+        "dimensions": dimensions,
+    }
+    return {
+        "schema": "radar-opportunity.v2",
+        "version": 2,
+        "id": opportunity_id(canonical, contribution_family, missing_increment),
+        "revision": f"opportunity-revision-v2-{canonical_hash(revision_material)[:32]}",
+        "legacyV1": None,
+        "legacySignalFamily": None,
+        "identity": {
+            "canonicalResourceId": canonical["id"],
+            "contributionFamily": contribution_family,
+            "missingIncrement": missing_increment,
+        },
+        "canonicalResource": canonical,
+        "supportingResources": [],
+        "area": family_name,
+        "contributionFamily": contribution_family,
+        "familyCandidates": [{
+            "familyId": contribution_family,
+            "confidence": confidence,
+            "sourceSignal": "SOURCE_NATIVE_REQUEST",
+            "sourceEvidence": list(signal.get("evidence") or []),
+            "explanation": reason,
+        }],
+        "likelyMissingIncrement": missing_increment,
+        "requiresLiveRevalidation": True,
+        "qualification": {
+            "state": state,
+            "confidence": confidence,
+            "reason": reason,
+            "whyNow": [reason],
+            "evidenceObserved": [
+                "source-native public identity",
+                "immutable raw acquisition receipt",
+                "public material revision",
+                *list(signal.get("evidence") or []),
+            ],
+            "evidenceMissing": [
+                "authoritative current reread immediately before action",
+                "complete thread or destination context when the source does not expose it",
+            ],
+            "duplicationRisk": "medium",
+            "noveltySignal": "Source-native public request with a specific mapped contribution family.",
+            "dimensions": dimensions,
+            "limitations": [
+                *list(family_record.get("limitations") or []),
+                "Radar observes the public request but does not decide private qualification, scheduling, HWP, or delivery authority.",
+            ],
+        },
+        "sourceCoverage": coverage,
+        "freshness": {"state": family_record.get("freshness") or "stale", "sourceFamily": family_name},
+        "ranking": {
+            "score": native_score(state, confidence),
+            "tier": "priority" if state == "CLEAR_OPPORTUNITY" else "watch",
+            "deterministicReasons": [reason],
+            "dimensions": dimensions,
+        },
+    }
+
+
+def wave2_opportunities(
+    source_snapshot: dict[str, Any] | None,
+    family_record: dict[str, Any],
+    family_name: str,
+) -> list[dict[str, Any]]:
+    if not source_snapshot or family_record["health"]["state"] != "certified":
+        return []
+    result = []
+    for resource in source_snapshot.get("resources", []):
+        for signal_record in resource.get("candidateSignals", []):
+            result.append(wave2_opportunity(resource, family_record, family_name, signal_record))
+    return result
+
+
 def apply_public_outcome_suppression(opportunities: list[dict[str, Any]], contributions: dict[str, Any]) -> list[dict[str, Any]]:
     covered = {
         str(item.get("opportunityKey"))
@@ -896,6 +1079,7 @@ def source_families(
     opportunities: dict[str, Any],
     wordpress_develop: dict[str, Any] | None,
     gutenberg: dict[str, Any] | None = None,
+    wave2_sources: dict[str, dict[str, Any] | None] | None = None,
 ) -> list[dict[str, Any]]:
     trac_records = sum(item["row_count"] for item in collection["query_evidence"])
     raw_acquisitions = [
@@ -1020,28 +1204,60 @@ def source_families(
                 "failure": "GUTENBERG_SOURCE_MISSING",
             },
         }
-    wave2 = [
-        {
-            "sourceFamily": family_name,
-            "snapshotId": f"source-family-{source_family_id(family_name)}-not-certified",
-            "sourceRevision": None,
-            "observedTime": None,
-            "certifiedTime": snapshot["reference_time"],
-            "completeness": "NONE",
-            "freshness": "stale",
-            "recordCount": 0,
-            "canonicalHash": None,
-            "requiredForCurrentCandidateFeed": False,
-            "limitations": [
-                f"{WAVE2_SOURCE_LABELS[family_name]} adapter certification has started but is not production-certified in this snapshot.",
-            ],
-            "health": {
-                "state": "not_certified",
-                "failure": "SOURCE_ADAPTER_NOT_CERTIFIED",
-            },
-        }
-        for family_name in WAVE2_SOURCE_FAMILIES
-    ]
+    wave2 = []
+    provided_wave2 = wave2_sources or {}
+    for family_name in WAVE2_SOURCE_FAMILIES:
+        source = provided_wave2.get(family_name)
+        if source:
+            wave2.append({
+                "sourceFamily": family_name,
+                "snapshotId": source["snapshotId"],
+                "sourceRevision": source["sourceRevision"],
+                "observedTime": source["observedTime"],
+                "certifiedTime": source["certifiedTime"],
+                "completeness": source["completeness"],
+                "freshness": source["freshness"],
+                "recordCount": source["recordCount"],
+                "candidateSignalCount": source.get("candidateSignalCount", 0),
+                "canonicalHash": source["canonicalHash"],
+                "authoritativeSource": source.get("authoritativeSource"),
+                "machineReadableAccess": source.get("machineReadableAccess", []),
+                "rawAcquisitions": source.get("rawAcquisitions", []),
+                "retrievalReceipt": source.get("retrievalReceipt"),
+                "outcomeObservers": source.get("outcomeObservers", []),
+                "requiredForCurrentCandidateFeed": False,
+                "observation": {
+                    "runId": source["snapshotId"],
+                    "collectorVersion": "collect-wave2-sources.v1",
+                    "sourceConfigRevision": source.get("scope"),
+                    "artifactHash": source["canonicalHash"],
+                    "certificationResult": source["health"]["state"],
+                    "scope": source.get("scope"),
+                    "limitReached": source["completeness"] == "PARTIAL",
+                },
+                "limitations": source["limitations"],
+                "health": source["health"],
+            })
+        else:
+            wave2.append({
+                "sourceFamily": family_name,
+                "snapshotId": f"source-family-{source_family_id(family_name)}-not-certified",
+                "sourceRevision": None,
+                "observedTime": None,
+                "certifiedTime": snapshot["reference_time"],
+                "completeness": "NONE",
+                "freshness": "stale",
+                "recordCount": 0,
+                "canonicalHash": None,
+                "requiredForCurrentCandidateFeed": False,
+                "limitations": [
+                    f"{WAVE2_SOURCE_LABELS[family_name]} adapter is not certified in this snapshot.",
+                ],
+                "health": {
+                    "state": "not_certified",
+                    "failure": "SOURCE_ADAPTER_NOT_CERTIFIED",
+                },
+            })
     return [trac_family, github_family, gutenberg_family, *wave2]
 
 
@@ -1060,7 +1276,7 @@ def resources_payload(
     for family_name, snapshot in source_snapshots.items():
         if snapshot:
             for item in snapshot.get("resources", []):
-                resource = github_resource(item, families_by_source.get(family_name), family_name)
+                resource = source_resource(item, families_by_source.get(family_name), family_name)
                 resources.setdefault(resource["id"], resource)
 
     ordered = [resources[key] for key in sorted(resources)]
@@ -1125,6 +1341,60 @@ def source_relationships(source_snapshot: dict[str, Any] | None, family_record: 
     return relations
 
 
+def public_url_aliases(value: str) -> set[str]:
+    base = value.rstrip("/")
+    aliases = {base}
+    if "/pull/" in base:
+        aliases.add(base.replace("/pull/", "/issues/"))
+    if "/issues/" in base:
+        aliases.add(base.replace("/issues/", "/pull/"))
+    return aliases
+
+
+def wave2_relationships(
+    source_snapshots: dict[str, dict[str, Any] | None],
+    families_by_source: dict[str, dict[str, Any]],
+    opportunity_resources: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    resources: dict[str, dict[str, Any]] = {item["id"]: item for item in opportunity_resources}
+    for family_name, source_snapshot in source_snapshots.items():
+        if not source_snapshot:
+            continue
+        for item in source_snapshot.get("resources", []):
+            resource = source_resource(item, families_by_source.get(family_name), family_name)
+            resources[resource["id"]] = resource
+    by_url: dict[str, dict[str, Any]] = {}
+    for resource in resources.values():
+        for alias in public_url_aliases(str(resource.get("canonicalUrl") or "")):
+            if alias:
+                by_url.setdefault(alias, resource)
+    relationships = []
+    for resource in resources.values():
+        if resource["sourceFamily"] not in WAVE2_SOURCE_FAMILIES:
+            continue
+        for outbound in resource.get("observedFields", {}).get("outboundLinks", []):
+            target = next((by_url.get(alias) for alias in public_url_aliases(str(outbound)) if by_url.get(alias)), None)
+            if not target or target["id"] == resource["id"]:
+                continue
+            provenance = [{
+                "source": "public-source-link",
+                "evidence": "The source-native public resource contains an explicit link to another observed public resource.",
+                "sourceFamilySnapshotId": resource["sourceFamilySnapshotId"],
+            }]
+            relationships.append({
+                "schema": "radar-resource-relationship.v2",
+                "version": 2,
+                "id": relationship_id(resource["id"], "REFERENCES", target["id"], provenance),
+                "sourceResourceId": resource["id"],
+                "relationType": "REFERENCES",
+                "targetResourceId": target["id"],
+                "provenance": provenance,
+                "confidence": "high",
+                "limitations": ["The relationship records an explicit public URL reference and does not merge source-native identities."],
+            })
+    return relationships
+
+
 def relationships_payload(
     snapshot_id: str,
     opportunities: list[dict[str, Any]],
@@ -1132,9 +1402,12 @@ def relationships_payload(
     families_by_source: dict[str, dict[str, Any]],
 ) -> dict[str, Any]:
     relationships: dict[str, dict[str, Any]] = {}
+    opportunity_resources: dict[str, dict[str, Any]] = {}
     for opportunity in opportunities:
         canonical = opportunity["canonicalResource"]
+        opportunity_resources[canonical["id"]] = canonical
         for supporting in opportunity["supportingResources"]:
+            opportunity_resources[supporting["id"]] = supporting
             provenance = [{
                 "source": "public-wordpress-develop-pull-request",
                 "evidence": "canonical Core Trac ticket URL observed in the pull request source snapshot",
@@ -1154,9 +1427,11 @@ def relationships_payload(
                 ],
             }
             relationships[relation["id"]] = relation
-    for family_name, snapshot in source_snapshots.items():
-        for relation in source_relationships(snapshot, families_by_source.get(family_name), family_name):
+    for family_name in (WORDPRESS_DEVELOP_FAMILY, GUTENBERG_FAMILY):
+        for relation in source_relationships(source_snapshots.get(family_name), families_by_source.get(family_name), family_name):
             relationships[relation["id"]] = relation
+    for relation in wave2_relationships(source_snapshots, families_by_source, list(opportunity_resources.values())):
+        relationships[relation["id"]] = relation
     ordered = [relationships[key] for key in sorted(relationships)]
     return {
         "schema": "radar-relationship-set.v2",
@@ -1519,7 +1794,9 @@ def project_v2(
     contributions: dict[str, Any],
     wordpress_develop: dict[str, Any] | None = None,
     gutenberg: dict[str, Any] | None = None,
+    wave2_sources: dict[str, dict[str, Any] | None] | None = None,
 ) -> dict[str, bytes]:
+    configured_wave2 = wave2_sources or {}
     github_index = github_ticket_index(wordpress_develop)
     families = source_families(
         snapshot=snapshot,
@@ -1527,6 +1804,7 @@ def project_v2(
         opportunities=opportunities,
         wordpress_develop=wordpress_develop,
         gutenberg=gutenberg,
+        wave2_sources=configured_wave2,
     )
     families_by_source = {family["sourceFamily"]: family for family in families}
     trac_opportunities = [
@@ -1535,10 +1813,15 @@ def project_v2(
     ]
     native_wordpress = native_opportunities(wordpress_develop, families_by_source[WORDPRESS_DEVELOP_FAMILY], WORDPRESS_DEVELOP_FAMILY)
     native_gutenberg = native_opportunities(gutenberg, families_by_source[GUTENBERG_FAMILY], GUTENBERG_FAMILY)
+    native_wave2 = [
+        opportunity
+        for family_name in WAVE2_SOURCE_FAMILIES
+        for opportunity in wave2_opportunities(configured_wave2.get(family_name), families_by_source[family_name], family_name)
+    ]
     v2_opportunities = [
         attach_candidate_model(item)
         for item in apply_public_outcome_suppression(sorted(
-        [*trac_opportunities, *native_wordpress, *native_gutenberg],
+        [*trac_opportunities, *native_wordpress, *native_gutenberg, *native_wave2],
         key=lambda item: (-item["ranking"]["score"], item["id"]),
         ), contributions)
     ]
@@ -1546,6 +1829,7 @@ def project_v2(
     source_snapshots = {
         WORDPRESS_DEVELOP_FAMILY: wordpress_develop,
         GUTENBERG_FAMILY: gutenberg,
+        **configured_wave2,
     }
     resources = resources_payload(v2_snapshot["snapshotId"], v2_opportunities, source_snapshots, families_by_source)
     relationships = relationships_payload(v2_snapshot["snapshotId"], v2_opportunities, source_snapshots, families_by_source)

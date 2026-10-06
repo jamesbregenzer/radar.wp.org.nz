@@ -81,3 +81,29 @@ The GitHub snapshot is committed under `data/sources/`. It is read-only public
 data. If GitHub refresh fails, keep the last certified GitHub snapshot and let
 v2 source health report its freshness or degradation. Do not block a complete
 fresh Trac certification merely because a separate source family is unavailable.
+
+## Wave 2 source collection
+
+Collect the configured Wave 2 sources without generating or deploying public
+projections:
+
+```bash
+python3 scripts/collect-wave2-sources.py
+python3 scripts/certify-wave2-sources.py
+```
+
+Collect one source family for diagnosis or a bounded refresh:
+
+```bash
+python3 scripts/collect-wave2-sources.py \
+  --source-family ACCESSIBILITY_REQUESTS
+```
+
+Wave 2 raw responses and receipts are append only under
+`data/raw/sources/<source-family>/<retrieved-time>/`. Current normalized source
+snapshots live under `data/sources/`, and the offline certification manifest is
+`data/certified/wave2/source-certification.json`.
+
+Each source family certifies independently. A failed or stale family must keep
+its prior certified snapshot and report its own health. It must not block a
+healthy unrelated family or manufacture candidates from an incomplete fetch.

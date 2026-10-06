@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://radar.wp.org.nz/schemas/retrieval-receipt.v1.schema.json",
+  "title": "Radar WordPress retrieval receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "sourceFamily", "adapter", "retrievedAt", "scope", "acquisitions", "result", "receiptId", "canonicalHash"],
+  "properties": {
+    "schema": {"const": "wordpress.retrieval-receipt.v1"},
+    "version": {"const": 1},
+    "sourceFamily": {"type": "string", "minLength": 1},
+    "adapter": {"type": "string", "minLength": 1},
+    "retrievedAt": {"type": "string", "minLength": 20},
+    "scope": {"type": "string", "minLength": 1},
+    "acquisitions": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "result": {"const": "success"},
+    "receiptId": {"type": "string", "pattern": "retrieval-receipt-v1-[0-9a-f]{24}"},
+    "canonicalHash": {"type": "string", "pattern": "[0-9a-f]{64}"}
+  }
+}

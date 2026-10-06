@@ -7,7 +7,9 @@
     "check:worker-api": "node --test tests/test-worker.mjs",
     "check:python": "python3 -m unittest discover -s tests -v",
     "check:certified": "python3 scripts/certify-data.py verify",
-    "check": "npm run check:worker && npm run check:worker-api && npm run check:python && npm run check:certified",
+    "check:wave2": "python3 scripts/certify-wave2-sources.py",
+    "collect:wave2": "python3 scripts/collect-wave2-sources.py",
+    "check": "npm run check:worker && npm run check:worker-api && npm run check:python && npm run check:certified && npm run check:wave2",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {

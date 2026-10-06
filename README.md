@@ -46,6 +46,12 @@ resources, independently reported source-family health, source coverage, why-now
 qualification, deterministic material revisions, a public observation-change
 feed, and taxonomy/diagnostic endpoints.
 
+Source-side Wave 2 adapters add Make Test, Contributor Pathways, Core and
+developer documentation, accessibility requests, Theme Check, Make Themes, and
+WordPress prerelease/development signals. See
+[`docs/wave2-sources.md`](docs/wave2-sources.md) for source scopes, quality-yield
+evidence, and current deployment boundaries.
+
 Public contribution outcomes are recorded in `data/public-contributions.json` from independently verifiable public WordPress sources such as Core Trac, WordPress GitHub pull requests, public patches, public reviews, and public ticket discussion.
 
 Radar does not modify WordPress.org, comment on Trac, submit patches, or hold WordPress.org contribution credentials.
@@ -83,3 +89,4 @@ Collection uses a browser-assisted local workflow because direct server-side Tra
 - [`docs/contracts/executor.md`](docs/contracts/executor.md): structured operation contract
 - [`docs/outcome-tracking.md`](docs/outcome-tracking.md): review and contribution-history state
 - [`docs/collection-operations.md`](docs/collection-operations.md): collection and scheduled-run operations
+- [`docs/wave2-sources.md`](docs/wave2-sources.md): independently certified Wave 2 source adapters and quality-yield evidence
