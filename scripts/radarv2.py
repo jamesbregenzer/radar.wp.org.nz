@@ -909,6 +909,7 @@ def source_families(
             "sourceReceipt": item.get("source_receipt_path"),
             "parserVersion": item.get("parsing_version"),
             "rowCount": item.get("row_count"),
+            "execution": item.get("acquisition_execution"),
         }
         for item in collection["query_evidence"]
     ]

@@ -57,6 +57,7 @@ class ScheduledContinuityTests(unittest.TestCase):
         self.assertIn('COLLECTION_ID="$RUN_ID"', wrapper)
         self.assertIn('scripts/radar.py collect', wrapper)
         self.assertIn('scripts/radar.py pipeline', wrapper)
+        self.assertIn('scripts/check-acquisition-placement.py', wrapper)
         self.assertIn('--skip-collect', wrapper)
         self.assertIn('--collection-id "$COLLECTION_ID"', wrapper)
         self.assertIn('--reference-time "$REFERENCE_TIME"', wrapper)
@@ -88,6 +89,7 @@ class ScheduledContinuityTests(unittest.TestCase):
             fake_python.write_text(
                 "#!/bin/bash\n"
                 "if [[ \"$1\" == \"--version\" ]]; then echo 'Python fixture'; exit 0; fi\n"
+                "if [[ \"$1\" == \"scripts/check-acquisition-placement.py\" ]]; then exit 0; fi\n"
                 "if [[ \"$1\" == \"-\" ]]; then cat >/dev/null; echo 'q1,q2,q3,q4,q5'; exit 0; fi\n"
                 "if [[ \"$1\" == \"scripts/radar.py\" && \"$2\" == \"collect\" ]]; then\n"
                 "  echo partial > data/tracked.txt\n"
@@ -102,6 +104,7 @@ class ScheduledContinuityTests(unittest.TestCase):
             env = os.environ | {
                 "RADAR_REPO_DIR": str(repo),
                 "RADAR_PYTHON_BIN": str(fake_python),
+                "RADAR_ACQUISITION_PROVIDER": "thor",
                 "RADAR_REFERENCE_TIME": "2026-09-23T23:59:59Z",
             }
             completed = subprocess.run(
@@ -149,6 +152,7 @@ class ScheduledContinuityTests(unittest.TestCase):
             fake_python.write_text(
                 "#!/bin/bash\n"
                 "if [[ \"$1\" == \"--version\" ]]; then echo 'Python fixture'; exit 0; fi\n"
+                "if [[ \"$1\" == \"scripts/check-acquisition-placement.py\" ]]; then exit 0; fi\n"
                 "if [[ \"$1\" == \"-\" ]]; then cat >/dev/null; echo 'q1,q2,q3,q4,q5'; exit 0; fi\n"
                 "if [[ \"$1\" == \"scripts/radar.py\" && \"$2\" == \"collect\" ]]; then\n"
                 "  echo collected > data/tracked.txt\n"
@@ -169,6 +173,7 @@ class ScheduledContinuityTests(unittest.TestCase):
             env = os.environ | {
                 "RADAR_REPO_DIR": str(repo),
                 "RADAR_PYTHON_BIN": str(fake_python),
+                "RADAR_ACQUISITION_PROVIDER": "thor",
                 "RADAR_REFERENCE_TIME": "2026-09-23T23:59:59Z",
                 "RADAR_PUBLISH_MODE": "validate-only",
             }

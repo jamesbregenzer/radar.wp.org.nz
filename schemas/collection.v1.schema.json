@@ -26,6 +26,26 @@
           "source_receipt_path": {"type": "string", "minLength": 1},
           "acquisition_id": {"type": "string", "pattern": "trac-csv-acquisition-v1-[0-9a-f]{24}"},
           "parsing_version": {"type": "string", "minLength": 1},
+          "acquisition_execution": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["capability", "requiredProvider", "provider", "host", "unattended", "interactiveCanary", "status", "startedAt", "completedAt", "uploadStatus", "readbackStatus", "nextScheduledAcquisition", "failureReason"],
+            "properties": {
+              "capability": {"const": "wordpress.trac.raw-acquisition"},
+              "requiredProvider": {"const": "thor"},
+              "provider": {"type": "string", "minLength": 1},
+              "host": {"type": "string", "minLength": 1},
+              "unattended": {"type": "boolean"},
+              "interactiveCanary": {"type": "boolean"},
+              "status": {"enum": ["accepted", "diagnostic-canary", "wrong-host"]},
+              "startedAt": {"type": ["string", "null"]},
+              "completedAt": {"type": ["string", "null"]},
+              "uploadStatus": {"type": "string", "minLength": 1},
+              "readbackStatus": {"type": "string", "minLength": 1},
+              "nextScheduledAcquisition": {"type": ["string", "null"]},
+              "failureReason": {"type": ["string", "null"]}
+            }
+          },
           "collected_at": {"type": ["string", "null"]},
           "exists": {"type": "boolean"},
           "valid_csv": {"type": "boolean"},

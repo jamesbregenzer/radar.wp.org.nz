@@ -1,0 +1,24 @@
+{
+  "schema": "radar-source-acquisition-capability-registry.v1",
+  "version": 1,
+  "capabilities": [
+    {
+      "id": "wordpress.trac.raw-acquisition",
+      "sourceFamily": "CORE_TRAC",
+      "canonicalProvider": "thor",
+      "requiredProviderProperties": {
+        "host": "thor",
+        "unattended": true,
+        "browserDownloadCapability": true,
+        "governedRepositoryUploadCustody": true,
+        "persistentNetworkAvailability": true
+      },
+      "normalInteractiveHostsAllowed": false,
+      "wrongHostFailureCode": "UNATTENDED_SOURCE_ACQUISITION_WRONG_HOST",
+      "interactiveDiagnosticCanary": {
+        "allowed": true,
+        "requiresExplicitFlag": true
+      }
+    }
+  ]
+}

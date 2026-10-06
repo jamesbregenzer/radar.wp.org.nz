@@ -92,6 +92,7 @@ def build_trac_receipt(
     source_url: str,
     csv_path: Path,
     retrieved_at: str | None = None,
+    execution: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     raw_bytes = csv_path.read_bytes()
     observed = retrieved_at or datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -109,8 +110,10 @@ def build_trac_receipt(
         "byteLength": len(raw_bytes),
         "parserVersion": PARSER_VERSION,
     }
+    if execution:
+        preimage["execution"] = execution
     acquisition_id = f"trac-csv-acquisition-v1-{canonical_hash(preimage)[:24]}"
-    return {
+    receipt = {
         "schema": RECEIPT_SCHEMA,
         "version": 1,
         "acquisitionId": acquisition_id,
@@ -131,6 +134,9 @@ def build_trac_receipt(
         },
         "canonicalHash": canonical_hash(preimage),
     }
+    if execution:
+        receipt["execution"] = execution
+    return receipt
 
 
 def write_trac_receipt(
@@ -140,6 +146,7 @@ def write_trac_receipt(
     source_url: str,
     csv_path: Path,
     retrieved_at: str | None = None,
+    execution: dict[str, Any] | None = None,
 ) -> Path:
     receipt = build_trac_receipt(
         query_slug=query_slug,
@@ -147,6 +154,7 @@ def write_trac_receipt(
         source_url=source_url,
         csv_path=csv_path,
         retrieved_at=retrieved_at,
+        execution=execution,
     )
     path = receipt_path_for(csv_path)
     body = canonical_json(receipt)

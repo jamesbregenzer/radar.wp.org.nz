@@ -5,11 +5,13 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+import os
 import shutil
 import re
 import sys
 from pathlib import Path
 
+from acquisition_placement import receipt_execution_metadata, utc_timestamp
 from radarlib import ROOT, load_queries
 from trac_receipts import configured_query, query_url, write_trac_receipt
 
@@ -36,6 +38,10 @@ def import_download(query_slug: str, source: Path = DEFAULT_DOWNLOAD, *, collect
 
     target_dir = RAW_MANUAL / collection_id
     target_dir.mkdir(parents=True, exist_ok=True)
+    execution = receipt_execution_metadata(
+        started_at=os.environ.get("RADAR_ACQUISITION_STARTED_AT"),
+        completed_at=utc_timestamp(),
+    )
 
     target = target_dir / f"{query_slug}.csv"
     temporary = target.with_suffix(".csv.tmp")
@@ -50,6 +56,7 @@ def import_download(query_slug: str, source: Path = DEFAULT_DOWNLOAD, *, collect
             source_url=resolved_url,
             csv_path=target,
             retrieved_at=datetime.fromtimestamp(target.stat().st_mtime, timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+            execution=execution,
         )
         return target
 
@@ -62,6 +69,7 @@ def import_download(query_slug: str, source: Path = DEFAULT_DOWNLOAD, *, collect
         source_url=resolved_url,
         csv_path=target,
         retrieved_at=datetime.fromtimestamp(target.stat().st_mtime, timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        execution=execution,
     )
 
     return target

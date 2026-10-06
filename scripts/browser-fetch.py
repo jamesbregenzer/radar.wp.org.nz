@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
-"""Fetch a configured WordPress Trac CSV through the local browser session."""
+"""Fetch a configured WordPress Trac CSV through the governed provider session."""
 
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 import time
 from pathlib import Path
 
+from acquisition_placement import (
+    ERROR_CODE,
+    PlacementError,
+    placement_environment,
+    require_trac_acquisition_placement,
+    utc_timestamp,
+)
 from radarlib import ROOT, load_queries
 from trac_receipts import query_url
 
@@ -53,7 +61,15 @@ def main() -> int:
     parser.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT_SECONDS)
     parser.add_argument("--browser", default="Firefox")
     parser.add_argument("--keep-browser-open", action="store_true")
+    parser.add_argument("--interactive-canary", action="store_true", help="Allow an explicitly requested diagnostic run outside the canonical provider.")
     args = parser.parse_args()
+
+    started_at = utc_timestamp()
+    try:
+        placement = require_trac_acquisition_placement(allow_interactive_canary=args.interactive_canary)
+    except PlacementError:
+        print(ERROR_CODE, file=sys.stderr)
+        return 78
 
     queries = {query["slug"]: query for query in load_queries()}
     query = queries.get(args.query_slug)
@@ -70,6 +86,8 @@ def main() -> int:
     try:
         downloaded = wait_for_download(args.timeout)
         print(f"Downloaded {downloaded}")
+        child_env = os.environ.copy()
+        child_env.update(placement_environment(placement, started_at=started_at))
         subprocess.run([
             sys.executable,
             str(ROOT / "scripts" / "import-download.py"),
@@ -77,7 +95,7 @@ def main() -> int:
             "--source", str(downloaded),
             "--collection-id", args.collection_id,
             "--source-url", url,
-        ], check=True)
+        ], check=True, env=child_env)
         downloaded.unlink(missing_ok=True)
         print("Removed downloaded query.csv")
     except Exception as error:

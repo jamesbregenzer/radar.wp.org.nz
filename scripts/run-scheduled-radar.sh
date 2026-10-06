@@ -18,6 +18,7 @@ cd "$REPO_DIR"
 echo "$LOG_PREFIX Starting scheduled radar update at $(date)"
 echo "$LOG_PREFIX Using Python: $("$PYTHON_BIN" --version 2>&1)"
 echo "$LOG_PREFIX PATH: $PATH"
+"$PYTHON_BIN" scripts/check-acquisition-placement.py
 
 if [[ "$PUBLISH_MODE" != "publish" && "$PUBLISH_MODE" != "validate-only" ]]; then
   echo "$LOG_PREFIX Invalid RADAR_PUBLISH_MODE: $PUBLISH_MODE" >&2

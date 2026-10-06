@@ -162,6 +162,8 @@ def _collection_preimage(selection: DatasetSelection, context: RunContext) -> di
             item["acquisition_id"] = evidence.acquisition_id
         if evidence.parsing_version:
             item["parsing_version"] = evidence.parsing_version
+        if evidence.acquisition_execution:
+            item["acquisition_execution"] = evidence.acquisition_execution
         query_evidence.append(item)
     ambiguous = [
         {"query_slug": slug, "artifact_paths": sorted(repository_artifact_path(selection, path) for path in paths)}

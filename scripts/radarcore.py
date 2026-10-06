@@ -66,6 +66,7 @@ class CollectionEvidence:
     source_receipt_path: Path | None = None
     acquisition_id: str | None = None
     parsing_version: str | None = None
+    acquisition_execution: dict[str, Any] | None = None
     warnings: tuple[str, ...] = ()
     errors: tuple[str, ...] = ()
 
@@ -139,6 +140,7 @@ def validate_csv_artifact(path: Path, query_slug: str, ticket_id_keys: tuple[str
         source_receipt_path=receipt_path,
         acquisition_id=receipt.get("acquisitionId"),
         parsing_version=receipt.get("parserVersion"),
+        acquisition_execution=receipt.get("execution") if isinstance(receipt.get("execution"), dict) else None,
         warnings=warnings,
         errors=errors + receipt_errors,
     )
