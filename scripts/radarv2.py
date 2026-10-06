@@ -1007,7 +1007,7 @@ def wave2_opportunity(
             "dimensions": dimensions,
             "limitations": [
                 *list(family_record.get("limitations") or []),
-                "Radar observes the public request but does not decide private qualification, scheduling, HWP, or delivery authority.",
+                "Radar observes the public request but does not decide private qualification, scheduling, content drafting, or delivery authority.",
             ],
         },
         "sourceCoverage": coverage,
