@@ -141,7 +141,7 @@ def _collection_preimage(selection: DatasetSelection, context: RunContext) -> di
     query_evidence = []
     for slug in sorted(selection.expected_queries):
         evidence = selection.evidence[slug]
-        query_evidence.append({
+        item = {
             "query_slug": slug,
             "source_identity": evidence.source_identity,
             "artifact_path": repository_artifact_path(selection, evidence.artifact_path),
@@ -153,7 +153,16 @@ def _collection_preimage(selection: DatasetSelection, context: RunContext) -> di
             "sha256": evidence.sha256,
             "warnings": sorted(evidence.warnings),
             "errors": sorted(evidence.errors),
-        })
+        }
+        if evidence.source_url:
+            item["source_url"] = evidence.source_url
+        if evidence.source_receipt_path:
+            item["source_receipt_path"] = repository_artifact_path(selection, evidence.source_receipt_path)
+        if evidence.acquisition_id:
+            item["acquisition_id"] = evidence.acquisition_id
+        if evidence.parsing_version:
+            item["parsing_version"] = evidence.parsing_version
+        query_evidence.append(item)
     ambiguous = [
         {"query_slug": slug, "artifact_paths": sorted(repository_artifact_path(selection, path) for path in paths)}
         for slug, paths in sorted(selection.ambiguous.items())

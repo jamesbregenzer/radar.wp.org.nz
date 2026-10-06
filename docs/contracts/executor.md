@@ -29,17 +29,18 @@ For an already archived collection:
 ```bash
 python3 scripts/radar.py pipeline \
   --skip-collect \
-  --collection-id 2026-01-15 \
+  --collection-id 2026-01-15T12-00-00Z \
   --reference-time 2026-01-15T12:00:00Z \
   --source-revision 0123456789abcdef0123456789abcdef01234567
 ```
 
 Without `--skip-collect`, pipeline invokes the browser-assisted collector. An
 executor must not assume that hosted/server or GitHub Actions HTTP collection
-works. In this mode, the collection ID must equal the UTC reference-time date,
-and Radar collects every enabled required query. Query subsets are available
-only through standalone `collect --query`; they are not certifiable pipeline
-collection attempts.
+works. In this mode, the collection ID must carry the UTC reference-time date
+prefix and should include the run time, for example `YYYY-MM-DDTHH-MM-SSZ`, so
+multiple observations on one date remain distinct. Radar collects every enabled
+required query. Query subsets are available only through standalone
+`collect --query`; they are not certifiable pipeline collection attempts.
 
 ## Result handling
 

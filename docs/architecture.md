@@ -17,8 +17,9 @@ The v2 API adds a source-neutral projection over the certified dataset:
 certified current dataset
   + independently certified public source-family snapshots
   -> source-neutral resources
+  -> typed public relationships
   -> qualified opportunities
-  -> /api/v2/ sources, snapshot, opportunities, changes, diagnostics, and taxonomy
+  -> /api/v2/ sources, snapshot, resources, relationships, opportunities, changes, diagnostics, and taxonomy
 ```
 
 ## Collection
@@ -57,6 +58,14 @@ V2 source-family snapshots are static inputs to generation, not runtime fetches.
 GitHub source snapshot. If that family cannot be refreshed, Trac certification
 can still publish fresh Trac intelligence while v2 reports the GitHub family as
 stale or degraded. No partial source family may report itself as complete.
+
+V2 resources are not opportunities. `scripts/radarv2.py` first projects public
+Core Trac tickets and source-family records into family-qualified resources,
+then adds typed relationships only when public evidence supports the edge. Bare
+numeric references are ambiguous and cannot create cross-source relationships by
+themselves. Opportunities identify a missing contribution increment over a
+resource cluster and retain v1 Core Trac keys only in legacy compatibility
+fields.
 
 ## Review state
 

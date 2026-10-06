@@ -32,6 +32,7 @@ def build_parser() -> argparse.ArgumentParser:
     collect = subparsers.add_parser("collect")
     add_reference_time(collect)
     collect.add_argument("--query", action="append", help="Configured query slug; repeatable")
+    collect.add_argument("--collection-id", help="Immutable raw collection identity captured at run start")
 
     validate = subparsers.add_parser("validate-collection")
     add_reference_time(validate)
@@ -67,7 +68,7 @@ def build_parser() -> argparse.ArgumentParser:
 def dispatch(args: argparse.Namespace) -> dict:
     context = parse_run_time(args.reference_time)
     if args.operation == "collect":
-        return collect_operation(context, args.query)
+        return collect_operation(context, args.query, collection_id=args.collection_id)
     if args.operation == "validate-collection":
         return validate_collection_operation(context, args.collection_id)
     if args.operation == "generate":

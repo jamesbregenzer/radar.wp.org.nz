@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from trac_receipts import load_trac_receipt
+
 ROOT = Path(__file__).resolve().parents[1]
 SCORING_CONFIG = ROOT / "config" / "scoring.json"
 
@@ -60,6 +62,10 @@ class CollectionEvidence:
     row_count: int
     sha256: str
     status: str
+    source_url: str | None = None
+    source_receipt_path: Path | None = None
+    acquisition_id: str | None = None
+    parsing_version: str | None = None
     warnings: tuple[str, ...] = ()
     errors: tuple[str, ...] = ()
 
@@ -110,6 +116,14 @@ def validate_csv_artifact(path: Path, query_slug: str, ticket_id_keys: tuple[str
     errors = () if headers and recognized else (("missing_ticket_id_header",) if headers else ("missing_header",))
     warnings = ("empty_but_valid",) if recognized and not rows else ()
     collected_at = datetime.fromtimestamp(path.stat().st_mtime, timezone.utc)
+    receipt = load_trac_receipt(path) or {}
+    receipt_path = path.with_suffix(".source-receipt.json") if receipt else None
+    receipt_errors: tuple[str, ...] = ()
+    if receipt:
+        if receipt.get("rawSha256") != file_sha256(path):
+            receipt_errors = ("source_receipt_sha_mismatch",)
+        elif receipt.get("querySlug") != query_slug:
+            receipt_errors = ("source_receipt_query_mismatch",)
     return CollectionEvidence(
         query_slug=query_slug,
         source_identity=query_slug,
@@ -120,9 +134,13 @@ def validate_csv_artifact(path: Path, query_slug: str, ticket_id_keys: tuple[str
         recognized_ticket_id=recognized,
         row_count=len(rows),
         sha256=file_sha256(path),
-        status="valid" if headers and recognized else "invalid",
+        status="valid" if headers and recognized and not receipt_errors else "invalid",
+        source_url=receipt.get("sourceUrl"),
+        source_receipt_path=receipt_path,
+        acquisition_id=receipt.get("acquisitionId"),
+        parsing_version=receipt.get("parserVersion"),
         warnings=warnings,
-        errors=errors,
+        errors=errors + receipt_errors,
     )
 
 

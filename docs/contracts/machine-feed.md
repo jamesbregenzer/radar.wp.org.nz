@@ -110,24 +110,51 @@ compatibility strategy.
 
 ## Source-neutral `/api/v2/`
 
-Status: **ACTIVE SOURCE-NEUTRAL CONTRACT**
+Status: **PRE-PRODUCTION SOURCE-NEUTRAL CONTRACT**
 
 V2 is a public observation API. It keeps v1 compatibility intact while exposing
-resource, source-family, qualification, coverage, and change-feed data in terms
-that are useful to any public consumer.
+resource, relationship, source-family, qualification, coverage, and change-feed
+data in terms that are useful to any public consumer. Because public production
+does not yet expose `/api/v2/`, this contract may still change before first V2
+production deployment.
 
 | Endpoint | Successful body source |
 | --- | --- |
 | `GET /api/v2/health` | v2 source-family and snapshot health |
 | `GET /api/v2/sources` | independently certified source-family state |
 | `GET /api/v2/snapshot` | source-neutral snapshot identity and hashes |
+| `GET /api/v2/resources` | ordered `radar-resource.v2` records |
+| `GET /api/v2/resources/{id}` | one v2 resource, such as `core-trac:63568` |
+| `GET /api/v2/relationships` | typed public resource relationships |
 | `GET /api/v2/opportunities` | ordered `radar-opportunity.v2` records |
-| `GET /api/v2/opportunities/{id}` | one v2 opportunity, such as `core-trac:63568` |
+| `GET /api/v2/opportunities/{id}` | one semantic missing-increment opportunity |
+| `GET /api/v2/candidates` | public `radar-candidate-feed.v1` projection |
+| `GET /api/v2/candidate-feed` | alias of the public candidate feed |
+| `GET /api/v2/contribution-families` | versioned public contribution-family registry |
+| `GET /api/v2/scoring` | versioned candidate scoring-vector contract |
 | `GET /api/v2/changes` | reproducible public observation-change feed |
 | `GET /api/v2/contributions` | public contribution records |
 | `GET /api/v2/outcomes` | public outcome projection and attribution limits |
 | `GET /api/v2/taxonomy` | qualification states, contribution families, sources, and coverage states |
 | `GET /api/v2/diagnostics` | public supply and quality diagnostics |
+
+Every v2 resource exposes:
+
+- stable family-qualified identity;
+- canonical public URL;
+- resource type;
+- upstream state;
+- observed material revision;
+- observed time;
+- source-family snapshot identity;
+- provenance;
+- completeness and limitations;
+- deterministic hash.
+
+Every v2 relationship exposes a typed edge between resources and public
+provenance. Bare numeric references, including GitHub `#12345` text, do not
+create Core Trac relationships unless repo-aware or canonical public evidence
+disambiguates the identity.
 
 Every v2 opportunity separates:
 
@@ -147,10 +174,35 @@ Every v2 opportunity separates:
 - ranking dimensions: actionability, usefulness signal, evidence completeness,
   freshness, duplication risk, effort, timeliness, and confidence.
 
-Core Trac v1 identities remain unchanged. The v2 `id` for existing Core Trac
-records is still `core-trac:{ticketId}`. V2 adds its own material revision so
-supporting-resource and qualification changes can be tracked without changing
-the frozen v1 schema.
+Core Trac v1 identities remain unchanged in `/api/v1/` and in each V2 record's
+`legacyV1` compatibility object. V2 opportunity IDs identify the semantic
+missing contribution increment, not the ticket itself. V2 material revisions
+track supporting-resource and qualification changes without changing the frozen
+v1 schema.
+
+Every v2 candidate is a public evidence record derived from one opportunity
+record. A candidate is not a final qualification decision, executable work, a
+schedule, or delivery authority. Candidate records include canonical candidate
+ID, resource refs, public relationships, family candidates and confidence,
+score vector, derived ranking, source revision, freshness, source health,
+change information, and a public explanation.
+
+The contribution-family registry is versioned and source-neutral. Initial
+families include Core code review, Core patch testing, bug reproduction,
+regression and automated tests, Core docs, Gutenberg review/testing/
+reproduction/patch work, accessibility testing, beta/RC testing, performance
+investigation, documentation and handbook review, Learn technical review, and
+Theme Check/theme review families. WordPress labels, keywords, pathways, and
+legacy Radar signal names are aliases or evidence signals, not mandatory family
+IDs.
+
+The scoring contract keeps each score dimension separate:
+`upstreamDemandStrength`, `expectedUpstreamImpact`, `jamesAffinity`,
+`noveltyConfidence`, `evidenceFeasibility`, `timeliness`,
+`estimatedExecutionCost`, and `deliveryReputationalRisk`. Each dimension
+carries value, confidence, source evidence, and explanation. Unknown values
+remain unknown. The derived scalar priority is only for ordering and cannot
+override failed eligibility, safety, or source-integrity gates.
 
 ## Source-family certification
 
@@ -158,21 +210,46 @@ Source families certify independently.
 
 `CORE_TRAC` remains fail-closed within the configured Trac collection. A
 certified Trac snapshot requires every enabled Trac query to be collected and
-validated.
+validated. Each Trac CSV acquisition keeps the exact source URL, retrieval
+timestamp, raw byte SHA-256, immutable acquisition ID, source receipt, and
+parser metadata. Historical CSV snapshots are append-only; a rerun may reuse
+identical bytes but may not silently overwrite different bytes under the same
+collection/query identity.
 
-`WORDPRESS_DEVELOP_GITHUB` is certified from a bounded public snapshot of open
-`WordPress/wordpress-develop` pull requests. Its completeness and limitations
-are reported separately from Trac. If GitHub collection fails while Trac
-succeeds, Radar may keep publishing fresh Trac intelligence while reporting the
-GitHub family as stale, missing, or degraded. Partial GitHub data must never
-masquerade as complete.
+`WORDPRESS_DEVELOP_GITHUB` is currently certified from a bounded public snapshot
+of recently updated open `WordPress/wordpress-develop` pull requests. Its
+completeness and limitations are reported separately from Trac. If GitHub
+collection fails while Trac succeeds, Radar may keep publishing fresh Trac
+intelligence while reporting the GitHub family as stale, missing, or degraded.
+A pull request dropping outside the bounded window must not be represented as
+closed, merged, superseded, disappeared, or resolved. Partial GitHub data must
+never masquerade as complete.
+
+`GUTENBERG` is certified from bounded public snapshots of open
+`WordPress/gutenberg` issues and pull requests sorted by updated time.
+Gutenberg identities remain native GitHub issue and pull request identities.
+Radar may create Gutenberg-native opportunities when public labels, review
+metadata, bug/accessibility/API/performance cues, or stale active discussion
+support a specific missing contribution increment. It must not fabricate Core
+Trac identities or make Gutenberg source health globally invalidate healthy Core
+Trac or wordpress-develop data.
+
+Native GitHub opportunities do not require a Core Trac root. They still require
+a concrete public signal and expose `requiresLiveRevalidation=true`, evidence
+observed, evidence missing, duplication risk, novelty signal, effort/setup
+burden, confidence, and limitations. A resource with no clear public
+contribution signal should be omitted or suppressed rather than promoted merely
+because it exists.
 
 ## Public observation changes
 
-`/api/v2/changes` is a reproducible observation-change feed derived from
-certified public data. Event classes describe public source observations such as
-opportunity changes, upstream reactivation, public tests, patch changes, PR
-merge/resolution, or suppression.
+`/api/v2/changes` is a reproducible material public observation-change feed
+derived from certified public data. Event classes include resource first
+observation, material resource changes, PR head changes, supporting-resource
+additions, public test or review additions, qualification changes, clear
+opportunity emergence, likely coverage, suppression, upstream reactivation,
+closure or merge, and source coverage degradation. Event IDs are derived from
+material state, not snapshot timestamp or output order.
 
 The feed is not an execution log. It does not accept acknowledgements, assignment
 state, delivery state, or private lifecycle data.

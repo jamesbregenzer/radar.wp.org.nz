@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect a bounded public wordpress-develop GitHub source snapshot."""
+"""Collect a bounded public Gutenberg GitHub source snapshot."""
 
 from __future__ import annotations
 
@@ -7,7 +7,6 @@ import argparse
 from datetime import datetime, timezone
 import json
 from pathlib import Path
-import re
 import urllib.error
 import urllib.request
 from typing import Any
@@ -15,11 +14,10 @@ from typing import Any
 from certification import canonical_hash, canonical_json
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUTPUT = ROOT / "data" / "sources" / "wordpress-develop-github.json"
-PULLS_URL = "https://api.github.com/repos/WordPress/wordpress-develop/pulls?state=open&sort=updated&direction=desc&per_page={limit}"
-ISSUES_URL = "https://api.github.com/repos/WordPress/wordpress-develop/issues?state=open&sort=updated&direction=desc&per_page={limit}"
-CORE_TRAC_TICKET_RE = re.compile(r"https?://core\.trac\.wordpress\.org/ticket/([0-9]{4,6})\b")
-BARE_HASH_RE = re.compile(r"(?<![\w/])#([0-9]{4,6})\b")
+DEFAULT_OUTPUT = ROOT / "data" / "sources" / "gutenberg-github.json"
+REPO = "WordPress/gutenberg"
+ISSUES_URL = "https://api.github.com/repos/{repo}/issues?state=open&sort=updated&direction=desc&per_page={limit}"
+PULLS_URL = "https://api.github.com/repos/{repo}/pulls?state=open&sort=updated&direction=desc&per_page={limit}"
 
 
 def fetch_json(url: str) -> tuple[Any, str | None, bool]:
@@ -42,6 +40,15 @@ def label_names(item: dict[str, Any]) -> list[str]:
 
 def normalize_issue(item: dict[str, Any]) -> dict[str, Any]:
     return {
+        "resourceType": "GUTENBERG_ISSUE",
+        "number": item["number"],
+        "url": item["html_url"],
+        "apiUrl": item["url"],
+        "title": item.get("title") or "",
+        "body": item.get("body") or "",
+        "state": item.get("state") or "unknown",
+        "createdAt": item.get("created_at"),
+        "updatedAt": item.get("updated_at"),
         "labels": label_names(item),
         "comments": item.get("comments"),
         "milestone": (item.get("milestone") or {}).get("title"),
@@ -61,6 +68,10 @@ def observed_page(kind: str, values: Any, truncated: bool) -> dict[str, Any]:
         "truncated": truncated,
         "observed": True,
     }
+
+
+def empty_observed_page(kind: str) -> dict[str, Any]:
+    return {"kind": kind, "count": None, "truncated": None, "observed": False}
 
 
 def diff_identity(files: list[dict[str, Any]], truncated: bool) -> dict[str, Any]:
@@ -84,10 +95,6 @@ def diff_identity(files: list[dict[str, Any]], truncated: bool) -> dict[str, Any
     }
 
 
-def empty_observed_page(kind: str) -> dict[str, Any]:
-    return {"kind": kind, "count": None, "truncated": None, "observed": False}
-
-
 def empty_diff_identity() -> dict[str, Any]:
     return {"fileCount": None, "filesHash": None, "truncated": None, "observed": False}
 
@@ -105,7 +112,7 @@ def enrich_pull_request(item: dict[str, Any], enrich: bool) -> dict[str, Any]:
     files, _, files_truncated = fetch_json(item["url"] + "/files?per_page=100")
     head_sha = item.get("head", {}).get("sha")
     if head_sha:
-        checks_url = f"https://api.github.com/repos/WordPress/wordpress-develop/commits/{head_sha}/check-runs?per_page=100"
+        checks_url = f"https://api.github.com/repos/{REPO}/commits/{head_sha}/check-runs?per_page=100"
         checks, _, checks_truncated = fetch_json(checks_url)
     else:
         checks, checks_truncated = {"check_runs": []}, False
@@ -118,20 +125,14 @@ def enrich_pull_request(item: dict[str, Any], enrich: bool) -> dict[str, Any]:
 
 
 def normalize_pull_request(item: dict[str, Any], issue_index: dict[int, dict[str, Any]], enrichment: dict[str, Any]) -> dict[str, Any]:
-    body = item.get("body") or ""
     issue = issue_index.get(int(item["number"]), {})
-    reference_text = f"{item.get('title') or ''} {body} {item.get('html_url') or ''}"
-    ticket_references = sorted(set(CORE_TRAC_TICKET_RE.findall(reference_text)))
-    ambiguous_ticket_references = sorted(set(BARE_HASH_RE.findall(reference_text)) - set(ticket_references))
     return {
-        "resourceType": "WORDPRESS_DEVELOP_PR",
+        "resourceType": "GUTENBERG_PR",
         "number": item["number"],
         "url": item["html_url"],
         "apiUrl": item["url"],
         "title": item.get("title") or "",
-        "body": body,
-        "ticketReferences": ticket_references,
-        "ambiguousTicketReferences": ambiguous_ticket_references,
+        "body": item.get("body") or "",
         "state": item.get("state") or "unknown",
         "draft": bool(item.get("draft")),
         "createdAt": item.get("created_at"),
@@ -151,7 +152,6 @@ def normalize_pull_request(item: dict[str, Any], issue_index: dict[int, dict[str
             "sha": item.get("head", {}).get("sha"),
             "repo": item.get("head", {}).get("repo", {}).get("full_name"),
         },
-        "changedFiles": item.get("changed_files"),
         "discussion": enrichment["discussion"],
         "reviews": enrichment["reviews"],
         "checks": enrichment["checks"],
@@ -161,38 +161,42 @@ def normalize_pull_request(item: dict[str, Any], issue_index: dict[int, dict[str
 
 def build_snapshot(limit: int, observed_at: str | None = None, enrich_limit: int = 0) -> dict[str, Any]:
     observed = observed_at or datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-    url = PULLS_URL.format(limit=limit)
     try:
-        pulls, etag, pulls_truncated = fetch_json(url)
-        issues, issue_etag, issues_truncated = fetch_json(ISSUES_URL.format(limit=limit))
+        issues_payload, issues_etag, issues_truncated = fetch_json(ISSUES_URL.format(repo=REPO, limit=limit))
+        pulls_payload, pulls_etag, pulls_truncated = fetch_json(PULLS_URL.format(repo=REPO, limit=limit))
         issue_index = {
             int(item["number"]): normalize_issue(item)
-            for item in issues
+            for item in issues_payload
+            if "pull_request" not in item
+        }
+        pull_issue_index = {
+            int(item["number"]): normalize_issue(item)
+            for item in issues_payload
             if "pull_request" in item
         }
-        resources = [
-            normalize_pull_request(item, issue_index, enrich_pull_request(item, index < enrich_limit))
-            for index, item in enumerate(pulls)
+        resources = list(issue_index.values()) + [
+            normalize_pull_request(item, pull_issue_index, enrich_pull_request(item, index < enrich_limit))
+            for index, item in enumerate(pulls_payload)
         ]
         health = {"state": "certified", "failure": None}
-        completeness = "PARTIAL" if pulls_truncated or issues_truncated else "COMPLETE"
+        completeness = "PARTIAL" if issues_truncated or pulls_truncated else "COMPLETE"
         limitations = [
-            f"Snapshot is bounded to the {limit} most recently updated open wordpress-develop pull requests.",
+            f"Snapshot is bounded to the {limit} most recently updated open Gutenberg issues and {limit} most recently updated open Gutenberg pull requests.",
             f"Review, CI, discussion, and diff identity enrichment is bounded to the first {enrich_limit} pull requests.",
         ]
-        source_revision = f"pulls:{etag or 'none'} issues:{issue_etag or 'none'}"
-        pagination = {"pullsNextPagePresent": pulls_truncated, "issuesNextPagePresent": issues_truncated}
+        source_revision = f"issues:{issues_etag or 'none'} pulls:{pulls_etag or 'none'}"
+        pagination = {"issuesNextPagePresent": issues_truncated, "pullsNextPagePresent": pulls_truncated}
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
         resources = []
-        pagination = {"pullsNextPagePresent": None, "issuesNextPagePresent": None}
-        source_revision = None
+        pagination = {"issuesNextPagePresent": None, "pullsNextPagePresent": None}
         health = {"state": "failed", "failure": f"{type(error).__name__}: {error}"}
         completeness = "NONE"
-        limitations = ["GitHub collection failed; no partial source data is certified."]
+        limitations = ["Gutenberg GitHub collection failed; no partial source data is certified."]
+        source_revision = None
 
     preimage = {
         "schema": "source-family-snapshot.v1",
-        "sourceFamily": "WORDPRESS_DEVELOP_GITHUB",
+        "sourceFamily": "GUTENBERG",
         "sourceRevision": source_revision,
         "observedTime": observed,
         "resources": resources,
@@ -201,8 +205,8 @@ def build_snapshot(limit: int, observed_at: str | None = None, enrich_limit: int
     return {
         "schema": "source-family-snapshot.v1",
         "version": 1,
-        "sourceFamily": "WORDPRESS_DEVELOP_GITHUB",
-        "snapshotId": f"source-family-wordpress-develop-github-{canonical[:24]}",
+        "sourceFamily": "GUTENBERG",
+        "snapshotId": f"source-family-gutenberg-{canonical[:24]}",
         "sourceRevision": source_revision,
         "observedTime": observed,
         "certifiedTime": observed,
@@ -219,7 +223,7 @@ def build_snapshot(limit: int, observed_at: str | None = None, enrich_limit: int
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--limit", type=int, default=100)
+    parser.add_argument("--limit", type=int, default=50)
     parser.add_argument("--enrich-limit", type=int, default=0)
     parser.add_argument("--observed-at")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)

@@ -97,7 +97,7 @@ async function loadCertifiedBundle(env) {
 }
 
 async function loadV2Bundle(env) {
-  const names = ["health", "sources", "snapshot", "opportunities", "changes", "contributions", "outcomes", "taxonomy", "diagnostics"];
+  const names = ["health", "sources", "snapshot", "resources", "relationships", "opportunities", "candidates", "candidate-feed", "contribution-families", "scoring", "changes", "contributions", "outcomes", "taxonomy", "diagnostics"];
   const entries = await Promise.all(names.map(async (name) => {
     const text = await assetText(env, `/api/v2/${name}.json`);
     return [name, text, JSON.parse(text), await sha256Hex(text)];
@@ -106,7 +106,13 @@ async function loadV2Bundle(env) {
   const valid = bundle.health.json.schema === "radar-health.v2"
     && bundle.sources.json.schema === "radar-sources.v2"
     && bundle.snapshot.json.schema === "radar-snapshot.v2"
+    && bundle.resources.json.schema === "radar-resource-set.v2"
+    && bundle.relationships.json.schema === "radar-relationship-set.v2"
     && bundle.opportunities.json.schema === "radar-opportunity-set.v2"
+    && bundle.candidates.json.schema === "radar-candidate-feed.v1"
+    && bundle["candidate-feed"].json.schema === "radar-candidate-feed.v1"
+    && bundle["contribution-families"].json.schema === "radar-contribution-family-registry.v1"
+    && bundle.scoring.json.schema === "radar-candidate-scoring-contract.v1"
     && bundle.changes.json.schema === "radar-changes.v2"
     && bundle.contributions.json.schema === "radar-contributions.v2"
     && bundle.outcomes.json.schema === "radar-outcomes.v2"
@@ -114,7 +120,16 @@ async function loadV2Bundle(env) {
     && bundle.diagnostics.json.schema === "radar-diagnostics.v2"
     && bundle.health.json.snapshotId === bundle.snapshot.json.snapshotId
     && bundle.sources.json.snapshotId === bundle.snapshot.json.snapshotId
+    && bundle.resources.json.snapshotId === bundle.snapshot.json.snapshotId
+    && bundle.relationships.json.snapshotId === bundle.snapshot.json.snapshotId
     && bundle.opportunities.json.snapshotId === bundle.snapshot.json.snapshotId
+    && bundle.candidates.json.snapshotId === bundle.snapshot.json.snapshotId
+    && bundle["candidate-feed"].json.snapshotId === bundle.snapshot.json.snapshotId
+    && bundle["contribution-families"].json.snapshotId === bundle.snapshot.json.snapshotId
+    && bundle.scoring.json.snapshotId === bundle.snapshot.json.snapshotId
+    && bundle.resources.json.resourceCount === bundle.resources.json.resources.length
+    && bundle.relationships.json.relationshipCount === bundle.relationships.json.relationships.length
+    && bundle.candidates.json.candidateCount === bundle.candidates.json.candidates.length
     && bundle.opportunities.json.opportunities.length === bundle.snapshot.json.opportunityCount;
   if (!valid) throw new Error("CERTIFIED_V2_BUNDLE_INVALID");
   return bundle;
@@ -188,7 +203,13 @@ async function handleV2ApiRequest(request, env) {
     "/api/v2/health": "health",
     "/api/v2/sources": "sources",
     "/api/v2/snapshot": "snapshot",
+    "/api/v2/resources": "resources",
+    "/api/v2/relationships": "relationships",
     "/api/v2/opportunities": "opportunities",
+    "/api/v2/candidates": "candidates",
+    "/api/v2/candidate-feed": "candidate-feed",
+    "/api/v2/contribution-families": "contribution-families",
+    "/api/v2/scoring": "scoring",
     "/api/v2/changes": "changes",
     "/api/v2/contributions": "contributions",
     "/api/v2/outcomes": "outcomes",
@@ -202,9 +223,18 @@ async function handleV2ApiRequest(request, env) {
   const match = url.pathname.match(/^\/api\/v2\/opportunities\/([^/]+)$/);
   if (match) {
     const id = decodeURIComponent(match[1]);
-    if (!/^core-trac:[0-9]+$/.test(id)) return apiError(400, "MALFORMED_OPPORTUNITY_ID", "Opportunity ID must use the core-trac:{ticketId} form.");
+    if (!/^[a-z0-9:.-]+$/.test(id)) return apiError(400, "MALFORMED_OPPORTUNITY_ID", "Opportunity ID contains unsupported characters.");
     const record = bundle.opportunities.json.opportunities.find((item) => item.id === id);
     if (!record) return apiError(404, "OPPORTUNITY_NOT_FOUND", "Opportunity is not present in the current snapshot.");
+    const body = JSON.stringify(record) + "\n";
+    return apiJson(request, body, await sha256Hex(body), snapshotId);
+  }
+  const resourceMatch = url.pathname.match(/^\/api\/v2\/resources\/([^/]+)$/);
+  if (resourceMatch) {
+    const id = decodeURIComponent(resourceMatch[1]);
+    if (!/^[a-z0-9:.-]+$/.test(id)) return apiError(400, "MALFORMED_RESOURCE_ID", "Resource ID contains unsupported characters.");
+    const record = bundle.resources.json.resources.find((item) => item.id === id);
+    if (!record) return apiError(404, "RESOURCE_NOT_FOUND", "Resource is not present in the current snapshot.");
     const body = JSON.stringify(record) + "\n";
     return apiJson(request, body, await sha256Hex(body), snapshotId);
   }

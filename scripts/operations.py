@@ -79,8 +79,10 @@ def classify_selection_failure(selection: DatasetSelection) -> str:
 def collect_operation(
     context: RunContext,
     selected_queries: list[str] | None = None,
-    collector: Callable[[str, RunContext], CollectionResult] = collect_query,
+    collector: Callable[..., CollectionResult] = collect_query,
+    collection_id: str | None = None,
 ) -> dict[str, Any]:
+    identity = collection_id or context.collection_date
     try:
         slugs = expected_query_slugs(selected_queries)
     except ValueError as error:
@@ -89,7 +91,10 @@ def collect_operation(
     collection_errors: list[str] = []
     for slug in slugs:
         try:
-            results.append(collector(slug, context))
+            try:
+                results.append(collector(slug, context, collection_id=identity))
+            except TypeError:
+                results.append(collector(slug, context))
         except Exception as error:
             collection_errors.append(f"query failed: {slug}: {error}")
     failed = [result.query_slug for result in results if not result.succeeded]
@@ -108,7 +113,7 @@ def collect_operation(
     ]
     return execution_result(
         "collect", "failure" if failed else "success", context,
-        inputs=slugs, outputs=[context.collection_date] if not failed else [], artifacts=artifacts,
+        inputs=slugs, outputs=[identity] if not failed else [], artifacts=artifacts,
         errors=[f"query failed: {slug}" for slug in failed if not any(f"query failed: {slug}:" in item for item in collection_errors)]
                + collection_errors,
         code="COLLECTION_QUERY_FAILED" if failed else SUCCESS,
@@ -149,6 +154,14 @@ def generation_artifact_paths(context: RunContext) -> list[Path]:
         ROOT / "docs/radar/api/v1/contributions.json", ROOT / "docs/radar/api/v1/machine-feed.json",
         ROOT / "docs/radar/api/v1/supply-diagnostics.json",
         ROOT / "docs/radar/api/v1/snapshot.sha256",
+        ROOT / "docs/radar/api/v2/health.json", ROOT / "docs/radar/api/v2/sources.json",
+        ROOT / "docs/radar/api/v2/snapshot.json", ROOT / "docs/radar/api/v2/resources.json",
+        ROOT / "docs/radar/api/v2/relationships.json", ROOT / "docs/radar/api/v2/opportunities.json",
+        ROOT / "docs/radar/api/v2/candidates.json", ROOT / "docs/radar/api/v2/candidate-feed.json",
+        ROOT / "docs/radar/api/v2/contribution-families.json", ROOT / "docs/radar/api/v2/scoring.json",
+        ROOT / "docs/radar/api/v2/changes.json", ROOT / "docs/radar/api/v2/contributions.json",
+        ROOT / "docs/radar/api/v2/outcomes.json", ROOT / "docs/radar/api/v2/taxonomy.json",
+        ROOT / "docs/radar/api/v2/diagnostics.json",
     ]
 
 
@@ -253,7 +266,7 @@ def pipeline_operation(
     stages: list[dict[str, Any]] = []
     calls = []
     if include_collect:
-        if collection_id != context.collection_date:
+        if collection_id[:10] != context.collection_date:
             return execution_result(
                 "pipeline", "failure", context, inputs=[collection_id],
                 errors=[f"collection ID {collection_id} does not match reference-time date {context.collection_date}"],
@@ -261,7 +274,10 @@ def pipeline_operation(
             )
         # Canonical collection is deliberately all-or-nothing. Query subsets are
         # supported only by the standalone diagnostic collect operation.
-        calls.append(("collect", lambda: ops.get("collect", collect_operation)(context)))
+        if "collect" in ops:
+            calls.append(("collect", lambda: ops["collect"](context)))
+        else:
+            calls.append(("collect", lambda: collect_operation(context, collection_id=collection_id)))
     calls.extend([
         ("validate-collection", lambda: ops.get("validate", validate_collection_operation)(context, collection_id)),
         ("certify", lambda: ops.get("certify", certify_operation)(context, collection_id, source_revision)),

@@ -8,53 +8,12 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from urllib.parse import urlencode
 
 from radarlib import ROOT, load_queries
+from trac_receipts import query_url
 
 DOWNLOADS = Path.home() / "Downloads"
 DEFAULT_TIMEOUT_SECONDS = 90
-
-QUERY_COLUMNS = (
-    "id",
-    "summary",
-    "status",
-    "component",
-    "owner",
-    "type",
-    "priority",
-    "milestone",
-    "version",
-    "keywords",
-    "time",
-    "changetime",
-    # Trac custom query may ignore unsupported columns; keep likely comment
-    # count aliases here so momentum scoring starts working if Trac exposes one.
-    "comments",
-    "_comments",
-)
-
-
-
-def query_url(query: dict) -> str:
-    if query.get("url"):
-        return str(query["url"])
-
-    track = query.get("track")
-    if not track:
-        raise ValueError(f"Query {query.get('slug', '<unknown>')} is missing both url and track.")
-
-    params = urlencode(
-        {
-            "status": "!closed",
-            "keywords": f"~{track}",
-            "format": "csv",
-            "col": list(QUERY_COLUMNS),
-        },
-        doseq=True,
-    )
-    return f"https://core.trac.wordpress.org/query?{params}"
-
 
 def wait_for_download(timeout: int = DEFAULT_TIMEOUT_SECONDS) -> Path:
     target = DOWNLOADS / "query.csv"
@@ -117,6 +76,7 @@ def main() -> int:
             args.query_slug,
             "--source", str(downloaded),
             "--collection-id", args.collection_id,
+            "--source-url", url,
         ], check=True)
         downloaded.unlink(missing_ok=True)
         print("Removed downloaded query.csv")

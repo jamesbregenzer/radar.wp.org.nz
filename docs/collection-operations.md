@@ -7,11 +7,11 @@ This runbook covers Radar's current browser-assisted collection workflow. It is 
 The scheduled wrapper is `scripts/run-scheduled-radar.sh`. At startup it fixes one run context containing:
 
 - reference time;
-- collection ID;
+- immutable collection ID;
 - source revision; and
 - every enabled query from `config/queries.json`.
 
-For each query, `scripts/browser-fetch.py` opens the configured Trac CSV export in Firefox and waits for `query.csv`. `scripts/import-download.py` then validates the download, archives it as `data/raw/manual/<collection-id>/<query-slug>.csv`, and removes the temporary browser file.
+For each query, `scripts/browser-fetch.py` opens the configured Trac CSV export in Firefox and waits for `query.csv`. `scripts/import-download.py` then validates the download, archives it as `data/raw/manual/<collection-id>/<query-slug>.csv`, and removes the temporary browser file. Scheduled runs use a timestamped collection ID such as `2026-01-15T12-00-00Z` so multiple observations on the same date remain distinct. Older date-only archives remain readable for compatibility.
 
 The wrapper uses the same run context for collection, validation, generation, certification, verification, and publication planning. This prevents one run from being split across collection identities when it crosses a date boundary.
 
@@ -44,7 +44,7 @@ Collect all enabled queries through the canonical pipeline:
 
 ```bash
 python3 scripts/radar.py pipeline \
-  --collection-id 2026-01-15 \
+  --collection-id 2026-01-15T12-00-00Z \
   --reference-time 2026-01-15T12:00:00Z \
   --source-revision 0123456789abcdef0123456789abcdef01234567
 ```
@@ -54,7 +54,7 @@ Collect one query for diagnosis:
 ```bash
 python3 scripts/radar.py collect \
   --query general_needs_testing \
-  --collection-id 2026-01-15 \
+  --collection-id 2026-01-15T12-00-00Z \
   --reference-time 2026-01-15T12:00:00Z
 ```
 

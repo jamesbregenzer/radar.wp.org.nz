@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 from certification import CERTIFIED_CURRENT, canonical_json, file_sha256, validate_named, verify_certified
-from radarv2 import WORDPRESS_DEVELOP_SOURCE, load_wordpress_develop_source, payload_hashes, project_v2
+from radarv2 import GUTENBERG_SOURCE, WORDPRESS_DEVELOP_SOURCE, load_gutenberg_source, load_wordpress_develop_source, payload_hashes, project_v2
 
 ROOT = Path(__file__).resolve().parents[1]
 API_DIR = ROOT / "docs" / "radar" / "api" / "v1"
@@ -165,12 +165,14 @@ def generate_v2_api_assets(
     output_dir: Path = API_V2_DIR,
 ) -> list[Path]:
     wordpress_develop = load_wordpress_develop_source(WORDPRESS_DEVELOP_SOURCE)
+    gutenberg = load_gutenberg_source(GUTENBERG_SOURCE)
     payloads = project_v2(
         snapshot=snapshot,
         collection=collection,
         opportunities=opportunity_set,
         contributions=contributions,
         wordpress_develop=wordpress_develop,
+        gutenberg=gutenberg,
     )
     hashes = payload_hashes(payloads)
     output_dir.mkdir(parents=True, exist_ok=True)

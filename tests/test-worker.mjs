@@ -99,8 +99,8 @@ test("verified contribution outcomes are projected as public safe machine data",
   assert.equal(Object.hasOwn(record, "reason"), false);
 });
 
-test("v2 API exposes source-neutral health, sources, taxonomy, and changes", async () => {
-  for (const name of ["health", "sources", "snapshot", "opportunities", "changes", "contributions", "outcomes", "taxonomy", "diagnostics"]) {
+test("v2 API exposes source-neutral health, candidates, resources, relationships, taxonomy, and changes", async () => {
+  for (const name of ["health", "sources", "snapshot", "resources", "relationships", "opportunities", "candidates", "candidate-feed", "contribution-families", "scoring", "changes", "contributions", "outcomes", "taxonomy", "diagnostics"]) {
     const response = await api(`/api/v2/${name}`);
     assert.equal(response.status, 200);
     assert.equal(response.headers.get("content-type"), "application/json; charset=utf-8");
@@ -111,14 +111,27 @@ test("v2 API exposes source-neutral health, sources, taxonomy, and changes", asy
   assert.equal(health.status, "healthy");
   assert.equal(health.sourceFamilies.some((item) => item.sourceFamily === "CORE_TRAC" && item.health.state === "certified"), true);
   assert.equal(health.sourceFamilies.some((item) => item.sourceFamily === "WORDPRESS_DEVELOP_GITHUB" && item.health.state === "certified"), true);
+  const candidates = await (await api("/api/v2/candidates")).json();
+  assert.equal(candidates.schema, "radar-candidate-feed.v1");
+  assert.equal(candidates.candidateBoundary.publicCandidateOnly, true);
+  assert.equal(candidates.candidateBoundary.notFinalQualification, true);
+  assert.equal(Object.hasOwn(candidates.candidates[0].scoreVector.dimensions, "upstreamDemandStrength"), true);
+  const families = await (await api("/api/v2/contribution-families")).json();
+  assert.equal(families.families.some((item) => item.id === "CORE_PATCH_TEST"), true);
+  const scoring = await (await api("/api/v2/scoring")).json();
+  assert.equal(scoring.dimensions.some((item) => item.id === "deliveryReputationalRisk"), true);
 });
 
-test("v2 opportunity records preserve core-trac identity and expose why-now coverage", async () => {
+test("v2 opportunity records separate semantic opportunity identity from core-trac resource identity", async () => {
   const feed = await (await api("/api/v2/opportunities")).json();
-  const expected = feed.opportunities[0];
-  assert.match(expected.id, /^core-trac:\d+$/);
+  const expected = feed.opportunities.find((item) => item.canonicalResource.sourceFamily === "CORE_TRAC");
+  assert.match(expected.id, /^opportunity:v2:core-trac:\d+:[a-z0-9-]+:[a-z0-9-]+$/);
   assert.match(expected.revision, /^opportunity-revision-v2-[0-9a-f]{32}$/);
+  assert.match(expected.legacyV1.opportunityKey, /^core-trac:\d+$/);
   assert.equal(expected.canonicalResource.sourceFamily, "CORE_TRAC");
+  assert.match(expected.canonicalResource.id, /^core-trac:\d+$/);
+  assert.equal(expected.identity.canonicalResourceId, expected.canonicalResource.id);
+  assert.equal(expected.requiresLiveRevalidation, true);
   assert.equal(Array.isArray(expected.qualification.whyNow), true);
   assert.equal(typeof expected.sourceCoverage.ticket_fields, "string");
   const response = await api(`/api/v2/opportunities/${encodeURIComponent(expected.id)}`);
@@ -126,9 +139,31 @@ test("v2 opportunity records preserve core-trac identity and expose why-now cove
   assert.deepEqual(await response.json(), expected);
 });
 
+test("v2 API includes source-native GitHub opportunities", async () => {
+  const feed = await (await api("/api/v2/opportunities")).json();
+  const native = feed.opportunities.filter((item) => ["WORDPRESS_DEVELOP_GITHUB", "GUTENBERG"].includes(item.canonicalResource.sourceFamily));
+  assert.equal(native.length > 0, true);
+  assert.equal(native.some((item) => item.canonicalResource.sourceFamily === "GUTENBERG"), true);
+  assert.equal(native.every((item) => item.legacyV1 === null), true);
+  assert.equal(native.every((item) => item.requiresLiveRevalidation === true), true);
+});
+
+test("v2 resources are first-class addressable public records", async () => {
+  const resources = await (await api("/api/v2/resources")).json();
+  const expected = resources.resources.find((item) => item.sourceFamily === "CORE_TRAC");
+  assert.equal(resources.schema, "radar-resource-set.v2");
+  assert.match(expected.id, /^core-trac:\d+$/);
+  assert.match(expected.materialRevision, /^resource-revision-v2-[0-9a-f]{32}$/);
+  assert.equal(typeof expected.deterministicHash, "string");
+  assert.equal(Array.isArray(expected.provenance), true);
+  const response = await api(`/api/v2/resources/${encodeURIComponent(expected.id)}`);
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), expected);
+});
+
 test("v2 rejects malformed opportunity ids and unsafe methods", async () => {
-  assert.equal((await api("/api/v2/opportunities/not-a-ticket")).status, 400);
-  assert.equal((await api("/api/v2/opportunities/core-trac:999999999")).status, 404);
+  assert.equal((await api("/api/v2/opportunities/Bad_ID")).status, 400);
+  assert.equal((await api("/api/v2/opportunities/opportunity:v2:core-trac:999999999:test:missing")).status, 404);
   assert.equal((await api("/api/v2/opportunities", { method: "POST" })).status, 405);
 });
 

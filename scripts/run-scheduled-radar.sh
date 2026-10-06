@@ -36,9 +36,9 @@ git pull --rebase origin main
 # validation, certification, generation, and publication-planning command below
 # receives these exact values even if the wall clock crosses midnight.
 REFERENCE_TIME="${RADAR_REFERENCE_TIME:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
-COLLECTION_ID="${REFERENCE_TIME:0:10}"
 SOURCE_REVISION="$(git rev-parse HEAD)"
 RUN_ID="${REFERENCE_TIME//[:]/-}"
+COLLECTION_ID="$RUN_ID"
 FAILURE_DIR="$REPO_DIR/logs/failed-runs/$RUN_ID"
 REQUIRED_QUERIES="$(PYTHONPATH="$REPO_DIR/scripts" "$PYTHON_BIN" - <<'PY'
 from radarlib import load_queries
@@ -88,7 +88,8 @@ on_exit() {
 trap on_exit EXIT
 
 "$PYTHON_BIN" scripts/radar.py collect \
-  --reference-time "$REFERENCE_TIME"
+  --reference-time "$REFERENCE_TIME" \
+  --collection-id "$COLLECTION_ID"
 
 # The compatibility verifier and the canonical fail-closed pipeline both use
 # the exact collection identity frozen above. The pipeline revalidates all

@@ -13,10 +13,10 @@ from radarlib import DATA_RAW, TICKET_ID_KEYS, load_queries
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--collection-id", required=True, help="Immutable YYYY-MM-DD collection identity captured at run start.")
+    parser.add_argument("--collection-id", required=True, help="Immutable collection identity captured at run start.")
     args = parser.parse_args()
-    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", args.collection_id):
-        parser.error("collection ID must be YYYY-MM-DD")
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}(?:T\d{2}-\d{2}-\d{2}Z)?", args.collection_id):
+        parser.error("collection ID must be YYYY-MM-DD or YYYY-MM-DDTHH-MM-SSZ")
 
     snapshot = DATA_RAW / "manual" / args.collection_id
     failures: list[str] = []

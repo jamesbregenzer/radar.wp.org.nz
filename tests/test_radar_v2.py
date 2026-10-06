@@ -8,11 +8,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from radarv2 import load_wordpress_develop_source, project_v2
+from radarv2 import github_ticket_index, load_gutenberg_source, load_wordpress_develop_source, project_v2
 
 
 class RadarV2ProjectionTests(unittest.TestCase):
-    def payloads(self, wordpress_develop=None):
+    def payloads(self, wordpress_develop=None, gutenberg=None):
         snapshot = json.loads((ROOT / "data" / "certified" / "current" / "snapshot.json").read_text())
         collection = json.loads((ROOT / "data" / "certified" / "current" / "collection.json").read_text())
         opportunities = json.loads((ROOT / "data" / "certified" / "current" / "opportunities.json").read_text())
@@ -23,11 +23,13 @@ class RadarV2ProjectionTests(unittest.TestCase):
             opportunities=opportunities,
             contributions=contributions,
             wordpress_develop=wordpress_develop,
+            gutenberg=gutenberg,
         )
 
     def test_v2_projection_is_repeatable(self):
         source = load_wordpress_develop_source()
-        self.assertEqual(self.payloads(source), self.payloads(source))
+        gutenberg = load_gutenberg_source()
+        self.assertEqual(self.payloads(source, gutenberg), self.payloads(source, gutenberg))
 
     def test_change_event_ids_ignore_snapshot_timestamp_noise(self):
         source = load_wordpress_develop_source()
@@ -62,15 +64,21 @@ class RadarV2ProjectionTests(unittest.TestCase):
         families = {item["sourceFamily"]: item for item in health["sourceFamilies"]}
         self.assertEqual(families["CORE_TRAC"]["health"]["state"], "certified")
         self.assertEqual(families["WORDPRESS_DEVELOP_GITHUB"]["health"]["state"], "degraded")
+        self.assertEqual(families["GUTENBERG"]["health"]["state"], "degraded")
         self.assertEqual(health["status"], "degraded")
 
     def test_v2_opportunities_include_public_model_fields(self):
         source = load_wordpress_develop_source()
-        opportunities = json.loads(self.payloads(source)["opportunities.json"])
+        gutenberg = load_gutenberg_source()
+        opportunities = json.loads(self.payloads(source, gutenberg)["opportunities.json"])
         first = opportunities["opportunities"][0]
-        self.assertTrue(first["id"].startswith("core-trac:"))
+        self.assertTrue(first["id"].startswith("opportunity:v2:"))
         self.assertTrue(first["revision"].startswith("opportunity-revision-v2-"))
+        self.assertTrue(first["legacyV1"]["opportunityKey"].startswith("core-trac:"))
         self.assertEqual(first["canonicalResource"]["sourceFamily"], "CORE_TRAC")
+        self.assertTrue(first["canonicalResource"]["id"].startswith("core-trac:"))
+        self.assertEqual(first["identity"]["canonicalResourceId"], first["canonicalResource"]["id"])
+        self.assertTrue(first["requiresLiveRevalidation"])
         self.assertIn(first["qualification"]["state"], {
             "CLEAR_OPPORTUNITY",
             "POSSIBLE_OPPORTUNITY",
@@ -82,6 +90,90 @@ class RadarV2ProjectionTests(unittest.TestCase):
         self.assertTrue(first["qualification"]["whyNow"])
         self.assertIn("ticket_fields", first["sourceCoverage"])
         self.assertIn("confidence", first["ranking"]["dimensions"])
+        self.assertIn("familyCandidates", first)
+        self.assertIn("scoreVector", first)
+        self.assertIn("jamesAffinity", first["scoreVector"]["dimensions"])
+        self.assertEqual(first["scoreVector"]["dimensions"]["jamesAffinity"]["value"], "unknown")
+
+    def test_v2_resources_and_relationships_are_public_graph_artifacts(self):
+        source = load_wordpress_develop_source()
+        gutenberg = load_gutenberg_source()
+        payloads = self.payloads(source, gutenberg)
+        resources = json.loads(payloads["resources.json"])
+        relationships = json.loads(payloads["relationships.json"])
+        self.assertEqual(resources["schema"], "radar-resource-set.v2")
+        self.assertEqual(resources["resourceCount"], len(resources["resources"]))
+        self.assertTrue(any(item["sourceFamily"] == "CORE_TRAC" for item in resources["resources"]))
+        self.assertTrue(all(item["materialRevision"].startswith("resource-revision-v2-") for item in resources["resources"]))
+        self.assertEqual(relationships["schema"], "radar-relationship-set.v2")
+        self.assertEqual(relationships["relationshipCount"], len(relationships["relationships"]))
+        self.assertIn("REFERENCES", relationships["relationshipTypes"])
+
+    def test_source_native_opportunities_do_not_require_core_trac_root(self):
+        source = load_wordpress_develop_source()
+        gutenberg = load_gutenberg_source()
+        opportunities = json.loads(self.payloads(source, gutenberg)["opportunities.json"])["opportunities"]
+        native = [item for item in opportunities if item["canonicalResource"]["sourceFamily"] in {"WORDPRESS_DEVELOP_GITHUB", "GUTENBERG"}]
+        self.assertTrue(native)
+        self.assertTrue(any(item["canonicalResource"]["sourceFamily"] == "GUTENBERG" for item in native))
+        self.assertTrue(all(item["legacyV1"] is None for item in native))
+        self.assertTrue(all(item["requiresLiveRevalidation"] for item in native))
+        self.assertTrue(all(item["identity"]["canonicalResourceId"].startswith(("wordpress-develop-github:", "gutenberg:")) for item in native))
+
+    def test_candidate_feed_is_public_source_neutral_and_not_final_qualification(self):
+        source = load_wordpress_develop_source()
+        gutenberg = load_gutenberg_source()
+        payloads = self.payloads(source, gutenberg)
+        candidates = json.loads(payloads["candidates.json"])
+        registry = json.loads(payloads["contribution-families.json"])
+        scoring = json.loads(payloads["scoring.json"])
+        self.assertEqual(candidates["schema"], "radar-candidate-feed.v1")
+        self.assertEqual(candidates["candidateCount"], len(candidates["candidates"]))
+        self.assertTrue(candidates["candidateBoundary"]["publicCandidateOnly"])
+        self.assertTrue(candidates["candidateBoundary"]["notFinalQualification"])
+        self.assertTrue(candidates["candidateBoundary"]["notExecutableWork"])
+        first = candidates["candidates"][0]
+        self.assertTrue(first["id"].startswith("candidate:v1:"))
+        self.assertIn("resourceRefs", first)
+        self.assertIn("familyCandidates", first)
+        self.assertIn("scoreVector", first)
+        self.assertEqual(set(first["scoreVector"]["dimensions"]), {
+            "upstreamDemandStrength",
+            "expectedUpstreamImpact",
+            "jamesAffinity",
+            "noveltyConfidence",
+            "evidenceFeasibility",
+            "timeliness",
+            "estimatedExecutionCost",
+            "deliveryReputationalRisk",
+        })
+        self.assertEqual(registry["schema"], "radar-contribution-family-registry.v1")
+        self.assertIn("CORE_CODE_REVIEW", {item["id"] for item in registry["families"]})
+        self.assertIn("GUTENBERG_TEST", {item["id"] for item in registry["families"]})
+        self.assertEqual(scoring["schema"], "radar-candidate-scoring-contract.v1")
+
+    def test_bare_github_numbers_do_not_create_core_trac_edges(self):
+        source = {
+            "resources": [
+                {"number": 1, "ticketReferences": ["60000"], "title": "Canonical link", "url": "https://github.com/WordPress/wordpress-develop/pull/1"},
+                {"number": 2, "ticketReferences": [], "ambiguousTicketReferences": ["60001"], "title": "Fix #60001", "url": "https://github.com/WordPress/wordpress-develop/pull/2"},
+            ]
+        }
+        index = github_ticket_index(source)
+        self.assertIn("60000", index)
+        self.assertNotIn("60001", index)
+
+    def test_core_trac_source_family_includes_raw_acquisition_receipts(self):
+        source = load_wordpress_develop_source()
+        gutenberg = load_gutenberg_source()
+        sources = json.loads(self.payloads(source, gutenberg)["sources.json"])
+        core = next(item for item in sources["sourceFamilies"] if item["sourceFamily"] == "CORE_TRAC")
+        self.assertTrue(core["rawAcquisitions"])
+        first = core["rawAcquisitions"][0]
+        self.assertTrue(first["sourceUrl"].startswith("https://core.trac.wordpress.org/query?"))
+        self.assertRegex(first["rawSha256"], r"^[0-9a-f]{64}$")
+        self.assertRegex(first["acquisitionId"], r"^trac-csv-acquisition-v1-[0-9a-f]{24}$")
+        self.assertTrue(first["sourceReceipt"].endswith(".source-receipt.json"))
 
 
 if __name__ == "__main__":

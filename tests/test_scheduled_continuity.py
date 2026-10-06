@@ -54,7 +54,7 @@ class ScheduledContinuityTests(unittest.TestCase):
     def test_wrapper_freezes_context_and_uses_canonical_pipeline(self):
         wrapper = (ROOT / "scripts" / "run-scheduled-radar.sh").read_text()
         self.assertIn('REFERENCE_TIME="${RADAR_REFERENCE_TIME:-$(date -u', wrapper)
-        self.assertIn('COLLECTION_ID="${REFERENCE_TIME:0:10}"', wrapper)
+        self.assertIn('COLLECTION_ID="$RUN_ID"', wrapper)
         self.assertIn('scripts/radar.py collect', wrapper)
         self.assertIn('scripts/radar.py pipeline', wrapper)
         self.assertIn('--skip-collect', wrapper)
@@ -91,8 +91,8 @@ class ScheduledContinuityTests(unittest.TestCase):
                 "if [[ \"$1\" == \"-\" ]]; then cat >/dev/null; echo 'q1,q2,q3,q4,q5'; exit 0; fi\n"
                 "if [[ \"$1\" == \"scripts/radar.py\" && \"$2\" == \"collect\" ]]; then\n"
                 "  echo partial > data/tracked.txt\n"
-                "  mkdir -p data/raw/manual/2026-09-23\n"
-                "  echo 'id,summary' > data/raw/manual/2026-09-23/q1.csv\n"
+                "  mkdir -p data/raw/manual/2026-09-23T23-59-59Z\n"
+                "  echo 'id,summary' > data/raw/manual/2026-09-23T23-59-59Z/q1.csv\n"
                 "  exit 1\n"
                 "fi\n"
                 "exit 99\n",
@@ -113,7 +113,7 @@ class ScheduledContinuityTests(unittest.TestCase):
             )
             self.assertNotEqual(completed.returncode, 0)
             self.assertEqual(tracked.read_text(encoding="utf-8"), "known-good\n")
-            self.assertFalse((repo / "data" / "raw" / "manual" / "2026-09-23").exists())
+            self.assertFalse((repo / "data" / "raw" / "manual" / "2026-09-23T23-59-59Z").exists())
             self.assertEqual(
                 subprocess.check_output(["git", "status", "--porcelain"], cwd=repo, text=True),
                 "",
@@ -152,8 +152,8 @@ class ScheduledContinuityTests(unittest.TestCase):
                 "if [[ \"$1\" == \"-\" ]]; then cat >/dev/null; echo 'q1,q2,q3,q4,q5'; exit 0; fi\n"
                 "if [[ \"$1\" == \"scripts/radar.py\" && \"$2\" == \"collect\" ]]; then\n"
                 "  echo collected > data/tracked.txt\n"
-                "  mkdir -p data/raw/manual/2026-09-23\n"
-                "  for q in q1 q2 q3 q4 q5; do echo 'id,summary' > data/raw/manual/2026-09-23/$q.csv; done\n"
+                "  mkdir -p data/raw/manual/2026-09-23T23-59-59Z\n"
+                "  for q in q1 q2 q3 q4 q5; do echo 'id,summary' > data/raw/manual/2026-09-23T23-59-59Z/$q.csv; done\n"
                 "  exit 0\n"
                 "fi\n"
                 "if [[ \"$1\" == \"scripts/verify-collector-snapshot.py\" ]]; then exit 0; fi\n"
