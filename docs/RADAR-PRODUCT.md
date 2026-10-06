@@ -148,9 +148,18 @@ The current v2 source-family set is:
   recently updated open `WordPress/wordpress-develop` pull requests.
 - `GUTENBERG`: certified from bounded public snapshots of recently updated open
   `WordPress/gutenberg` issues and pull requests.
+- `MAKE_TEST_RELEASE_SIGNALS`: source-side certified from bounded Make Test REST observations.
+- `CONTRIBUTOR_PATHWAYS`: source-side certified from the complete public Contributor Pathways handbook subtree.
+- `CORE_DEVELOPER_DOCS`: source-side certified from bounded open WordPress documentation issues, with candidate mapping limited to Core and developer documentation.
+- `ACCESSIBILITY_REQUESTS`: source-side certified from bounded Make Accessibility REST observations.
+- `THEME_CHECK_GITHUB`: source-side certified from bounded Theme Check issues and pull requests.
+- `MAKE_THEMES_REQUESTS`: source-side certified from bounded Make Themes REST observations.
+- `WORDPRESS_RELEASES`: source-side certified from current WordPress beta and development channel offers.
 
-Public test/release signals should follow the same contract only when a stable
-public source can be certified without weakening existing source families.
+These Wave 2 source adapters are certified repository inputs but are not a claim
+of production deployment. Public test and release signals enter the candidate
+feed only when the source contains a specific mapped request. A healthy source
+with zero current candidates is valid.
 
 V2 source-native opportunity production is allowed when a non-Trac resource has
 specific public evidence for a missing contribution increment. Current native

@@ -12,7 +12,7 @@ from radarv2 import github_ticket_index, load_gutenberg_source, load_wordpress_d
 
 
 class RadarV2ProjectionTests(unittest.TestCase):
-    def payloads(self, wordpress_develop=None, gutenberg=None):
+    def payloads(self, wordpress_develop=None, gutenberg=None, wave2_sources=None):
         snapshot = json.loads((ROOT / "data" / "certified" / "current" / "snapshot.json").read_text())
         collection = json.loads((ROOT / "data" / "certified" / "current" / "collection.json").read_text())
         opportunities = json.loads((ROOT / "data" / "certified" / "current" / "opportunities.json").read_text())
@@ -24,6 +24,7 @@ class RadarV2ProjectionTests(unittest.TestCase):
             contributions=contributions,
             wordpress_develop=wordpress_develop,
             gutenberg=gutenberg,
+            wave2_sources=wave2_sources,
         )
 
     def test_v2_projection_is_repeatable(self):
@@ -174,6 +175,86 @@ class RadarV2ProjectionTests(unittest.TestCase):
         self.assertRegex(first["rawSha256"], r"^[0-9a-f]{64}$")
         self.assertRegex(first["acquisitionId"], r"^trac-csv-acquisition-v1-[0-9a-f]{24}$")
         self.assertTrue(first["sourceReceipt"].endswith(".source-receipt.json"))
+
+    def test_wave2_source_projects_candidates_relationships_and_independent_health(self):
+        source = {
+            "sourceFamily": "CONTRIBUTOR_PATHWAYS",
+            "snapshotId": "source-family-contributor-pathways-fixture",
+            "sourceRevision": "fixture-revision",
+            "observedTime": "2026-10-06T12:00:00Z",
+            "certifiedTime": "2026-10-06T12:00:00Z",
+            "completeness": "COMPLETE",
+            "freshness": "fresh",
+            "recordCount": 2,
+            "candidateSignalCount": 1,
+            "canonicalHash": "a" * 64,
+            "authoritativeSource": "https://make.wordpress.org/handbook/pathways/",
+            "machineReadableAccess": ["https://make.wordpress.org/wp-json/wp/v2/handbook/5832"],
+            "rawAcquisitions": [],
+            "retrievalReceipt": {"receiptId": "fixture", "canonicalHash": "b" * 64},
+            "outcomeObservers": ["handbook revision"],
+            "scope": "fixture subtree",
+            "limitations": ["Fixture scope."],
+            "health": {"state": "certified", "failure": None},
+            "resources": [
+                {
+                    "resourceType": "WORDPRESS_HANDBOOK_PAGE",
+                    "nativeIdentity": "wordpress_handbook_page/1",
+                    "nativeId": 1,
+                    "url": "https://make.wordpress.org/handbook/pathways/review/",
+                    "title": "Review a Pathway Guide",
+                    "state": "published",
+                    "createdAt": "2026-01-01T00:00:00",
+                    "updatedAt": "2026-10-01T00:00:00",
+                    "sourceRevision": "2026-10-01T00:00:00",
+                    "bodyHash": "c" * 64,
+                    "bodyExcerpt": "Review a pathway guide.",
+                    "labels": [],
+                    "outboundLinks": ["https://make.wordpress.org/handbook/pathways/target"],
+                    "candidateSignals": [{
+                        "familyId": "PATHWAY_REVIEW",
+                        "state": "CLEAR_OPPORTUNITY",
+                        "confidence": "high",
+                        "reason": "The guide explicitly asks contributors to review a pathway guide.",
+                        "evidence": ["Review a Pathway Guide"],
+                    }],
+                },
+                {
+                    "resourceType": "WORDPRESS_HANDBOOK_PAGE",
+                    "nativeIdentity": "wordpress_handbook_page/2",
+                    "nativeId": 2,
+                    "url": "https://make.wordpress.org/handbook/pathways/target/",
+                    "title": "Target Guide",
+                    "state": "published",
+                    "createdAt": "2026-01-01T00:00:00",
+                    "updatedAt": "2026-10-01T00:00:00",
+                    "sourceRevision": "2026-10-01T00:00:00",
+                    "bodyHash": "d" * 64,
+                    "bodyExcerpt": "Target.",
+                    "labels": [],
+                    "outboundLinks": [],
+                    "candidateSignals": [],
+                },
+            ],
+        }
+        payloads = self.payloads(wave2_sources={"CONTRIBUTOR_PATHWAYS": source})
+        sources = json.loads(payloads["sources.json"])["sourceFamilies"]
+        pathways = next(item for item in sources if item["sourceFamily"] == "CONTRIBUTOR_PATHWAYS")
+        self.assertEqual(pathways["health"]["state"], "certified")
+        self.assertEqual(pathways["candidateSignalCount"], 1)
+        candidates = json.loads(payloads["candidates.json"])["candidates"]
+        pathway_candidates = [
+            item for item in candidates
+            if item["sourceHealth"]["sourceFamily"] == "CONTRIBUTOR_PATHWAYS"
+        ]
+        self.assertEqual(len(pathway_candidates), 1)
+        self.assertEqual(pathway_candidates[0]["familyCandidates"][0]["familyId"], "PATHWAY_REVIEW")
+        relationships = json.loads(payloads["relationships.json"])["relationships"]
+        self.assertTrue(any(
+            item["sourceResourceId"].startswith("contributor-pathways:")
+            and item["targetResourceId"].startswith("contributor-pathways:")
+            for item in relationships
+        ))
 
 
 if __name__ == "__main__":

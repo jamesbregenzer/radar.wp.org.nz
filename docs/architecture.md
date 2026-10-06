@@ -59,6 +59,14 @@ GitHub source snapshot. If that family cannot be refreshed, Trac certification
 can still publish fresh Trac intelligence while v2 reports the GitHub family as
 stale or degraded. No partial source family may report itself as complete.
 
+Wave 2 sources use the same static-input rule. Their adapters retain immutable
+raw responses and retrieval receipts, normalize source-native resources, and
+certify each family independently before V2 projection. The source layer may
+emit public candidate signals and outcome-observer possibilities. It does not
+own executable work, human-facing composition, scheduling, or mutation authority. The accepted source list
+and current quality-yield evidence are documented in
+[`wave2-sources.md`](wave2-sources.md).
+
 V2 resources are not opportunities. `scripts/radarv2.py` first projects public
 Core Trac tickets and source-family records into family-qualified resources,
 then adds typed relationships only when public evidence supports the edge. Bare

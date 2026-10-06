@@ -1,0 +1,91 @@
+{
+  "schema": "radar-wave2-source-config.v1",
+  "version": 1,
+  "sources": [
+    {
+      "sourceFamily": "MAKE_TEST_RELEASE_SIGNALS",
+      "label": "Make Test calls for testing and release signals",
+      "adapter": "wp_rest_posts",
+      "authoritativeSource": "https://make.wordpress.org/test/",
+      "urls": [
+        "https://make.wordpress.org/test/wp-json/wp/v2/posts?per_page=50&orderby=modified&order=desc&_fields=id,link,slug,date_gmt,modified_gmt,title,content,tags"
+      ],
+      "completeness": "PARTIAL",
+      "scope": "50 most recently modified published Make Test posts",
+      "outcomeObservers": ["post revision", "linked issue or ticket update", "follow-up or test summary post"]
+    },
+    {
+      "sourceFamily": "CONTRIBUTOR_PATHWAYS",
+      "label": "Contributor Pathways handbook",
+      "adapter": "wp_rest_tree",
+      "authoritativeSource": "https://make.wordpress.org/handbook/pathways/",
+      "rootId": 5832,
+      "endpoint": "https://make.wordpress.org/wp-json/wp/v2/handbook",
+      "completeness": "COMPLETE",
+      "scope": "complete public Contributor Pathways handbook subtree",
+      "outcomeObservers": ["handbook revision", "pathway guide supersession", "linked project outcome"]
+    },
+    {
+      "sourceFamily": "CORE_DEVELOPER_DOCS",
+      "label": "Core and developer documentation opportunities",
+      "adapter": "github_issues",
+      "authoritativeSource": "https://github.com/WordPress/Documentation-Issue-Tracker",
+      "urls": [
+        "https://api.github.com/repos/WordPress/Documentation-Issue-Tracker/issues?state=open&sort=updated&direction=desc&per_page=100"
+      ],
+      "completeness": "PARTIAL",
+      "scope": "100 most recently updated open documentation issues",
+      "outcomeObservers": ["issue assignment", "issue or linked documentation revision", "issue closure"]
+    },
+    {
+      "sourceFamily": "ACCESSIBILITY_REQUESTS",
+      "label": "Make Accessibility public requests",
+      "adapter": "wp_rest_posts",
+      "authoritativeSource": "https://make.wordpress.org/accessibility/",
+      "urls": [
+        "https://make.wordpress.org/accessibility/wp-json/wp/v2/posts?per_page=50&orderby=modified&order=desc&_fields=id,link,slug,date_gmt,modified_gmt,title,content,tags"
+      ],
+      "completeness": "PARTIAL",
+      "scope": "50 most recently modified published Make Accessibility posts",
+      "outcomeObservers": ["post revision", "linked accessibility issue update", "follow-up summary"]
+    },
+    {
+      "sourceFamily": "THEME_CHECK_GITHUB",
+      "label": "Theme Check issues and pull requests",
+      "adapter": "github_repository",
+      "authoritativeSource": "https://github.com/WordPress/theme-check",
+      "urls": [
+        "https://api.github.com/repos/WordPress/theme-check/issues?state=open&sort=updated&direction=desc&per_page=100",
+        "https://api.github.com/repos/WordPress/theme-check/pulls?state=open&sort=updated&direction=desc&per_page=100"
+      ],
+      "completeness": "PARTIAL",
+      "scope": "100 most recently updated open Theme Check issues and 100 open pull requests",
+      "outcomeObservers": ["issue assignment or closure", "pull request review", "pull request merge"]
+    },
+    {
+      "sourceFamily": "MAKE_THEMES_REQUESTS",
+      "label": "Make Themes public testing and review requests",
+      "adapter": "wp_rest_posts",
+      "authoritativeSource": "https://make.wordpress.org/themes/",
+      "urls": [
+        "https://make.wordpress.org/themes/wp-json/wp/v2/posts?per_page=50&orderby=modified&order=desc&_fields=id,link,slug,date_gmt,modified_gmt,title,content,tags"
+      ],
+      "completeness": "PARTIAL",
+      "scope": "50 most recently modified published Make Themes posts",
+      "outcomeObservers": ["post revision", "linked theme or ticket update", "review summary"]
+    },
+    {
+      "sourceFamily": "WORDPRESS_RELEASES",
+      "label": "WordPress beta, release-candidate, and development builds",
+      "adapter": "wordpress_releases",
+      "authoritativeSource": "https://api.wordpress.org/core/version-check/1.7/",
+      "urls": [
+        "https://api.wordpress.org/core/version-check/1.7/?channel=beta",
+        "https://api.wordpress.org/core/version-check/1.7/?channel=development"
+      ],
+      "completeness": "COMPLETE",
+      "scope": "current beta and development channel offers",
+      "outcomeObservers": ["channel offer revision", "new prerelease build", "stable release supersession"]
+    }
+  ]
+}
