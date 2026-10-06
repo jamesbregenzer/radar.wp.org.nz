@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
 import re
 import urllib.error
@@ -23,12 +24,16 @@ BARE_HASH_RE = re.compile(r"(?<![\w/])#([0-9]{4,6})\b")
 
 
 def fetch_json(url: str) -> tuple[Any, str | None, bool]:
+    headers = {
+        "accept": "application/vnd.github+json",
+        "user-agent": "wp-core-radar-public-source-collector",
+    }
+    token = os.environ.get("GITHUB_TOKEN")
+    if token:
+        headers["authorization"] = f"Bearer {token}"
     request = urllib.request.Request(
         url,
-        headers={
-            "accept": "application/vnd.github+json",
-            "user-agent": "wp-core-radar-public-source-collector",
-        },
+        headers=headers,
     )
     with urllib.request.urlopen(request, timeout=30) as response:
         payload = json.loads(response.read().decode("utf-8"))

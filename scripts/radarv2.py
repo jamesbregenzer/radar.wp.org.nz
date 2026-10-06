@@ -353,6 +353,8 @@ def source_coverage(qualification: dict[str, Any], supporting_resources: list[di
     for public_name, source_key in SOURCE_COVERAGE_KEYS.items():
         if source_key is None:
             result[public_name] = "NONE"
+        elif public_name == "full_ticket_discussion":
+            result[public_name] = "PARTIAL" if coverage.get(source_key) else "NONE"
         elif public_name == "linked_pr" and supporting_resources:
             result[public_name] = "COMPLETE"
         else:
@@ -726,15 +728,22 @@ def native_signal(resource: dict[str, Any], family_name: str) -> dict[str, Any] 
 
 def native_source_coverage(resource: dict[str, Any], signal: dict[str, Any]) -> dict[str, str]:
     labels = "COMPLETE" if resource.get("labels") else "NONE"
-    discussion = "PARTIAL" if resource.get("comments") else "NONE"
-    review = "PARTIAL" if resource.get("requestedReviewers") or resource.get("requestedTeams") else "NONE"
+    discussion_observation = resource.get("discussion") or {}
+    review_observation = resource.get("reviews") or {}
+    checks_observation = resource.get("checks") or {}
+    diff_observation = resource.get("diffIdentity") or {}
+    discussion = "COMPLETE" if discussion_observation.get("observed") and not discussion_observation.get("truncated") else "PARTIAL" if discussion_observation.get("observed") else "NONE"
+    review = "COMPLETE" if review_observation.get("observed") and not review_observation.get("truncated") else "PARTIAL" if review_observation.get("observed") else "NONE"
+    checks = "COMPLETE" if checks_observation.get("observed") and not checks_observation.get("truncated") else "PARTIAL" if checks_observation.get("observed") else "NONE"
+    diff = "COMPLETE" if diff_observation.get("observed") and not diff_observation.get("truncated") else "PARTIAL" if diff_observation.get("observed") else "NONE"
     return {
         "source_metadata": "COMPLETE",
         "github_labels": labels,
         "public_discussion": discussion,
         "review_request": review,
         "head_base": "COMPLETE" if resource.get("head") or resource.get("base") else "NONE",
-        "ci_test_evidence": "NONE",
+        "ci_test_evidence": checks,
+        "diff_identity": diff,
         "relationship_context": "NONE",
     }
 
