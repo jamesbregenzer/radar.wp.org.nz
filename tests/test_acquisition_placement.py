@@ -28,6 +28,7 @@ def load_script(name: str):
 
 
 BROWSER_FETCH = load_script("browser-fetch.py")
+NONCANONICAL_ACQUISITION_ENV = {"RADAR_ACQUISITION_PROVIDER": "noncanonical-interactive"}
 
 
 class AcquisitionPlacementTests(unittest.TestCase):
@@ -77,7 +78,7 @@ class AcquisitionPlacementTests(unittest.TestCase):
         self.assertEqual(metadata["readbackStatus"], "verified")
         self.assertIsNone(metadata["failureReason"])
 
-    def test_browser_fetch_guard_prevents_local_download_attempt(self):
+    def test_browser_fetch_guard_prevents_noncanonical_download_attempt(self):
         completed = subprocess.run(
             [
                 sys.executable,
@@ -87,7 +88,7 @@ class AcquisitionPlacementTests(unittest.TestCase):
                 "2026-10-06T10-00-00Z",
             ],
             cwd=ROOT,
-            env={},
+            env=NONCANONICAL_ACQUISITION_ENV,
             text=True,
             capture_output=True,
         )
@@ -104,7 +105,7 @@ class AcquisitionPlacementTests(unittest.TestCase):
         completed = subprocess.run(
             [sys.executable, str(ROOT / "scripts" / "check-acquisition-placement.py")],
             cwd=ROOT,
-            env={},
+            env=NONCANONICAL_ACQUISITION_ENV,
             text=True,
             capture_output=True,
         )
