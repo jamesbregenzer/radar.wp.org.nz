@@ -82,6 +82,33 @@
     .card-purple { border-left: 6px solid #7c3aed; }
     .card-amber { border-left: 6px solid #d97706; }
     section { margin-top: 32px; }
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .section-heading h2 {
+      margin: 0 0 4px;
+    }
+    .section-heading p {
+      margin: 0;
+      color: #50575e;
+      line-height: 1.45;
+    }
+    .view-all {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: #1d2327;
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .view-all:hover { color: #fff; background: #2c3338; }
     h2 {
       display: flex;
       gap: 8px;
@@ -223,6 +250,151 @@
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
     }
+    .source-health-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .health-pill {
+      border: 1px solid #dcdcde;
+      border-radius: 999px;
+      padding: 6px 9px;
+      background: #fff;
+      color: #50575e;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .health-certified { border-color: #bbf7d0; background: #f0fdf4; color: #166534; }
+    .health-degraded,
+    .health-not_certified { border-color: #fed7aa; background: #fff7ed; color: #9a3412; }
+    .change-summary {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border: 1px solid #dcdcde;
+      border-radius: 8px;
+      background: #fff;
+      color: #50575e;
+      font-size: 13px;
+    }
+    .change-summary strong {
+      flex: 0 0 190px;
+      color: #1d2327;
+    }
+    .change-summary ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .change-summary li + li { margin-top: 5px; }
+    .change-summary li span {
+      display: inline-block;
+      margin-right: 6px;
+      color: #1d2327;
+      font-weight: 700;
+    }
+    .compact-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .compact-filters label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #dcdcde;
+      border-radius: 999px;
+      padding: 5px 9px 5px 12px;
+      background: #fff;
+      color: #50575e;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .compact-filters select {
+      border: 0;
+      background: transparent;
+      color: #1d2327;
+      font: inherit;
+    }
+    .opportunity-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .opportunity-card {
+      background: #fff;
+      border: 1px solid #dcdcde;
+      border-radius: 8px;
+      padding: 18px;
+      min-width: 0;
+    }
+    .card-topline,
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .resource-id {
+      color: #2271b1;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .execution-pill {
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .execution-fast { background: #dcfce7; color: #166534; }
+    .execution-engineering { background: #dbeafe; color: #1d4ed8; }
+    .execution-specialist { background: #ede9fe; color: #6d28d9; }
+    .card-context,
+    .card-updated {
+      color: #646970;
+      font-size: 13px;
+    }
+    .opportunity-card h3 {
+      margin: 8px 0;
+      font-size: 18px;
+      line-height: 1.28;
+      letter-spacing: 0;
+    }
+    .why-now-card {
+      margin: 12px 0;
+      color: #50575e;
+      line-height: 1.45;
+    }
+    .why-now-card strong {
+      display: block;
+      color: #1d2327;
+      margin-bottom: 3px;
+    }
+    .why-now-card p { margin: 0; }
+    .signal-list { margin-top: 12px; }
+    .card-details {
+      margin-top: 14px;
+      border-top: 1px solid #f0f0f1;
+      padding-top: 12px;
+      color: #50575e;
+      font-size: 13px;
+    }
+    .card-details summary {
+      cursor: pointer;
+      color: #1d2327;
+      font-weight: 700;
+    }
+    .technical-json {
+      max-height: 120px;
+      overflow: auto;
+      padding: 10px;
+      border-radius: 6px;
+      background: #f6f7f7;
+    }
     .status-detail {
       margin-top: 14px;
       color: #50575e;
@@ -288,6 +460,11 @@
       header h1 { font-size: 26px; }
       main { padding: 18px; }
       .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .section-heading { display: block; }
+      .view-all { margin-top: 12px; }
+      .opportunity-grid { grid-template-columns: 1fr; }
+      .change-summary { display: block; }
+      .change-summary strong { display: block; margin-bottom: 8px; }
       table,
       thead,
       tbody,
@@ -522,7 +699,7 @@
   <header>
     <div class="header-content">
       <h1>WP Core Radar Contributions</h1>
-      <p>Generated 2026-10-06 15:38. Public WordPress contribution history with downstream outcomes.</p>
+      <p>Generated 2026-10-07 12:36. Public WordPress contribution history with downstream outcomes.</p>
     </div>
     <div class="header-actions">
       <a class="header-pill" href="/">Dashboard</a>
