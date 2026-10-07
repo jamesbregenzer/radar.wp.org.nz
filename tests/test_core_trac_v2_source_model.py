@@ -7,9 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from contribution_returns import normalize_contribution_return_feed
 from core_trac_v2 import (
-    LEGACY_ROLE,
     load_core_trac_source_registry,
     normalize_core_trac_observations,
     observation_fixture,
@@ -37,17 +35,15 @@ def row(ticket_id: str, keywords: str, summary: str = "Fixture ticket", status: 
 
 
 class CoreTracV2SourceModelTests(unittest.TestCase):
-    def test_source_registry_preserves_semantics_and_legacy_v1_boundary(self):
+    def test_source_registry_preserves_v2_semantics_without_legacy_sources(self):
         registry = load_core_trac_source_registry()
         summary = source_registry_summary(registry)
         sources = {source["id"]: source for source in registry["sources"]}
 
         self.assertEqual(summary["primarySourceCount"], 17)
-        self.assertEqual(summary["legacyV1CompatibilitySourceCount"], 5)
         self.assertIn("core-trac-report-15-has-patch-needs-testing", sources)
         self.assertEqual(sources["core-trac-report-15-has-patch-needs-testing"]["semanticValidation"]["requiredKeywordsAll"], ["has-patch", "needs-testing"])
-        self.assertEqual(sources["legacy-v1-general-needs-testing"]["sourceRole"], LEGACY_ROLE)
-        self.assertIn("Not a primary Core Trac V2 discovery source.", sources["legacy-v1-general-needs-testing"]["limitations"][0])
+        self.assertNotIn("legacy-v1-general-needs-testing", sources)
 
     def test_overlapping_reports_dedupe_to_one_resource_with_all_memberships(self):
         observations = [
@@ -125,49 +121,6 @@ class CoreTracV2SourceModelTests(unittest.TestCase):
         self.assertIn("core-trac:500", {item["id"] for item in current["resources"]})
         self.assertTrue(current["candidates"])
         self.assertEqual(current["candidates"][0]["freshness"], "stale")
-
-    def test_contribution_return_ingestion_projects_public_delivery_and_outcome(self):
-        payload = {
-            "schema": "radar-contribution-return-feed.v1",
-            "version": 1,
-            "sourceRevision": "fixture-return-feed",
-            "returns": [
-                {
-                    "id": "fabric-public-delivery-core-54034",
-                    "publicDeliveryUrl": "https://core.trac.wordpress.org/ticket/54034#comment:20",
-                    "publicOutcomeUrl": "https://core.trac.wordpress.org/ticket/54034#comment:20",
-                    "sourceResourceRef": {"id": "core-trac:54034"},
-                    "sourceFamily": "CORE_TRAC",
-                    "publicContributionType": "test-report",
-                    "observedPublicDeliveryAt": "2026-10-06T12:00:00Z",
-                    "verifiedPublicOutcomeAt": "2026-10-06T13:00:00Z",
-                    "verificationSource": "core-trac-public-reread",
-                    "outcomeFlags": {"accepted": True, "merged": False, "closed": False, "reopened": False, "propsObserved": False, "followUpNeeded": False},
-                    "publicSummary": "Published public test evidence for #54034.",
-                    "sourceRevision": "core-trac:54034:comment:20",
-                },
-                {
-                    "id": "fabric-public-delivery-core-40339",
-                    "publicDeliveryUrl": "https://core.trac.wordpress.org/ticket/40339#comment:4",
-                    "sourceResourceRef": {"id": "core-trac:40339"},
-                    "sourceFamily": "CORE_TRAC",
-                    "publicContributionType": "review",
-                    "observedPublicDeliveryAt": "2026-10-06T12:30:00Z",
-                    "verificationSource": "core-trac-public-reread",
-                    "outcomeFlags": {"accepted": False, "merged": False, "closed": False, "reopened": False, "propsObserved": False, "followUpNeeded": True},
-                    "publicSummary": "Published public review for #40339.",
-                    "sourceRevision": "core-trac:40339:comment:4",
-                },
-            ],
-        }
-
-        projection = normalize_contribution_return_feed(payload)
-        by_ticket = {item["ticketId"]: item for item in projection["contributions"]}
-
-        self.assertEqual(set(by_ticket), {"54034", "40339"})
-        self.assertEqual(len(projection["outcomes"]), 2)
-        self.assertTrue(any(outcome["outcomeFlags"]["accepted"] for outcome in projection["outcomes"]))
-
 
 if __name__ == "__main__":
     unittest.main()

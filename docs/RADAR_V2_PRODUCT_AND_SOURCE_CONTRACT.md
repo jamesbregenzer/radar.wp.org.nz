@@ -1,8 +1,8 @@
 # Radar V2 Product And Source Contract
 
-Radar V2 is the public WordPress opportunity observatory. It turns authoritative public WordPress source observations into normalized resources, source memberships, relationships, opportunity intelligence, and source-neutral candidate feeds.
+Radar V2 is the public WordPress opportunity observatory. It turns approved public WordPress source observations into normalized resources, source memberships, relationships, opportunity intelligence, and a canonical source-neutral candidate feed.
 
-Radar remains deterministic, read-only, public, and source-neutral. It does not own private work lifecycle, delivery authority, credential custody, scheduling authority, or final personal usefulness decisions.
+Radar remains deterministic, read-only, public, and source-neutral. It does not own private work lifecycle, delivery authority, credentials, or final personal usefulness decisions.
 
 ## Status Vocabulary
 
@@ -33,7 +33,6 @@ Radar owns:
 - contribution-family candidate classification
 - multidimensional scoring
 - public, source-neutral machine-readable candidate feeds
-- public contribution and outcome projections after verified public delivery is returned to Radar
 
 Radar does not own:
 
@@ -85,7 +84,7 @@ Initial Core Trac V2 direct and signal sources:
 - report 1: broad active-ticket reconciliation
 - custom query: `needs-testing` and not `has-patch`
 
-The existing five V1 queries remain available only for `/api/v1/` compatibility and must be marked `LEGACY_V1_COMPATIBILITY`. They are not the primary Core Trac V2 discovery source.
+V1 query configuration and compatibility surfaces are not part of Radar V2.
 
 ## V2 Data Model
 
@@ -169,36 +168,8 @@ The feed is source-neutral. Consumers should not need to understand Trac report 
 
 Radar may expose public opportunity intelligence, candidate families, scoring dimensions, source evidence, freshness, and limitations. Radar must not encode downstream private lifecycle, queue, delivery, credential, authorization, or final decision state.
 
-## Contribution Return Contract
-
-Radar accepts verified public delivery and outcome records from downstream contribution systems when those records are public-safe and source-backed.
-
-The return contract is:
-
-```text
-verified public delivery or outcome
--> Radar contribution record
--> Radar contribution and outcome projection
-```
-
-A contribution return record must include:
-
-- stable return ID
-- public delivery URL
-- public outcome URL when available
-- source resource reference
-- source family
-- public contribution type
-- observed public delivery time
-- verified public outcome time when available
-- verification source
-- outcome flags, such as accepted, merged, closed, reopened, props observed, or follow-up needed
-- public-safe summary
-- source revision or observation reference
-
-This allows public contributions such as Core ticket comments, patches, test reports, reviews, and outcomes to be reflected automatically. Radar should not depend on stale manual maintenance of `data/public-contributions.json` when a verified public return feed is available.
-
-Radar contribution records remain public projections. They do not expose private delivery authority, queue state, or private causality.
+The V2 candidate feed ends at public candidate classification. Downstream work,
+delivery, and outcomes are outside Radar's product surface.
 
 ## Current Acceptance Boundary
 
@@ -212,7 +183,6 @@ The first acceptable repository increment is:
 - overlap-safe resource and candidate identity
 - source health behavior for failed and stale shards
 - candidate-feed stabilization
-- contribution return ingestion contract
 - deterministic tests for the approved edge cases
 
 Production deployment and mission validation remain separate acceptance gates.

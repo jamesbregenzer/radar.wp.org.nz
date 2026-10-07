@@ -12,7 +12,6 @@ from typing import Any
 
 from certification import canonical_hash, canonical_json, sha256_bytes
 from core_trac_v2 import source_registry_summary
-from contribution_returns import normalize_contribution_return_feed
 from radarlib import parse_datetime
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,7 +21,6 @@ CORE_TRAC_FAMILY = "CORE_TRAC"
 WORDPRESS_DEVELOP_FAMILY = "WORDPRESS_DEVELOP_GITHUB"
 GUTENBERG_FAMILY = "GUTENBERG"
 UNKNOWN_OBSERVATION = "unknown"
-CONTRIBUTION_RETURNS = ROOT / "data" / "contribution-returns.json"
 
 QUALIFICATION_STATES = {
     "CLEAR_OPPORTUNITY",
@@ -690,11 +688,6 @@ def v2_opportunity(
         "version": 2,
         "id": identity,
         "revision": f"opportunity-revision-v2-{canonical_hash(revision_material)[:32]}",
-        "legacyV1": {
-            "opportunityKey": record["opportunityKey"],
-            "opportunityRevision": record["opportunityRevision"],
-            "ticketId": ticket_id,
-        },
         "identity": {
             "canonicalResourceId": canonical["id"],
             "contributionFamily": contribution_family,
@@ -912,7 +905,6 @@ def native_opportunity(resource: dict[str, Any], family_record: dict[str, Any], 
         "version": 2,
         "id": opportunity_id(canonical, contribution_family, missing_increment),
         "revision": f"opportunity-revision-v2-{canonical_hash(revision_material)[:32]}",
-        "legacyV1": None,
         "identity": {
             "canonicalResourceId": canonical["id"],
             "contributionFamily": contribution_family,
@@ -1028,8 +1020,6 @@ def wave2_opportunity(
         "version": 2,
         "id": opportunity_id(canonical, contribution_family, missing_increment),
         "revision": f"opportunity-revision-v2-{canonical_hash(revision_material)[:32]}",
-        "legacyV1": None,
-        "legacySignalFamily": None,
         "identity": {
             "canonicalResourceId": canonical["id"],
             "contributionFamily": contribution_family,
@@ -1098,83 +1088,6 @@ def wave2_opportunities(
     return result
 
 
-def load_contribution_returns(path: Path = CONTRIBUTION_RETURNS) -> dict[str, Any] | None:
-    if not path.exists():
-        return None
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    return normalize_contribution_return_feed(payload)
-
-
-def apply_public_outcome_suppression(
-    opportunities: list[dict[str, Any]],
-    contributions: dict[str, Any],
-    contribution_returns: dict[str, Any] | None = None,
-) -> list[dict[str, Any]]:
-    covered_legacy = {
-        str(item.get("opportunityKey"))
-        for item in contributions.get("contributions", [])
-        if item.get("lifecycleState") in {"PUBLIC_DELIVERY_VERIFIED", "UPSTREAM_ACCEPTED", "FOLLOWUP_REQUIRED"}
-    }
-    return_records = list((contribution_returns or {}).get("contributions", []))
-    returns_by_resource: dict[str, list[dict[str, Any]]] = {}
-    for record in return_records:
-        ref = record.get("resourceRef") or {}
-        resource_id = str(ref.get("id") or "")
-        if resource_id:
-            returns_by_resource.setdefault(resource_id, []).append(record)
-    result = []
-    for opportunity in opportunities:
-        legacy = opportunity.get("legacyV1") or {}
-        resource_id = opportunity["canonicalResource"]["id"]
-        covering_returns = returns_by_resource.get(resource_id, [])
-        legacy_covered = legacy.get("opportunityKey") in covered_legacy
-        if not legacy_covered and not covering_returns:
-            result.append(opportunity)
-            continue
-        updated = json.loads(json.dumps(opportunity))
-        updated["qualification"]["state"] = "LIKELY_ALREADY_COVERED"
-        updated["qualification"]["confidence"] = "high"
-        updated["qualification"]["reason"] = "Verified public contribution evidence already exists for this resource."
-        updated["qualification"]["whyNow"] = ["Verified public contribution evidence already exists; avoid redundant work unless live reread shows a new missing increment."]
-        updated["qualification"]["limitations"].append("Suppressed by public contribution outcome evidence.")
-        updated["qualification"]["duplicationRisk"] = "high"
-        suggested = "RECHECK_UPSTREAM" if any((record.get("outcomeFlags") or {}).get("followUpNeeded") for record in covering_returns) else "NO_ACTION"
-        updated["qualification"]["dispositionReview"] = {
-            "state": "REVIEW_DISPOSITION",
-            "suggestedDisposition": suggested,
-            "requiresLiveReread": True,
-            "reason": "Public return evidence can cover the candidate, but terminal disposition still requires authoritative live reread.",
-            "evidence": [
-                {
-                    "returnId": record.get("returnId"),
-                    "publicUrl": record.get("publicUrl"),
-                    "publicSummary": record.get("publicSummary"),
-                    "verificationSource": record.get("verificationSource"),
-                }
-                for record in covering_returns
-            ],
-        }
-        updated["ranking"]["score"] = 0
-        updated["ranking"]["tier"] = "suppressed"
-        updated["ranking"]["deterministicReasons"] = ["Public outcome evidence indicates this opportunity is likely already covered."]
-        updated["ranking"]["dimensions"]["actionability"] = "low"
-        updated["ranking"]["dimensions"]["duplicationRisk"] = "high"
-        updated["ranking"]["dimensions"]["confidence"] = "high"
-        updated["ranking"]["dimensions"]["timeliness"] = "review-disposition"
-        revision_material = {
-            "schema": "radar-opportunity-v2-outcome-suppression.v1",
-            "id": updated["id"],
-            "priorRevision": opportunity["revision"],
-            "state": updated["qualification"]["state"],
-            "coveredByLegacy": sorted(covered_legacy),
-            "coveredByReturns": sorted(record.get("returnId") for record in covering_returns),
-            "suggestedDisposition": suggested,
-        }
-        updated["revision"] = f"opportunity-revision-v2-{canonical_hash(revision_material)[:32]}"
-        result.append(updated)
-    return result
-
-
 def source_families(
     *,
     snapshot: dict[str, Any],
@@ -1202,7 +1115,7 @@ def source_families(
     ]
     trac_family = {
         "sourceFamily": CORE_TRAC_FAMILY,
-        "snapshotId": f"source-family-core-trac-{snapshot['collection_id'].replace('collection-v1-', '')}",
+        "snapshotId": f"source-family-core-trac-{snapshot['collection_id']}",
         "sourceRevision": collection["collection_id"],
         "observedTime": collection["reference_time"],
         "certifiedTime": snapshot["reference_time"],
@@ -1567,17 +1480,12 @@ def v2_snapshot_payload(
     body = {
         "schema": "radar-snapshot.v2",
         "version": 2,
-        "snapshotId": f"snapshot-v2-{snapshot['snapshot_id'].replace('snapshot-v1-', '')}",
-        "legacyV1SnapshotId": snapshot["snapshot_id"],
+        "snapshotId": f"snapshot-v2-{snapshot['snapshot_id']}",
         "collectionId": snapshot["collection_id"],
         "referenceTime": snapshot["reference_time"],
         "sourceRevision": snapshot.get("source_revision"),
         "opportunityCount": len(v2_opportunities),
         "sourceFamilies": families,
-        "canonicalHashes": {
-            "v1Dataset": snapshot["dataset_sha256"],
-            "v1Collection": snapshot["collection_sha256"],
-        },
     }
     body["canonicalHash"] = canonical_hash(body)
     return body
@@ -1922,11 +1830,9 @@ def project_v2(
     snapshot: dict[str, Any],
     collection: dict[str, Any],
     opportunities: dict[str, Any],
-    contributions: dict[str, Any],
     wordpress_develop: dict[str, Any] | None = None,
     gutenberg: dict[str, Any] | None = None,
     wave2_sources: dict[str, dict[str, Any] | None] | None = None,
-    contribution_returns: dict[str, Any] | None = None,
 ) -> dict[str, bytes]:
     configured_wave2 = wave2_sources or {}
     github_index = github_ticket_index(wordpress_develop)
@@ -1952,10 +1858,10 @@ def project_v2(
     ]
     v2_opportunities = [
         attach_candidate_model(item)
-        for item in apply_public_outcome_suppression(sorted(
+        for item in sorted(
         [*trac_opportunities, *native_wordpress, *native_gutenberg, *native_wave2],
         key=lambda item: (-item["ranking"]["score"], item["id"]),
-        ), contributions, contribution_returns)
+        )
     ]
     v2_snapshot = v2_snapshot_payload(snapshot, collection, v2_opportunities, families)
     source_snapshots = {
@@ -1972,7 +1878,6 @@ def project_v2(
         "version": 2,
         "status": "healthy" if all(family["health"]["state"] == "certified" for family in required_families) else "degraded",
         "snapshotId": v2_snapshot["snapshotId"],
-        "legacyV1SnapshotId": snapshot["snapshot_id"],
         "sourceFamilies": families,
         "opportunityCount": len(v2_opportunities),
     }
@@ -1988,14 +1893,6 @@ def project_v2(
         "snapshotId": v2_snapshot["snapshotId"],
         "opportunities": v2_opportunities,
     }
-    outcomes = {
-        "schema": "radar-outcomes.v2",
-        "version": 2,
-        "snapshotId": v2_snapshot["snapshotId"],
-        "outcomes": contributions.get("contributions", []),
-        "contributionReturns": (contribution_returns or {}).get("outcomes", []),
-        "limitations": ["Outcome attribution is conservative and based only on public contribution evidence."],
-    }
     payloads = {
         "health.json": health,
         "sources.json": sources,
@@ -2008,14 +1905,6 @@ def project_v2(
         "scoring.json": scoring_contract_payload(v2_snapshot["snapshotId"]),
         "opportunities.json": opportunity_set,
         "changes.json": changes_payload(snapshot, v2_opportunities, resources, relationships, families),
-        "contributions.json": {
-            "schema": "radar-contributions.v2",
-            "version": 2,
-            "snapshotId": v2_snapshot["snapshotId"],
-            "contributions": contributions.get("contributions", []),
-            "contributionReturns": (contribution_returns or {}).get("contributions", []),
-        },
-        "outcomes.json": outcomes,
         "taxonomy.json": taxonomy_payload(),
         "diagnostics.json": diagnostics_payload(v2_opportunities, families, resources, relationships),
     }

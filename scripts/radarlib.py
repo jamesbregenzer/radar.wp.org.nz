@@ -21,10 +21,6 @@ from radarcore import DatasetSelection, RunContext, load_scoring_config
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_RAW = ROOT / "data" / "raw"
-OUTCOMES_CSV = ROOT / "data" / "outcomes" / "outcomes.csv"
-REVIEWS_JSON = ROOT / "data" / "reviews" / "reviews.json"
-QUERIES_JSON = ROOT / "config" / "queries.json"
-REPORTS_DIR = ROOT / "reports"
 
 TICKET_ID_KEYS = ("id", "ticket", "Ticket", "ticket_id", "Ticket ID")
 SUMMARY_KEYS = ("summary", "Summary")
@@ -86,88 +82,6 @@ def days_since(value: str, now: datetime) -> int | None:
     if not parsed:
         return None
     return max(0, (now - parsed.astimezone(timezone.utc)).days)
-
-
-def load_queries(path: Path = QUERIES_JSON) -> list[dict[str, Any]]:
-    if not path.exists():
-        return []
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    return [q for q in payload.get("queries", []) if q.get("enabled", True)]
-
-
-def load_outcomes(path: Path = OUTCOMES_CSV) -> dict[str, str]:
-    outcomes: dict[str, str] = {}
-    if not path.exists():
-        return outcomes
-    with path.open(newline="", encoding="utf-8") as handle:
-        reader = csv.reader(handle)
-        for row in reader:
-            if not row or row[0].strip().startswith("#"):
-                continue
-            ticket_id = normalize_ticket_id(row[0])
-            outcome = row[1].strip().lower() if len(row) > 1 else ""
-            if ticket_id and outcome:
-                outcomes[ticket_id] = outcome
-    return outcomes
-
-
-def normalize_review(review: dict[str, Any]) -> dict[str, Any]:
-    normalized: dict[str, Any] = {
-        "status": str(review.get("status", "")).strip().lower(),
-        "reason": str(review.get("reason", "")).strip(),
-        "notes": str(review.get("notes", "")).strip(),
-        "updated_at": str(review.get("updated_at", "")).strip(),
-    }
-
-    # Props are an outcome independent of review status. Preserve this
-    # metadata whenever reviews are loaded and saved so dashboard generation
-    # cannot silently erase contribution history.
-    if review.get("received_props") is True:
-        normalized["received_props"] = True
-
-    props_recorded_at = str(review.get("props_recorded_at", "")).strip()
-    if props_recorded_at:
-        normalized["props_recorded_at"] = props_recorded_at
-
-    changeset = str(review.get("changeset", "")).strip()
-    if changeset:
-        normalized["changeset"] = changeset
-
-    return normalized
-
-
-def load_reviews(path: Path = REVIEWS_JSON) -> dict[str, dict[str, Any]]:
-    """Load human review decisions from JSON.
-
-    Reviews are keyed by normalized ticket ID so the admin workflow can update
-    exactly one constrained data file. This is intentionally easier for the
-    Worker-backed admin endpoint to validate than CSV rows.
-    """
-    if not path.exists():
-        return {}
-
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    reviews: dict[str, dict[str, Any]] = {}
-
-    for ticket, review in payload.items():
-        ticket_id = normalize_ticket_id(str(ticket))
-        if ticket_id and isinstance(review, dict):
-            reviews[ticket_id] = normalize_review(review)
-
-    return reviews
-
-
-def save_reviews(reviews: dict[str, dict[str, Any]], path: Path = REVIEWS_JSON) -> None:
-    """Persist human review decisions as stable, sorted JSON."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-
-    normalized = {
-        ticket_id: normalize_review(review)
-        for ticket_id, review in sorted(reviews.items(), key=lambda item: int(item[0]))
-        if normalize_ticket_id(ticket_id)
-    }
-
-    path.write_text(json.dumps(normalized, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def infer_query_slug(csv_path: Path) -> str:
@@ -347,15 +261,6 @@ def score_ticket(
         score += p["external_service"]
         reasons.append(f"setup complexity: external service or API {p['external_service']:+d}")
 
-    if ticket_id in outcomes:
-        outcome = outcomes[ticket_id]
-        if outcome == "props":
-            score += p["already_props"]
-            reasons.append(f"already produced props {p['already_props']:+d}")
-        elif outcome == "tested":
-            score += p["already_tested"]
-            reasons.append(f"already tested {p['already_tested']:+d}")
-
     if not summary:
         score += p["missing_summary"]
         reasons.append(f"missing summary {p['missing_summary']:+d}")
@@ -365,35 +270,6 @@ def score_ticket(
 
 def trac_url(ticket_id: str) -> str:
     return f"https://core.trac.wordpress.org/ticket/{ticket_id}"
-
-# Shared review/grouping helpers -------------------------------------------------
-
-PRIORITY_TARGET_LIMIT = 12
-PRIORITY_TARGET_MIN_SCORE = 150
-COMPLETED_REVIEW_STATUSES = {"tested", "commented", "committed"}
-VALID_REVIEW_STATUSES = {
-    "new",
-    "shortlist",
-    "watch",
-    "reject",
-    "tested",
-    "commented",
-    "committed",
-}
-
-
-def review_received_props(item: dict[str, Any]) -> bool:
-    review = item.get("review") or {}
-    # ``status: props`` is retained as legacy read-only compatibility from the
-    # early admin prototype. New writes should use ``received_props: true``
-    # while preserving the workflow status that led to the contribution.
-    return review.get("received_props") is True or str(review.get("status", "")).strip().lower() == "props"
-
-
-def review_status(item: dict[str, Any]) -> str:
-    review = item.get("review") or {}
-    return str(review.get("status", "")).strip().lower()
-
 
 def priority_tier(item: dict[str, Any]) -> tuple[str, str]:
     score = int(item.get("score", 0))
@@ -408,80 +284,19 @@ def priority_tier(item: dict[str, Any]) -> tuple[str, str]:
     return "standard", "Standard"
 
 
-def is_priority_target(item: dict[str, Any]) -> bool:
-    if review_status(item):
-        return False
-
-    if int(item.get("score", 0)) < PRIORITY_TARGET_MIN_SCORE:
-        return False
-
-    reasons = " ".join(item.get("reasons", [])).lower()
-
-    has_action_signal = any(
-        signal in reasons
-        for signal in ("needs testing", "has patch", "good first bug")
-    )
-    has_manageable_signal = any(
-        signal in reasons
-        for signal in ("freshness:", "momentum:", "recent activity", "healthy comment count", "has owner")
-    )
-    has_stale_penalty = any(
-        penalty in reasons
-        for penalty in (
-            "very old ticket",
-            "stale activity",
-            "very large thread",
-            "already produced props",
-            "already tested",
-        )
-    )
-
-    return has_action_signal and has_manageable_signal and not has_stale_penalty
-
-
-def group_items(items: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
-    groups: dict[str, list[dict[str, Any]]] = {
-        "priority": [],
-        "top": [],
-        "shortlist": [],
-        "watch": [],
-        "completed": [],
-        "rejected": [],
-    }
-
-    for item in items:
-        status = review_status(item)
-
-        if status == "reject":
-            groups["rejected"].append(item)
-        elif status == "shortlist":
-            groups["shortlist"].append(item)
-        elif status == "watch":
-            groups["watch"].append(item)
-        elif status in COMPLETED_REVIEW_STATUSES or review_received_props(item):
-            groups["completed"].append(item)
-        elif is_priority_target(item) and len(groups["priority"]) < PRIORITY_TARGET_LIMIT:
-            groups["priority"].append(item)
-        else:
-            groups["top"].append(item)
-
-    return groups
-
-
 @dataclass(frozen=True)
 class Opportunity:
-    """Canonical normalized and scored opportunity used by every renderer."""
+    """Canonical normalized and scored opportunity."""
 
     ticket_id: str
     score: int
     reasons: tuple[str, ...]
     row: dict[str, Any]
     query: dict[str, Any]
-    review: dict[str, Any] | None
 
     def as_item(self) -> dict[str, Any]:
         return {"ticket_id": self.ticket_id, "score": self.score, "reasons": list(self.reasons),
-                "row": self.row, "query": self.query, "review": self.review}
+                "row": self.row, "query": self.query}
 
 
 def datasets_from_selection(selection: DatasetSelection) -> list[Dataset]:
@@ -498,10 +313,8 @@ def build_opportunities(
     selection: DatasetSelection | None = None,
     raw_dir: Path = DATA_RAW,
 ) -> tuple[list[Opportunity], dict[str, set[str]], dict[str, Any]]:
-    query_list = load_queries()
-    query_meta = {query["slug"]: query for query in query_list}
-    outcomes = load_outcomes()
-    reviews = load_reviews()
+    query_meta: dict[str, dict[str, Any]] = {}
+    outcomes: dict[str, str] = {}
     datasets = datasets_from_selection(selection) if selection else discover_datasets(raw_dir)
     scoring = load_scoring_config()
 
@@ -519,7 +332,7 @@ def build_opportunities(
             ticket_id = row["ticket_id"]
             duplicate_sources[ticket_id].add(dataset.query_slug)
 
-            candidate = Opportunity(ticket_id, score, tuple(reasons), row, meta, reviews.get(ticket_id))
+            candidate = Opportunity(ticket_id, score, tuple(reasons), row, meta)
 
             if ticket_id not in scored_by_ticket or score > scored_by_ticket[ticket_id].score:
                 scored_by_ticket[ticket_id] = candidate
@@ -531,8 +344,6 @@ def build_opportunities(
 
     return ranked, duplicate_sources, {
         "datasets": datasets,
-        "outcomes": outcomes,
-        "reviews": reviews,
     }
 
 
@@ -644,10 +455,10 @@ def scoring_signal_label(reason: str) -> str:
 
 
 def ranking_signal_labels(reasons: list[str]) -> list[str]:
-    """Return scored signal labels for dashboard/admin pills.
+    """Return scored signal labels for candidate explanations.
 
     These labels intentionally expose the actual ranking rationale, not just
-    raw Trac keywords, so reviewers can see why a ticket rose or fell without
+    raw Trac keywords, so consumers can see why a ticket rose or fell without
     reading the full score table.
     """
     labels: list[str] = []

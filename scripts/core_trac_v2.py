@@ -15,7 +15,6 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "config" / "core-trac-v2-source-registry.json"
 CORE_TRAC_FAMILY = "CORE_TRAC"
 PRIMARY_ROLES = {"DIRECT_OPPORTUNITY", "SIGNAL", "RECONCILIATION"}
-LEGACY_ROLE = "LEGACY_V1_COMPATIBILITY"
 TICKET_ID_KEYS = ("id", "ticket", "Ticket", "ticket_id", "Ticket ID")
 
 
@@ -35,11 +34,11 @@ def validate_core_trac_source_registry(registry: dict[str, Any]) -> None:
             raise ValueError(f"duplicate or missing source id: {source_id}")
         seen.add(source_id)
         role = source.get("sourceRole")
-        if role not in PRIMARY_ROLES | {LEGACY_ROLE}:
+        if role not in PRIMARY_ROLES:
             raise ValueError(f"{source_id} has unsupported sourceRole")
-        if role != LEGACY_ROLE and not source.get("semanticMeaning"):
+        if not source.get("semanticMeaning"):
             raise ValueError(f"{source_id} is missing semantic meaning")
-        if role != LEGACY_ROLE and not source.get("candidateFamilyMappings") and role == "DIRECT_OPPORTUNITY":
+        if not source.get("candidateFamilyMappings") and role == "DIRECT_OPPORTUNITY":
             raise ValueError(f"{source_id} direct opportunity source lacks candidate-family mappings")
         if not source.get("htmlUrl") or not source.get("csvUrl"):
             raise ValueError(f"{source_id} is missing upstream URLs")
@@ -55,17 +54,14 @@ def source_registry_summary(registry: dict[str, Any] | None = None) -> dict[str,
     value = registry or load_core_trac_source_registry()
     sources = value.get("sources", [])
     primary = [item for item in sources if item.get("sourceRole") in PRIMARY_ROLES]
-    legacy = [item for item in sources if item.get("sourceRole") == LEGACY_ROLE]
     return {
         "schema": value["schema"],
         "version": value["version"],
         "registryRevision": registry_revision(value),
         "registryStatus": value.get("registryStatus", "IMPLEMENTED"),
         "primarySourceCount": len(primary),
-        "legacyV1CompatibilitySourceCount": len(legacy),
         "sourceRoles": sorted({item["sourceRole"] for item in sources}),
         "primarySourceIds": [item["id"] for item in primary],
-        "legacyV1CompatibilitySourceIds": [item["id"] for item in legacy],
     }
 
 
