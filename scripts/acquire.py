@@ -19,7 +19,7 @@ TRAC_REGISTRY = ROOT / "config" / "core-trac-v2-source-registry.json"
 WAVE2_CONFIG = ROOT / "config" / "wave2-sources.json"
 DEFAULT_RAW_ROOT = ROOT / "data" / "raw"
 PRIMARY_ROLES = {"DIRECT_OPPORTUNITY", "SIGNAL", "RECONCILIATION"}
-CSV_NAME = re.compile(r"^(?:query|report_[0-9]+)\.csv$")
+CSV_NAME = re.compile(r"^(?:query|report_[0-9]+)(?: \([0-9]+\))?\.csv$")
 DEFAULT_TIMEOUT = 90
 
 
@@ -68,11 +68,15 @@ def new_csv_file(before: dict[Path, tuple[int, int]], downloads: Path) -> Path |
     return max(candidates, key=lambda path: path.stat().st_mtime_ns) if candidates else None
 
 
+def download_is_incomplete(path: Path) -> bool:
+    return any(path.with_name(path.name + suffix).exists() for suffix in (".part", ".download"))
+
+
 def wait_for_new_csv(downloads: Path, before: dict[Path, tuple[int, int]], timeout: int = DEFAULT_TIMEOUT) -> Path:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         candidate = new_csv_file(before, downloads)
-        if candidate and candidate.stat().st_size > 0:
+        if candidate and not download_is_incomplete(candidate) and candidate.stat().st_size > 0:
             size = candidate.stat().st_size
             time.sleep(0.2)
             if candidate.exists() and candidate.stat().st_size == size:
@@ -103,6 +107,8 @@ def validate_csv(body: bytes, expected_fields: list[str]) -> int:
         for row in reader:
             if None in row:
                 raise ValueError("acquired CSV has a row with the wrong number of fields")
+            if "id" in row and not str(row["id"] or "").strip():
+                raise ValueError("acquired CSV has a row without a ticket id")
             rows += 1
         return rows
     except (UnicodeDecodeError, csv.Error) as error:
@@ -137,8 +143,8 @@ def failure_record(source_id: str, url: str, observed_at: str, error: Exception)
 def acquire_core_trac(source: dict[str, Any], run_dir: Path, observed_at: str, downloads: Path, timeout: int, *, opener: Callable[[str], None] = open_firefox, waiter: Callable[[Path, dict[Path, tuple[int, int]], int], Path] = wait_for_new_csv, closer: Callable[[], None] = close_firefox) -> dict[str, Any]:
     run_dir.mkdir(parents=True, exist_ok=True)
     before = snapshot_downloads(downloads)
-    opener(source["csvUrl"])
     try:
+        opener(source["csvUrl"])
         downloaded = waiter(downloads, before, timeout)
         body = downloaded.read_bytes()
         row_count = validate_csv(body, list(source.get("expectedFields") or []))
@@ -157,6 +163,25 @@ def fetch_wave2_source(config: dict[str, Any]) -> list[tuple[str, bytes, dict[st
     return configured_responses(config, fetch_public)
 
 
+def validate_wave2_payload(adapter: str | None, payload: Any, url: str) -> None:
+    if adapter in {"wp_rest_posts", "github_issues", "github_repository"}:
+        if not isinstance(payload, list) or not all(isinstance(item, dict) for item in payload):
+            raise ValueError(f"expected a JSON array of objects from {url}")
+        if adapter == "wp_rest_posts" and any("id" not in item for item in payload):
+            raise ValueError(f"WordPress response contains an item without id from {url}")
+        if adapter in {"github_issues", "github_repository"} and any("number" not in item for item in payload):
+            raise ValueError(f"GitHub response contains an item without number from {url}")
+    elif adapter == "wp_rest_tree":
+        if not isinstance(payload, (dict, list)):
+            raise ValueError(f"expected a JSON object or array from {url}")
+        items = payload if isinstance(payload, list) else [payload]
+        if any(not isinstance(item, dict) or "id" not in item for item in items):
+            raise ValueError(f"WordPress handbook response contains an item without id from {url}")
+    elif adapter == "wordpress_releases":
+        if not isinstance(payload, dict) or not isinstance(payload.get("offers"), list) or not all(isinstance(item, dict) for item in payload["offers"]):
+            raise ValueError(f"WordPress release response has no offers array from {url}")
+
+
 def acquire_wave2(config: dict[str, Any], run_dir: Path, observed_at: str, *, fetcher: Callable[[dict[str, Any]], list[tuple[str, bytes, dict[str, str], int]] ] = fetch_wave2_source) -> list[dict[str, Any]]:
     run_dir.mkdir(parents=True, exist_ok=True)
     responses = fetcher(config)
@@ -167,6 +192,11 @@ def acquire_wave2(config: dict[str, Any], run_dir: Path, observed_at: str, *, fe
     for index, (url, body, _headers, status) in enumerate(responses, start=1):
         if status != 200:
             raise ValueError(f"HTTP {status} from {url}")
+        try:
+            payload = json.loads(body.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise ValueError(f"invalid JSON from {url}: {error}") from error
+        validate_wave2_payload(config.get("adapter"), payload, url)
         suffix = "" if len(responses) == 1 else f"-{index:03d}"
         artifact = run_dir / f"{slug}{suffix}.raw.json"
         artifact.write_bytes(body)

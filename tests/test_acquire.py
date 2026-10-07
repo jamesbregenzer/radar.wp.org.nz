@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from acquire import acquire_core_trac, acquire_run, new_csv_file, primary_core_trac_sources, validate_csv
+from acquire import acquire_core_trac, acquire_run, acquire_wave2, new_csv_file, primary_core_trac_sources, validate_csv, wait_for_new_csv
 
 
 FIELDS = ["id", "summary", "status"]
@@ -39,6 +39,25 @@ class AcquireTests(unittest.TestCase):
             report = downloads / "report_16.csv"
             report.write_text("id,summary,status\n16,Report,new\n")
             self.assertEqual(new_csv_file(before, downloads), report)
+
+    def test_detects_firefox_duplicate_download_names(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            downloads = Path(temporary)
+            existing = downloads / "query.csv"
+            existing.write_text("old")
+            before = {existing: (existing.stat().st_size, existing.stat().st_mtime_ns)}
+            duplicate = downloads / "query (1).csv"
+            duplicate.write_text("id,summary,status\n1,New,new\n")
+            self.assertEqual(new_csv_file(before, downloads), duplicate)
+
+    def test_incomplete_download_is_not_accepted(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            downloads = Path(temporary)
+            candidate = downloads / "report_15.csv"
+            candidate.write_text("id,summary,status\n15,Partial,new\n")
+            (downloads / "report_15.csv.part").write_text("still downloading")
+            with self.assertRaises(TimeoutError):
+                wait_for_new_csv(downloads, {}, timeout=0)
 
     def test_ignores_unrelated_download_files(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -79,6 +98,39 @@ class AcquireTests(unittest.TestCase):
             validate_csv(b"id,summary\n1,Missing status\n", FIELDS)
         with self.assertRaises(ValueError):
             validate_csv(b"id,summary,status\n1,Too,many,fields\n", FIELDS)
+        with self.assertRaises(ValueError):
+            validate_csv(b"id,summary,status\n,Missing id,new\n", FIELDS)
+
+    def test_firefox_cleanup_runs_when_open_fails(self):
+        closed = []
+
+        def opener(url):
+            raise RuntimeError("Firefox unavailable")
+
+        with tempfile.TemporaryDirectory() as temporary:
+            with self.assertRaises(RuntimeError):
+                acquire_core_trac(source("broken"), Path(temporary), "2026-10-07T12:00:00Z", Path(temporary), 1, opener=opener, closer=lambda: closed.append(True))
+        self.assertEqual(closed, [True])
+
+    def test_wave2_rejects_http_200_non_json_before_reporting_success(self):
+        config = {"sourceFamily": "MAKE_TEST_RELEASE_SIGNALS", "adapter": "wp_rest_posts"}
+
+        def fetcher(_config):
+            return [("https://example.test/posts", b"<html>error</html>", {}, 200)]
+
+        with tempfile.TemporaryDirectory() as temporary:
+            with self.assertRaises(ValueError):
+                acquire_wave2(config, Path(temporary), "2026-10-07T12:00:00Z", fetcher=fetcher)
+
+    def test_wave2_rejects_json_error_objects_with_http_200(self):
+        config = {"sourceFamily": "MAKE_TEST_RELEASE_SIGNALS", "adapter": "wp_rest_posts"}
+
+        def fetcher(_config):
+            return [("https://example.test/posts", b'[{"error":"upstream failure"}]', {}, 200)]
+
+        with tempfile.TemporaryDirectory() as temporary:
+            with self.assertRaises(ValueError):
+                acquire_wave2(config, Path(temporary), "2026-10-07T12:00:00Z", fetcher=fetcher)
 
     def test_one_source_failure_does_not_stop_remaining_sources(self):
         body = b"id,summary,status\n1,Good,new\n"
