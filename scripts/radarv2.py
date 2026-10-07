@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from certification import canonical_hash, canonical_json, sha256_bytes
+from core_trac_v2 import source_registry_summary
 
 ROOT = Path(__file__).resolve().parents[1]
 WORDPRESS_DEVELOP_SOURCE = ROOT / "data" / "sources" / "wordpress-develop-github.json"
@@ -1114,6 +1115,7 @@ def source_families(
             "artifactHash": snapshot["collection_sha256"],
             "certificationResult": collection["state"],
         },
+        "sourceRegistry": source_registry_summary(),
         "rawAcquisitions": raw_acquisitions,
         "limitations": [
             "Certification covers configured Core Trac CSV searches, not every WordPress Core ticket.",
@@ -1726,22 +1728,45 @@ def candidate_from_opportunity(
     ]
     source_family = opportunity["canonicalResource"]["sourceFamily"]
     family = families_by_source.get(source_family, {})
+    source_memberships = opportunity["canonicalResource"].get("sourceMemberships")
+    if not source_memberships:
+        source_memberships = [
+            {
+                "sourceFamily": opportunity["canonicalResource"]["sourceFamily"],
+                "sourceIdentity": item.get("sourceIdentity"),
+                "querySlug": item.get("querySlug"),
+                "track": item.get("track"),
+            }
+            for item in opportunity["canonicalResource"].get("provenance", [])
+        ]
+    candidate_id = candidate_id_for(opportunity)
+    source_families = sorted({source_family, *[item.get("sourceFamily", source_family) for item in source_memberships if isinstance(item, dict)]})
+    observed_at = opportunity["canonicalResource"].get("observedTime")
+    derived_priority = opportunity["scoreVector"].get("derivedPriority", opportunity["ranking"])
     return {
         "schema": "radar-candidate.v1",
         "version": 1,
-        "id": candidate_id_for(opportunity),
+        "id": candidate_id,
+        "candidateId": candidate_id,
+        "opportunityId": opportunity["id"],
         "opportunityRef": {
             "id": opportunity["id"],
             "revision": opportunity["revision"],
         },
         "resourceRefs": [{"id": resource_id} for resource_id in resource_ids],
         "relationships": related,
+        "sourceFamilies": source_families,
+        "sourceMemberships": source_memberships,
         "familyCandidates": opportunity.get("familyCandidates", []),
         "scoreVector": opportunity["scoreVector"],
+        "derivedPriority": derived_priority,
         "derivedRanking": opportunity["ranking"],
+        "estimatedExecutionClass": opportunity["ranking"].get("dimensions", {}).get("effort", "unknown"),
         "eligibilityGate": opportunity["eligibilityGate"],
         "sourceRevision": opportunity["canonicalResource"].get("sourceRevision"),
+        "observedAt": observed_at,
         "freshness": opportunity["freshness"],
+        "whyNow": opportunity["qualification"].get("whyNow", []),
         "sourceHealth": {
             "sourceFamily": source_family,
             "state": family.get("health", {}).get("state", "unknown"),
