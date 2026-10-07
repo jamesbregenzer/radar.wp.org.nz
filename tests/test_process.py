@@ -55,6 +55,51 @@ class ProcessingTests(unittest.TestCase):
         scores = [item["derivedPriority"]["score"] for item in first["candidates"]]
         self.assertEqual(scores, sorted(scores, reverse=True))
 
+    def test_broad_report_overlap_does_not_inflate_score(self):
+        def observation(source_id, role="DIRECT_OPPORTUNITY"):
+            return {
+                "observedAt": "2026-10-07T11:00:00Z",
+                "sourceId": source_id,
+                "sourceFamily": "TEST_SOURCE",
+                "sourceRole": role,
+                "semanticMeaning": "Fixture signal.",
+                "candidateFamilyMappings": [{"familyId": "TEST_FAMILY", "confidence": "high"}],
+                "acquisitionResult": "success",
+                "rows": [{"id": "same", "title": "Same opportunity", "status": "open"}],
+            }
+
+        one = build_feed({"referenceTime": "2026-10-07T12:00:00Z", "observations": [observation("one")]})
+        many = build_feed({"referenceTime": "2026-10-07T12:00:00Z", "observations": [observation(str(index)) for index in range(8)]})
+        one_score = one["candidates"][0]["score"]["value"]
+        many_score = many["candidates"][0]["score"]["value"]
+        self.assertEqual(one_score, 83)
+        self.assertEqual(many_score, 86)
+
+    def test_closed_generic_resource_is_not_a_candidate(self):
+        payload = {
+            "observations": [{
+                "observedAt": "2026-10-07T11:00:00Z",
+                "sourceId": "generic-source",
+                "sourceFamily": "GENERIC",
+                "sourceRole": "DIRECT_OPPORTUNITY",
+                "candidateFamilyMappings": [{"familyId": "GENERIC_REVIEW", "confidence": "high"}],
+                "acquisitionResult": "success",
+                "rows": [{"id": "closed-1", "title": "Already closed", "status": "closed"}],
+            }]
+        }
+        self.assertEqual(build_feed(payload)["candidateCount"], 0)
+
+    def test_processor_does_not_trust_false_passed_semantic_validation(self):
+        row = {"id": "bad", "summary": "Missing required keyword", "status": "new", "component": "Editor", "owner": "", "type": "defect", "priority": "normal", "milestone": "6.9", "version": "trunk", "keywords": "has-patch", "time": "2026-10-01T00:00:00Z", "changetime": "2026-10-06T00:00:00Z", "comments": "1", "_comments": "1"}
+        payload = {"observations": [{
+            "observedAt": "2026-10-07T11:00:00Z",
+            "sourceId": "core-trac-report-15-has-patch-needs-testing",
+            "acquisitionResult": "success",
+            "semanticValidation": {"state": "passed", "findings": []},
+            "rows": [row],
+        }]}
+        self.assertEqual(build_feed(payload)["candidateCount"], 0)
+
     def test_feed_has_only_stable_fabric_contract_and_no_v1_fields(self):
         feed = build_feed(self.payload)
         self.assertEqual(feed["schema"], SCHEMA)

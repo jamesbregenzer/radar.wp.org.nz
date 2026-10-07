@@ -18,6 +18,7 @@ CORE_FAMILY = "CORE_TRAC"
 DIRECT = "DIRECT_OPPORTUNITY"
 SIGNAL = "SIGNAL"
 RECONCILIATION = "RECONCILIATION"
+NON_ACTIONABLE_STATUSES = {"closed", "resolved", "fixed", "invalid", "wontfix", "wont-fix"}
 
 
 def canonical_json(value: Any) -> str:
@@ -113,7 +114,7 @@ def source_definition(observation: dict[str, Any], registry: dict[str, Any]) -> 
 
 def source_health(source: dict[str, Any], observation: dict[str, Any] | None, prior: dict[str, Any] | None) -> dict[str, Any]:
     result = str((observation or {}).get("acquisitionResult", "failed"))
-    semantic = (observation or {}).get("semanticValidation") or validate_rows(source, list((observation or {}).get("rows") or []), result)
+    semantic = validate_rows(source, list((observation or {}).get("rows") or []), result)
     healthy = result == "success" and semantic.get("state") == "passed"
     had_prior = bool(prior and prior.get("rows"))
     return {
@@ -171,7 +172,7 @@ def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, 
         old = prior.get(source_id)
         result = str((observation or {}).get("acquisitionResult", "failed"))
         rows = list((observation or {}).get("rows") or [])
-        semantic = (observation or {}).get("semanticValidation") or validate_rows(source, rows, result)
+        semantic = validate_rows(source, rows, result)
         health_record = source_health(source, observation, old)
         health.append(health_record)
         usable = result == "success" and semantic.get("state") == "passed"
@@ -179,10 +180,10 @@ def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, 
         if not evidence_observation:
             continue
         evidence_rows = list(evidence_observation.get("rows") or [])
-        evidence_semantic = semantic if usable else (evidence_observation.get("semanticValidation") or validate_rows(source, evidence_rows, "success"))
+        evidence_semantic = semantic if usable else validate_rows(source, evidence_rows, "success")
         for row in evidence_rows:
             identity = row_identity(row, source)
-            if not identity or source.get("sourceRole") == RECONCILIATION:
+            if not identity or source.get("sourceRole") == RECONCILIATION or str(row.get("status") or row.get("state") or "").strip().lower() in NON_ACTIONABLE_STATUSES:
                 continue
             family = source.get("sourceFamily") or evidence_observation.get("sourceFamily") or "UNKNOWN"
             resource_id = f"{str(family).lower().replace('_', '-')}:" + identity
@@ -225,7 +226,9 @@ def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, 
         high_count = sum(item["confidence"] == "high" for item in mappings.values())
         stale = any(item["freshness"] == "stale" for item in resource["sourceMemberships"])
         keywords = set().union(*(row_keywords(item["evidence"]) for item in resource["sourceMemberships"]))
-        score = 50 + direct_count * 15 + high_count * 15 + min(len(resource["sourceMemberships"]), 4) * 3
+        # Repeated report membership is corroborating evidence, not repeated demand.
+        # Cap each overlap bonus so broad reports cannot dominate the ranking.
+        score = 50 + (15 if direct_count else 0) + min(high_count, 2) * 15 + min(len(resource["sourceMemberships"]), 2) * 3
         reasons = [f"{direct_count} direct opportunity source membership(s)", f"{len(mappings)} approved contribution family candidate(s)"]
         if "needs-testing" in keywords or "needs-patch" in keywords:
             score += 10; reasons.append("explicit current contribution need")
