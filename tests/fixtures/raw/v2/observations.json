@@ -1,0 +1,63 @@
+{
+  "schema": "radar-raw-observation-set.v2",
+  "version": 2,
+  "referenceTime": "2026-10-07T12:00:00Z",
+  "observations": [
+    {
+      "runId": "fixture-run-1",
+      "observedAt": "2026-10-07T11:00:00Z",
+      "sourceId": "core-trac-report-15-has-patch-needs-testing",
+      "sourceFamily": "CORE_TRAC",
+      "exactUpstreamUrl": "https://core.trac.wordpress.org/report/15?format=csv",
+      "sourceRevision": "report-15-fixture",
+      "acquisitionResult": "success",
+      "rows": [
+        {"id": "123", "summary": "Improve the editor test", "status": "new", "component": "Editor", "owner": "", "type": "defect", "priority": "normal", "milestone": "6.9", "version": "trunk", "keywords": "has-patch needs-testing", "time": "2026-10-01T00:00:00Z", "changetime": "2026-10-06T00:00:00Z", "comments": "4", "_comments": "4"}
+      ]
+    },
+    {
+      "runId": "fixture-run-1",
+      "observedAt": "2026-10-07T11:01:00Z",
+      "sourceId": "core-trac-report-13-has-patch",
+      "sourceFamily": "CORE_TRAC",
+      "exactUpstreamUrl": "https://core.trac.wordpress.org/report/13?format=csv",
+      "sourceRevision": "report-13-fixture",
+      "acquisitionResult": "success",
+      "rows": [
+        {"id": "123", "summary": "Improve the editor test", "status": "new", "component": "Editor", "owner": "", "type": "defect", "priority": "normal", "milestone": "6.9", "version": "trunk", "keywords": "has-patch", "time": "2026-10-01T00:00:00Z", "changetime": "2026-10-06T00:00:00Z", "comments": "4", "_comments": "4"}
+      ]
+    },
+    {
+      "runId": "fixture-run-1",
+      "observedAt": "2026-10-07T11:02:00Z",
+      "sourceId": "accessibility-requests",
+      "sourceFamily": "ACCESSIBILITY_REQUESTS",
+      "sourceRole": "DIRECT_OPPORTUNITY",
+      "semanticMeaning": "Public accessibility test request.",
+      "resourceType": "ACCESSIBILITY_REQUEST",
+      "candidateFamilyMappings": [{"familyId": "ACCESSIBILITY_TEST", "confidence": "high"}],
+      "acquisitionResult": "success",
+      "rows": [{"id": "a-1", "title": "Test keyboard navigation", "url": "https://example.test/a-1", "status": "open"}]
+    },
+    {
+      "runId": "fixture-run-1",
+      "observedAt": "2026-10-07T11:03:00Z",
+      "sourceId": "core-trac-report-16-needs-patch",
+      "sourceFamily": "CORE_TRAC",
+      "acquisitionResult": "failed",
+      "rows": []
+    }
+  ],
+  "previous": {
+    "observations": [
+      {
+        "observedAt": "2026-10-06T11:00:00Z",
+        "sourceId": "core-trac-report-16-needs-patch",
+        "sourceFamily": "CORE_TRAC",
+        "sourceRevision": "report-16-old",
+        "acquisitionResult": "success",
+        "rows": [{"id": "456", "summary": "Add a missing patch", "status": "new", "keywords": "needs-patch"}]
+      }
+    ]
+  }
+}
