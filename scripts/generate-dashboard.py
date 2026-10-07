@@ -31,9 +31,12 @@ from radarlib import (
     ranking_signal_labels,
     score_breakdown,
     trac_url,
+    parse_datetime,
 )
 
 PUBLIC_TOP_LIMIT = 50
+FEATURED_V2_LIMIT = 8
+V2_API_DIR = Path("docs") / "radar" / "api" / "v2"
 CONTRIBUTION_STATE = Path("data") / "contributions" / "contribution-state.json"
 PUBLIC_CONTRIBUTIONS = Path("data") / "public-contributions.json"
 PUBLIC_CONTRIBUTION_SOURCE_KINDS = {
@@ -59,6 +62,201 @@ PRIVATE_CONTRIBUTION_TERMS = (
 def opportunity_data(context: RunContext, selection: DatasetSelection | None = None):
     """Use certified truth; ``selection`` remains a call-signature compatibility input."""
     return load_certified_projection()
+
+
+def load_v2_dashboard_bundle() -> dict[str, Any] | None:
+    paths = {
+        "opportunities": V2_API_DIR / "opportunities.json",
+        "sources": V2_API_DIR / "sources.json",
+        "changes": V2_API_DIR / "changes.json",
+        "candidates": V2_API_DIR / "candidate-feed.json",
+    }
+    if not all(path.exists() for path in paths.values()):
+        return None
+    return {name: json.loads(path.read_text(encoding="utf-8")) for name, path in paths.items()}
+
+
+def v2_family_label(value: str) -> str:
+    labels = {
+        "VERIFY_EXISTING_PATCH": "Patch test",
+        "TEST_EXISTING_PR": "PR test",
+        "REVIEW_EXISTING_PR": "Code review",
+        "REPRODUCE_BUG": "Reproduction",
+        "ADD_REGRESSION_TEST": "Regression test",
+        "DOCUMENT_TECHNICAL_BEHAVIOR": "Docs review",
+        "ACCESSIBILITY_UI_VERIFY": "Accessibility test",
+        "BENCHMARK_PERFORMANCE_CHANGE": "Performance",
+        "PATHWAY_REVIEW": "Pathway review",
+        "DOCS_REVIEW": "Docs review",
+        "THEME_CHECK_CODE": "Theme check",
+        "THEME_CHECK_TRIAGE": "Theme triage",
+    }
+    return labels.get(value, contribution_label(value))
+
+
+def v2_source_label(value: str) -> str:
+    return {
+        "CORE_TRAC": "Core Trac",
+        "WORDPRESS_DEVELOP_GITHUB": "wordpress-develop",
+        "GUTENBERG": "Gutenberg",
+        "MAKE_TEST_RELEASE_SIGNALS": "Make Test",
+        "CONTRIBUTOR_PATHWAYS": "Pathways",
+        "CORE_DEVELOPER_DOCS": "Developer Docs",
+        "ACCESSIBILITY_REQUESTS": "Accessibility",
+        "THEME_CHECK_GITHUB": "Theme Check",
+        "MAKE_THEMES_REQUESTS": "Make Themes",
+        "WORDPRESS_RELEASES": "Releases",
+    }.get(value, pretty_label(value))
+
+
+def v2_execution_class(item: dict[str, Any]) -> str:
+    family = str(item.get("contributionFamily") or item.get("legacySignalFamily") or "")
+    if any(token in family for token in ("PATCH", "REGRESSION", "AUTOMATED", "CODE_REVIEW", "API", "PERFORMANCE")):
+        return "ENGINEERING"
+    if any(token in family for token in ("ACCESSIBILITY", "THEME", "DOCS", "PATHWAY", "LEARN")):
+        return "SPECIALIST"
+    return "FAST"
+
+
+def v2_relative_time(value: str | None, reference: str | None) -> str:
+    parsed_value = parse_datetime(str(value or ""))
+    parsed_reference = parse_datetime(str(reference or ""))
+    if not parsed_value or not parsed_reference:
+        return "time unavailable"
+    seconds = max(0, int((parsed_reference - parsed_value).total_seconds()))
+    if seconds < 3600:
+        return f"{max(1, seconds // 60)}m ago"
+    if seconds < 86400:
+        return f"{seconds // 3600}h ago"
+    return f"{seconds // 86400}d ago"
+
+
+def strongest_v2_signals(item: dict[str, Any]) -> list[str]:
+    signals = list(item.get("qualification", {}).get("whyNow") or [])
+    signals.extend(str(reason).split(":", 1)[0] for reason in item.get("ranking", {}).get("deterministicReasons", []) if reason)
+    return list(dict.fromkeys(signal for signal in signals if signal))[:3]
+
+
+def v2_card(item: dict[str, Any], reference: str) -> str:
+    resource = item.get("canonicalResource") or {}
+    qualification = item.get("qualification") or {}
+    ranking = item.get("ranking") or {}
+    freshness = item.get("resourceFreshness") or item.get("freshness") or {}
+    source_freshness = item.get("sourceFreshness") or {}
+    family = str(item.get("contributionFamily") or item.get("legacySignalFamily") or "")
+    source = str(resource.get("sourceFamily") or "")
+    identity = str(resource.get("identity") or item.get("legacyV1", {}).get("ticketId") or resource.get("id") or "")
+    url = resource.get("url") or resource.get("canonicalUrl") or (trac_url(identity) if identity.isdigit() else "#")
+    execution = v2_execution_class(item)
+    signals = strongest_v2_signals(item)
+    technical = json.dumps(
+        {
+            "opportunityId": item.get("id"),
+            "revision": item.get("revision"),
+            "scoreVector": item.get("scoreVector"),
+            "relationships": [resource.get("id") for resource in item.get("supportingResources", [])],
+            "sourceFreshness": source_freshness,
+            "resourceFreshness": freshness,
+        },
+        sort_keys=True,
+    )
+    resource_label = f"#{identity}" if identity.isdigit() else identity
+    changed = html.escape(v2_relative_time(str(freshness.get("modifiedAt") or resource.get("materialUpdatedAt") or resource.get("observedTime") or ""), reference))
+    return f'''<article class="opportunity-card" data-source="{html.escape(v2_source_label(source))}" data-family="{html.escape(v2_family_label(family))}" data-class="{execution}" data-state="{html.escape(str(qualification.get("state") or ""))}">
+  <div class="card-topline"><a class="resource-id" href="{html.escape(url)}">{html.escape(resource_label)}</a><span class="execution-pill execution-{execution.lower()}">{execution}</span></div>
+  <div class="card-context">{html.escape(v2_source_label(source))} · {html.escape(v2_family_label(family))}</div>
+  <h3><a href="{html.escape(url)}">{html.escape(str(resource.get("title") or "Untitled opportunity"))}</a></h3>
+  <p class="card-updated">Updated {changed} · {html.escape(pretty_label(str(freshness.get("state") or "unknown")))}</p>
+  <div class="why-now-card"><strong>Why now</strong><p>{html.escape(str(qualification.get("reason") or item.get("likelyMissingIncrement") or "Current public signals support a bounded contribution."))}</p></div>
+  <div class="signal-list">{"".join(html_badge(signal, "signal") for signal in signals)}</div>
+  <details class="card-details"><summary>Evidence and ranking</summary><p><strong>Why this ranked:</strong> {html.escape("; ".join(ranking.get("deterministicReasons", [])[:5]) or "Public source evidence is present.")}</p><p><strong>Limitations:</strong> {html.escape("; ".join(qualification.get("limitations", [])[:3]) or "Live reread is required before acting.")}</p><p class="technical-json"><code>{html.escape(technical)}</code></p></details>
+</article>'''
+
+
+def v2_source_health_summary(bundle: dict[str, Any] | None) -> str:
+    if not bundle:
+        return ""
+    families = bundle.get("sources", {}).get("sourceFamilies", [])
+    visible = families[:6]
+    if not visible:
+        return ""
+    pills = "".join(
+        f'<span class="health-pill health-{html.escape(str((family.get("health") or {}).get("state") or "unknown"))}">{html.escape(v2_source_label(str(family.get("sourceFamily") or "")))}: {html.escape(pretty_label(str((family.get("health") or {}).get("state") or "unknown")))}</span>'
+        for family in visible
+    )
+    return f'<div class="source-health-strip">{pills}</div>'
+
+
+def v2_changed_summary(bundle: dict[str, Any] | None) -> str:
+    if not bundle:
+        return ""
+    events = [
+        event for event in bundle.get("changes", {}).get("events", [])
+        if event.get("eventClass") not in {"RESOURCE_FIRST_OBSERVED"}
+    ][:5]
+    if not events:
+        return '<div class="change-summary"><strong>Changed since last observation</strong><span>No material V2 changes beyond the current observation set.</span></div>'
+    items = "".join(
+        f'<li><span>{html.escape(pretty_label(str(event.get("eventClass") or "change")))}</span>{html.escape(str(event.get("summary") or ""))}</li>'
+        for event in events
+    )
+    return f'<div class="change-summary"><strong>Changed since last observation</strong><ul>{items}</ul></div>'
+
+
+def v2_featured_dashboard(bundle: dict[str, Any] | None, reference: str) -> str:
+    if not bundle:
+        return ""
+    opportunities = [
+        item for item in bundle.get("opportunities", {}).get("opportunities", [])
+        if item.get("qualification", {}).get("state") in {"CLEAR_OPPORTUNITY", "POSSIBLE_OPPORTUNITY", "UPSTREAM_CHANGED"}
+    ]
+    opportunities = sorted(opportunities, key=lambda item: (-int(item.get("ranking", {}).get("score") or 0), item.get("id", "")))
+    featured = opportunities[:FEATURED_V2_LIMIT]
+    if not featured:
+        return ""
+    sources = sorted({v2_source_label(str(item.get("canonicalResource", {}).get("sourceFamily") or "")) for item in featured})
+    classes = sorted({v2_execution_class(item) for item in featured})
+    source_options = "".join(f'<option value="{html.escape(source)}">{html.escape(source)}</option>' for source in sources)
+    class_options = "".join(f'<option value="{html.escape(item)}">{html.escape(item)}</option>' for item in classes)
+    cards = "\n".join(v2_card(item, reference) for item in featured)
+    return f'''
+    <section class="v2-featured" aria-labelledby="featured-opportunities">
+      <div class="section-heading">
+        <div>
+          <h2 id="featured-opportunities">Best current opportunities <span>{len(featured)} of {len(opportunities)}</span></h2>
+          <p>Source-neutral V2 candidates with full evidence and ranking details folded into each card.</p>
+        </div>
+        <a class="view-all" href="#all-opportunities">View all opportunities</a>
+      </div>
+      {v2_source_health_summary(bundle)}
+      {v2_changed_summary(bundle)}
+      <div class="compact-filters" aria-label="Opportunity filters">
+        <label>Source <select id="filter-source"><option value="">All</option>{source_options}</select></label>
+        <label>Class <select id="filter-class"><option value="">All</option>{class_options}</select></label>
+      </div>
+      <div class="opportunity-grid" id="opportunity-grid">{cards}</div>
+    </section>
+'''
+
+
+def dashboard_script() -> str:
+    return """
+  <script>
+    const grid = document.querySelector("#opportunity-grid");
+    const sourceFilter = document.querySelector("#filter-source");
+    const classFilter = document.querySelector("#filter-class");
+    function applyFilters() {
+      if (!grid) return;
+      const source = sourceFilter ? sourceFilter.value : "";
+      const klass = classFilter ? classFilter.value : "";
+      grid.querySelectorAll(".opportunity-card").forEach((card) => {
+        const visible = (!source || card.dataset.source === source) && (!klass || card.dataset.class === klass);
+        card.hidden = !visible;
+      });
+    }
+    [sourceFilter, classFilter].forEach((control) => control && control.addEventListener("change", applyFilters));
+  </script>
+"""
 
 
 def html_badge(label: str, css_prefix: str = "signal") -> str:
@@ -298,6 +496,33 @@ def dashboard_css() -> str:
     .card-purple { border-left: 6px solid #7c3aed; }
     .card-amber { border-left: 6px solid #d97706; }
     section { margin-top: 32px; }
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .section-heading h2 {
+      margin: 0 0 4px;
+    }
+    .section-heading p {
+      margin: 0;
+      color: #50575e;
+      line-height: 1.45;
+    }
+    .view-all {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: #1d2327;
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .view-all:hover { color: #fff; background: #2c3338; }
     h2 {
       display: flex;
       gap: 8px;
@@ -439,6 +664,151 @@ def dashboard_css() -> str:
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
     }
+    .source-health-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .health-pill {
+      border: 1px solid #dcdcde;
+      border-radius: 999px;
+      padding: 6px 9px;
+      background: #fff;
+      color: #50575e;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .health-certified { border-color: #bbf7d0; background: #f0fdf4; color: #166534; }
+    .health-degraded,
+    .health-not_certified { border-color: #fed7aa; background: #fff7ed; color: #9a3412; }
+    .change-summary {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border: 1px solid #dcdcde;
+      border-radius: 8px;
+      background: #fff;
+      color: #50575e;
+      font-size: 13px;
+    }
+    .change-summary strong {
+      flex: 0 0 190px;
+      color: #1d2327;
+    }
+    .change-summary ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .change-summary li + li { margin-top: 5px; }
+    .change-summary li span {
+      display: inline-block;
+      margin-right: 6px;
+      color: #1d2327;
+      font-weight: 700;
+    }
+    .compact-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .compact-filters label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #dcdcde;
+      border-radius: 999px;
+      padding: 5px 9px 5px 12px;
+      background: #fff;
+      color: #50575e;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .compact-filters select {
+      border: 0;
+      background: transparent;
+      color: #1d2327;
+      font: inherit;
+    }
+    .opportunity-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .opportunity-card {
+      background: #fff;
+      border: 1px solid #dcdcde;
+      border-radius: 8px;
+      padding: 18px;
+      min-width: 0;
+    }
+    .card-topline,
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .resource-id {
+      color: #2271b1;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .execution-pill {
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .execution-fast { background: #dcfce7; color: #166534; }
+    .execution-engineering { background: #dbeafe; color: #1d4ed8; }
+    .execution-specialist { background: #ede9fe; color: #6d28d9; }
+    .card-context,
+    .card-updated {
+      color: #646970;
+      font-size: 13px;
+    }
+    .opportunity-card h3 {
+      margin: 8px 0;
+      font-size: 18px;
+      line-height: 1.28;
+      letter-spacing: 0;
+    }
+    .why-now-card {
+      margin: 12px 0;
+      color: #50575e;
+      line-height: 1.45;
+    }
+    .why-now-card strong {
+      display: block;
+      color: #1d2327;
+      margin-bottom: 3px;
+    }
+    .why-now-card p { margin: 0; }
+    .signal-list { margin-top: 12px; }
+    .card-details {
+      margin-top: 14px;
+      border-top: 1px solid #f0f0f1;
+      padding-top: 12px;
+      color: #50575e;
+      font-size: 13px;
+    }
+    .card-details summary {
+      cursor: pointer;
+      color: #1d2327;
+      font-weight: 700;
+    }
+    .technical-json {
+      max-height: 120px;
+      overflow: auto;
+      padding: 10px;
+      border-radius: 6px;
+      background: #f6f7f7;
+    }
     .status-detail {
       margin-top: 14px;
       color: #50575e;
@@ -504,6 +874,11 @@ def dashboard_css() -> str:
       header h1 { font-size: 26px; }
       main { padding: 18px; }
       .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .section-heading { display: block; }
+      .view-all { margin-top: 12px; }
+      .opportunity-grid { grid-template-columns: 1fr; }
+      .change-summary { display: block; }
+      .change-summary strong { display: block; margin-bottom: 8px; }
       table,
       thead,
       tbody,
@@ -1208,6 +1583,8 @@ def build_dashboard(context: RunContext | None = None, selection: DatasetSelecti
     certification = summary["certification"]
     generated = certification["reference_time"]
     verified_contributions = len(public_contribution_records())
+    v2_bundle = load_v2_dashboard_bundle()
+    featured_v2 = v2_featured_dashboard(v2_bundle, generated)
 
     immediate_count = sum(1 for item in groups["priority"] if priority_tier(item)[0] == "immediate")
     strong_count = sum(1 for item in groups["priority"] if priority_tier(item)[0] == "strong")
@@ -1279,6 +1656,9 @@ def build_dashboard(context: RunContext | None = None, selection: DatasetSelecti
       </div>
     </section>
 
+    {featured_v2}
+
+    <div id="all-opportunities"></div>
     {section_html("Priority Targets", groups["priority"], duplicate_sources)}
     {section_html("Top Opportunities", groups["top"], duplicate_sources, limit=PUBLIC_TOP_LIMIT)}
     {section_html("Shortlisted", groups["shortlist"], duplicate_sources)}
@@ -1290,6 +1670,7 @@ def build_dashboard(context: RunContext | None = None, selection: DatasetSelecti
   <footer>
     WP Core Radar publishes public WordPress Core opportunity and contribution intelligence.
   </footer>
+{dashboard_script() if featured_v2 else ""}
 </body>
 </html>
 """

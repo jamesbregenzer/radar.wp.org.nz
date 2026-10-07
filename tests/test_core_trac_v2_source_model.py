@@ -134,8 +134,8 @@ class CoreTracV2SourceModelTests(unittest.TestCase):
             "returns": [
                 {
                     "id": "fabric-public-delivery-core-54034",
-                    "publicDeliveryUrl": "https://core.trac.wordpress.org/ticket/54034#comment:12",
-                    "publicOutcomeUrl": "https://core.trac.wordpress.org/ticket/54034#comment:13",
+                    "publicDeliveryUrl": "https://core.trac.wordpress.org/ticket/54034#comment:20",
+                    "publicOutcomeUrl": "https://core.trac.wordpress.org/ticket/54034#comment:20",
                     "sourceResourceRef": {"id": "core-trac:54034"},
                     "sourceFamily": "CORE_TRAC",
                     "publicContributionType": "test-report",
@@ -144,11 +144,11 @@ class CoreTracV2SourceModelTests(unittest.TestCase):
                     "verificationSource": "core-trac-public-reread",
                     "outcomeFlags": {"accepted": True, "merged": False, "closed": False, "reopened": False, "propsObserved": False, "followUpNeeded": False},
                     "publicSummary": "Published public test evidence for #54034.",
-                    "sourceRevision": "core-trac:54034:comment:12",
+                    "sourceRevision": "core-trac:54034:comment:20",
                 },
                 {
                     "id": "fabric-public-delivery-core-40339",
-                    "publicDeliveryUrl": "https://core.trac.wordpress.org/ticket/40339#comment:22",
+                    "publicDeliveryUrl": "https://core.trac.wordpress.org/ticket/40339#comment:4",
                     "sourceResourceRef": {"id": "core-trac:40339"},
                     "sourceFamily": "CORE_TRAC",
                     "publicContributionType": "review",
@@ -156,7 +156,7 @@ class CoreTracV2SourceModelTests(unittest.TestCase):
                     "verificationSource": "core-trac-public-reread",
                     "outcomeFlags": {"accepted": False, "merged": False, "closed": False, "reopened": False, "propsObserved": False, "followUpNeeded": True},
                     "publicSummary": "Published public review for #40339.",
-                    "sourceRevision": "core-trac:40339:comment:22",
+                    "sourceRevision": "core-trac:40339:comment:4",
                 },
             ],
         }
