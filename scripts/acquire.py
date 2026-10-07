@@ -31,11 +31,11 @@ def primary_core_trac_sources(registry_path: Path = TRAC_REGISTRY) -> list[dict[
     registry = load_json(registry_path)
     if registry.get("schema") != "radar-core-trac-source-registry.v2": raise ValueError("unsupported Core Trac source registry schema")
     return [source for source in registry.get("sources", []) if source.get("sourceRole") in PRIMARY_ROLES]
-def snapshot_downloads(downloads: Path) -> dict[Path, tuple[int, int]]:
+def download_state(downloads: Path) -> dict[Path, tuple[int, int]]:
     if not downloads.exists(): return {}
     return {p: (p.stat().st_size, p.stat().st_mtime_ns) for p in downloads.iterdir() if p.is_file() and CSV_NAME.fullmatch(p.name)}
 def new_csv_file(before: dict[Path, tuple[int, int]], downloads: Path) -> Path | None:
-    candidates = [p for p, state in snapshot_downloads(downloads).items() if p not in before or before[p] != state]
+    candidates = [p for p, state in download_state(downloads).items() if p not in before or before[p] != state]
     return max(candidates, key=lambda p: p.stat().st_mtime_ns) if candidates else None
 
 def download_is_incomplete(path: Path) -> bool:
@@ -73,7 +73,7 @@ def make_observation(source: dict[str, Any], observed_at: str, *, rows: list[dic
     return record
 
 def acquire_core_trac(source: dict[str, Any], run_dir: Path, observed_at: str, downloads: Path, timeout: int, *, opener: Callable[[str], None] = open_firefox, waiter: Callable[[Path, dict[Path, tuple[int, int]], int], Path] = wait_for_new_csv, closer: Callable[[], None] = close_firefox) -> dict[str, Any]:
-    run_dir.mkdir(parents=True, exist_ok=True); before = snapshot_downloads(downloads)
+    run_dir.mkdir(parents=True, exist_ok=True); before = download_state(downloads)
     try:
         opener(source["csvUrl"]); downloaded = waiter(downloads, before, timeout); body = downloaded.read_bytes()
         row_count, rows = validate_csv(body, list(source.get("expectedFields") or [])); artifact = run_dir / f"{source_slug(source['id'])}.csv"; artifact.write_bytes(body); sha = sha256_bytes(body)

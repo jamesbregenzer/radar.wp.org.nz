@@ -13,6 +13,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "config" / "core-trac-v2-source-registry.json"
+SCORING_PATH = ROOT / "config" / "scoring.json"
 SCHEMA = "radar-candidate-feed.v2"
 CORE_FAMILY = "CORE_TRAC"
 DIRECT = "DIRECT_OPPORTUNITY"
@@ -31,6 +32,12 @@ def digest(value: Any, length: int = 32) -> str:
 
 def load_registry(path: Path = REGISTRY_PATH) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+def load_scoring(path: Path = SCORING_PATH) -> dict[str, Any]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if value.get("version") != "radar-scoring-v2":
+        raise ValueError("unsupported scoring configuration")
+    return value
 
 
 def parse_time(value: Any) -> datetime | None:
@@ -155,6 +162,7 @@ def membership(source: dict[str, Any], observation: dict[str, Any], row: dict[st
 
 def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, previous: dict[str, Any] | None = None) -> dict[str, Any]:
     registry = registry or load_registry()
+    scoring = load_scoring()
     observations = list(payload.get("observations") or [])
     prior_observations = list((payload.get("previous") or {}).get("observations") or [])
     if previous:
@@ -226,13 +234,16 @@ def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, 
         high_count = sum(item["confidence"] == "high" for item in mappings.values())
         stale = any(item["freshness"] == "stale" for item in resource["sourceMemberships"])
         keywords = set().union(*(row_keywords(item["evidence"]) for item in resource["sourceMemberships"]))
-        score = 50 + (15 if direct_count else 0) + min(high_count, 2) * 15 + min(len(resource["sourceMemberships"]), 2) * 3
+        score = scoring["base"]
+        score += scoring["bonuses"]["direct_opportunity"] if direct_count else 0
+        score += min(high_count, scoring["bonuses"]["high_confidence_family_cap"]) * scoring["bonuses"]["high_confidence_family"]
+        score += min(len(resource["sourceMemberships"]), scoring["bonuses"]["corroborating_membership_cap"]) * scoring["bonuses"]["corroborating_membership"]
         reasons = [f"{direct_count} direct opportunity source membership(s)", f"{len(mappings)} approved contribution family candidate(s)"]
         if "needs-testing" in keywords or "needs-patch" in keywords:
-            score += 10; reasons.append("explicit current contribution need")
+            score += scoring["bonuses"]["explicit_need"]; reasons.append("explicit current contribution need")
         if stale:
-            score -= 10; reasons.append("last-known-good evidence is stale")
-        tier = "priority" if score >= 90 else "standard" if score >= 65 else "watch"
+            score -= scoring["penalties"]["stale"]; reasons.append("last-known-good evidence is stale")
+        tier = "priority" if score >= scoring["tier_thresholds"]["priority"] else "standard" if score >= scoring["tier_thresholds"]["standard"] else "watch"
         candidate_id = f"candidate:v2:{digest({'resourceId': resource['id'], 'families': sorted(mappings)})}"
         candidate = {
             "id": candidate_id,

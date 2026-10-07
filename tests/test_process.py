@@ -8,7 +8,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from process import SCHEMA, build_feed
+from process import SCHEMA, build_feed, load_scoring
 
 
 FIXTURE = ROOT / "tests" / "fixtures" / "raw" / "v2" / "observations.json"
@@ -54,6 +54,12 @@ class ProcessingTests(unittest.TestCase):
         self.assertEqual(first, second)
         scores = [item["derivedPriority"]["score"] for item in first["candidates"]]
         self.assertEqual(scores, sorted(scores, reverse=True))
+
+    def test_v2_scoring_config_is_loaded(self):
+        scoring = load_scoring()
+        self.assertEqual(scoring["version"], "radar-scoring-v2")
+        self.assertEqual(scoring["base"], 50)
+        self.assertIn("direct_opportunity", scoring["bonuses"])
 
     def test_report_overlap_bonus_is_capped(self):
         def observation(source_id):

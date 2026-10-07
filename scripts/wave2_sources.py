@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect and normalize independently certifiable WordPress Wave 2 sources."""
+"""Fetch and normalize approved public WordPress Wave 2 sources."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from html import unescape
 from html.parser import HTMLParser
 import json
+import hashlib
 import os
 from pathlib import Path
 import re
@@ -14,18 +15,8 @@ from typing import Any, Callable
 from urllib.parse import parse_qs, urlencode, urljoin, urlparse, urlunparse
 import urllib.request
 
-from certification import canonical_hash, canonical_json, sha256_bytes, validate_schema
-
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG = ROOT / "config" / "wave2-sources.json"
-DEFAULT_SOURCE_DIR = ROOT / "data" / "sources"
-DEFAULT_RAW_ROOT = ROOT / "data" / "raw" / "sources"
-
-WAVE2_SCHEMAS = {
-    "wordpress.raw-acquisition.v1": ROOT / "schemas" / "raw-acquisition.v1.schema.json",
-    "wordpress.retrieval-receipt.v1": ROOT / "schemas" / "retrieval-receipt.v1.schema.json",
-    "source-family-snapshot.v1": ROOT / "schemas" / "source-family-snapshot.v1.schema.json",
-}
 
 ALLOWED_FAMILIES = {
     "CORE_PATCH_TEST",
@@ -41,8 +32,8 @@ ALLOWED_FAMILIES = {
 }
 
 
-def validate_wave2_named(instance: Any, name: str) -> list[str]:
-    return validate_schema(instance, json.loads(WAVE2_SCHEMAS[name].read_text(encoding="utf-8")))
+def canonical_hash(value: Any) -> str:
+    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
 class PublicTextParser(HTMLParser):
@@ -62,14 +53,6 @@ class PublicTextParser(HTMLParser):
         href = values.get("href")
         if href:
             self.links.append(href)
-
-
-def utc_now() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-
-
-def family_slug(source_family: str) -> str:
-    return source_family.lower().replace("_", "-")
 
 
 def canonical_url(value: str, base: str | None = None) -> str | None:
@@ -118,7 +101,7 @@ def fetch_public(url: str) -> tuple[bytes, dict[str, str], int]:
 
 def load_config(path: Path = DEFAULT_CONFIG) -> dict[str, Any]:
     config = json.loads(path.read_text(encoding="utf-8"))
-    if config.get("schema") != "radar-wave2-source-config.v1":
+    if config.get("schema") != "radar-wave2-source-config.v2":
         raise ValueError("unsupported Wave 2 source config")
     families = [item["sourceFamily"] for item in config.get("sources", [])]
     if len(families) != len(set(families)):
@@ -179,36 +162,6 @@ def configured_responses(config: dict[str, Any], fetcher: Callable[[str], tuple[
     if config["adapter"] == "wp_rest_tree":
         return wp_tree_urls(config, fetcher)
     return [(url, *fetcher(url)) for url in config.get("urls", [])]
-
-
-def receipt_record(url: str, body: bytes, headers: dict[str, str], status: int, observed_at: str, raw_path: Path) -> dict[str, Any]:
-    digest = sha256_bytes(body)
-    return {
-        "schema": "wordpress.raw-acquisition.v1",
-        "version": 1,
-        "acquisitionId": f"raw-acquisition-v1-{digest[:24]}",
-        "sourceUrl": url,
-        "retrievedAt": observed_at,
-        "httpStatus": status,
-        "mediaType": headers.get("content-type"),
-        "etag": headers.get("etag"),
-        "lastModified": headers.get("last-modified"),
-        "byteLength": len(body),
-        "rawSha256": digest,
-        "rawArtifact": str(raw_path.relative_to(ROOT)),
-        "pagination": {
-            "nextPagePresent": 'rel="next"' in headers.get("link", ""),
-            "total": int(headers["x-wp-total"]) if headers.get("x-wp-total", "").isdigit() else None,
-            "totalPages": int(headers["x-wp-totalpages"]) if headers.get("x-wp-totalpages", "").isdigit() else None,
-        },
-    }
-
-
-def write_immutable(path: Path, body: bytes) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if path.exists() and path.read_bytes() != body:
-        raise RuntimeError(f"immutable acquisition collision: {path}")
-    path.write_bytes(body)
 
 
 def signal(family_id: str, state: str, confidence: str, reason: str, evidence: list[str]) -> dict[str, Any]:
@@ -469,136 +422,3 @@ def normalize_resources(config: dict[str, Any], responses: list[tuple[str, bytes
             seen.add(identity)
             values.append(item)
     return sorted(values, key=lambda item: item["nativeIdentity"])
-
-
-def collect_source(
-    config: dict[str, Any],
-    *,
-    observed_at: str | None = None,
-    fetcher: Callable[[str], tuple[bytes, dict[str, str], int]] = fetch_public,
-    raw_root: Path = DEFAULT_RAW_ROOT,
-) -> dict[str, Any]:
-    observed = observed_at or utc_now()
-    run_slug = observed.replace(":", "-")
-    source_family = config["sourceFamily"]
-    responses = configured_responses(config, fetcher)
-    if not responses:
-        raise RuntimeError(f"no acquisition endpoints configured for {source_family}")
-    acquisitions = []
-    for index, (url, body, headers, status) in enumerate(responses, start=1):
-        if status != 200:
-            raise RuntimeError(f"{source_family} acquisition returned HTTP {status}")
-        raw_path = raw_root / family_slug(source_family) / run_slug / f"{index:03d}.json"
-        write_immutable(raw_path, body)
-        acquisitions.append(receipt_record(url, body, headers, status, observed, raw_path))
-    resources = normalize_resources(config, responses, observed)
-    receipt_preimage = {
-        "schema": "wordpress.retrieval-receipt.v1",
-        "version": 1,
-        "sourceFamily": source_family,
-        "adapter": config["adapter"],
-        "retrievedAt": observed,
-        "scope": config["scope"],
-        "acquisitions": acquisitions,
-        "result": "success",
-    }
-    receipt_digest = canonical_hash(receipt_preimage)
-    receipt = {
-        **receipt_preimage,
-        "receiptId": f"retrieval-receipt-v1-{receipt_digest[:24]}",
-        "canonicalHash": receipt_digest,
-    }
-    receipt_path = raw_root / family_slug(source_family) / run_slug / "receipt.json"
-    write_immutable(receipt_path, canonical_json(receipt))
-    source_revision = canonical_hash({
-        "acquisitions": [item["rawSha256"] for item in acquisitions],
-        "resources": [{"identity": item["nativeIdentity"], "revision": item["sourceRevision"]} for item in resources],
-    })
-    retrieval_receipt = {
-        "receiptId": receipt["receiptId"],
-        "canonicalHash": receipt_digest,
-        "path": str(receipt_path.relative_to(ROOT)),
-    }
-    material = {
-        "schema": "source-family-snapshot.v1",
-        "version": 1,
-        "sourceFamily": source_family,
-        "label": config["label"],
-        "authoritativeSource": config["authoritativeSource"],
-        "machineReadableAccess": [item["sourceUrl"] for item in acquisitions],
-        "sourceRevision": source_revision,
-        "observedTime": observed,
-        "certifiedTime": observed,
-        "completeness": config["completeness"],
-        "freshness": "fresh",
-        "recordCount": len(resources),
-        "candidateSignalCount": sum(len(item["candidateSignals"]) for item in resources),
-        "scope": config["scope"],
-        "limitations": [
-            f"Certification is limited to {config['scope']}.",
-            "A public source object does not become a candidate unless the adapter records a specific contribution signal.",
-        ],
-        "outcomeObservers": config.get("outcomeObservers", []),
-        "health": {"state": "certified", "failure": None},
-        "resources": resources,
-        "rawAcquisitions": acquisitions,
-        "retrievalReceipt": retrieval_receipt,
-    }
-    digest = canonical_hash(material)
-    return {
-        **material,
-        "snapshotId": f"source-family-{family_slug(source_family)}-{digest[:24]}",
-        "canonicalHash": digest,
-    }
-
-
-def write_snapshot(snapshot: dict[str, Any], output_dir: Path = DEFAULT_SOURCE_DIR) -> Path:
-    path = output_dir / f"{family_slug(snapshot['sourceFamily'])}.json"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(canonical_json(snapshot))
-    return path
-
-
-def verify_snapshot(snapshot: dict[str, Any], root: Path = ROOT) -> dict[str, Any]:
-    errors: list[str] = validate_wave2_named(snapshot, "source-family-snapshot.v1")
-    material = {key: value for key, value in snapshot.items() if key not in {"snapshotId", "canonicalHash"}}
-    if canonical_hash(material) != snapshot.get("canonicalHash"):
-        errors.append("snapshot canonical hash mismatch")
-    identities = [item.get("nativeIdentity") for item in snapshot.get("resources", [])]
-    if len(identities) != len(set(identities)):
-        errors.append("duplicate source-native identity")
-    for acquisition in snapshot.get("rawAcquisitions", []):
-        errors.extend(validate_wave2_named(acquisition, "wordpress.raw-acquisition.v1"))
-        path = root / acquisition["rawArtifact"]
-        if not path.exists():
-            errors.append(f"missing raw acquisition: {acquisition['rawArtifact']}")
-        elif sha256_bytes(path.read_bytes()) != acquisition["rawSha256"]:
-            errors.append(f"raw acquisition hash mismatch: {acquisition['rawArtifact']}")
-    receipt = snapshot.get("retrievalReceipt") or {}
-    receipt_path = root / str(receipt.get("path") or "")
-    if not receipt_path.exists():
-        errors.append("missing retrieval receipt")
-    else:
-        receipt_body = json.loads(receipt_path.read_text(encoding="utf-8"))
-        errors.extend(validate_wave2_named(receipt_body, "wordpress.retrieval-receipt.v1"))
-        receipt_material = {
-            key: value
-            for key, value in receipt_body.items()
-            if key not in {"receiptId", "canonicalHash"}
-        }
-        receipt_hash = canonical_hash(receipt_material)
-        if receipt_hash != receipt_body.get("canonicalHash") or receipt_hash != receipt.get("canonicalHash"):
-            errors.append("retrieval receipt hash mismatch")
-        if receipt_body.get("receiptId") != receipt.get("receiptId"):
-            errors.append("retrieval receipt identity mismatch")
-    for resource in snapshot.get("resources", []):
-        for candidate in resource.get("candidateSignals", []):
-            if candidate.get("familyId") not in ALLOWED_FAMILIES:
-                errors.append(f"unregistered candidate family: {candidate.get('familyId')}")
-    return {
-        "sourceFamily": snapshot.get("sourceFamily"),
-        "status": "certified" if not errors else "failed",
-        "recordCount": len(snapshot.get("resources", [])),
-        "candidateSignalCount": sum(len(item.get("candidateSignals", [])) for item in snapshot.get("resources", [])),
-        "errors": errors,
-    }
