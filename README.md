@@ -38,3 +38,12 @@ needed by the V2 pipeline.
 The implementation preserves source-native evidence, normalizes duplicate
 observations into stable resources, and emits source-neutral candidate records.
 The same inputs, configuration, and reference time produce the same result.
+
+## Runtime
+
+- `scripts/acquire.py` writes one `radar-observation.v2` record per approved
+  source and retains the raw CSV or response bytes.
+- `scripts/process.py` reads the observation set and writes
+  `data/candidate-feed.json`.
+- `scripts/run.py` performs the locked acquire/process/validate/commit/pull/push
+  cycle for unattended execution.

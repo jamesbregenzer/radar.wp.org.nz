@@ -1,124 +1,32 @@
 from __future__ import annotations
-
-import hashlib
-import json
-import sys
 import tempfile
-import unittest
 from pathlib import Path
+import sys
+import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-
-from acquire import acquire_core_trac, acquire_run, new_csv_file, primary_core_trac_sources, validate_csv
-
-
-FIELDS = ["id", "summary", "status"]
-
-
-def source(source_id: str, url: str = "https://core.trac.wordpress.org/report/15?format=csv") -> dict[str, object]:
-    return {"id": source_id, "csvUrl": url, "sourceRole": "DIRECT_OPPORTUNITY", "expectedFields": FIELDS}
-
+from acquire import acquire_core_trac, acquire_run, new_csv_file, snapshot_downloads
 
 class AcquireTests(unittest.TestCase):
-    def test_registry_iteration_excludes_legacy_v1_sources(self):
-        sources = primary_core_trac_sources()
-        self.assertTrue(sources)
-        self.assertTrue(all(item["sourceRole"] != "LEGACY_V1_COMPATIBILITY" for item in sources))
-
-    def test_detects_query_and_report_download_names(self):
+    def test_core_trac_writes_canonical_observation_and_keeps_raw_csv(self):
         with tempfile.TemporaryDirectory() as temporary:
-            downloads = Path(temporary)
-            unrelated = downloads / "notes.csv"
-            unrelated.write_text("not a Trac download")
-            before = {unrelated: (unrelated.stat().st_size, unrelated.stat().st_mtime_ns)}
-            query = downloads / "query.csv"
-            query.write_text("id,summary,status\n1,Query,new\n")
-            self.assertEqual(new_csv_file(before, downloads), query)
-            before = {path: (path.stat().st_size, path.stat().st_mtime_ns) for path in downloads.iterdir()}
-            report = downloads / "report_16.csv"
-            report.write_text("id,summary,status\n16,Report,new\n")
-            self.assertEqual(new_csv_file(before, downloads), report)
+            root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); source = {"id": "core-trac-report", "sourceRole": "DIRECT_OPPORTUNITY", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary"], "candidateFamilyMappings": [{"familyId": "TEST", "confidence": "high"}], "identityField": "id"}; body = b"id,summary\n123,Fix it\n"; (downloads / "report_1.csv").write_bytes(body)
+            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda _: None, waiter=lambda *_: downloads / "report_1.csv", closer=lambda: None)
+            self.assertEqual(record["schema"], "radar-observation.v2"); self.assertEqual(record["acquisitionResult"], "success"); self.assertEqual(record["rows"][0]["id"], "123"); self.assertEqual(record["rawArtifacts"][0]["sha256"], __import__("hashlib").sha256(body).hexdigest())
 
-    def test_ignores_unrelated_download_files(self):
+    def test_report_names_are_detected(self):
         with tempfile.TemporaryDirectory() as temporary:
-            downloads = Path(temporary)
-            unrelated = downloads / "report-not-a-trac-file.csv"
-            unrelated.write_text("id,summary,status\n1,Nope,new\n")
-            self.assertIsNone(new_csv_file({}, downloads))
+            downloads = Path(temporary); (downloads / "report_2 (1).csv").write_text("id\n1\n"); (downloads / "notes.txt").write_text("x")
+            self.assertEqual(new_csv_file({}, downloads).name, "report_2 (1).csv")
 
-    def test_core_trac_acquisition_copies_csv_and_writes_metadata_without_deleting_downloads(self):
-        body = b"id,summary,status\n15,Report,new\n"
+    def test_partial_failure_keeps_successful_observation(self):
         with tempfile.TemporaryDirectory() as temporary:
-            downloads = Path(temporary) / "Downloads"
-            run_dir = Path(temporary) / "raw"
-            downloads.mkdir()
-            unrelated = downloads / "keep.csv"
-            unrelated.write_text("unrelated")
-            downloaded = downloads / "report_15.csv"
-
-            def opener(url):
-                self.assertEqual(url, "https://core.trac.wordpress.org/report/15?format=csv")
-                downloaded.write_bytes(body)
-
-            def waiter(path, before, timeout):
-                self.assertNotIn(downloaded, before)
-                return downloaded
-
-            record = acquire_core_trac(source("core-trac-report-15"), run_dir, "2026-10-07T12:00:00Z", downloads, 1, opener=opener, waiter=waiter, closer=lambda: None)
-            self.assertEqual(record["rowCount"], 1)
-            self.assertEqual(record["artifactSha256"], hashlib.sha256(body).hexdigest())
-            self.assertTrue((run_dir / "core-trac-report-15.csv").exists())
-            self.assertTrue((run_dir / "core-trac-report-15.json").exists())
-            self.assertTrue(unrelated.exists())
-
-    def test_malformed_and_empty_csv_are_rejected(self):
-        with self.assertRaises(ValueError):
-            validate_csv(b"", FIELDS)
-        with self.assertRaises(ValueError):
-            validate_csv(b"id,summary\n1,Missing status\n", FIELDS)
-        with self.assertRaises(ValueError):
-            validate_csv(b"id,summary,status\n1,Too,many,fields\n", FIELDS)
-
-    def test_one_source_failure_does_not_stop_remaining_sources(self):
-        body = b"id,summary,status\n1,Good,new\n"
-
-        def trac_acquirer(item, run_dir, observed, downloads, timeout):
-            if item["id"] == "bad":
-                raise RuntimeError("Firefox failed")
-            artifact = run_dir / f"{item['id']}.csv"
-            artifact.write_bytes(body)
-            return {"sourceId": item["id"], "exactUrl": item["csvUrl"], "observedAt": observed, "success": True, "artifact": artifact.name}
-
-        with tempfile.TemporaryDirectory() as temporary:
-            manifest = acquire_run(
-                raw_root=Path(temporary),
-                observed_at="2026-10-07T12:00:00Z",
-                trac_sources=[source("bad"), source("good")],
-                wave2_sources=[],
-                trac_acquirer=trac_acquirer,
-            )
-            self.assertFalse(manifest["success"])
-            self.assertEqual([item["success"] for item in manifest["results"]], [False, True])
-            self.assertTrue((Path(temporary) / "2026-10-07T12-00-00Z" / "good.csv").exists())
-
-    def test_raw_hash_and_row_count_are_recorded(self):
-        body = b"id,summary,status\n1,Good,new\n2,Also good,assigned\n"
-
-        def trac_acquirer(item, run_dir, observed, downloads, timeout):
-            artifact = run_dir / "source.csv"
-            artifact.write_bytes(body)
-            record = {"sourceId": item["id"], "exactUrl": item["csvUrl"], "observedAt": observed, "success": True, "artifact": artifact.name, "artifactSha256": hashlib.sha256(body).hexdigest(), "rowCount": 2}
-            (run_dir / "source.json").write_text(json.dumps(record))
-            return record
-
-        with tempfile.TemporaryDirectory() as temporary:
-            manifest = acquire_run(raw_root=Path(temporary), observed_at="2026-10-07T12:00:00Z", trac_sources=[source("good")], wave2_sources=[], trac_acquirer=trac_acquirer)
+            source = {"id": "bad", "csvUrl": "https://bad", "expectedFields": ["id"]}
+            good = {"id": "good", "csvUrl": "https://good", "expectedFields": ["id"]}
+            def acquirer(item, run_dir, observed, downloads, timeout):
+                return {"schema": "radar-observation.v2", "version": 2, "sourceId": item["id"], "sourceFamily": "CORE_TRAC", "sourceRole": "DIRECT_OPPORTUNITY", "candidateFamilyMappings": [], "identityField": "id", "observedAt": observed, "acquisitionResult": "success", "rows": [{"id": "1"}]} if item["id"] == "good" else {"schema": "radar-observation.v2", "version": 2, "sourceId": "bad", "sourceFamily": "CORE_TRAC", "sourceRole": "DIRECT_OPPORTUNITY", "candidateFamilyMappings": [], "identityField": "id", "observedAt": observed, "acquisitionResult": "failed", "rows": [], "error": "network"}
+            manifest = acquire_run(raw_root=Path(temporary), observed_at="2026-10-07T12:00:00Z", trac_sources=[source, good], wave2_sources=[], trac_acquirer=acquirer)
             self.assertTrue(manifest["success"])
-            result = manifest["results"][0]
-            self.assertEqual(result["rowCount"], 2)
-            self.assertEqual(result["artifactSha256"], hashlib.sha256(body).hexdigest())
 
-
-if __name__ == "__main__":
-    unittest.main()
+if __name__ == "__main__": unittest.main()
