@@ -27,6 +27,46 @@ class RadarV2ProjectionTests(unittest.TestCase):
             wave2_sources=wave2_sources,
         )
 
+    def contribution_return_projection(self):
+        return {
+            "schema": "radar-contribution-return-projection.v1",
+            "version": 1,
+            "sourceRevision": "fixture-public-return-feed",
+            "contributions": [
+                {
+                    "id": "radar-contribution-v2-54034",
+                    "returnId": "public-core-trac-54034-comment-20",
+                    "resourceRef": {"id": "core-trac:54034"},
+                    "sourceFamily": "CORE_TRAC",
+                    "ticketId": "54034",
+                    "publicUrl": "https://core.trac.wordpress.org/ticket/54034#comment:20",
+                    "contributionType": "test-report",
+                    "observedPublicDeliveryAt": "2026-10-06T00:13:53Z",
+                    "verifiedPublicOutcomeAt": None,
+                    "verificationSource": "core-trac-public-reread",
+                    "publicSummary": "Public contribution evidence exists for #54034.",
+                    "sourceRevision": "core-trac:54034:comment:20",
+                    "outcomeFlags": {"accepted": False, "merged": False, "closed": False, "reopened": False, "propsObserved": False, "followUpNeeded": False},
+                },
+                {
+                    "id": "radar-contribution-v2-40339",
+                    "returnId": "public-core-trac-40339-comment-4",
+                    "resourceRef": {"id": "core-trac:40339"},
+                    "sourceFamily": "CORE_TRAC",
+                    "ticketId": "40339",
+                    "publicUrl": "https://core.trac.wordpress.org/ticket/40339#comment:4",
+                    "contributionType": "patch-review",
+                    "observedPublicDeliveryAt": "2026-10-06T03:45:20Z",
+                    "verifiedPublicOutcomeAt": None,
+                    "verificationSource": "core-trac-public-reread",
+                    "publicSummary": "Public contribution evidence exists for #40339.",
+                    "sourceRevision": "core-trac:40339:comment:4",
+                    "outcomeFlags": {"accepted": False, "merged": False, "closed": False, "reopened": False, "propsObserved": False, "followUpNeeded": False},
+                },
+            ],
+            "outcomes": [],
+        }
+
     def test_v2_projection_is_repeatable(self):
         source = load_wordpress_develop_source()
         gutenberg = load_gutenberg_source()
@@ -93,8 +133,101 @@ class RadarV2ProjectionTests(unittest.TestCase):
         self.assertIn("confidence", first["ranking"]["dimensions"])
         self.assertIn("familyCandidates", first)
         self.assertIn("scoreVector", first)
+        self.assertIn("sourceFreshness", first)
+        self.assertIn("resourceFreshness", first)
+        self.assertEqual(first["freshness"], first["resourceFreshness"])
+        self.assertEqual(first["sourceFreshness"]["state"], "fresh")
         self.assertIn("jamesAffinity", first["scoreVector"]["dimensions"])
         self.assertEqual(first["scoreVector"]["dimensions"]["jamesAffinity"]["value"], "unknown")
+
+    def test_v2_separates_source_freshness_from_resource_freshness(self):
+        snapshot = json.loads((ROOT / "data" / "certified" / "current" / "snapshot.json").read_text())
+        collection = json.loads((ROOT / "data" / "certified" / "current" / "collection.json").read_text())
+        contributions = json.loads((ROOT / "docs" / "radar" / "api" / "v1" / "contributions.json").read_text())
+        fixture = {
+            "schema": "opportunity-set.v1",
+            "version": 1,
+            "opportunities": [
+                {
+                    "opportunityKey": "core-trac:70000",
+                    "opportunityRevision": "opportunity-revision-v1-fixture",
+                    "ticket": {
+                        "id": "70000",
+                        "url": "https://core.trac.wordpress.org/ticket/70000",
+                        "summary": "Old unchanged ticket",
+                        "status": "new",
+                        "component": "General",
+                        "milestone": "Awaiting Review",
+                        "keywords": ["has-patch", "needs-testing"],
+                        "owner": None,
+                        "resolution": None,
+                        "modified": "01/12/2021 02:33:28 AM",
+                    },
+                    "qualification": {
+                        "recommendedContributionClass": "VERIFY_EXISTING_PATCH",
+                        "confidence": "high",
+                        "reason": "A public patch exists.",
+                        "eligibility": {"blockers": [], "state": "requires-upstream-validation"},
+                        "evidenceFreshness": {"state": "fresh", "modifiedAt": "01/12/2021 02:33:28 AM", "ageDays": 0},
+                        "source_coverage": {
+                            "trac_keywords_status_component": True,
+                            "trac_ticket": True,
+                            "public_patch_or_attachment": True,
+                            "wordpress_develop_pr": False,
+                            "public_pr_discussion_or_review": False,
+                            "changed_files_or_diff": False,
+                            "public_test_or_ci_evidence": False,
+                            "related_or_referenced_ticket": False,
+                        },
+                        "duplication_risk": {"level": "low", "reasons": []},
+                        "engineering_weight": "medium",
+                    },
+                    "ranking": {"score": 100, "tier": "strong", "reasons": ["fixture"]},
+                }
+            ],
+        }
+        payloads = project_v2(snapshot=snapshot, collection=collection, opportunities=fixture, contributions=contributions)
+        opportunity = json.loads(payloads["opportunities.json"])["opportunities"][0]
+        candidate = json.loads(payloads["candidate-feed.json"])["candidates"][0]
+
+        self.assertEqual(opportunity["sourceFreshness"]["state"], "fresh")
+        self.assertEqual(opportunity["resourceFreshness"]["state"], "stale")
+        self.assertGreater(opportunity["resourceFreshness"]["ageDays"], 1000)
+        self.assertEqual(candidate["sourceFreshness"]["state"], "fresh")
+        self.assertEqual(candidate["resourceFreshness"]["state"], "stale")
+        self.assertEqual(candidate["freshness"]["state"], "stale")
+
+    def test_contribution_return_coverage_suppresses_known_public_contributions(self):
+        source = load_wordpress_develop_source()
+        gutenberg = load_gutenberg_source()
+        snapshot = json.loads((ROOT / "data" / "certified" / "current" / "snapshot.json").read_text())
+        collection = json.loads((ROOT / "data" / "certified" / "current" / "collection.json").read_text())
+        opportunities = json.loads((ROOT / "data" / "certified" / "current" / "opportunities.json").read_text())
+        contributions = json.loads((ROOT / "docs" / "radar" / "api" / "v1" / "contributions.json").read_text())
+        payloads = project_v2(
+            snapshot=snapshot,
+            collection=collection,
+            opportunities=opportunities,
+            contributions=contributions,
+            wordpress_develop=source,
+            gutenberg=gutenberg,
+            contribution_returns=self.contribution_return_projection(),
+        )
+        by_ticket = {
+            item["legacyV1"]["ticketId"]: item
+            for item in json.loads(payloads["opportunities.json"])["opportunities"]
+            if item.get("legacyV1") and item["legacyV1"]["ticketId"] in {"54034", "40339"}
+        }
+
+        self.assertEqual(set(by_ticket), {"54034", "40339"})
+        for ticket_id, opportunity in by_ticket.items():
+            with self.subTest(ticket_id=ticket_id):
+                self.assertEqual(opportunity["qualification"]["state"], "LIKELY_ALREADY_COVERED")
+                self.assertEqual(opportunity["ranking"]["tier"], "suppressed")
+                self.assertEqual(opportunity["ranking"]["score"], 0)
+                self.assertEqual(opportunity["qualification"]["dispositionReview"]["state"], "REVIEW_DISPOSITION")
+                self.assertEqual(opportunity["qualification"]["dispositionReview"]["suggestedDisposition"], "NO_ACTION")
+                self.assertTrue(opportunity["qualification"]["dispositionReview"]["requiresLiveReread"])
 
     def test_v2_resources_and_relationships_are_public_graph_artifacts(self):
         source = load_wordpress_develop_source()

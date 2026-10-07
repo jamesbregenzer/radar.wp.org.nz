@@ -1,0 +1,49 @@
+{
+  "schema": "radar-contribution-return-feed.v1",
+  "sourceRevision": "public-core-trac-return-feed-2026-10-07",
+  "version": 1,
+  "returns": [
+    {
+      "id": "public-core-trac-54034-comment-20",
+      "observedPublicDeliveryAt": "2026-10-06T00:13:53Z",
+      "outcomeFlags": {
+        "accepted": false,
+        "closed": false,
+        "followUpNeeded": false,
+        "merged": false,
+        "propsObserved": false,
+        "reopened": false
+      },
+      "publicContributionType": "test-report",
+      "publicDeliveryUrl": "https://core.trac.wordpress.org/ticket/54034#comment:20",
+      "publicSummary": "Public Core Trac comment 20 records contribution evidence for ticket #54034.",
+      "sourceFamily": "CORE_TRAC",
+      "sourceResourceRef": {
+        "id": "core-trac:54034"
+      },
+      "sourceRevision": "core-trac:54034:comment:20",
+      "verificationSource": "core-trac-public-reread"
+    },
+    {
+      "id": "public-core-trac-40339-comment-4",
+      "observedPublicDeliveryAt": "2026-10-06T03:45:20Z",
+      "outcomeFlags": {
+        "accepted": false,
+        "closed": false,
+        "followUpNeeded": false,
+        "merged": false,
+        "propsObserved": false,
+        "reopened": false
+      },
+      "publicContributionType": "patch-review",
+      "publicDeliveryUrl": "https://core.trac.wordpress.org/ticket/40339#comment:4",
+      "publicSummary": "Public Core Trac comment 4 records contribution evidence for ticket #40339.",
+      "sourceFamily": "CORE_TRAC",
+      "sourceResourceRef": {
+        "id": "core-trac:40339"
+      },
+      "sourceRevision": "core-trac:40339:comment:4",
+      "verificationSource": "core-trac-public-reread"
+    }
+  ]
+}

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from datetime import timezone
 import json
 import re
 from pathlib import Path
@@ -11,6 +12,8 @@ from typing import Any
 
 from certification import canonical_hash, canonical_json, sha256_bytes
 from core_trac_v2 import source_registry_summary
+from contribution_returns import normalize_contribution_return_feed
+from radarlib import parse_datetime
 
 ROOT = Path(__file__).resolve().parents[1]
 WORDPRESS_DEVELOP_SOURCE = ROOT / "data" / "sources" / "wordpress-develop-github.json"
@@ -19,6 +22,7 @@ CORE_TRAC_FAMILY = "CORE_TRAC"
 WORDPRESS_DEVELOP_FAMILY = "WORDPRESS_DEVELOP_GITHUB"
 GUTENBERG_FAMILY = "GUTENBERG"
 UNKNOWN_OBSERVATION = "unknown"
+CONTRIBUTION_RETURNS = ROOT / "data" / "contribution-returns.json"
 
 QUALIFICATION_STATES = {
     "CLEAR_OPPORTUNITY",
@@ -151,6 +155,42 @@ def deterministic_hash(preimage: dict[str, Any]) -> str:
     return canonical_hash(preimage)
 
 
+def source_freshness_payload(family: dict[str, Any] | None, source_family: str) -> dict[str, Any]:
+    family = family or {}
+    return {
+        "state": family.get("freshness") or "unknown",
+        "sourceFamily": source_family,
+        "observedAt": family.get("observedTime"),
+        "certifiedAt": family.get("certifiedTime"),
+        "sourceRevision": family.get("sourceRevision"),
+    }
+
+
+def resource_freshness_payload(modified_at: str | None, reference_time: str | None) -> dict[str, Any]:
+    parsed_modified = parse_datetime(str(modified_at or ""))
+    parsed_reference = parse_datetime(str(reference_time or ""))
+    if not parsed_modified or not parsed_reference:
+        return {
+            "state": "unknown",
+            "modifiedAt": modified_at,
+            "ageDays": None,
+            "referenceTime": reference_time,
+        }
+    age_days = max(0, (parsed_reference.astimezone(timezone.utc) - parsed_modified.astimezone(timezone.utc)).days)
+    if age_days <= 14:
+        state = "fresh"
+    elif age_days <= 90:
+        state = "recent"
+    else:
+        state = "stale"
+    return {
+        "state": state,
+        "modifiedAt": modified_at,
+        "ageDays": age_days,
+        "referenceTime": reference_time,
+    }
+
+
 def resource_payload(
     *,
     source_family: str,
@@ -166,6 +206,9 @@ def resource_payload(
     completeness: str,
     limitations: list[str],
     observed_fields: dict[str, Any],
+    material_updated_at: str | None = None,
+    source_freshness: dict[str, Any] | None = None,
+    resource_freshness: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     identity_value = resource_id(source_family, identity)
     revision_preimage = {
@@ -194,6 +237,9 @@ def resource_payload(
         "materialRevision": material,
         "revision": material,
         "observedTime": observed_time,
+        "materialUpdatedAt": material_updated_at,
+        "sourceFreshness": source_freshness or {"state": "unknown", "sourceFamily": source_family},
+        "resourceFreshness": resource_freshness or resource_freshness_payload(material_updated_at, observed_time),
         "sourceFamilySnapshotId": source_family_snapshot_id,
         "sourceRevision": source_revision,
         "provenance": provenance,
@@ -241,6 +287,9 @@ def core_trac_resource(record: dict[str, Any], source_family: dict[str, Any] | N
             "owner": ticket.get("owner"),
             "resolution": ticket.get("resolution"),
         },
+        material_updated_at=ticket.get("modified"),
+        source_freshness=source_freshness_payload(family, CORE_TRAC_FAMILY),
+        resource_freshness=resource_freshness_payload(ticket.get("modified"), family.get("observedTime") or family.get("certifiedTime")),
     )
 
 
@@ -323,6 +372,9 @@ def github_resource(resource: dict[str, Any], source_family: dict[str, Any] | No
             "ticketReferences": resource.get("ticketReferences", []),
             "ambiguousTicketReferences": resource.get("ambiguousTicketReferences", []),
         },
+        material_updated_at=resource.get("updatedAt"),
+        source_freshness=source_freshness_payload(family, family_name),
+        resource_freshness=resource_freshness_payload(resource.get("updatedAt"), family.get("observedTime") or family.get("certifiedTime")),
     )
 
 
@@ -362,6 +414,9 @@ def wave2_resource(resource: dict[str, Any], source_family: dict[str, Any] | Non
             "outboundLinks": resource.get("outboundLinks", []),
             "candidateSignals": resource.get("candidateSignals", []),
         },
+        material_updated_at=resource.get("updatedAt") or resource.get("sourceRevision"),
+        source_freshness=source_freshness_payload(family, family_name),
+        resource_freshness=resource_freshness_payload(resource.get("updatedAt") or resource.get("sourceRevision"), family.get("observedTime") or family.get("certifiedTime")),
     )
 
 
@@ -612,6 +667,7 @@ def v2_opportunity(
     canonical = core_trac_resource(record, families_by_source.get(CORE_TRAC_FAMILY))
     state = qualification_state(record, linked_github)
     dimensions = qualification_dimensions(record, state)
+    dimensions["freshness"] = canonical["resourceFreshness"]["state"]
     missing_increment = missing_increment_label(record, state)
     contribution_family = record["qualification"]["recommendedContributionClass"]
     identity = opportunity_id(canonical, contribution_family, missing_increment)
@@ -659,7 +715,9 @@ def v2_opportunity(
             "limitations": limitations_for(record, linked_github),
         },
         "sourceCoverage": source_coverage(record["qualification"], linked_github),
-        "freshness": record["qualification"]["evidenceFreshness"],
+        "sourceFreshness": canonical["sourceFreshness"],
+        "resourceFreshness": canonical["resourceFreshness"],
+        "freshness": canonical["resourceFreshness"],
         "ranking": {
             "score": record["ranking"]["score"],
             "tier": record["ranking"]["tier"],
@@ -826,7 +884,7 @@ def native_opportunity(resource: dict[str, Any], family_record: dict[str, Any], 
         "actionability": signal["actionability"],
         "usefulnessSignal": signal["confidence"],
         "evidenceCompleteness": "medium" if state in {"CLEAR_OPPORTUNITY", "POSSIBLE_OPPORTUNITY"} else "low",
-        "freshness": family_record.get("freshness") or "stale",
+        "freshness": canonical["resourceFreshness"]["state"],
         "duplicationRisk": "medium",
         "noveltySignal": "source-native",
         "effort": "medium",
@@ -879,7 +937,9 @@ def native_opportunity(resource: dict[str, Any], family_record: dict[str, Any], 
             "limitations": limitations,
         },
         "sourceCoverage": coverage,
-        "freshness": {"state": family_record.get("freshness") or "stale", "sourceFamily": family_name},
+        "sourceFreshness": canonical["sourceFreshness"],
+        "resourceFreshness": canonical["resourceFreshness"],
+        "freshness": canonical["resourceFreshness"],
         "ranking": {
             "score": native_score(state, signal["confidence"]),
             "tier": "priority" if state == "CLEAR_OPPORTUNITY" else "watch",
@@ -947,7 +1007,7 @@ def wave2_opportunity(
         "actionability": "high" if state == "CLEAR_OPPORTUNITY" else "medium",
         "usefulnessSignal": confidence,
         "evidenceCompleteness": "medium",
-        "freshness": family_record.get("freshness") or "stale",
+        "freshness": canonical["resourceFreshness"]["state"],
         "duplicationRisk": "medium",
         "noveltySignal": "source-native",
         "effort": "unknown",
@@ -1012,7 +1072,9 @@ def wave2_opportunity(
             ],
         },
         "sourceCoverage": coverage,
-        "freshness": {"state": family_record.get("freshness") or "stale", "sourceFamily": family_name},
+        "sourceFreshness": canonical["sourceFreshness"],
+        "resourceFreshness": canonical["resourceFreshness"],
+        "freshness": canonical["resourceFreshness"],
         "ranking": {
             "score": native_score(state, confidence),
             "tier": "priority" if state == "CLEAR_OPPORTUNITY" else "watch",
@@ -1036,37 +1098,77 @@ def wave2_opportunities(
     return result
 
 
-def apply_public_outcome_suppression(opportunities: list[dict[str, Any]], contributions: dict[str, Any]) -> list[dict[str, Any]]:
-    covered = {
+def load_contribution_returns(path: Path = CONTRIBUTION_RETURNS) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return normalize_contribution_return_feed(payload)
+
+
+def apply_public_outcome_suppression(
+    opportunities: list[dict[str, Any]],
+    contributions: dict[str, Any],
+    contribution_returns: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    covered_legacy = {
         str(item.get("opportunityKey"))
         for item in contributions.get("contributions", [])
         if item.get("lifecycleState") in {"PUBLIC_DELIVERY_VERIFIED", "UPSTREAM_ACCEPTED", "FOLLOWUP_REQUIRED"}
     }
+    return_records = list((contribution_returns or {}).get("contributions", []))
+    returns_by_resource: dict[str, list[dict[str, Any]]] = {}
+    for record in return_records:
+        ref = record.get("resourceRef") or {}
+        resource_id = str(ref.get("id") or "")
+        if resource_id:
+            returns_by_resource.setdefault(resource_id, []).append(record)
     result = []
     for opportunity in opportunities:
         legacy = opportunity.get("legacyV1") or {}
-        if legacy.get("opportunityKey") not in covered:
+        resource_id = opportunity["canonicalResource"]["id"]
+        covering_returns = returns_by_resource.get(resource_id, [])
+        legacy_covered = legacy.get("opportunityKey") in covered_legacy
+        if not legacy_covered and not covering_returns:
             result.append(opportunity)
             continue
         updated = json.loads(json.dumps(opportunity))
         updated["qualification"]["state"] = "LIKELY_ALREADY_COVERED"
         updated["qualification"]["confidence"] = "high"
-        updated["qualification"]["reason"] = "A verified public contribution outcome already exists for this legacy opportunity."
-        updated["qualification"]["whyNow"] = ["A verified public contribution outcome already exists; avoid redundant work unless live reread shows a new missing increment."]
+        updated["qualification"]["reason"] = "Verified public contribution evidence already exists for this resource."
+        updated["qualification"]["whyNow"] = ["Verified public contribution evidence already exists; avoid redundant work unless live reread shows a new missing increment."]
         updated["qualification"]["limitations"].append("Suppressed by public contribution outcome evidence.")
         updated["qualification"]["duplicationRisk"] = "high"
+        suggested = "RECHECK_UPSTREAM" if any((record.get("outcomeFlags") or {}).get("followUpNeeded") for record in covering_returns) else "NO_ACTION"
+        updated["qualification"]["dispositionReview"] = {
+            "state": "REVIEW_DISPOSITION",
+            "suggestedDisposition": suggested,
+            "requiresLiveReread": True,
+            "reason": "Public return evidence can cover the candidate, but terminal disposition still requires authoritative live reread.",
+            "evidence": [
+                {
+                    "returnId": record.get("returnId"),
+                    "publicUrl": record.get("publicUrl"),
+                    "publicSummary": record.get("publicSummary"),
+                    "verificationSource": record.get("verificationSource"),
+                }
+                for record in covering_returns
+            ],
+        }
         updated["ranking"]["score"] = 0
         updated["ranking"]["tier"] = "suppressed"
         updated["ranking"]["deterministicReasons"] = ["Public outcome evidence indicates this opportunity is likely already covered."]
         updated["ranking"]["dimensions"]["actionability"] = "low"
         updated["ranking"]["dimensions"]["duplicationRisk"] = "high"
         updated["ranking"]["dimensions"]["confidence"] = "high"
+        updated["ranking"]["dimensions"]["timeliness"] = "review-disposition"
         revision_material = {
             "schema": "radar-opportunity-v2-outcome-suppression.v1",
             "id": updated["id"],
             "priorRevision": opportunity["revision"],
             "state": updated["qualification"]["state"],
-            "coveredBy": sorted(covered),
+            "coveredByLegacy": sorted(covered_legacy),
+            "coveredByReturns": sorted(record.get("returnId") for record in covering_returns),
+            "suggestedDisposition": suggested,
         }
         updated["revision"] = f"opportunity-revision-v2-{canonical_hash(revision_material)[:32]}"
         result.append(updated)
@@ -1631,7 +1733,9 @@ def diagnostics_payload(opportunities: list[dict[str, Any]], families: list[dict
         "qualificationDistribution": counted(qualification),
         "contributionFamilyDistribution": counted(by_family),
         "sourceFamilyDistribution": counted(Counter(family["sourceFamily"] for family in families)),
-        "freshnessDistribution": counted(Counter(item["freshness"]["state"] for item in opportunities)),
+        "freshnessDistribution": counted(Counter(item["resourceFreshness"]["state"] for item in opportunities)),
+        "resourceFreshnessDistribution": counted(Counter(item["resourceFreshness"]["state"] for item in opportunities)),
+        "sourceFreshnessDistribution": counted(Counter(item["sourceFreshness"]["state"] for item in opportunities)),
         "completenessDistribution": counted(completeness),
         "evidenceCompleteness": counted(coverage),
         "suppressionReasons": counted(Counter(reason for item in opportunities for reason in item["qualification"]["limitations"] if item["qualification"]["state"] == "NO_CLEAR_CONTRIBUTION")),
@@ -1765,6 +1869,8 @@ def candidate_from_opportunity(
         "eligibilityGate": opportunity["eligibilityGate"],
         "sourceRevision": opportunity["canonicalResource"].get("sourceRevision"),
         "observedAt": observed_at,
+        "sourceFreshness": opportunity["sourceFreshness"],
+        "resourceFreshness": opportunity["resourceFreshness"],
         "freshness": opportunity["freshness"],
         "whyNow": opportunity["qualification"].get("whyNow", []),
         "sourceHealth": {
@@ -1820,6 +1926,7 @@ def project_v2(
     wordpress_develop: dict[str, Any] | None = None,
     gutenberg: dict[str, Any] | None = None,
     wave2_sources: dict[str, dict[str, Any] | None] | None = None,
+    contribution_returns: dict[str, Any] | None = None,
 ) -> dict[str, bytes]:
     configured_wave2 = wave2_sources or {}
     github_index = github_ticket_index(wordpress_develop)
@@ -1848,7 +1955,7 @@ def project_v2(
         for item in apply_public_outcome_suppression(sorted(
         [*trac_opportunities, *native_wordpress, *native_gutenberg, *native_wave2],
         key=lambda item: (-item["ranking"]["score"], item["id"]),
-        ), contributions)
+        ), contributions, contribution_returns)
     ]
     v2_snapshot = v2_snapshot_payload(snapshot, collection, v2_opportunities, families)
     source_snapshots = {
@@ -1886,6 +1993,7 @@ def project_v2(
         "version": 2,
         "snapshotId": v2_snapshot["snapshotId"],
         "outcomes": contributions.get("contributions", []),
+        "contributionReturns": (contribution_returns or {}).get("outcomes", []),
         "limitations": ["Outcome attribution is conservative and based only on public contribution evidence."],
     }
     payloads = {
@@ -1905,6 +2013,7 @@ def project_v2(
             "version": 2,
             "snapshotId": v2_snapshot["snapshotId"],
             "contributions": contributions.get("contributions", []),
+            "contributionReturns": (contribution_returns or {}).get("contributions", []),
         },
         "outcomes.json": outcomes,
         "taxonomy.json": taxonomy_payload(),
