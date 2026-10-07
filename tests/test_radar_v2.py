@@ -135,8 +135,16 @@ class RadarV2ProjectionTests(unittest.TestCase):
         self.assertTrue(candidates["candidateBoundary"]["notExecutableWork"])
         first = candidates["candidates"][0]
         self.assertTrue(first["id"].startswith("candidate:v1:"))
+        self.assertEqual(first["candidateId"], first["id"])
+        self.assertEqual(first["opportunityId"], first["opportunityRef"]["id"])
         self.assertIn("resourceRefs", first)
         self.assertIn("familyCandidates", first)
+        self.assertIn("sourceFamilies", first)
+        self.assertIn("sourceMemberships", first)
+        self.assertIn("observedAt", first)
+        self.assertIn("whyNow", first)
+        self.assertIn("derivedPriority", first)
+        self.assertIn("estimatedExecutionClass", first)
         self.assertIn("scoreVector", first)
         self.assertEqual(set(first["scoreVector"]["dimensions"]), {
             "upstreamDemandStrength",
@@ -169,6 +177,8 @@ class RadarV2ProjectionTests(unittest.TestCase):
         gutenberg = load_gutenberg_source()
         sources = json.loads(self.payloads(source, gutenberg)["sources.json"])
         core = next(item for item in sources["sourceFamilies"] if item["sourceFamily"] == "CORE_TRAC")
+        self.assertEqual(core["sourceRegistry"]["primarySourceCount"], 17)
+        self.assertEqual(core["sourceRegistry"]["legacyV1CompatibilitySourceCount"], 5)
         self.assertTrue(core["rawAcquisitions"])
         first = core["rawAcquisitions"][0]
         self.assertTrue(first["sourceUrl"].startswith("https://core.trac.wordpress.org/query?"))
