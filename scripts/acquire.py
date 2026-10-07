@@ -37,11 +37,14 @@ def snapshot_downloads(downloads: Path) -> dict[Path, tuple[int, int]]:
 def new_csv_file(before: dict[Path, tuple[int, int]], downloads: Path) -> Path | None:
     candidates = [p for p, state in snapshot_downloads(downloads).items() if p not in before or before[p] != state]
     return max(candidates, key=lambda p: p.stat().st_mtime_ns) if candidates else None
+
+def download_is_incomplete(path: Path) -> bool:
+    return any(path.with_name(path.name + suffix).exists() for suffix in (".part", ".download"))
 def wait_for_new_csv(downloads: Path, before: dict[Path, tuple[int, int]], timeout: int = DEFAULT_TIMEOUT) -> Path:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         candidate = new_csv_file(before, downloads)
-        if candidate and candidate.stat().st_size > 0:
+        if candidate and not download_is_incomplete(candidate) and candidate.stat().st_size > 0:
             size = candidate.stat().st_size; time.sleep(0.2)
             if candidate.exists() and candidate.stat().st_size == size: return candidate
         time.sleep(0.2)
@@ -58,6 +61,7 @@ def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dic
         if missing: raise ValueError(f"acquired CSV is missing expected fields: {', '.join(missing)}")
         rows = list(reader)
         if any(None in row for row in rows): raise ValueError("acquired CSV has a row with the wrong number of fields")
+        if any("id" in row and not str(row["id"] or "").strip() for row in rows): raise ValueError("acquired CSV has a row without a ticket id")
         return len(rows), [dict(row) for row in rows]
     except (UnicodeDecodeError, csv.Error) as error:
         raise ValueError(f"acquired CSV is unreadable: {error}") from error
@@ -82,6 +86,21 @@ def acquire_core_trac(source: dict[str, Any], run_dir: Path, observed_at: str, d
 def fetch_wave2_source(config: dict[str, Any]) -> list[tuple[str, bytes, dict[str, str], int]]:
     from wave2_sources import configured_responses, fetch_public
     return configured_responses(config, fetch_public)
+
+def validate_wave2_payload(adapter: str | None, payload: Any, url: str) -> None:
+    if adapter in {"wp_rest_posts", "github_issues", "github_repository"}:
+        if not isinstance(payload, list) or not all(isinstance(item, dict) for item in payload):
+            raise ValueError(f"expected a JSON array of objects from {url}")
+        required = "id" if adapter == "wp_rest_posts" else "number"
+        if any(required not in item for item in payload):
+            raise ValueError(f"response contains an item without {required} from {url}")
+    elif adapter == "wp_rest_tree":
+        items = payload if isinstance(payload, list) else [payload] if isinstance(payload, dict) else []
+        if any(not isinstance(item, dict) or "id" not in item for item in items):
+            raise ValueError(f"WordPress handbook response contains an item without id from {url}")
+    elif adapter == "wordpress_releases" and (not isinstance(payload, dict) or not isinstance(payload.get("offers"), list) or not all(isinstance(item, dict) for item in payload["offers"])):
+        raise ValueError(f"WordPress release response has no offers array from {url}")
+
 def acquire_wave2(config: dict[str, Any], run_dir: Path, observed_at: str, *, fetcher: Callable[[dict[str, Any]], list[tuple[str, bytes, dict[str, str], int]]] = fetch_wave2_source) -> dict[str, Any]:
     from wave2_sources import normalize_resources
     run_dir.mkdir(parents=True, exist_ok=True); responses = fetcher(config)
@@ -89,11 +108,16 @@ def acquire_wave2(config: dict[str, Any], run_dir: Path, observed_at: str, *, fe
     raw_artifacts = []; payloads = []
     for index, (url, body, _headers, status) in enumerate(responses, start=1):
         if status != 200: raise ValueError(f"HTTP {status} from {url}")
+        try:
+            payload = json.loads(body.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise ValueError(f"invalid JSON from {url}: {error}") from error
+        validate_wave2_payload(config.get("adapter"), payload, url)
         suffix = "" if len(responses) == 1 else f"-{index:03d}"; artifact = run_dir / f"{source_slug(config['sourceFamily'])}{suffix}.raw.json"; artifact.write_bytes(body); sha = sha256_bytes(body)
         artifact_path = str(artifact.relative_to(ROOT)) if artifact.is_relative_to(ROOT) else artifact.name
         raw_artifacts.append({"path": artifact_path, "sha256": sha, "byteLength": len(body), "contentType": "application/json", "url": url, "httpStatus": status}); payloads.append((url, body, {}, status))
     resources = normalize_resources(config, payloads, observed_at)
-    rows = [{"id": item.get("nativeIdentity"), "title": item.get("title"), "url": item.get("url"), "status": item.get("state") or item.get("status"), "candidateFamilyMappings": [{"familyId": signal["familyId"], "confidence": signal.get("confidence", "medium")} for signal in item.get("candidateSignals", []) if signal.get("state") in {"candidate", "likely"}], "resource": item} for item in resources]
+    rows = [{"id": item.get("nativeIdentity"), "title": item.get("title"), "url": item.get("url"), "status": item.get("state") or item.get("status"), "candidateFamilyMappings": [{"familyId": signal["familyId"], "confidence": signal.get("confidence", "medium")} for signal in item.get("candidateSignals", []) if signal.get("state") in {"CLEAR_OPPORTUNITY", "POSSIBLE_OPPORTUNITY"}], "resource": item} for item in resources]
     source = {"id": config["sourceFamily"], "sourceFamily": config["sourceFamily"], "sourceRole": config.get("sourceRole", "DIRECT_OPPORTUNITY"), "semanticMeaning": config.get("semanticMeaning", config.get("label", "Public source observation.")), "candidateFamilyMappings": config.get("candidateFamilyMappings", []), "identityField": "id", "resourceType": "PUBLIC_RESOURCE", "authoritativeSource": config.get("authoritativeSource")}
     return make_observation(source, observed_at, rows=rows, result="success", revision=sha256_bytes(json.dumps(resources, sort_keys=True).encode()), raw_artifacts=raw_artifacts)
 

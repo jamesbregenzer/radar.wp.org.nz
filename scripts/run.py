@@ -7,10 +7,23 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from acquire import acquire_run  # noqa: E402
-from process import build_feed, load_input  # noqa: E402
+from process import build_feed  # noqa: E402
 
 LOCK = ROOT / "data" / ".radar-run.lock"
 FEED = ROOT / "data" / "candidate-feed.json"
+
+def prior_observation_run(raw_root: Path, current_run_id: str) -> dict | None:
+    runs = []
+    for path in raw_root.glob("*/run.json"):
+        if path.parent.name == current_run_id:
+            continue
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if value.get("schema") == "radar-observation-set.v2" and value.get("success") and value.get("observations"):
+            runs.append((value.get("observedAt") or "", path, value))
+    return max(runs, key=lambda item: item[0])[2] if runs else None
 
 def validate_feed(feed: dict) -> None:
     if feed.get("schema") != "radar-candidate-feed.v2": raise ValueError("invalid candidate feed schema")
@@ -27,14 +40,12 @@ def run_once() -> int:
         except BlockingIOError: return 2
         manifest = acquire_run()
         if not manifest.get("success"): raise RuntimeError("no source acquired successfully")
-        previous_feed = load_input(FEED) if FEED.exists() else None
-        old_text = FEED.read_text(encoding="utf-8") if FEED.exists() else None
-        feed = build_feed(manifest, previous=previous_feed)
+        previous = prior_observation_run(ROOT / "data" / "raw", manifest["runId"])
+        feed = build_feed(manifest, previous=previous)
         validate_feed(feed)
         FEED.write_text(json.dumps(feed, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         git("add", "data/candidate-feed.json")
-        if old_text != FEED.read_text(encoding="utf-8"):
-            git("add", f"data/raw/{manifest['runId']}")
+        git("add", f"data/raw/{manifest['runId']}")
         changed = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=ROOT).returncode != 0
         if changed:
             git("commit", "-m", "Update Radar V2 candidate feed")

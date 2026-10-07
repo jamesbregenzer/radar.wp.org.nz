@@ -1,12 +1,14 @@
 from __future__ import annotations
 import tempfile
+import json
 from pathlib import Path
 import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from acquire import acquire_core_trac, acquire_run, new_csv_file, snapshot_downloads
+from acquire import acquire_core_trac, acquire_run, acquire_wave2, download_is_incomplete, new_csv_file, validate_csv
+from process import build_feed
 
 class AcquireTests(unittest.TestCase):
     def test_core_trac_writes_canonical_observation_and_keeps_raw_csv(self):
@@ -19,6 +21,41 @@ class AcquireTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             downloads = Path(temporary); (downloads / "report_2 (1).csv").write_text("id\n1\n"); (downloads / "notes.txt").write_text("x")
             self.assertEqual(new_csv_file({}, downloads).name, "report_2 (1).csv")
+
+    def test_incomplete_downloads_and_missing_ticket_ids_are_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            downloads = Path(temporary); candidate = downloads / "query (1).csv"
+            candidate.write_text("id,summary\n,Missing\n")
+            (downloads / "query (1).csv.part").write_text("partial")
+            self.assertTrue(download_is_incomplete(candidate))
+            with self.assertRaises(TimeoutError):
+                from acquire import wait_for_new_csv
+                wait_for_new_csv(downloads, {}, timeout=0)
+            with self.assertRaises(ValueError):
+                validate_csv(candidate.read_bytes(), ["id", "summary"])
+
+    def test_wave2_shape_validation_happens_before_successful_observation(self):
+        config = {"sourceFamily": "MAKE_TEST_RELEASE_SIGNALS", "adapter": "wp_rest_posts"}
+        with tempfile.TemporaryDirectory() as temporary:
+            with self.assertRaises(ValueError):
+                acquire_wave2(config, Path(temporary), "2026-10-07T12:00:00Z", fetcher=lambda _: [("https://example.test", b"{\"error\":\"upstream\"}", {}, 200)])
+
+    def test_wave2_opportunity_states_survive_into_processing(self):
+        config = {"sourceFamily": "MAKE_TEST_RELEASE_SIGNALS", "adapter": "wp_rest_posts", "authoritativeSource": "https://make.wordpress.org/test/"}
+        body = json.dumps([{ "id": 10, "link": "https://make.wordpress.org/test/post", "slug": "call-for-testing", "date_gmt": "2026-10-01T00:00:00", "modified_gmt": "2026-10-02T00:00:00", "title": {"rendered": "Call for testing: WordPress 7.2 Beta 1"}, "content": {"rendered": '<p>Test this beta. <a href="https://github.com/WordPress/gutenberg/issues/1">Gutenberg</a></p>'}, "tags": [] }]).encode()
+        with tempfile.TemporaryDirectory() as temporary:
+            observation = acquire_wave2(config, Path(temporary), "2026-10-06T12:00:00Z", fetcher=lambda _: [("https://example.test", body, {}, 200)])
+        self.assertEqual(observation["acquisitionResult"], "success")
+        self.assertEqual(observation["rows"][0]["candidateFamilyMappings"][0]["familyId"], "BETA_RC_TEST")
+        self.assertEqual(build_feed({"observations": [observation]})["candidateCount"], 1)
+
+    def test_no_clear_contribution_does_not_map_to_candidate(self):
+        config = {"sourceFamily": "MAKE_TEST_RELEASE_SIGNALS", "adapter": "wp_rest_posts"}
+        body = json.dumps([{ "id": 11, "link": "https://make.wordpress.org/test/post", "slug": "routine-update", "date_gmt": "2026-10-01T00:00:00", "modified_gmt": "2026-10-02T00:00:00", "title": {"rendered": "Routine update"}, "content": {"rendered": "<p>No clear contribution request.</p>"}, "tags": [] }]).encode()
+        with tempfile.TemporaryDirectory() as temporary:
+            observation = acquire_wave2(config, Path(temporary), "2026-10-06T12:00:00Z", fetcher=lambda _: [("https://example.test", body, {}, 200)])
+        self.assertEqual(observation["rows"][0]["candidateFamilyMappings"], [])
+        self.assertEqual(build_feed({"observations": [observation]})["candidateCount"], 0)
 
     def test_partial_failure_keeps_successful_observation(self):
         with tempfile.TemporaryDirectory() as temporary:
