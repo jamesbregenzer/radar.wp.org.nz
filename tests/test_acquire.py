@@ -42,10 +42,11 @@ class AcquireTests(unittest.TestCase):
         self.assertEqual(count, 1)
         self.assertEqual(rows[0]["id"], "65638")
         self.assertEqual(rows[0]["status"], "new")
-        self.assertEqual(rows[0]["keywords"], "has-patch")
+        self.assertEqual(rows[0]["workflow"], "has-patch")
+        self.assertNotIn("keywords", rows[0])
         self.assertEqual(rows[0]["time"], "2026-07-15T11:35:42Z")
         self.assertEqual(rows[0]["changetime"], "2026-10-01T23:36:28Z")
-        self.assertEqual(rows[0]["comments"], "")
+        self.assertNotIn("comments", rows[0])
 
     def test_observed_custom_query_headers_are_normalized(self):
         body = b"\xef\xbb\xbfid,Summary,Status,Keywords,Owner,Type,Priority\n123,Fix it,new,needs-testing,,defect (bug),normal\n"

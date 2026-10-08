@@ -15,8 +15,8 @@ FIREFOX_PROFILE = ROOT / "data/.firefox-profile"
 PRIMARY_ROLES = {"DIRECT_OPPORTUNITY", "SIGNAL", "RECONCILIATION"}
 CSV_NAME = re.compile(r"^(?:query|report_[0-9]+)(?:\s*\([0-9]+\))?\.csv$")
 DEFAULT_TIMEOUT = 90
-REQUIRED_CSV_FIELDS = {"id", "summary", "status", "keywords"}
-OPTIONAL_CSV_FIELDS = {"component", "owner", "type", "priority", "milestone", "version", "time", "changetime", "comments", "_comments"}
+REQUIRED_CSV_FIELDS = {"id", "summary", "status"}
+OPTIONAL_CSV_FIELDS = {"keywords", "workflow", "component", "owner", "type", "priority", "milestone", "version", "time", "changetime", "comments", "_comments"}
 CSV_FIELD_ALIASES = {
     "id": "id", "ticket": "id",
     "summary": "summary",
@@ -27,7 +27,7 @@ CSV_FIELD_ALIASES = {
     "priority": "priority", "_priority": "priority",
     "milestone": "milestone",
     "version": "version", "_version": "version",
-    "keywords": "keywords", "workflow": "keywords",
+    "keywords": "keywords", "workflow": "workflow",
     "time": "time", "created": "time", "_created": "time",
     "changetime": "changetime", "modified": "changetime",
     "comments": "comments",
@@ -111,8 +111,6 @@ def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dic
                 field = normalize_csv_header(header)
                 if field and field not in row:
                     row[field] = value
-            for field in expected_fields:
-                row.setdefault(field, "")
             rows.append(row)
         if any(not str(row.get("id") or "").strip() for row in rows): raise ValueError("acquired CSV has a row without a ticket id")
         return len(rows), [dict(row) for row in rows]

@@ -78,6 +78,22 @@ class ProcessingTests(unittest.TestCase):
         payload = {"observations": [{"observedAt": "2026-10-07T11:00:00Z", "sourceId": "core-trac-report-15-has-patch-needs-testing", "acquisitionResult": "success", "semanticValidation": {"state": "passed", "findings": []}, "rows": [row]}]}
         self.assertEqual(build_feed(payload)["candidateCount"], 0)
 
+    def test_report_membership_is_usable_without_workflow_as_keywords(self):
+        for source_id in ("core-trac-report-15-has-patch-needs-testing", "core-trac-report-16-needs-patch"):
+            payload = {"observations": [{"observedAt": "2026-10-07T11:00:00Z", "sourceId": source_id, "acquisitionResult": "success", "rows": [{"id": source_id, "summary": "Report member", "status": "new", "workflow": "has-patch"}]}]}
+            self.assertEqual(build_feed(payload)["candidateCount"], 1)
+
+    def test_literal_keywords_are_validated_for_report_69_and_custom_query(self):
+        for source_id in ("core-trac-report-69-bugs-needing-reproduction", "core-trac-query-needs-testing-no-patch"):
+            missing = {"id": source_id, "summary": "No matching keyword", "status": "new", "keywords": "unrelated"}
+            self.assertEqual(build_feed({"observations": [{"observedAt": "2026-10-07T11:00:00Z", "sourceId": source_id, "acquisitionResult": "success", "rows": [missing]}]})["candidateCount"], 0)
+
+    def test_literal_forbidden_keyword_and_closed_status_still_fail(self):
+        forbidden = {"id": "forbidden", "summary": "Patch", "status": "new", "keywords": "has-patch"}
+        self.assertEqual(build_feed({"observations": [{"observedAt": "2026-10-07T11:00:00Z", "sourceId": "core-trac-report-16-needs-patch", "acquisitionResult": "success", "rows": [forbidden]}]})["candidateCount"], 0)
+        closed = {"id": "closed", "summary": "Closed", "status": "closed", "workflow": "has-patch"}
+        self.assertEqual(build_feed({"observations": [{"observedAt": "2026-10-07T11:00:00Z", "sourceId": "core-trac-report-15-has-patch-needs-testing", "acquisitionResult": "success", "rows": [closed]}]})["candidateCount"], 0)
+
     def test_feed_has_only_stable_fabric_contract_and_no_v1_fields(self):
         feed = build_feed(self.payload)
         self.assertEqual(feed["schema"], SCHEMA)

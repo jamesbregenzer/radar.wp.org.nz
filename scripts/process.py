@@ -20,6 +20,7 @@ DIRECT = "DIRECT_OPPORTUNITY"
 SIGNAL = "SIGNAL"
 RECONCILIATION = "RECONCILIATION"
 NON_ACTIONABLE_STATUSES = {"closed", "resolved", "fixed", "invalid", "wontfix", "wont-fix"}
+REQUIRED_ROW_FIELDS = {"id", "summary", "status"}
 
 
 def canonical_json(value: Any) -> str:
@@ -85,19 +86,20 @@ def validate_rows(source: dict[str, Any], rows: list[dict[str, Any]], result: st
     expected = set(source.get("expectedFields") or [])
     forbidden_statuses = {str(item).lower() for item in rules.get("statusNot", [])}
     for index, row in enumerate(rows):
-        missing = sorted(field for field in expected if field not in row)
+        missing = sorted(field for field in expected if field in REQUIRED_ROW_FIELDS and field not in row)
         if missing:
             findings.append(f"row {index} missing fields: {', '.join(missing)}")
-        keywords = row_keywords(row)
-        missing_all = [item for item in rules.get("requiredKeywordsAll", []) if item.lower() not in keywords]
-        if missing_all:
-            findings.append(f"row {index} missing required keywords: {', '.join(missing_all)}")
-        any_keywords = {item.lower() for item in rules.get("requiredKeywordsAny", [])}
-        if any_keywords and not any_keywords.intersection(keywords):
-            findings.append(f"row {index} missing any expected keyword")
-        forbidden = [item for item in rules.get("forbiddenKeywordsAny", []) if item.lower() in keywords]
-        if forbidden:
-            findings.append(f"row {index} contains forbidden keyword: {', '.join(forbidden)}")
+        if "keywords" in row:
+            keywords = row_keywords(row)
+            missing_all = [item for item in rules.get("requiredKeywordsAll", []) if item.lower() not in keywords]
+            if missing_all:
+                findings.append(f"row {index} missing required keywords: {', '.join(missing_all)}")
+            any_keywords = {item.lower() for item in rules.get("requiredKeywordsAny", [])}
+            if any_keywords and not any_keywords.intersection(keywords):
+                findings.append(f"row {index} missing any expected keyword")
+            forbidden = [item for item in rules.get("forbiddenKeywordsAny", []) if item.lower() in keywords]
+            if forbidden:
+                findings.append(f"row {index} contains forbidden keyword: {', '.join(forbidden)}")
         if str(row.get("status", "")).lower() in forbidden_statuses:
             findings.append(f"row {index} has forbidden status: {row.get('status')}")
     return {"state": "passed" if not findings else "failed", "findings": findings}
