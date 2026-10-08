@@ -1,0 +1,2184 @@
+﻿__group__,ticket,summary,owner,component,_version,priority,severity,milestone,type,_status,workflow,_created,modified,_description,_reporter
+Next Release,50486,Improve the admin notices accessibility,joedolson*,Administration,,normal,normal,7.2,defect (bug),accepted,changes-requested,2020-06-27T12:53:09Z,2026-10-07T21:00:08Z,"Follow-up to #47656. See also #50442/
+
+The admin notices accessibility has room for improvements.
+
+Currently, all the admin notices are just text printed out on the admin pages. They have no special semantics. There are no mechanisms to inform users some important information is printed on the page other than visuals. There are no methods to navigate directly to admin notices nor established standards on their placement.
+
+This way, users with accessibility needs will likely miss important information, as they may have no clue whether and where these messages are printed out.
+
+Depending whether the admin notices are PHP-generated notices that appear after a page load or JavaScript-generated ones that are ""injected"" into the DOM, there are ways to improve their accessibility. At the very least, the following improvements should be considered, some of them were mentioned in #47656.
+
+
+== All notices
+- establish standards for the admin notices placement in the page: there should be one, well defined, area where notices are printed out (recommended: after the main H1)
+- establish standards for the admin notices content: see the discussion related to the ""text prefix"" on #47656 and #50442
+- the above item should apply to the whole WordPress UI, including the block editor
+- ""inline"" notices (the ones printed out in the middle of the page): make a decision whether to keep them or allow only notices at the top of the page 
+- if ""inline"" notices are kept, explore ways to make them more accessible
+- worth considering admin notice should be visually prominent and appear within the initial viewport anyways
+- consider the introduction of a dedicated PHP class with methods to get / print admin notices and additional features, also keeping into consideration [https://make.wordpress.org/core/2019/08/05/feature-project-proposal-wp-notify/ the WP Notify project] and the recent [https://make.wordpress.org/core/2020/06/15/call-for-feedback-wp-notify-v1-requirements-document/ call for feedback on the WP Notify v1 requirements document]
+
+== PHP notices
+- prepend to the document title a short text to inform users there are notices and their number: the document title is the first thing screen readers announce after a page load
+- the notices should be printed out after the main H1 heading as that's the part of the content with higher chances to be navigated to
+- define the page area where notices are printed out with an ARIA role that's also a landmark role, e.g. `complementary` (an `<aside>` element) or other role that is a landmark
+- add a new ""skip link"" after the ""Skip to main content"" one to allow all keyboard users to jump to the notices area: this skip link should only be printed out when there are notices
+
+== JavaScript notices
+- all notices injected in the DOM should have an ARIA role `alert` or `status` depending on their ""politeness"" level, so that they're automatically announced by screen readers
+
+Any additional suggestion and/or technique to improve the admin notices accessibility is very welcome.",afercia
+Next Release,65537,Comments: Add a filter for the comment types excluded from queries by default,adamsilverstein,Comments,,normal,normal,7.2,defect (bug),assigned,commit,2026-06-24T21:19:41Z,2026-10-07T04:07:00Z,"== Summary ==
+
+`WP_Comment_Query` now excludes the `note` comment type from results unless `'all'` or `'note'` is explicitly requested (introduced in 6.9 for the editor Notes feature). The list of excluded-by-default types is hard-coded:
+
+{{{#!php
+// class-wp-comment-query.php, get_comment_ids()
+if (
+    ! in_array( 'all', $raw_types['IN'], true ) &&
+    ! in_array( 'note', $raw_types['IN'], true ) &&
+    ! in_array( 'note', $raw_types['NOT IN'], true )
+) {
+    $raw_types['NOT IN'][] = 'note';
+}
+}}}
+
+There is no extension point here, so a plugin that introduces its own ""private"" comment type (one that should never appear in standard comment listings, counts, or feeds) has to rewrite the SQL through `comments_clauses` in every context, and re-check that work on each release. The [https://wordpress.org/plugins/alpaca-issue-tracker/ Alpaca issue-tracker plugin] maintains a [https://github.com/rareview/alpaca-issue-tracker/blob/main/lib/private-comments.php dedicated library] to do exactly this, and reports playing ""whack-a-mole"" with each core update (see the [https://github.com/WordPress/gutenberg/issues/76316#issuecomment-4749810490 Gutenberg Notes iteration discussion]).
+
+== Proposal ==
+
+Add a filter that lets extenders contribute additional comment types to the default-excluded set, generalizing the existing hard-coded `note` handling:
+
+{{{#!php
+/**
+ * Filters the comment types excluded from WP_Comment_Query results by default.
+ *
+ * Types in this list are excluded unless the query explicitly requests
+ * 'all' or that specific type via 'type', 'type__in', or 'type__not_in'.
+ *
+ * @since 6.10.0
+ *
+ * @param string[]         $types Comment types excluded by default. Default array( 'note' ).
+ * @param WP_Comment_Query $query The current WP_Comment_Query instance.
+ */
+$excluded_types = apply_filters( 'default_excluded_comment_types', array( 'note' ), $this );
+
+foreach ( $excluded_types as $excluded_type ) {
+    if (
+        ! in_array( 'all', $raw_types['IN'], true ) &&
+        ! in_array( $excluded_type, $raw_types['IN'], true ) &&
+        ! in_array( $excluded_type, $raw_types['NOT IN'], true )
+    ) {
+        $raw_types['NOT IN'][] = $excluded_type;
+    }
+}
+}}}
+
+Because `WP_Comment_Query` backs the majority of comment outputs (admin list table, `get_comments()`, counts via `WP_Comment_Query`, REST collection queries, feeds), a single registration point here removes most of the per-context filtering a plugin currently needs.
+
+== Scope / non-goals ==
+
+This is deliberately a small step, not the full custom-comment-types API tracked in #35214. It does not add a registration object, labels, capabilities, or admin UI. It only generalizes the existing default-exclusion behavior so private types can opt in without rewriting query SQL.
+
+A few outputs compute counts with their own hard-coded `comment_type != 'note'` SQL (e.g. `get_comment_count()` / approved-count helpers) rather than going through `WP_Comment_Query`; those can be addressed as follow-ups, or by having them consult the same filtered list, and should be noted in the patch.
+
+== Backward compatibility ==
+
+The default value `array( 'note' )` preserves current behavior exactly. No change for sites that don't use the filter.
+",adamsilverstein
+Next Release,63678,WordPress redirect to wp-admin/install.php when a user is rate limited in mysql,johnbillion,Database,6.9,normal,normal,7.2,defect (bug),reviewing,has-patch,2025-07-09T15:28:53Z,2026-10-07T04:08:36Z,"Wordpress redirect to wp-admin/install.php when a user is rate limited in mysql,
+
+instead of catching and displaying a valid error message",anonymooo
+Next Release,14060,"Misleading ""You do not have sufficient permissions to access this page.""",SergeyBiryukov,Plugins,3.0,normal,normal,7.2,defect (bug),reviewing,dev-feedback,2010-06-23T14:46:16Z,2026-10-07T04:10:14Z,"When accessing a page of a plugin in the admin that does not exists any longer, you're told by an error message, that:
+
+> You do not have sufficient permissions to access this page.
+
+This message is a little misleading, because there is no such page.
+
+A message that better reflects the decision to display it would be less misleading, e.g.:
+
+> The requested page is not accessible.
+
+
+",hakre
+Next Release,64156,add_post_type_support() does not merge sub-properties for the same feature,,"Posts, Post Types",,normal,normal,7.2,defect (bug),new,changes-requested,2025-10-27T22:39:16Z,2026-10-07T04:14:27Z,"= Summary =
+
+When `add_post_type_support()` is called multiple times for the same post type and feature with associative array arguments, the second call overwrites the first call's arguments instead of merging them. This prevents incremental addition of sub-properties to post type features.
+
+= Current Behavior =
+
+{{{
+add_post_type_support( 'page', 'editor', array(
+    'default-mode' => 'template-locked',
+) );
+
+add_post_type_support( 'page', 'editor', array(
+    'block-comments' => true,
+) );
+
+// Result: Only 'block-comments' is stored, 'default-mode' is lost
+var_dump( get_all_post_type_supports( 'page' )['editor'] );
+// array( array( 'block-comments' => true ) )
+}}}
+
+= Expected Behavior =
+
+Multiple calls should merge the array arguments, allowing different plugins/themes to add their own sub-properties without conflicting:
+
+{{{
+add_post_type_support( 'page', 'editor', array(
+    'default-mode' => 'template-locked',
+) );
+
+add_post_type_support( 'page', 'editor', array(
+    'block-comments' => true,
+) );
+
+// Expected: Both properties should be preserved
+var_dump( get_all_post_type_supports( 'page' )['editor'] );
+// array( array( 'default-mode' => 'template-locked', 'block-comments' => true ) )
+}}}
+
+= Technical Details =
+
+The issue is in `/src/wp-includes/post.php` at line 2292, where the function simply overwrites the existing value:
+
+{{{
+if ( $args ) {
+    $_wp_post_type_features[ $post_type ][ $feature ] = $args;
+}
+}}}
+
+= Proposed Solution =
+
+Detect when both the existing and new values are associative arrays and merge them using `array_merge()`. This maintains backwards compatibility because:
+
+- If the feature doesn't exist yet, it's created as before
+- If the feature is set to `true` (no args), calling with args still overwrites it as expected
+- Only when both values are arrays does merging occur
+- Non-associative array arguments continue to work as before
+
+= Use Cases =
+
+This is particularly useful for:
+
+1. **Block editor settings** - Different plugins adding different editor configuration options
+2. **Custom feature flags** - Themes and plugins progressively enhancing the same feature
+3. **Multi-plugin compatibility** - Avoiding conflicts when multiple plugins extend the same post type feature
+
+= Impact =
+
+This change would improve the API's usability and prevent unexpected behavior when multiple plugins/themes interact with the same post type features. The fix maintains full backwards compatibility.",fabiankaegy
+Next Release,37000,Support for the SameSite cookie attribute,johnbillion*,Security,,normal,normal,7.2,enhancement,accepted,has-patch,2016-06-02T13:31:13Z,2026-10-07T04:15:59Z,"IETF's [https://tools.ietf.org/html/draft-west-first-party-cookies Same-site Cookies draft] was [https://www.chromestatus.com/feature/4672634709082112 shipped in Chrome 51 and Opera 39].
+
+The SameSite cookie attribute instructs a browser not to send that cookie with cross-origin third-party requests (such as iframes, embedded images, and Ajax requests). This effectively mitigates CSRF attacks as, for example, the user will not be authenticated for a given third party URL that's being used in a CSRF attack.
+
+More information on the SameSite attribute can be found here: http://www.sjoerdlangkemper.nl/2016/04/14/preventing-csrf-with-samesite-cookie-attribute/
+
+We should investigate whether setting the `SameSite=lax` attribute is of benefit to the `auth` and/or `logged_in` cookies in WordPress, and if so consider implementing it once the draft becomes an RFC.
+
+PHP uses the `setcookie()` wrapper for setting cookies, which means that setting the SameSite attribute is not possible using that function, until such point that support for the attribute gets added. If WordPress were to implement the SameSite attribute, we'd need our own cookie handling function which constructs and sets the `Set-Cookie` header itself, and use it in place of `setcookie()` (side note: this may also be beneficial to unit testing).",johnbillion
+Future Releases,24447,Avoid losing data after nonces expire,iseulde,Administration,,normal,major,Future Release,defect (bug),assigned,has-patch,2013-05-29T07:55:35Z,2026-05-19T12:21:24Z,"Happens when an admin page containing a form is left open for more than 24 hours and the user decides to submit the form. This is quite rare for most admin pages as the users typically spend short time there. However this can happen on the Edit Post screen too despite that we refresh the basic nonces every `wp_nonce_tick` (12 hours):
+
+- The user starts new post.
+- At some point the Internet connection is lost.
+- The user decides to finish later and puts the computer to sleep (closes the laptop, etc.).
+- The user decides to continue writing more than 24 hours after that.
+
+At this point all nonces have expired and cannot be updated as we've missed the previous nonce_tick update.",azaozz
+Future Releases,65151,Dashboard Widgets not draggable,,Administration,7.0,normal,normal,Future Release,defect (bug),reopened,has-patch,2026-04-29T10:09:07Z,2026-07-31T02:54:37Z,"The issue is a bit hard to explain, please watch the video. Sometimes it's impossible to drag a widget to the desired space, sometimes the 'drop zone' has the size of the dragged widget, sometimes not, etc.",Presskopp
+Future Releases,52151,Post / Page / Plugin Title Columns broken,audrasjb*,Administration,5.6.3,normal,normal,Future Release,defect (bug),accepted,has-patch,2020-12-22T11:38:39Z,2026-10-05T07:48:59Z,"The posts screen in wp-admin is wrapping the post title vertically so that the page becomes unreadable.
+
+WordPress 5.6 running WP-Blossom theme.
+
+screen cap here
+https://1drv.ms/u/s!As8R6Nv2QLWnk9MRrGAJmuNIJ1QDoA?e=dcHWT7
+sorry couldn't work out how to upload image ....
+[[Image(https://1drv.ms/u/s!As8R6Nv2QLWnk9MRrGAJmuNIJ1QDoA?e=dcHWT7)]]
+
+
+",pascoedj
+Future Releases,65218,update-core.php - plugin slug is not clean,audrasjb*,Administration,,normal,normal,Future Release,defect (bug),accepted,has-patch,2026-05-11T13:58:25Z,2026-08-03T11:30:32Z,"The plugin slug we use to generate the link is not clean on update core. It includes the parent folder. e.g. /plugin/plugin.php. The API is smart enough to redirect to the en_us page.
+On the plugins screen, we use a clean one.
+
+
+$plugin_data->update->slug
+
+https://github.com/WordPress/wordpress-develop/blob/5e7fd3f6a7caf06e55b4b2781bd42a26165e5b3e/src/wp-admin/update-core.php#L570",timse201
+Future Releases,50442,"Add prefixes to all admin notices (Warning, Error, Success, Info)",joedolson*,Administration,,normal,normal,Future Release,enhancement,accepted,,2020-06-21T14:39:17Z,2025-08-26T20:08:08Z,"This is a continuation #47656
+
+From @afercia comment (ticket:47656#comment:47)
+- Make sure all the Error and Warning notices use respectively an ""Error:"" and ""Warning:"" text prefix
+- Further discuss whether also the ""Success"" and ""Info"" notices should use a similar text prefix
+- Update documentation related to admin notices, for example: https://codex.wordpress.org/Plugin_API/Action_Reference/admin_notices and https://developer.wordpress.org/reference/hooks/admin_notices/
+- Create a new issue on the Gutenberg GitHub to add text prefixes for the editor notices: right now, none of them uses a prefix (see screenshot below) 
+
+I would like to add
+ - Combine strings constructed like `__('Error:') . __('any string')` into one string for better context for translators.",kebbet
+Future Releases,60029,Admin unable to create new Application Password for user with no role on main site (multisite),audrasjb,Application Passwords,,normal,normal,Future Release,defect (bug),reviewing,changes-requested,2023-12-07T13:40:27Z,2026-08-04T23:25:57Z,"I ran into this while trying to create an Application Password for a user from the network users admin screen (wp-admin/network/user-edit.php). It does work from any site's dashboard subsite/wp-admin/user-edit.php .
+
+Steps to reproduce:
+
+* I used a completely multisite WP 6.4.2 in subdirectory mode.
+* Log in as an administrator.
+* Create at least one additional site (I called it ""subsite"").
+* Create a second user, and make them subscriber on ""subsite"".
+* If present, remove the user from the main site.
+* Go to the network ""Users"" screen, and edit the user.
+* Try to add an Application Password.
+
+I got an error saying `Invalid user ID.`.",roytanck
+Future Releases,42278,Speed up tests by using shared user fixtures,,Build/Test Tools,,normal,normal,Future Release,enhancement,new,needs-unit-tests,2017-10-19T09:09:44Z,2019-01-08T10:13:51Z,"There are a lot of tests that require user fixtures. These are then created, and afterwards deleted, as part of the test class set up and tear down methods.
+
+These fixtures could all be reused between tests, if a user for every role in Core would be created in the database as part of the unit test setup process.
+
+If we had that, all the tests that need for example a user with the `editor` role could just grab the existing user from the database, instead of creating this as a test fixture.",anonymized_8769252
+Future Releases,26402,Add option to DB if option is only present in cache when updating option,,Cache API,3.8,normal,normal,Future Release,defect (bug),new,has-patch,2013-12-04T17:57:07Z,2026-07-23T23:36:35Z,"In very rare circumstances some options may not be in DB but in cache. On update if updating DB fails remove from cache and try to add option. This would eventually fix cache inconsistencies if they occur.
+
+Both update_option and update_site_option are affected.",codix
+Future Releases,55999,wp_suspend_cache_addition should also disable cache setting?,,Cache API,,normal,normal,Future Release,defect (bug),new,dev-feedback,2022-06-17T09:30:15Z,2024-06-05T20:46:09Z,"Right now wp_suspend_cache_addition is only checked when ""add"" to cache.
+
+However most plugins/developers only use wp_cache_set for updating/adding to the cache.
+This means in most plugins/cases, wp_suspend_cache_addition has no use, in fact it's rather unexpected behavior that only some functions can add to cache (namely: set, incr, decr)
+
+I propose we also check wp_suspend_cache_addition before setting the cache.
+This would also be in line with its function description:
+>Stops more data being added to the cache, but still allows cache retrieval.
+
+As ""set"" also ""adds"" (or at least modifies if already exists therefore adds/subtracts) data in cache.",malthert
+Future Releases,64950,"wp_using_ext_object_cache can return null, causing type failures, potential fatals",westonruter,Cache API,3.7,normal,normal,Future Release,defect (bug),reviewing,has-patch,2026-03-25T20:41:38Z,2026-08-03T10:22:30Z,"Function `wp_using_ext_object_cache` has a `bool` return signature, but it can also return null in certain cases.
+
+If `global $_wp_using_ext_object_cache;` is not set, then it it assumed null.
+
+Line `$current_using = $_wp_using_ext_object_cache;` assigns it to return variable.
+
+Line `return $current_using;` then returns null.
+
+If this function is ran before the global is set, the user must account for null cases instead of a simple bool check. I recommend changing the signature to account for null, or do a null check in the function itself and return a falsey value.
+
+https://core.trac.wordpress.org/browser/tags/6.9.4/src/wp-includes/load.php#L810",ronalfy
+Future Releases,43539,Custom feed types breaks redirect_canonical behavior,SergeyBiryukov,Canonical,4.9.4,normal,normal,Future Release,defect (bug),reviewing,has-patch,2018-03-13T15:54:47Z,2022-11-01T03:24:16Z,"Hi.
+
+There's plugin ""fb-instant-articles"" which adds ""instant-articles"" feed type for facebook.
+final url looks like http://localhost/feed/instant-articles.
+But because ""redirect_canonical"" doesn't respect custom feed types it triggers 301 redirect to http://localhost/feed/instant-articles/feed/instant-articles/.
+
+""instant-articles"" is registered with $wp_rewrite->feeds but this property isn't respected in ""redirect_canonical"" method: http://take.ms/kq0zJ http://take.ms/cbRPm
+We need there to support custom types too like that for example: http://take.ms/ljija
+",satantime
+Future Releases,50163,Perform a canonical redirect when paginated states of the front page are not found,hellofromTonya,Canonical,,normal,normal,Future Release,defect (bug),reopened,changes-requested,2020-05-14T06:44:54Z,2025-05-12T01:37:48Z,"As a followup to #45337, [34492], and [47727]. 
+
+When example.com/ has a static front page assigned and uses `<!--nextpage-->` accessing non-existing pages uses example.com/page/3/ and Canonical won't kick in.
+
+This is because paged states of the front page use the `paged` query var, not the `page` query var.
+
+Should also fix https://meta.trac.wordpress.org/ticket/5184 :)",dd32
+Future Releases,4328,"Redirect Old Slugs feature needs to redirect slugs for pages, not just posts, and redirect old permalink structure",SergeyBiryukov,Canonical,2.2,normal,normal,Future Release,enhancement,reviewing,needs-unit-tests,2007-05-24T01:52:44Z,2026-05-13T11:45:46Z,"Create a page, browse to it, edit it, change its slug, WP redirects to the old page's slug and serves a 404. Wasn't WP 2.1 or WP 2.2 supposed to make the redirect old slug feature built-in?
+
+Along the same lines, it would be sweet if instead of simply redirect old slugs, WP would redirect old urls. When the date changes, when the page parent changes, or when the permalink structure changes, the url changes but neither of WP, the redirect old slug plugin, the permalink redirect plugin, or anything else catches this.",Denis-de-Bernardy
+Future Releases,57979,Can't upload images to WordPress Comments,,Comments,6.0.3,normal,normal,Future Release,defect (bug),new,dev-feedback,2023-03-24T13:39:57Z,2026-04-08T10:50:40Z,"As the admin, I am unable to upload images from my image library to a WordPress comment posted by a user. Please Note: I can upload images to my own comments, but not a user-generated comment.  On the admin page, I edit a user comment, click IMG button, add the image URL, and the correct code is added to the comment. When I click UPDATE, the image code disappears. Please note that all existing images in Comments display properly. This is a new problem. Theme is Genesis Magazine Pro. I tried: deactivating all plugins, multiple browsers, multiple operating systems (PC and Mac), and multiple computers. Also contacted my web host, WP-Engine, who has had other reports of this problem and believes it is a WordPress issue. Site is buildingadvisor.com. Thank you!",sbb
+Future Releases,36409,Comments number is wrong,pbearne,Comments,,normal,normal,Future Release,defect (bug),assigned,has-patch,2016-04-04T14:21:26Z,2026-10-01T03:09:49Z,"Hi,
+the comment number return the number of approved comments, this means all approved comments even those are replies to unapproved comments, for example if a user post comment and people replied to it, then the admin decide to hide this parent comment by disapproving it, the comment number will decrease only by one and keeping counting the hidden replies
+
+So there are two option to fix that :
+1. Hold/Disapprove all children when disapproving the parent.
+2. Recalculate the comment number and excluding comments has an unapproved parent.
+
+Regards,
+Sidati",sidati
+Future Releases,64779,Notes can be edited and deleted by other users,,Comments,6.9,normal,normal,Future Release,defect (bug),new,has-patch,2026-03-02T15:35:40Z,2026-07-31T03:01:13Z,"A user with access to edit a post is able to edit the Notes of other users on that post. This happens because the `edit_comment` capability gets mapped to `edit_post`.
+
+=== Example
+A user with the Contributor role creates a new draft post. A user with the Administrator role leaves a Note on the post that says ""Please change this to..."". The Contributor user edits the Note to say ""Looks good to me"". Another editor/admin comes along later, sees the note, and publishes the post, believing the Note content is original.
+
+It's also possible for the user with the Contributor role to delete the Note left by the admin user.
+
+=== Notes
+This mirrors the existing behavior for normal comments, but it feels like the behavior for Notes should be different considering they're used for collaboration where the history of the conversation helps understand the evolution of the content, and the mutability could lead to operational impacts.",mindctrl
+Future Releases,10931,Verify Comment Email Addresses of Registered Users,adamsilverstein,Comments,,normal,normal,Future Release,enhancement,assigned,needs-docs,2009-10-08T14:34:44Z,2026-07-14T17:33:46Z,"When leaving a comment with an email address of a registered user, WordPress should force the visitor to login or change the email address in the comment form.
+
+Anyone can impersonate a blog's user if they know the user's email address.",mtdewvirus
+Future Releases,64231,Customizer fails to save when switching themes due to an orphaned setting left over from a previously active plugin,westonruter,Customize,6.8.3,normal,normal,Future Release,defect (bug),reviewing,has-patch,2025-11-11T13:02:17Z,2026-08-03T11:41:51Z,"= Description =
+When using the Customizer and switching themes with live preview, WordPress fails to save due to an unrecognized setting.
+This happens when a plugin adds a custom setting to the Customizer, then gets deactivated before switching back to another theme.
+
+⸻
+
+= Environment =
+	•	WordPress v6.8.3
+	•	Active Theme: Twenty Twenty-One (v2.6)
+	•	Other used theme Twenty Twenty (v2.9)
+	•	Plugin: ""Adds a testing option in customizer"" (used to register “test_orphaned_setting”)
+
+⸻
+
+= Steps to Reproduce =
+	1.	Activate the plugin that adds a testing option in the Customizer.
+	2.	Go to Appearance > Customize.
+	4.	Edit the setting under Site Identity > Test Orphaned Setting.
+	5.	Without saving, switch to the Twenty Twenty theme using Live Preview, then click Activate & Publish.
+	6.	Deactivate the plugin (“Adds a testing option in customizer”).
+	7.	Go to Appearance > Customize again.
+	8.	Switch the theme back to Twenty Twenty-One using Live Preview.
+	9.	Click Activate & Publish.
+
+⸻
+
+= Plugin that adds a testing option =
+
+{{{#!php
+<?php
+
+/**
+ * Plugin Name: Adds a testing option in customizer
+ */
+
+add_action( 'customize_register', function ( $wp_customize ) {
+	$wp_customize->add_setting( 'test_orphaned_setting', array(
+		'default'    => '',
+		'type'       => 'theme_mod',
+		'capability' => 'edit_theme_options',
+		'transport'  => 'refresh',
+	) );
+
+	$wp_customize->add_control( 'test_orphaned_setting', array(
+		'label'   => 'Test Orphaned Setting',
+		'section' => 'title_tagline',
+		'type'    => 'text',
+	) );
+} );
+}}}
+
+⸻
+
+= Observed Behavior =
+A POST request is sent to /wp-admin/admin-ajax.php with the following parameters:
+
+{{{
+wp_customize	“on”
+customize_theme	“twentytwentyone”
+nonce	“d3c3bbbe0e”
+customize_changeset_uuid	“b92bc4d4-8665-49df-80ec-52ba9d8ec526”
+customize_autosaved	“on”
+customized	‘{“old_sidebars_widgets_data”:{“wp_inactive_widgets”:[“block-11”,“block-12”,“block-13”,“block-14”],“sidebar-1”:[“block-2”,“block-3”,“block-4”,“block-5”,“block-6”,“block-7”,“block-8”,“block-9”,“block-10”]},“nav_menu_locations[primary]”:3}’
+customize_changeset_status	“publish”
+action	“customize_save”
+customize_preview_nonce	“bbf9d73816”
+}}}
+
+
+The JSON response returns:
+
+{{{
+{
+  ""success"": false,
+  ""data"": {
+    ""message"": ""Unable to save due to 1 invalid setting."",
+    ""code"": ""transaction_fail"",
+    ""setting_validities"": {
+      ""test_orphaned_setting"": {
+        ""unrecognized"": {
+          ""message"": ""Setting does not exist or is unrecognized."",
+          ""data"": null
+        }
+      },
+      ""old_sidebars_widgets_data"": true,
+      ""nav_menu_locations[primary]"": true
+    }
+  }
+}
+}}}
+
+⸻
+
+= Expected Behavior =
+Customizer should skip unrecognized (orphaned) settings left over from inactive plugins and allow the theme to be saved successfully.
+
+⸻
+
+= Relevant Code =
+File: [https://github.com/WordPress/wordpress-develop/blob/trunk/src/wp-includes/class-wp-customize-manager.php#L1772-L1776 src/wp-includes/class-wp-customize-manager.php]
+
+== Original Code ==
+
+{{{#!php
+if ( isset( $stashed_theme_mods[ $stylesheet ] ) ) {
+   $values = array_merge( $values, wp_list_pluck( $stashed_theme_mods[ $stylesheet ], 'value' ) );
+}
+}}}
+
+== Proposed fix ==
+
+{{{#!php
+if ( isset( $stashed_theme_mods[ $stylesheet ] ) ) {
+   $stashed_values = wp_list_pluck( $stashed_theme_mods[ $stylesheet ], 'value' );
+
+   $valid_stashed_values = array_filter( $stashed_values, function ( $setting_id ) {
+      return $this->get_setting( $setting_id );
+   }, ARRAY_FILTER_USE_KEY );
+
+   $values = array_merge( $values, $valid_stashed_values );
+}
+}}}
+
+= Additional Notes =
+
+This issue occurs because Customizer stashed theme mods may include references to settings that no longer exist after a plugin deactivation.
+The fix ensures only recognized settings are restored, preventing “unrecognized setting” errors and allowing the theme activation to complete successfully.",alessandrolioce
+Future Releases,62790,"""autoload"" index is not used",,Database,5.3,normal,minor,Future Release,defect (bug),reviewing,,2025-01-08T18:49:32Z,2026-01-20T16:43:13Z,"Added in https://core.trac.wordpress.org/ticket/24044
+This index is not used anymore by MySQL and slows down WP (bc of indexing cost)
+
+{{{
+EXPLAIN FORMAT=JSON SELECT option_name, option_value FROM wpoptions WHERE autoload IN ( 'yes', 'on', 'auto-on', 'auto' )
+}}}
+
+
+Why?
+- the cardinality of the index is too low, the mysql optimizer decides not to use the index
+- the IN() is too unspecific (e.g. if the query would be `= 'yes'` the index would be used)
+**=> this is actually the reason why there was a performance gain when this was added https://core.trac.wordpress.org/ticket/24044#comment:17 but why there is none now**
+- lots of things have changed in the meantime in mysql performance (e.g. myisam to innodb,...)
+
+Optionally the index can be forced like:
+
+{{{
+EXPLAIN FORMAT=JSON SELECT option_name, option_value FROM wpoptions FORCE INDEX (autoload) WHERE autoload IN ( 'yes', 'on', 'auto-on', 'auto' )
+}}}
+
+However I couldn't see a performance gain by forcing the index either.
+
+Suggestion: remove the index again, since it's not used anyway",kkmuffme
+Future Releases,62342,wpdb->get_table_from_query: preg_match(): Passing null to parameter #2 ($subject) of type string is deprecated,,Database,,normal,normal,Future Release,defect (bug),reviewing,has-patch,2024-11-04T08:40:03Z,2025-11-03T18:54:52Z,"e.g. when calling `set_transient(` where the value is extremely long it will fail with a backtrack limit error
+
+Additionally, the regex has an unnecessary ""s"" flag and is technically incorrect since it's not matching balanced tags
+
+There are 2 options:
+- `/\((?!\s*select)[^()]+\)/i` which reduces backtracking by 65% and is also about 20% faster
+- `/\((?!\s*select)(?:[^()]+|(?R))*+\)/i` is the technically correct way to match - it's 30% less backtracking and on average as fast as before (slightly slower if no matches, slightly faster with matches)
+
+Additionally, the preg_replace result needs to be validated - if it returns null, I'd suggest to retry it with the first, since it's possible it won't fail with a backtracking error.
+
+",kkmuffme
+Future Releases,54042,Extending wpdb::prepare() to support IN() operator,,Database,,normal,normal,Future Release,enhancement,new,changes-requested,2021-08-31T14:23:26Z,2023-09-17T10:53:12Z,"wpdb::prepare() helps avoid SQL Injection vulnerabilities, by escaping most variables correctly.
+
+WP 6.1 added support for Identifiers (table/field names) with `%i`, in #52506.
+
+But it's also fairly common to make a mistake to include values with the `IN()` operator, for example:
+
+{{{#!php
+<?php
+$where = 'WHERE id IN (' . implode( ',', $ids ) . ')'; // INSECURE?
+}}}
+
+Developers need to be sure `$ids` has come from a trusted source, or use something like `wp_parse_id_list()` or `array_map('intval', $ids)`.
+
+----
+
+Maybe support could be added with:
+
+{{{#!php
+<?php
+$wpdb->prepare('WHERE id IN (%...d)', $ids);
+}}}
+
+Where `%...d` or `%...s` would safely (and easily) include a comma separated array of integers or strings - taking the idea of using '...' for variadics in PHP.
+
+https://wiki.php.net/rfc/variadics
+https://www.php.net/manual/en/functions.arguments.php#functions.variable-arg-list
+https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_in",craigfrancis
+Future Releases,47280,SQL_CALC_FOUND_ROWS is deprecated as of MySQL 8.0.17,johnbillion,Database,,normal,normal,Future Release,enhancement,reviewing,changes-requested,2019-05-15T14:34:03Z,2025-10-16T21:38:43Z,"Per https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows
+
+> The SQL_CALC_FOUND_ROWS query modifier and accompanying FOUND_ROWS() function are deprecated as of MySQL 8.0.17 and will be removed in a future MySQL version. As a replacement, considering executing your query with LIMIT, and then a second query with COUNT(*) and without LIMIT to determine whether there are additional rows.
+
+This is not yet immediately important because most hosts are on 5.5, or 5.6, rarely 5.7, but given the speed with which trac tickets move that impact very core functionalities, I thought it best to open this ticket to get the work started.
+
+This impacts all the 6 places where it's being used, though one of them is in the WP_Query definition.",javorszky
+Future Releases,42352,Support use of native MySQLi prepared queries,,Database,,normal,normal,Future Release,enhancement,new,,2017-10-27T04:15:52Z,2024-09-26T03:33:57Z,"When we added `$wpdb->prepare()` back in WordPress 2.3, we were forced to roll our own MySQL Prepared queries as the MySQL extension didn't support it.
+While the MySQL extension still doesn't, the majority of WordPress sites are likely using the newer MySQLi engine (by default, enabled for PHP 5.5+ which accounts for 70~80% of sites). That makes now a good time to start investigating the potential implementation and usage of native prepared queries in the future.
+
+Attached is a first-draft of implementing native prepared queries into WPDB, it has no fallbacks for MySQL at present, but it would be possible to force support in for it using a ""simple"" SQL parser.
+Unfortunately I expect that this draft is incompatible with many DB drop-ins, which is okay, this is only a draft and proof-of-concept. 
+
+I'll attach some examples of how this first draft could be used in a comment below.",dd32
+Future Releases,56091,Using %i for table/field names in wpdb::prepare(),craigfrancis,Database,6.1,low,minor,Future Release,enhancement,assigned,has-patch,2022-06-28T19:10:52Z,2024-04-02T15:27:10Z,"Now `wpdb::prepare()` supports `%i` for Identifiers (e.g. table/field names), via commit [53575], and ticket #52506.
+
+Queries within WP Core should use this, to ensure variables are always quoted, and avoid static analysis tools flagging unescaped SQL input (a non-`literal-string`) for the `$query` parameter:
+
+{{{#!php
+<?php
+$wpdb->prepare( ""SELECT ID FROM $wpdb->posts WHERE post_type = %s"", $post_type );
+
+$wpdb->prepare( ""SELECT ID FROM %i WHERE post_type = %s"", $wpdb->posts, $post_type );
+}}}
+
+I'll write a patch for the first set, but I suspect there will be a lot of changes, and they should be checked carefully.",craigfrancis
+Future Releases,61154,Fix the 'attributes' dynamic property in WP_Block,audrasjb,Editor,6.6,normal,normal,Future Release,defect (bug),reviewing,changes-requested,2024-05-06T19:22:40Z,2025-11-03T18:26:12Z,"The `WP_Block` class employs the `__get` magic method to compute the `attributes` class property.
+However, since PHP 8.2 does not support dynamic properties, it is better to eliminate this approach and explicitly declare the `WP_Block::$attributes` class property to store the block's attributes instead.",antonvlasenko
+Future Releases,56780,shortcode block in block-based template part in a classic theme does not get expanded,costdev,Editor,6.1,high,normal,Future Release,defect (bug),assigned,changes-requested,2022-10-10T14:03:01Z,2025-06-12T16:53:15Z,"While testing the new feature in 6.1 (w/ 6.1-beta3) for a classic theme to include block-based template parts, I discovered that shortcode blocks in such template parts are not expanded (their render callbacks are not called).
+
+The details are in my [https://make.wordpress.org/core/2022/10/04/block-based-template-parts-in-traditional-themes/#comment-43901 comment on the Dev Note] announcing this new feature.
+
+Note: creating the ticket here in Trac, rather than the GB GitHub, because that's where @mamaduka asked me to open in",pbiron
+Future Releases,37868,Avoid default width styles in the markup of the audio player,wonderboymusic,Embeds,4.6,normal,normal,Future Release,enhancement,assigned,has-patch,2016-08-29T18:51:47Z,2019-04-19T16:03:03Z,"The markup for every audio player contains inline styles for setting its width to 100%, like below (simplified):
+
+{{{
+<div class=""wp-audio-shortcode"" style=""width: 100%;"">
+<audio class=""wp-audio-shortcode"" style=""width: 100%;"">
+}}}
+
+Why not move that style to a stylesheet? It is the default style for ''every'' audio player, so let’s not repeat ourselves each time. Moreover, style attributes in the HTML make it hard to override styles. If you don’t want your audio player to be 100% wide you’re left with two ugly options:
+
+a) Use `!important` declarations in your own stylesheet to override it.
+
+b) Filter out the default width like this:
+
+{{{
+add_filter( 'shortcode_atts_audio', 'my_shortcode_atts_audio', 10, 4 );
+
+function my_shortcode_atts_audio( $out, $pairs, $atts, $shortcode ) {
+	$out['style'] = preg_replace( '~(?:^|\s)width\s*+:\s*+100%;?~i', '', $out['style'] );
+	return $out;
+}
+}}}
+",GeertDD
+Future Releases,42780,Code Editor: Linter (HTMLHint) should show error if checkbox doesn't have associated <label>,tirth03,External Libraries,4.9,normal,normal,Future Release,enhancement,assigned,has-patch,2017-12-03T17:32:45Z,2026-04-08T07:23:09Z,"The Custom HTML Linter should show an error if an checkbox field does not have an associated label element.  This would be a good improvement for accessibility. 
+
+To reproduce:
+
+1. Create a custom HTML widget
+2. Enter the following code:
+
+
+{{{
+<input type=""checkbox""> Checkbox Label
+}}}
+
+
+3. No warning/error appears. ",shooper
+Future Releases,60478,Upgrade to jQuery 4.0,Clorith,External Libraries,,normal,normal,Future Release,task (blessed),assigned,has-patch,2024-02-08T20:52:50Z,2026-10-07T13:14:19Z,"Version 4.0.0 of jQuery has been released.
+https://blog.jquery.com/2026/01/17/jquery-4-0-0/
+
+Previously:
+~~~JQuery just released a beta version of jQuery v4. Is this something that wp core will be looking to implement?~~~
+https://blog.jquery.com/2024/02/06/jquery-4-0-0-beta/",nickchomey
+Future Releases,64284,"Convert times/multiplication symbol (×) into the letter ""x"" when sanitizing titles for slugs",,Formatting,,normal,minor,Future Release,defect (bug),new,changes-requested,2025-11-20T21:02:44Z,2026-07-31T03:36:46Z,"We had an issue where user thought they were entering an x (Latin Small Letter X (U+0078)) but they were actually entering the multiplication symbol (Multiplication Sign (U+00D7)). An ""x"" did not show up in the slug which lead to some issues. ~~Might suggest disallowing Multiplication Sign (U+00D7) from titles.~~
+
+The multiplication symbol can be replaced with ""x"" automatically when sanitizing the title for use in a slug. Core does similarly for dashes which get replaced with hyphens via `sanitize_title_with_dashes()`. This was touched in the 6.9 release in #64089.",archmaster7
+Future Releases,29807,add support for picture element and srcset attribute on img in wp_kses,adamsilverstein,Formatting,,normal,normal,Future Release,defect (bug),assigned,has-patch,2014-09-30T12:39:10Z,2026-10-07T21:50:18Z,"Related to #28993 - (<img> srcset attribute is stripped when switching from text to visual tab in the editor)
+
+If support for srcset attribute and picture element (and source element) is to be added to tinyMCE, they should also be allowed in wp_kses. ",mattheu
+Future Releases,60352,Fix the architectural design of `/wp-includes/blocks/index.php`,,General,5.5,normal,normal,Future Release,defect (bug),new,has-patch,2024-01-26T00:15:33Z,2024-09-30T01:59:04Z,"Follow-up to #55067.
+
+Generally the `*.php` files in all ""include"" directories are meant to be ""included"" in other files as the name suggests, not loaded directly. This is true for `/wp-includes` too. In addition these include-only files should not contain any ""loose"" PHP code that runs in the global scope, only functions and classes. These are pretty simple and easy to follow architectural PHP rules that ensure all code works well and avoid some exploit vectors.
+
+However `/wp-includes/blocks/index.php` doesn't seem to be following them, similarly to many of the other files in the `blocks` directory. As far as I see this should be considered as a PHP code architecture bug and should be fixed. The changes should ensure that there is no output or errors when that file is loaded directly.",azaozz
+Future Releases,58763,Inconsistent add/get/update/delete_post_meta() functions leads to deleting post metadata.,adamsilverstein,General,,normal,major,Future Release,defect (bug),assigned,dev-feedback,2023-07-08T09:48:05Z,2026-03-29T16:17:55Z,"The add_post_meta(), delete_post_meta(), and update_post_meta() functions all use wp_is_post_revision() to add/delete/update the metadata of the post, not its revision. That's fine, but the get_post_meta() function does NOT use wp_is_post_revision().
+
+As a consequence, if you use get_post_meta() and update_post_meta() during the saving process for a revision, the post metadata ends up being overwritten/deleted: The get_post_meta() function gets the **revision** metadata, and then the update_post_meta() function updates the **post** metadata, NOT the revision metadata.
+
+js.",jsmoriss
+Future Releases,62407,PHP Notice: Undefined offset in WordPress core when using template registered in a plugin via register_block_template() in WordPress 6.7,,General,6.7,normal,normal,Future Release,defect (bug),new,has-patch,2024-11-13T11:14:49Z,2026-07-31T02:58:54Z,"Issue Description \\
+With the release of WordPress 6.7, the register_block_template() function allows plugins to register block templates. While this functionality operates as intended, it triggers a PHP notice about an undefined offset within the WordPress core. \\ \\
+
+Affected file: wp-includes/block-editor.php \\
+Line: 467 \\
+Code snippet: {{{#!php
+<?php
+$template_blocks    = parse_blocks( $current_template[0]->content );
+}}} \\ \\
+
+Cause of the Issue \\
+The get_block_templates() function now returns an array with a mix of numerical keys and associative keys where the associative keys are the registered template IDs via plugin (e.g., 'my-plugin//my-template') instead of numerical keys.
+The core code at block-editor.php line 467 expects $current_template to be a numerically indexed array.
+When an associative key is encountered, it leads to a PHP notice: Notice: Undefined offset: 0 in /wp-includes/block-editor.php on line 467. \\
+\\
+
+Impact \\
+PHP Notice: \\
+Notice: Undefined offset: 0 in /wp-includes/block-editor.php on line 467 \\
+\\ \\
+
+Compatibility Issues: \\
+Existing plugin code that relies on numerical keys within the templates array does not anticipate associative keys, potentially causing further functional discrepancies beyond the PHP notice.\\
+\\
+\\
+Steps to Reproduce\\
+\\
+Environment Setup:\\
+WordPress Version: 6.7\\
+PHP Version: [PHP 7.4.33 (or higher)]\\
+Active Theme: [Twenty Twenty-Five (the notice appears with other themes too)]\\
+\\
+Procedure:\\
+Create a plugin that registers a block template using register_block_template().\\
+{{{#!php
+<?php
+function add_template() {
+
+	$template_id = 'my-plugin//my-template';
+	$existing_template = get_block_template( $template_id );
+
+	if ( $existing_template || is_wp_error( $existing_template ) ) {
+		return;
+	}
+
+	$template_content =
+		'<!-- wp:template-part {""slug"":""header""} /-->
+		<!-- wp:post-content {""lock"":{""remove"":true}} /-->
+		<!-- wp:template-part {""slug"":""footer""} /-->';
+
+	register_block_template( $template_id, [
+		'title' => __( 'Template title', 'my-plugin' ),
+		'description' => __( 'Template description', 'my-plugin' ),
+		'content' => $template_content,
+		'post_types'  => array( 'page' ),
+	] );
+}
+}}}
+\\\\
+Ensure DEBUG is set to true in wp-config.php to see the notice printed in HTML.\\
+Navigate to Pages -> Add New Page. Assign newly created template to the page. Publish the page. Reload the editor page.\\
+\\\\
+
+Observation:\\
+A PHP notice appears in the page HTML (it appears briefly in the editor and is better visible in browser developer tools when viewing the source HTML of the current page)\\
+
+Notice: Undefined offset: 0 in /wp-includes/block-editor.php on line 467\\
+And as additional result next PHP notice:\\
+Trying to get property 'content' of non-object in /wp-includes/block-editor.php on line 467\\
+\\
+Expected Behavior\\
+The WordPress core should handle templates registered via register_block_template() without triggering any PHP notices or errors. Specifically, the get_block_templates() function should return a numerically indexed array compatible with existing code expectations.\\
+\\
+Actual Behavior\\
+A PHP notice about an undefined offset is displayed, indicating that get_block_templates() returns an associative array with template IDs as keys instead of a numerically indexed array. This discrepancy leads to compatibility issues with existing code that expects numerical keys.",Grigory Volochiy
+Future Releases,64921,REST API POST /wp/v2/posts: Undefined property stdClass::$id (line 766),westonruter*,General,4.7,normal,normal,Future Release,defect (bug),accepted,reporter-feedback,2026-03-21T18:37:01Z,2026-07-31T03:40:57Z,"Creating posts via the standard WordPress REST API (`POST /wp/v2/posts`) generates PHP warnings in `class-wp-rest-posts-controller.php`.
+
+== Warnings ==
+
+{{{
+PHP Warning: Undefined property: stdClass::$id in
+wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php on line 766
+PHP Warning: Undefined property: stdClass::$post_parent in
+wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php on line 769
+}}}
+
+== Steps to reproduce ==
+
+- Authenticate via Application Password (Basic Auth)
+- Send `POST /wp-json/wp/v2/posts` with `body: {""title"": ""Test"", ""content"": ""<p>Hello</p>"", ""status"": ""draft""}`
+- Post is created successfully, but warnings are logged
+
+== Environment ==
+
+WordPress 6.9.4
+PHP 8.3
+Apache / LiteSpeed
+
+== Confirmed on 3 independent installations ==
+
+Site A: WordPress + Polylang
+Site B: WordPress + Polylang
+Site C: WordPress only (no Polylang, no multilingual plugin)
+All 3 produce identical warnings, confirming this is a core issue.
+
+== Impact ==
+
+- Post creation works — no functional breakage
+- 2 PHP warnings per REST API call pollute php-error.log
+- Automated workflows creating multiple posts amplify the log noise
+
+== Analysis ==
+
+[https://github.com/WordPress/wordpress-develop/blame/6.9.4/src/wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php#L766-L769 Lines 766-769 of class-wp-rest-posts-controller.php] access `$post->id` and `$post->post_parent` on a `stdClass` object that lacks these properties. The `$post` object returned at this stage appears incomplete — possibly a regression in how `prepare_item_for_response()` receives the newly created post.
+
+== Expected behavior ==
+
+No PHP warnings when creating posts via REST API.",swissspaceboy
+Future Releases,59774,Undefined array key when using wp_list_pluck function,hellofromTonya,General,5.1,normal,normal,Future Release,defect (bug),reopened,changes-requested,2023-10-31T12:30:29Z,2026-03-03T08:00:44Z,"**Bug Description:**
+
+**Issue**: When using the `wp_list_pluck` function to extract values from an array, a PHP warning is triggered if the specified key is not found within the array. The warning message is as follows:
+
+
+`PHP Warning: Undefined array key ""required"" in /var/www/html/wp-includes/class-wp-list-util.php on line 171`
+
+**Steps to Reproduce**:
+1. Use the `wp_list_pluck` function on an array.
+2. Specify a key that may or may not exist within the array.
+3. Observe the PHP warning generated when the key is not found.
+
+**Expected Behavior**:
+The `wp_list_pluck` function should gracefully handle cases where the specified key is not present in the array and not trigger a PHP warning.
+
+**Actual Behavior**:
+The function generates a PHP warning with an ""Undefined array key"" message, which could lead to unnecessary log clutter and confusion.
+
+**Environment**:
+- WordPress version: 6.3 and Higher
+- PHP version: >= 8
+- Operating system: UBUNTU
+
+
+**Proposed Solution**:
+To handle this situation gracefully without errors, you can check if the key exists in the array before attempting to access it. You can use the isset() function to determine if the key exists. Here's how you can modify the code:
+
+{{{
+#!div style=""font-size: 80%""
+Code highlighting:
+  {{{#!php
+  if (is_object($value)) {
+    $newlist[$key] = isset($value->$field) ? $value->$field : array();
+  } elseif (is_array($value)) {
+    $newlist[$key] = isset($value[$field]) ? $value[$field] : array();
+  } else {
+    _doing_it_wrong(
+        __METHOD__,
+        __('Values for the input array must be either objects or arrays.'),
+        '6.2.0'
+    );
+  }
+  }}}
+}}}
+
+In the modified code, we use isset() to check if the key $field exists in either the object or the array. If the key exists, it assigns the value to $newlist[$key]. If the key doesn't exist, it assigns empty array().
+
+This modification will prevent the code from triggering an error when attempting to access non-existent keys in an array or object. Instead, it will gracefully assign empty array().
+",iamarunchaitanyajami
+Future Releases,46484,Cleaning WP from any reference to php4,,General,,normal,normal,Future Release,enhancement,new,,2019-03-13T17:17:50Z,2019-05-22T20:45:28Z,"I think the time as come !
+
+
+[https://wordpress.org/news/2010/07/eol-for-php4-and-mysql4/ PHP 4 and MySQL 4 End of Life Announcement]
+Posted July 23, 2010 by Mark Jaquith. Filed under Hosting.
+
+
+
+
+{{{
+wp51\wp-admin\includes\class-ftp.php
+    281: // Validate the IPAddress PHP4 returns -1 for invalid, PHP5 false
+wp51\wp-admin\includes\deprecated.php
+    504: * PHP4 Constructor - Sets up the object properties.
+wp51\wp-admin\includes\file.php
+    201: 'php4',
+    258: 'php4',
+wp51\wp-includes\IXR\class-IXR-base64.php
+     22: * PHP4 constructor.
+wp51\wp-includes\IXR\class-IXR-client.php
+     55: * PHP4 constructor.
+wp51\wp-includes\IXR\class-IXR-clientmulticall.php
+     22: * PHP4 constructor.
+wp51\wp-includes\IXR\class-IXR-date.php
+     32: * PHP4 constructor.
+wp51\wp-includes\IXR\class-IXR-error.php
+     24: * PHP4 constructor.
+wp51\wp-includes\IXR\class-IXR-introspectionserver.php
+     52: * PHP4 constructor.
+wp51\wp-includes\IXR\class-IXR-message.php
+     39: * PHP4 constructor.
+wp51\wp-includes\IXR\class-IXR-request.php
+     39: * PHP4 constructor.
+wp51\wp-includes\IXR\class-IXR-server.php
+     32: * PHP4 constructor.
+wp51\wp-includes\IXR\class-IXR-value.php
+     36: * PHP4 constructor.
+wp51\wp-includes\pomo\entry.php
+     67: * PHP4 constructor.
+wp51\wp-includes\pomo\streams.php
+     26: * PHP4 constructor.
+    152: * PHP4 constructor.
+    231: * PHP4 constructor.
+    297: * PHP4 constructor.
+    318: * PHP4 constructor.
+wp51\wp-includes\Text\Diff\Renderer.php
+     47: * PHP4 constructor.
+wp51\wp-includes\Text\Diff.php
+     59: * PHP4 constructor.
+    339: * PHP4 constructor.
+    398: * PHP4 constructor.
+    430: * PHP4 constructor.
+    462: * PHP4 constructor.
+    494: * PHP4 constructor.
+wp51\wp-includes\atomlib.php
+    102: * PHP4 constructor.
+wp51\wp-includes\cache.php
+    740: * @todo This should be moved to the PHP4 style constructor, PHP5
+wp51\wp-includes\class-json.php
+    152: * PHP4 constructor.
+    950: * PHP4 constructor.
+wp51\wp-includes\class-phpass.php
+     59: * PHP4 constructor.
+wp51\wp-includes\class-phpmailer.php
+   3558: 'php4'  => 'application/x-httpd-php',
+wp51\wp-includes\class-pop3.php
+     69: * PHP4 constructor.
+    657: // For php4 compatibility
+wp51\wp-includes\class-wp-widget.php
+    177: * PHP4 constructor.
+wp51\wp-includes\class-wp-widget-factory.php
+     36: * PHP4 constructor.
+wp51\wp-includes\functions.php
+   4348: * remove PHP4 style constructors.
+   4352: * This function is to be used in every PHP4 style constructor method that is deprecated.
+wp51\wp-includes\general-template.php
+   3437: case 'php4':
+wp51\wp-includes\rss.php
+    102: * PHP4 constructor.
+    735: * PHP4 constructor.
+}}}
+",arena
+Future Releases,60414,Core PHP autoloader proposal,,General,,normal,normal,Future Release,enhancement,new,has-patch,2024-02-01T13:15:07Z,2026-09-14T04:01:03Z,"Using a PHP autoloader can improve performance, and can be seen as a first step towards modernizing the WP codebase in the future.
+
+This ticket is a continuation of the discussion on [https://core.trac.wordpress.org/ticket/36335 #36335]
+The discussion in the original ticket was derailed many times, so this fresh ticket is an opportunity to discuss the Core proposal submitted on the [https://make.wordpress.org/core/?p=110295 Make blog]
+
+The concerns that were brought-up in the original ticket:
+
+* **PHP 5.2 compatibility**: No longer relevant.
+* **Files containing classes also contain other functions**: This has already been addressed since then. The few instances where this was still an issue were addressed in the patch/PR.
+* **Composer**: Outside the scope of this initial implementation.
+* **Overriding Core classes from plugins**: Added a site-health check with a critical warning in case a Core class is not loaded from the default WP path.
+* **API for plugins/themes to register additional classes**: Outside the scope of this PR.
+* **WordPress is not OOP**: True, it's not currently OOP, but as we integrate the new editor in WP-Core, more and more OOP concepts creep in Core. There is definitely a trend, and WP is slowly becoming more OOP than it used to be. An autoloader will unblock us and allow us to further optimize and improve Core as we go.
+* **What does autoloading do for ""loose"" functions?**: Nothing. But it does give us the flexibility to properly group them in classes in the future, and only load what's needed. But that is a future discussion that will probably take a few more years.
+* **Backwards-compatibility issues**: There are none.
+* **Performance**: This patch has a negligible positive effect on performance. That is not its point. It opens the door to future improvements that can't be done easily without an autoloader. This is not an improvement with an immediately tangible outcome, it's just paving the way for more meaningful future improvements.
+",aristath
+Future Releases,38597,Discourage usage of legacy properties in WP_Network,,General,4.6,normal,normal,Future Release,enhancement,reviewing,has-patch,2016-10-31T20:48:29Z,2024-09-17T21:54:30Z,"`@property`'s is for magic properties: https://phpdoc.org/docs/latest/references/phpdoc/tags/property.html
+
+Since `$id` isn't magic, let's remove the `@property` documentation.
+
+See: #37050",johnjamesjacoby
+Future Releases,51525,Add new functions apply_filters_single_type() and apply_filters_ref_array_single_type(),,General,,normal,normal,Future Release,feature request,new,close,2020-10-15T05:53:25Z,2026-09-16T20:10:49Z,"This is a proposal to add two new functions ~~`apply_filters_typesafe()`~~ `apply_filters_single_type()` and ~~`apply_filters_ref_array_typesafe()`~~ `apply_filters_ref_array_single_type()`.
+
+== Underlying reasons
+
+PHP 8 is a lot more strict about data types and depending on what is done with the data will start throwing more notices/warnings, but more concerning exceptions, which will result in fatal errors (= white screen of death) when uncaught.
+
+== Problem outline
+
+Now, say you have a filter hook `foo` which passes an integer as its second argument and expects an integer to be returned.
+{{{#!php
+<?php
+$int = apply_filters( 'foo', $int );
+}}}
+
+Also say that there are two functions hooked into this filter, function `plugin_a()` and function `plugin_b()`.
+
+`apply_filters()` will pass the original integer to `plugin_a()` and subsequently will pass the returned value from `plugin_a()` as the parameter to `plugin_b()`.
+
+Now take a situation where `plugin_a()` returns something other than an integer, while `plugin_b()` rightfully expects to receive an integer and doesn't do additional type checking (which it shouldn't have to do) and this results in an error.
+
+**Plugin B will be identified in the error backtrace as the place where the error occurred, so plugin B will be blamed and get a bad reputation, while plugin A is actually at fault.**
+
+Code example: https://3v4l.org/uqT9G
+
+== Proposed solution
+
+To combat this situation I propose to add two new functions `apply_filters_single_type()` and `apply_filters_ref_array_single_type()`.
+
+These functions would basically have the same underlying logic as the existing `apply_filters()` and `apply_filters_ref_array()` functions, with one big difference:
+* At the start of the function, the variable type of the second parameter (the value being filtered) received is checked and remembered.
+* In the loop which calls the hooked in functions, a check is done on the variable type received back from each function and if it doesn't match the expected variable type, the previous value is used for the call to the next hooked-in function and a `__doing_it_wrong()` error is thrown identifying the function which returned the incorrectly typed variable. This includes doing this check after the last hooked-in function is called, before returning the value to the original caller of `apply_filters_single_type()`.
+
+For `apply_filters_ref_array()`, this would apply to the first array item in `$args`.
+
+
+=== Practical advantages
+1. Using these functions will prevent potential fatal errors, diminishing the impact of these type of developer errors for end-users.
+2. The ""Doing it wrong"" notice will make identifying the function/plugin/theme which caused the problem a lot easier.
+3. Plugins/Themes and WP core using the new functions will be able to count on the parameter/return type of the call to these new functions and can write their code based on that, without excessive defensive coding to defend against the errors made by others.
+4. Using these functions will help in the efforts to identify more PHP 8 related incompatibilities, both in WP Core as well as in plugins and themes.
+
+=== Technical considerations
+
+1. I considered adding a new `$typesafe` parameter to the existing `apply_filters()` function, but as it can be passed a variable number of arguments to be passed along to the hooked-in functions, this is not an option. This doesn't apply to `apply_filters_ref_array()`, but for consistency I think introducing a new sister-function for both would be the better choice.
+2. I've also considered type juggling an incorrectly type value within a `try/catch`, using that value to pass on to the next function if the juggling succeeded and only using the previous value if the juggling did not succeed, but I think that could cause even more problems, so I'd rather opt for ignoring the incorrectly typed returned value altogether.
+
+
+== Future scope
+
+Once these functions are in place, a review should be done of all WP Core calls to `apply_filters()` and `apply_filters_ref_array()` and where the filtered value is expected to be a singular type, the function call should be switched out for a call to one of the new functions.
+
+The WP version in which this review is done will need a good dev-note about these changes as they ''could'' be considered a BC-break, but then again, they are only a BC_break for hooked-in functions already ''doing it wrong'' and likely causing problems already.
+
+
+== Other
+
+I'm tentatively milestoning this for WP 5.6, even though I realize this is late in the game, but as this proposal could help with the PHP 8 efforts, I believe it would be good to address this sooner rather than later.
+
+
+
+/cc @omarreiss",jrf
+Future Releases,59649,PHP 8.0: improvements to allow for named parameters in 7.0,,General,,normal,normal,Future Release,task (blessed),new,has-patch,2023-10-17T12:16:28Z,2026-07-24T00:35:41Z,"Previously:
+
+* #58976 (6.4)
+* #57838 (6.3)
+* #56788 (6.2)
+* #55650 (6.1)
+* #55327 (6.0)
+* #51553 (5.9)
+
+Quoted in full below:
+
+> PHP 8.0 introduces the ability to pass named parameters to function calls.
+> Ref: https://wiki.php.net/rfc/named_params
+> 
+> Code example:
+> {{{#!php
+> <?php
+> // Using positional arguments:
+> array_fill(0, 100, 50);
+>  
+> // Using named arguments:
+> array_fill(start_index: 0, num: 100, value: 50);
+> 
+> // Named arguments do not have to follow the same order as positional arguments:
+> array_fill(value: 50, num: 100, start_index: 0);
+> }}}
+> 
+> **More than anything, this means that, as of PHP 8.0, renaming a parameter in a function declaration is a backward-compatibility break! **
+> 
+> This should most definitely get prominent  mention in the PHP8 dev-note as a lot of Core/plugin/theme developers will not be aware of this at this time.
+> 
+> 
+> I'm opening this ticket to address a number of issues this brings up for WordPress Core.
+> 
+> I've so far identified three tasks which should be executed ASAP to prepare for named parameters in function calls.
+> 
+> == Task 1: Review Function Signatures of methods in child classes
+> 
+> Methods in child classes may use different parameter names than those used for the same method by its parent. Similarly, classes implementing an interface do not have to use the same parameter names.
+> 
+> While this does not change in PHP 8, it could create problems when the method is called using named parameters.
+> 
+> To quote from [https://wiki.php.net/rfc/named_params#parameter_name_changes_during_inheritance the RFC]:
+> 
+> > If an inheriting class changes a parameter name, calls using named arguments might fail, thus violating the Liskov substitution principle (LSP).
+> 
+> > PHP will silently accept parameter name changes during inheritance, which may result in call-time exceptions when methods with renamed parameters are called
+> 
+> Code sample:
+> {{{#!php
+> <?php
+> interface I {
+>     public function test($foo, $bar);
+> }
+>  
+> class C implements I {
+>     public function test($a, $b) {}
+> }
+>  
+> $obj = new C;
+>  
+> // Pass params according to I::test() contract
+> $obj->test(foo: ""foo"", bar: ""bar""); // ERROR!
+> }}}
+> 
+> 
+> **Note: For variadic functions this will not cause an error, but will move the unrecognized names to be part of the variadic argument, which can cause all sorts of problems.**
+> Code sample [https://twitter.com/giveupalready/status/1312139952776306688 courtesy of Chris Riley] illustrating the problem: https://3v4l.org/MhJ79
+> 
+> With regards to WordPress, I'd like to propose making the parameter names in child classes/classes implementing an interface consistent to prevent such issues.
+> 
+> 
+> 
+> 
+> == Task 2: Review Other Function Signatures
+> 
+> 1. The function signatures of existing functions and methods of all WordPress code should be examined and non-descriptive parameter names should be fixed (renamed) **NOW** as later will no longer be an option without creating a BC-break.
+> 2. While using reserved keywords as parameter name labels is allowed, in the context of function calls using named parameters, this will easily lead to confusion. I'd like to recommend to rename function parameters which use reserved keywords to remove this confusion.
+> {{{#!php
+> <?php
+> function array_foobar($toggle = false, $array = []) {}
+> 
+> array_foobar(array: $value);
+> }}}
+> 
+> 
+> == Task 3: Review all uses of `call_user_func_array()`
+> 
+> Named parameters cause a BC-break for `call_user_func_array()` when passing an associative array.
+> In previous PHP versions, the array keys would have been ignored. In PHP 8, string keys will be interpreted as parameter name labels.
+> 
+> For more detail, see: https://wiki.php.net/rfc/named_params#call_user_func_and_friends
+> 
+> Basically, we need to make sure that any array passed to `call_user_func_array()` does NOT have string keys. If it does or if the format of the array is unknown (like when it is passed in via a function parameter), we need to add extra safeguards to make the code cross-version compatible.
+> A typical way to do this would be to use `array_values()` on the array before passing it to `call_user_func_array()`, though beware that ''**will**'' break code written for PHP 8 which actually expects the label to be used.
+> 
+> 
+> 
+> 
+> 
+> 
+> == Other references:
+> 
+> * https://twitter.com/CiaranMcNulty/status/1312087225857970182
+> 
+> 
+> Related Trac tickets: #50913, #50531",hellofromTonya
+Future Releases,41305,Add lazily evaluated translations,timothyblynjacobs,I18N,4.8,normal,normal,Future Release,enhancement,assigned,dev-feedback,2017-07-13T11:16:56Z,2024-11-06T15:36:54Z,"In the context of #40988, I did a few performance tests and experimented with adding a lazily evaluated translation object.
+
+The general principle is this:
+
+Instead of returning the resulting string of a translation, return an object for which the `__toString()` and `jsonSerialize()` methods will fetch the resulting string instead.
+
+I tested by having the `__()` method return such a proxy object, instead of the actual translated string.
+
+From a quick profiling run on `wptrunk.dev/wp-json/wp/v2/posts`, I got the following results:
+
+Returning a `translate()` from `__()`:
+
+{{{
+Wall Time     162ms
+CPU Time      157ms
+I/O Time     5.48ms
+Memory       16.5MB
+Network         n/a     n/a     n/a
+SQL          4.41ms    13rq
+}}}
+
+Returning a `TranslationProxy` from `__()`:
+
+{{{
+Wall Time     144ms   -19ms  -14.9%
+CPU  Time     138ms   -18ms  -15.4%
+I/O  Time    5.33ms  -154µs   -3.0%
+Memory       16.6MB +81.6KB     n/s
+Network         n/a     n/a     n/a
+SQL          4.33ms    13rq
+}}}
+
+As you can see, this shaved off almost 15% from this simple request.
+
+It saved 2255 calls to `translate()`, 2157 calls to `get_translations_for_domain()` and, more importantly still, 2156 calls to `apply_filters()` (which could involve a lot of additional processing in some cases).
+
+The main problem with this approach is that WordPress does not contain real type-hinting, so BC is broken wherever the proxy is not echoed, but used directly.
+
+As we cannot possibly foresee how plugins might use their localized strings, I suggest adding new lazy variations of the translation functions. To mirror the ""echo"" variations that prefix the translation functions with an `e`, I'd suggest using the `l` prefix for these variations:
+
+{{{#!php
+// Lazily retrieve the translation of $text.
+_l( $text , $domain = 'default' );
+
+// Lazily retrieve the translation of $text and escape it for safe use in an attribute.
+esc_attr_l( $text, $domain = 'default' );
+
+// Lazily retrieve the translation of $text and escape it for safe use in HTML output.
+esc_html_l( $text, $domain = 'default' );
+
+// Lazily retrieve translated string with gettext context.
+_lx( $text, $context, $domain = 'default' );
+
+// Lazily translate string with gettext context, and escape it for safe use in an attribute.
+esc_attr_lx( $text, $context, $domain = 'default' );
+
+// Lazily translate string with gettext context, and escape it for safe use in HTML output.
+esc_html_lx( $text, $context, $domain = 'default' );
+}}}
+
+Arbitrary testing has shown that using such lazily evaluated translations strategically can improve the performance by 10-30% for certain scenarios.
+
+Implementing them in this BC fashion allows us to fine-tune Core usage and make it available to plugins, while playing it safe with existing code.",schlessera
+Future Releases,53348,No form to log in when visiting wp-login.php with a given query string,SergeyBiryukov,Login and Registration,,normal,normal,Future Release,defect (bug),reviewing,needs-unit-tests,2021-06-07T12:46:39Z,2026-04-09T04:48:02Z,"When I visit the wp-login.php page with specific query strings, I get a blank page. I don't get a form to log in.
+
+The query strings that cause the blank page are
+
+ - wp-login.php?action=checkemail
+
+ - wp-login.php?checkemail=foo
+ - wp-login.php?checkemail=bar
+ - wp-login.php?checkemail=baz
+ - Note though, wp-login.php?checkemail=confirm does give me a form",henry.wright
+Future Releases,46748,authenticate filter hook does not behave as expected for priority values less than 20,SergeyBiryukov*,Login and Registration,3.7,normal,normal,Future Release,defect (bug),accepted,dev-feedback,2019-04-01T12:33:38Z,2022-04-04T06:23:03Z,"Returning null or a WP_Error object from functions bound to the [https://codex.wordpress.org/Plugin_API/Filter_Reference/authenticate authenticate] filter at priority values less than 20 does not prohibit a user from logging in.
+
+Consider the following snippet:
+
+{{{#!php
+<?php
+<?php
+/*
+Plugin Name: Prohibit Login
+Description: Proves that the authenticate filter does not work as expected with lower priority
+Author: Robert Peake
+Version: 0.1
+*/
+
+function prohibit_login($user_or_email, $username = null, $password = null) {
+    return new WP_Error('authentication_failed','Prohibit Login plugin prohibited login');
+}
+add_filter('authenticate', 'prohibit_login', 20, 3);
+}}}
+
+This code when activated as a plugin prohibits an admin user from logging in using wp-login.php and displays the message ""Prohibit Login plugin prohibited login"" as expected.
+
+Changing the value from 20 to e.g. 19 on the final line does not prohibit an admin user from logging in using wp-login.php. No message is displayed, and the login proceeds. 
+
+(Note: this has been tested with all other plugins deactivated with the Twentynineteen theme using the latest nightly build.)
+
+While this is not a security problem in itself, because it is undocumented behaviour it could lead to security issues in plugins where an author assumes that, like other filter hooks, e.g. the default priority of 10 can be explicitly stated without side-effects. 
+
+For this reason, I initially [https://hackerone.com/reports/519283 submitted a ticket on the HackerOne platform] just to be sure, but the ticket was closed as being a ""hypothetical"" vulnerability with out a ""clear PoC"", so I am filing this bug report instead.",robert.peake
+Future Releases,48222,"""Show password"" button overlaps with the LastPass icon",,Login and Registration,5.3,normal,normal,Future Release,enhancement,assigned,has-patch,2019-10-05T14:29:48Z,2022-09-15T20:51:47Z,"The new ""Show password"" button added to login screen in [46256] overlaps with the LastPass extension icon. Tested with Google Chrome 77 on Windows 10.
+
+This only happens on Log In and Reset Password screens. The Edit User screen is OK, as the button there is separate from the input.",SergeyBiryukov
+Future Releases,54761,Save the prefered language from login page (since WP5.9),,Login and Registration,5.9,normal,normal,Future Release,enhancement,new,dev-feedback,2022-01-07T17:17:33Z,2026-02-03T08:41:03Z,"Hello,
+
+On WP5.9 a language switcher is added in the wp-login.php. Here is the dev note by @audrasjb https://make.wordpress.org/core/2021/12/20/introducing-new-language-switcher-on-the-login-screen-in-wp-5-9/
+
+I think it should be great if choosing a language here will update the Language user meta to display the back-office in the same language as previously chosen.
+
+As per 1st test made, this doesn't currently update.",sebastienserre
+Future Releases,55200,Cannot add caption to images on mobile,,Media,5.9,normal,normal,Future Release,defect (bug),new,has-patch,2022-02-19T01:05:50Z,2026-07-24T07:56:49Z,"On the mobile view of the admin section you cannot add ally text, captions, or descriptions to media uploads ",vincepettit
+Future Releases,60628,Issues with avif image  imagecreatefromavif not working. Resizing not possible.,adamsilverstein,Media,6.5,normal,normal,Future Release,defect (bug),assigned,reporter-feedback,2024-02-24T12:46:16Z,2025-09-08T13:13:55Z,"Hi
+
+I don't know if i am at the right place but i am testing the new avif image format on wp 6.5 beta  and i have issues with it. The function call imagecreatefromavif  does not return a image.  So from that moment on it is not possible to create a resized image.
+
+When i upload a avif image in the media library the thumbs are not created. The  function call imagecreatefromavif in the class-wp-image-editor-gd.php also does not return a image and does not create the resized thumbs.  It fails.
+
+Is this a php issue or a wordpress issue?
+
+Image 1 shows no thumbs are created by wordpress from uploaded avif image files
+
+https://share.zight.com/d5u2OZEA
+
+I tried it with this image  from github
+
+https://raw.githubusercontent.com/link-u/avif-sample-images/master/kimono.avif
+
+It simply does not create resized images.
+
+A simple test code with the hardcoded url to the image file returns false
+
+{{{#!php
+<?php
+		$file =  'var/docs/server.tst/public/wp-content/uploads/2024/02/kimono.avif';
+		if ( function_exists( 'imagecreatefromavif' ) && ( 'image/avif' === wp_get_image_mime( $file ) ) ) {
+			$image = @imagecreatefromavif( $file );
+			$valid = ( $image != FALSE );
+			if ( !$valid )  echo 'avif imaged failed to create !';
+		}
+}}}
+
+To test this  uplaod the image and adjust the hardcoded url to point to the correct image.
+
+Please advice about what  is going on.
+
+Thank you for your time.
+
+
+",neo2k23
+Future Releases,40175,Upload Validation / MIME Handling,,Media,4.7.3,high,major,Future Release,defect (bug),assigned,,2017-03-16T21:37:10Z,2023-10-30T16:13:26Z,"A security fix implemented in WordPress `4.7.1` relies on a PHP extension (`fileinfo`) with inconsistent reporting behavior. As a result, many users (even after #39550) trying to upload various types of files (office documents, multimedia, fonts, etc.) have received validation errors.
+
+In a nutshell, this is because the media types returned by `fileinfo` vary from server to server and file to file. If PHP returns a media type beginning `application/*`, that media type must be whitelisted or the result will fail.
+
+Because most incorrect/historical answers from `fileinfo` begin `application/*`, this is resulting in a large number of false-positives.
+
+There are three main ways to address this, with a combination approach being preferred:
+
+'''1)''' The conditional in `wp_check_filetype_and_ext` could be restricted so that rather than searching `application/*` broadly, it looks only at the narrow file types at the heart of the original security issue. '''This option requires review from the Security Team.'''
+
+'''2)''' The WordPress Core could be extended to provide ""MIME alias"" awareness. This would allow WordPress to properly match a given extension/MIME pairing even in cases where the MIME type is historically valid, but not the singular type in the whitelist. See #39963 for related information.
+
+'''3)''' WP could be extended to maintain its own `mime.types` file, which can be passed to `fileinfo`, providing more consistent responses. '''This option requires the MIME alias handling to avoid breaking sites or plugins which hook into `upload_mimes`.'''
+
+'''Duplicate/related tickets are being collapsed into this thread. Please continue all related discussion here.'''",blobfolio
+Future Releases,63518,get_blog_details( get_all: false ) not working as expected,johnjamesjacoby,Networks and Sites,,normal,normal,Future Release,defect (bug),assigned,changes-requested,2025-06-03T07:17:48Z,2026-08-27T03:38:33Z,"I recently played around with `get_blog_details()` and found that the second parameter is not as expected.
+
+
+{{{#!php
+<?php
+get_blog_details( 1, true ); // will return the long results.
+get_blog_details( 1, false ); // will also return the long results.
+
+get_blog_details( 2, false ); // will return the short results.
+get_blog_details( 2, true ); // will return the long results.
+get_blog_details( 2, false ); // will still return the short results.
+
+}}}
+
+
+So if you call it with `$get_all = false` first, it works as expected and it seems to cache the short result separately and you can call them in any order and how often you want. 
+If you call `$get_all = true` first, it will ignore the second parameter and will always return the long results.
+
+It seems to me like the caching in the function is not working properly.",apermo
+Future Releases,52723,"Admin options.php default value to NULL for option_value may lead to MySQL Integrity constraint violation error, potential other bugs",,"Options, Meta APIs",2.7,normal,normal,Future Release,defect (bug),new,needs-unit-tests,2021-03-05T14:26:35Z,2024-06-13T18:01:13Z,"It looks like `wp-admin/options.php` set a `null` value by default for any unchecked option:
+
+https://core.trac.wordpress.org/browser/trunk/src/wp-admin/options.php#L306
+
+Now, this leads to execute queries like this by `update_option`:
+
+    UPDATE `wp_options` SET `option_value` = NULL WHERE `option_name` = 'default_pingback_flag'
+
+Which is wrong, given the schema explicitly set `option_value` to `NOT NULL`:
+
+https://core.trac.wordpress.org/browser/trunk/src/wp-admin/includes/schema.php#L144
+
+This would trigger an integrity constraint violation error by MySQL when in (default) strict mode:
+
+    Error! SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'option_value' cannot be null
+
+To get around this (and for other reasons too, I presume), WordPress currently tries to disable any MySQL strict mode in the `$wpdb` class, with the effect that MySQL silently ""fix"" the error itself:
+
+https://core.trac.wordpress.org/browser/trunk/src/wp-includes/wp-db.php#L567
+
+https://core.trac.wordpress.org/browser/trunk/src/wp-includes/wp-db.php#L826
+
+But **not every environment support this**, so there are people out there who cannot save options and they are confused about the reason why, for example:
+
+https://www.reddit.com/r/Wordpress/comments/l61rvs/cannot_disable_avatars/
+https://wordpress.org/support/topic/discussion-comment-settings-saved-changes-are-not-taking-effect-at-all/
+https://wordpress.org/support/topic/wordpress-database-error-column-option_value-cannot-be-null/
+
+A simple solution would be to set a different default value (`0` or even an empty string) in `wp-admin/options.php` and, ''better yet'', **cast any `NULL` value to the same different default value in both `update_option` and `add_option`**.
+
+Please note that, without a fix, **this bug may also lead to other nasty side effects**.
+
+As a quick fix/test, I successful got around this with this simple filter:
+
+{{{#!php
+<?php
+add_action( 'init', 'p_options_fix' );
+
+function p_options_fix() {
+
+	add_filter( 'pre_update_option', 'p_options_fix_not_null', 10, 3 );
+
+	function p_options_fix_not_null( $value, $option, $old_value ) {
+
+		// The fix: cast NULL values to 0
+   		$value = ( is_null($value) ) ? 0 : $value;
+
+   		return $value;
+	}
+}
+
+}}}
+ 
+But I think this is something that should be really fixed in the core.
+
+Thank you. ",pinoceniccola
+Future Releases,64653,WP_Hook::resort_active_iterations() skips next priority when callback removes itself during execution,westonruter,Plugins,,normal,normal,Future Release,defect (bug),reviewing,has-patch,2026-02-17T00:14:20Z,2026-08-03T11:40:05Z,"When a callback removes itself (or is the only callback at its priority) during 
+`do_action()`/`apply_filters()` execution, the next registered priority is silently skipped. This seems to affect all versions since the introduction of `WP_Hook`.
+
+To reproduce, run this as an `mu-plugin`:
+
+{{{#!php
+<?php
+
+function wp_hook_bug_self_removing() {
+    remove_action( 'wp_hook_bug_test', 'wp_hook_bug_self_removing', 50 );
+    error_log( 'Priority 50 executed (removed itself).' );
+}
+
+add_action( 'init', function () {
+    add_action( 'wp_hook_bug_test', function () {
+            error_log( 'Priority 10 executed.' );
+    }, 10 );
+
+    add_action( 'wp_hook_bug_test', 'wp_hook_bug_self_removing', 50 );
+
+    add_action( 'wp_hook_bug_test', function () {
+            error_log( 'Priority 100 executed.' );
+    }, 100 );
+
+    do_action( 'wp_hook_bug_test' );
+} );
+}}}
+
+Expected: all three priorities execute (10, 50, 100).
+Actual: priority 100 is silently skipped. Only 10 and 50 execute.
+
+The bug requires all three:
+
+1. A callback removes itself (or its entire priority group) during hook execution.
+2. It is the only callback at that priority (so the priority is fully removed from the array).
+3. There is at least one priority lower than the removed one. If the removed priority is the lowest, the `array_unshift` branch in `resort_active_iterations()` handles it correctly.
+
+In `WP_Hook::resort_active_iterations()` (`wp-includes/class-wp-hook.php`), when a priority is removed during iteration, the method rebuilds the iteration array and repositions the internal pointer:
+
+
+{{{#!php
+while ( current( $iteration ) < $current ) {
+    if ( false === next( $iteration ) ) {
+        break;
+    }
+}
+}}}
+
+This positions the pointer at the first remaining priority >= `$current` (the removed priority). Since `$current` no longer exists, the pointer lands on the next priority (e.g., 100).
+
+Back in `apply_filters()`, the do...while loop calls `next()` at the bottom of each iteration, which advances past 100. The loop ends, and priority 100 never executes.",mrcasual
+Future Releases,18857,get_plugin_page_hookname uses menu_title to construct subpage load-hooks,chriscct7,Plugins,3.1.4,normal,normal,Future Release,defect (bug),assigned,has-patch,2011-10-04T15:16:33Z,2025-08-01T05:27:22Z,"The load-hook for PluginSubPages isn't working anymore if the PluginPage is translated.
+
+The reason seems to be that the get_plugin_page_hookname function uses the menu_title instead of the menu_slug to create the hookname.
+
+I attached a possible fix.",apocalip
+Future Releases,47642,Order by comment count - posts list tables,johnbillion,"Posts, Post Types",,normal,normal,Future Release,defect (bug),reviewing,has-patch,2019-07-02T23:20:20Z,2026-10-05T10:20:12Z,"Results from posts list tables with enabled ordering by comment count are mixed (posts are missing and aren't unique). Pagination required.
+Links:
+wp-admin/edit.php?orderby=comment_count&order=asc
+wp-admin/edit.php?orderby=comment_count&order=asc&paged=2
+No matter which post type.
+You need to set 'Number of items per page' in screen options in order to get a pagination.
+[[Image(https://i.imgur.com/HupwtnS.png)]]
+Set sorting by comment count in comments column.
+[[Image(https://i.imgur.com/zFDU7Oj.png)]]
+In lists of posts some of them are missing. Page number 1 and number 2 don't have unique posts.
+I was testing it for some cases:
+30+ posts and 'posts_per_page' = 20
+30+ posts and 'posts_per_page' = 10
+250+ posts and 'posts_per_page' = 20
+24 pages and 'posts_per_page' = 20
+Results in all cases were wrong.
+
+The official queries are from wp-includes/class-wp-query.php (line: 2984) [https://github.com/WordPress/WordPress/blob/master/wp-includes/class-wp-query.php#L2984], variable: $this->request. Below applied filter are generated ids for current posts.
+
+[[Image(https://i.imgur.com/tWevfpW.png)]]
+
+SQL queries from debugging (official queries):
+
+**Page number 1 (paged=1):**
+
+{{{
+SELECT SQL_CALC_FOUND_ROWS  wp_posts.ID FROM wp_posts  WHERE 1=1  AND wp_posts.post_type = 'post' AND (wp_posts.post_status = 'publish' OR wp_posts.post_status = 'future' OR wp_posts.post_status = 'draft' OR wp_posts.post_status = 'pending' OR wp_posts.post_status = 'private')  ORDER BY wp_posts.comment_count ASC LIMIT 0, 20
+}}}
+
+Result:
+[[Image(https://i.imgur.com/rFyTHjE.png)]]
+
+**Page number 1 (paged=2):**
+
+{{{
+SELECT SQL_CALC_FOUND_ROWS  wp_posts.ID FROM wp_posts  WHERE 1=1  AND wp_posts.post_type = 'post' AND (wp_posts.post_status = 'publish' OR wp_posts.post_status = 'future' OR wp_posts.post_status = 'draft' OR wp_posts.post_status = 'pending' OR wp_posts.post_status = 'private')  ORDER BY wp_posts.comment_count ASC LIMIT 20, 20
+}}}
+
+Result:
+[[Image(https://i.imgur.com/THMM1Ri.png)]]
+
+What's funny if I added **'wp_posts.post_title'** to query the problem is solved (unique posts):
+[[Image(https://i.imgur.com/nxn3tCy.png)]]
+[[Image(https://i.imgur.com/whvDFaI.png)]]
+
+I think that problem is actually in the database queries/ settings what's caused the bad output in admin's panel.
+
+For other sorting like title or date this problem doesn't occur.
+",alektabor
+Future Releases,65044,"get_post_custom_values() missing array check, inconsistent with get_post_custom_keys()",westonruter,"Posts, Post Types",7.0,normal,normal,Future Release,defect (bug),reviewing,has-patch,2026-04-09T05:43:56Z,2026-08-03T11:46:56Z,"Explain that get_post_custom() can return false or """", and that the sibling function
+  get_post_custom_keys() guards against this but get_post_custom_values() does not, causing a PHP 8+ warning.",saratheonline
+Future Releases,51852,"""any"" value in ""post_type"" param in ""get_posts"" by default ignore attachments",,Query,,normal,normal,Future Release,defect (bug),assigned,needs-unit-tests,2020-11-23T09:45:48Z,2021-02-18T00:24:52Z,"When creating a simple call to get all posts for all post types by default to the parameters are adding `post_status` parameter with `publish` value.
+
+{{{#!php
+<?php
+get_posts(['post_type' => 'any']);
+}}}
+
+To the `WP_Query` instance are supplied followed arguments:
+
+{{{#!php
+<?php //wp-includes/post.php:2053
+[ 
+  ""numberposts"" => 5
+  ""category"" => 0
+  ""orderby"" => ""date""
+  ""order"" => ""DESC""
+  ""include"" => []
+  ""exclude"" => []
+  ""meta_key"" => """"
+  ""meta_value"" => """"
+  ""post_type"" => ""any""
+  ""suppress_filters"" => true
+  ""post_status"" => ""publish""
+  ""posts_per_page"" => 5
+  ""ignore_sticky_posts"" => true
+  ""no_found_rows"" => true
+]
+}}}
+
+All attachment posts have `inherit` post status so by default are ignored in this query.
+
+To actually get all post types the first function parameters should be expended by `post_status` parameter with `['publish', 'inherit']` value.
+
+{{{#!php
+<?php
+get_posts(['post_type' => 'any', 'post_status' => ['publish', 'inherit']]);
+}}}",dam6pl
+Future Releases,18408,Can't wp_reset_postdata after custom WP_Query in an admin edit page,audrasjb,Query,4.7.2,normal,normal,Future Release,defect (bug),assigned,needs-unit-tests,2011-08-15T02:38:07Z,2025-05-30T02:15:17Z,"While on an edit post page (or any post type), if you create a custom WP_Query object before the editor has been output, the post data from the custom WP_Query will fill out the edit post form, not the original content of the post that is actually trying to be edited.
+
+I found this out when trying to create a custom metabox in the 'side' context. You can reproduce this by inserting this code into a plugin: 
+
+
+{{{
+
+add_action( 'add_meta_boxes', 'myplugin_add_custom_box' );
+
+function myplugin_add_custom_box() {
+	add_meta_box( 
+        'myplugin_sectionid',
+        __( 'My Post Section Title', 'myplugin_textdomain' ),
+        'myplugin_inner_custom_box',
+        'post',
+        'side'
+    );
+}
+
+function myplugin_inner_custom_box() {
+	global $post;
+	$a = new WP_Query('post_type=page');
+	while($a->have_posts() ) : $a->the_post();
+	endwhile;
+	wp_reset_postdata();
+}
+}}}
+
+This happens because $wp_query->post is never defined in the admin load, which wp_reset_postdata relies on to reset the original post data.
+
+I am attaching a patch that defines $wp_query->post after the $post global has been defined. ",ericlewis
+Future Releases,55207,WP_Query returns published sticky posts when post_status is set to draft,,Query,,normal,normal,Future Release,defect (bug),new,,2022-02-20T14:06:52Z,2025-01-07T11:24:41Z,"Originally reported here - [https://github.com/wp-cli/entity-command/issues/278]
+
+**Error:**
+If a sticky post is published, the following query returns the published sticky post:
+
+
+{{{
+<?php
+<?php
+$query = new WP_Query( array(
+    'post_status' => 'draft',
+) );
+?>
+?>
+}}}
+
+Steps to reproduce:
+
+1. Create a sticky post and publish it
+2. Create a WP_Query with its 'post_status' set to 'draft'
+3. Run the query
+4. Observe that the published sticky post is returned
+
+**Expected behaviour:**
+Setting `post_status` to `draft` should not return published sticky posts.
+
+",NomNom99
+Future Releases,60745,WP_Query::parse_query() does not handle invalid query arg values,westonruter,Query,,normal,normal,Future Release,defect (bug),reviewing,has-patch,2024-03-11T11:29:09Z,2026-09-24T17:56:44Z,"The code in `WP_Query::parse_query` assumes that most query arguments have the correct type. However, this doesn't seem to be the case for the following arguments:
+
+Things that expect arrays, but the code that call them pass (unintended) invalid data types
+{{{
+					'author__in'          => 'string',
+					'author__not_in'      => 'string',
+					'category__and'       => 'string',
+					'category__in'        => 'string',
+					'category__not_in'    => 'string',
+					'post__in'            => 'string',
+					'post__not_in'        => 'string',
+					'post_name__in'       => 'string',
+					'post_parent__in'     => 'string',
+					'post_parent__not_in' => 'string',
+					'tag__and'            => 'string',
+					'tag__in'             => 'string',
+					'tag__not_in'         => 'string',
+					'tag_slug__and'       => 'string',
+					'tag_slug__in'        => 'string',
+}}}
+Using most of the above query args in a `WP_Query::get_posts()` call result in a PHP fatal.
+
+Things that expect scalars:
+
+{{{
+					'attachment'      => array(),
+					'author_name'     => array(),
+					'feed'            => array(),
+}}}
+Using any of the above query args result in a PHP fatal on a default WP installation:
+
+{{{
+alex@wayra core % cat .wp-env.json
+{
+	""core"": null
+}
+}}}
+
+http://localhost:8888/?attachment[]=admin
+{{{
+Fatal error: Uncaught TypeError: urlencode(): Argument #1 ($string) must be of type string, array given in /var/www/html/wp-includes/formatting.php:5683 Stack trace: #0 /var/www/html/wp-includes/formatting.php(5683): urlencode(Array) #1 /var/www/html/wp-includes/class-wp-query.php(2183): wp_basename(Array) #2 /var/www/html/wp-includes/class-wp-query.php(3824): WP_Query->get_posts() #3 /var/www/html/wp-includes/class-wp.php(696): WP_Query->query(Array) #4 /var/www/html/wp-includes/class-wp.php(816): WP->query_posts() #5 /var/www/html/wp-includes/functions.php(1336): WP->main('') #6 /var/www/html/wp-blog-header.php(16): wp() #7 /var/www/html/index.php(17): require('/var/www/html/w...') #8 {main} thrown in /var/www/html/wp-includes/formatting.php on line 5683
+}}}
+http://localhost:8888/?author_name[]=admin
+{{{
+Fatal error: Uncaught TypeError: str_contains(): Argument #1 ($haystack) must be of type string, array given in /var/www/html/wp-includes/class-wp-query.php:2358 Stack trace: #0 /var/www/html/wp-includes/class-wp-query.php(2358): str_contains(Array, '/') #1 /var/www/html/wp-includes/class-wp-query.php(3824): WP_Query->get_posts() #2 /var/www/html/wp-includes/class-wp.php(696): WP_Query->query(Array) #3 /var/www/html/wp-includes/class-wp.php(816): WP->query_posts() #4 /var/www/html/wp-includes/functions.php(1336): WP->main('') #5 /var/www/html/wp-blog-header.php(16): wp() #6 /var/www/html/index.php(17): require('/var/www/html/w...') #7 {main} thrown in /var/www/html/wp-includes/class-wp-query.php on line 2358
+}}}
+http://localhost:8888/?feed[]=admin
+{{{
+Fatal error: Uncaught TypeError: str_contains(): Argument #1 ($haystack) must be of type string, array given in /var/www/html/wp-includes/class-wp-query.php:1018 Stack trace: #0 /var/www/html/wp-includes/class-wp-query.php(1018): str_contains(Array, 'comments-') #1 /var/www/html/wp-includes/class-wp-query.php(1868): WP_Query->parse_query() #2 /var/www/html/wp-includes/class-wp-query.php(3824): WP_Query->get_posts() #3 /var/www/html/wp-includes/class-wp.php(696): WP_Query->query(Array) #4 /var/www/html/wp-includes/class-wp.php(816): WP->query_posts() #5 /var/www/html/wp-includes/functions.php(1336): WP->main('') #6 /var/www/html/wp-blog-header.php(16): wp() #7 /var/www/html/index.php(17): require('/var/www/html/w...') #8 {main} thrown in /var/www/html/wp-includes/class-wp-query.php on line 1018
+}}}",xknown
+Future Releases,24142,Zero value for posts_per_page value in wp_query custom instance and for 'Blog pages show at most' option,SergeyBiryukov,Query,,normal,normal,Future Release,defect (bug),reviewing,dev-feedback,2013-04-20T09:04:16Z,2026-04-06T08:25:22Z,"To show no posts if the posts_per_page value is 0.
+
+Currently for custom instances of wp_query, if the value is 0 then this is changed with the value from posts_per_page option from the database. ""get_options( 'posts_per_page' )"" 
+
+For home page if we set value 0 on the settings page, in wp-admin/options-reading.php, after the saves are changed, this value is changed to 1. 
+
+I think for both cases if the posts per page value is 0 then no posts should not display.
+",alexvorn2
+Future Releases,35913,`is_()` conditional methods should share their logic,,Query,,normal,normal,Future Release,defect (bug),new,dev-feedback,2016-02-23T02:54:55Z,2026-07-23T23:41:08Z,"Many of the `is_()` methods in `WP_Query` share the nearly the exact same logic. As such, they share the exact same bugs, and fixing those bugs requires many parallel changes and huge numbers of tests. See #35902 and #24674 for some recent examples.
+
+It's possible to move all the shared logic to a single `protected` utility method. It's a bit more abstract, but is much easier to maintain and test.",boonebgorges
+Future Releases,18836,ORDER BY RAND() is slow,pbearne,Query,,normal,minor,Future Release,enhancement,assigned,changes-requested,2011-10-01T16:59:04Z,2025-08-21T22:43:20Z,"WP_Query currently accepts 'orderby' => 'rand' which translates to ORDER BY RAND().
+
+This is very slow when you have many posts, since it effectively calls RAND() for each row.
+
+A faster way would be to call RAND() only once and put it in the LIMIT clause.
+
+The only thing is that we have to make sure that the generated number is smaller than (total number of posts - number of posts to fetch).
+
+So, this would require to do an extra query to calculate the total. It should still be faster than the current method.
+
+If we want to get more than one post, we can get them in any order and then call shuffle() on the resulting array.",scribu
+Future Releases,53450,[WP_Meta_Query] Add faster LIKE based 'STARTSWITH' and 'ENDSWITH' compare modes for value query,,Query,,normal,trivial,Future Release,enhancement,new,dev-feedback,2021-06-18T15:57:59Z,2025-03-03T09:47:03Z,"Currently the ""LIKE"" compare mode for meta value compares is only usable for ''contains'' queries as it always adds wildcards around all queries {{{LIKE '%query%'}}}. This makes one use the more complex REGEXP compare mode for queries which easily could be written with {{{LIKE '%query'}}} or {{{LIKE 'query%'}}}.
+
+As LIKE is faster than REGEXP it is preferable to use LIKE.
+See: http://billauer.co.il/blog/2020/12/mysql-index-pattern-matching-performance/
+
+In addition people don't have to use the much more complex regex. Which tends to introduce errors in my experience as most people just copy & paste but do not understand how regex really works (not meant as an offense). So REGEXP should be avoided if possible.
+
+I would suggest naming the new compare types {{{STARTSWITH}}} and {{{ENDSWITH}}}. Also adding their {{{NON ...}}} counter parts to match up the ''LIKE'' behaviour.
+
+**Maybe** also add an alias for ''LIKE'' named {{{CONTAINS}}} as the current naming ''LIKE'' suggests that you could pass in the wildcards yourself. Which is not the case and thus misleading. But this is just for the sake of the tickets completenes. The pull request only contains code and tests for the new modes.
+
+As an alternative I thought about reworking the current LIKE mode to allow custom wildcard passing. But this will clearly break backward compat and thus I discarded this approach.",janthiel
+Future Releases,17019,add hooks for Media Library attachment counts,SergeyBiryukov,Query,2.5,normal,normal,Future Release,enhancement,reviewing,has-patch,2011-04-02T16:48:24Z,2025-05-15T19:26:12Z,"The Media Library attachments listing and edit links can be filtered via existing WP_Query and has_cap hooks.  However, corresponding attachment counts are not cleanly filterable.
+
+The submitted ticket adds the following filters:
+
+ * function wp_count_attachments() - result filter 'count_attachments'
+
+ * WP_Media_List_Table::get_views() - query filter 'attachment_orphans_query'
+
+ * function update_gallery_tab() - query filter 'gallery_attachment_count_query'",kevinB
+Future Releases,42947,REST API wrong total pages,spacedmonkey,REST API,4.9.1,normal,normal,Future Release,defect (bug),assigned,has-patch,2017-12-20T17:03:36Z,2021-10-31T05:01:59Z,"When I require posts with the draft status the 'x-wp-total' and 'x-wp-totalpages' headers come with extra values ​​being that not all drafts are from the user making a request, so when I try to pick up the second page the answer comes empty.
+
+[[Image(https://i.imgur.com/223sEE3.gif)]]",elvishp2006
+Future Releases,49985,REST API: Using _embed and _fields query parameters in the same query,TimothyBlynJacobs,REST API,5.4,normal,normal,Future Release,defect (bug),assigned,has-patch,2020-04-23T16:06:43Z,2024-10-14T00:22:27Z,"When performing a REST API request and adding the _embed and _fields query parameters. the API attempts to skip unneeded fields but does not embed resources that are linked with embeddable set to true.
+
+In some cases we may need _embed  and _fields in the same query. 
+I am requesting the feature to be added to allow the filtering of resources and embedding them (the embeddable ones) at the same time when specifying the _embed and _fields.
+
+Example:
+http://<site>/wp-json/wp/v2/posts?_fields=title,author&_embed=author
+
+If implemented, the above request should only return title and author, and embed the author.",anouarbenothman
+Future Releases,40365,Introduce a REST API endpoint for sites,realloc,REST API,,normal,normal,Future Release,enhancement,assigned,changes-requested,2017-04-05T00:18:18Z,2026-10-07T21:02:08Z,"It should be possible to manage sites in a multisite configuration through the REST API.
+
+* List sites: `GET wp/v2/sites/`
+* Retrieve a site: `GET wp/v2/sites/<id>`
+* Create a site: `POST wp/v2/sites/`
+* Update a site: `PUT wp/v2/sites/<id>`
+* Delete a site: `DELETE wp/v2/sites/<id>`
+
+Data included in a site object should at least mirror the data available for the site in `wp_blogs`. Additional ideal pieces of data for a site include `blogname`, `blogdescription`, `home`, and `siteurl`. It's possible that creating a new meta table for sites can help developers register meta for inclusion with a site object (See #37923).
+
+Sites should be accessible by default for authenticated users only. Network (global) admins should have access to all sites. Site users should have access to the sites they are members of. The ""My Sites"" list is a great candidate for exploring how this will work. See #15317.
+
+As of the introduction of `get_sites()` in 4.6.0, retrieving sites is a much better experience. The methods used to create, update, and delete sites in multisite are not as pleasant right now. We should investigate each of these and determine what can be done to streamline the process. The first improvement is probably in creating a site. See #40364.",jeremyfelt
+Future Releases,48885,"REST API: Support reading public settings, implement context handling",spacedmonkey,REST API,3.7,normal,normal,Future Release,enhancement,assigned,dev-feedback,2019-12-05T17:09:25Z,2025-10-20T18:50:09Z,"It would be good to make it possible to read and update individual site settings at
+
+`/wp/v2/settings/title`
+
+for example.
+
+This is needed as part of https://github.com/WordPress/gutenberg/pull/18760",scruffian
+Future Releases,65616,Support the HTTP `QUERY` method for read/search REST endpoints (RFC 10008),,REST API,,normal,normal,Awaiting Review,enhancement,new,dev-feedback,2026-07-13T06:33:04Z,2026-09-18T01:45:46Z,"The new HTTP `QUERY` method ([https://www.rfc-editor.org/info/rfc10008/ RFC 10008]) is '''safe and idempotent like `GET`, but carries a request body'''. That makes it cacheable, retriable, and free of the URL-length ceiling. It is the standards-blessed answer to
+""I need to send a large or structured search and `GET`'s query string won't fit"".
+
+== Problem ==
+
+WordPress read/search endpoints today have two bad options when a query is large or
+structured:
+
+ * '''`GET` with a query string''' — hits URL-length limits (~2 KB in browsers, ~8 KB on
+   many servers/proxies) with long `include[]`/`exclude[]` lists or complex
+   `tax_query`/`meta_query`-style filters.
+ * '''Promote to `POST`''' — works, but `POST` is neither safe nor idempotent, so it
+   breaks caching and retry semantics for what is really a read.
+
+`QUERY` fixes both: a body-bearing '''read''' with `GET` semantics.
+
+== Findings in core ==
+
+Inbound (needs work):
+ * Method constants are a fixed set — `WP_REST_Server::READABLE/CREATABLE/EDITABLE/DELETABLE/ALLMETHODS` (`class-wp-rest-server.php:24-56`). No `QUERY`.
+ * '''Param-order gap:''' `WP_REST_Request::get_parameter_order()` (`class-wp-rest-request.php:361-398`) only merges body params for `$accepts_body_data = array( 'POST', 'PUT', 'PATCH', 'DELETE' )` (line 377). A form-encoded `QUERY` body is parsed but never returned by `get_param()`. JSON bodies work incidentally via `parse_json_params()`.
+ * Routing matches on `$handler['methods'][ $method ]`; there is a precedent for an aliased method — `HEAD` falls back to `GET` (`class-wp-rest-server.php:1185-1187`) — the same pattern a `QUERY -> GET` read-fallback would follow.
+ * CORS methods are hardcoded (`rest-api.php:801`); the `Allow` header is already dynamic (`rest-api.php:870-903`).
+
+Outbound (already works):
+ * `wp_remote_request()` with `'method' => 'QUERY'` already sends the payload in the body — non-GET/HEAD requests use `data_format = 'body'` (`class-wp-http.php:383-386`; `Requests.php:698-706`) and cURL's `default` case sends it via `CURLOPT_CUSTOMREQUEST` (`Transport/Curl.php:418-422`). Only a docblock update is needed.
+
+== Proposal ==
+
+Make core `QUERY`-safe and ship it as '''opt-in progressive enhancement''', keeping `GET`
+as the default. Phased:
+
+ 1. '''Make core `QUERY`-safe''' — handle `QUERY` in `get_parameter_order()` (both JSON and
+    form-encoded bodies), add a `QUERY`/`QUERYABLE` constant, and add an optional
+    `QUERY -> GET` fallback mirroring `HEAD -> GET`. Unit tests under
+    `tests/phpunit/tests/rest-api/`. Document outbound support.
+ 2. '''Opt-in advertising + one pilot endpoint''' — advertise `QUERY` in
+    `Access-Control-Allow-Methods` only when a route registers it; pilot `/wp/v2/search`
+    behind capability detection.
+ 3. '''Client feature detection''' — teach `@wordpress/api-fetch` to optionally use `QUERY`
+    for oversized reads with automatic fallback to `GET` (Gutenberg repo).
+",khokansardar
+Future Releases,16839,Category Base Should be Slugified,SergeyBiryukov*,Rewrite Rules,3.1,normal,normal,Future Release,defect (bug),accepted,needs-unit-tests,2011-03-12T21:42:52Z,2026-01-20T06:05:07Z,"Vanilla install of 3.1. Change category base to Foo Bar.  Link generated is example.com/Foo Bar/cat (note the %20/space). Clicking link tries to access /FooBar/cat and 404's.
+
+I see there are a few other tickets regarding categories, including #16662 but no specific mention of custom category base.
+
+",miklb
+Future Releases,61625,Styles enqueued from block.json are not correctly configured for RTL,westonruter*,Script Loader,,normal,normal,Future Release,defect (bug),accepted,has-patch,2024-07-10T20:51:17Z,2026-08-03T11:38:21Z,"When viewing a site using an RTL language, the RTL CSS files are not loaded for custom blocks using block.json. For example, a block might say `""style"": ""file:./style-index.css""`, which is then loaded as-is on LTR sites. On RTL sites, the `style-index.css` file is still loaded, despite `style-index-rtl.css` existing.
+
+This seems to be due to the `register_block_style_handle` function — it does correctly add data for the RTL file, `style-index-rtl.css`, but it also adds a `suffix` value (when `SCRIPT_DEBUG = false`).
+
+When the style tag is printed, WP tries to update the file's url to the RTL file, but it's searching for `.min.css` to replace, and that isn't the right filename. The url is not updated, so it still loads the LTR `style-index.css`.
+
+This can be replicated with the default `create-block` block, I've also created a simple demo plugin to explain: https://github.com/ryelle/rtl-style-example",ryelle
+Future Releases,51317,Remove deprecated JavaScript i18n globals,,Script Loader,5.5.1,normal,normal,Future Release,enhancement,new,has-patch,2020-09-16T00:35:58Z,2026-04-09T07:20:49Z,"Background: #51123
+
+[48923] added backward compatibility for JavaScript i18n globals and properties deprecated in WordPress 5.5.
+
+Per the corresponding [https://make.wordpress.org/core/2020/09/01/deprecated-javascript-globals/ dev note on make/core], the plan is to remove this fallback code in two major versions, so it should be deleted in WordPress 5.7. This gives plugin and theme developers ample time to remove the conflicting code and switch to using `wp.i18n`.
+
+This ticket serves as a reminder to address this in 5.7.",SergeyBiryukov
+Future Releases,26649,escaped shortcodes should not be expanded during 'get_the_excerpt',,Shortcodes,3.7.1,normal,normal,Future Release,defect (bug),reopened,dev-feedback,2013-12-16T15:13:48Z,2026-07-23T23:39:32Z,"It is possible for ""the_content"" filter to be invoked while processing ""get_the_excerpt"".
+
+If the do_shortcodes() filter hook is attached to both ""the_content"" and ""get_the_excerpt"" then this can lead to an unexpected expansion of an escaped shortcode.
+
+This can lead to unwanted side effects, as reported here.
+http://www.oik-plugins.com/2013/12/escaped-shortcodes-unexpectedly-expanded-get_the_excerpt/
+
+
+This minor problem can be alleviated by a simple change to strip_shortcode_tag(), returning the HTML code &#91; as the first character rather than the left square bracket.
+{{{
+function strip_shortcode_tag( $m ) {
+	// allow [[foo]] syntax for escaping a tag
+	if ( $m[1] == '[' && $m[6] == ']' ) {
+		return ""&#91;"" . substr($m[0], 2, -1) ;
+	}
+	return $m[1] . $m[6];
+}
+}}}
+
+I don't believe that it's necessary to make the same change in do_shortcode_tag().
+
+
+",bobbingwide
+Future Releases,54351,Checking for temp update directories may throw warnings,,Site Health,6.0,normal,normal,Future Release,defect (bug),new,dev-feedback,2021-10-31T15:47:41Z,2022-04-04T05:25:30Z,"in [51815] the Site Health function `get_test_update_temp_backup_writable` was introduced, which is meant to check if upgrade directories exist, and are writable.
+
+When visiting the Site Health screen in a scenario where `WP_Filesystem` uses `ftpext` for manipulating the filesystem, this causes multiple warnings as the various calls to check for directories, and if they are writable, are causing PHP's `ftp_*` functions to fire, when there may not be a valid FTP connection available. (see [https://github.com/WordPress/wordpress-develop/blob/07ad6efdf7157d22424496d39d8c5635f28ecfbb/src/wp-admin/includes/class-wp-site-health.php#L1968-L1978 class-wp-site-health.php:1968-1678]
+
+I wonder if the best solution here might be to inject a connection call, which could then be used to determine if any other fields should be checked, or revert to a default value, I'm thinking along these lines:
+
+{{{#!php
+$filesystem_is_connected = $wp_filesystem->connect();
+
+$wp_content = ( $filesystem_is_connected ? $wp_filesystem->wp_content_dir() : false );
+
+$upgrade_dir_exists      = ( $filesystem_is_connected ? $wp_filesystem->is_dir( ""$wp_content/upgrade"" ) : false );
+$upgrade_dir_is_writable = ( $filesystem_is_connected ? $wp_filesystem->is_writable( ""$wp_content/upgrade"" ) : false );
+$backup_dir_exists       = ( $filesystem_is_connected ? $wp_filesystem->is_dir( ""$wp_content/upgrade/temp-backup"" ) : false );
+$backup_dir_is_writable  = ( $filesystem_is_connected ? $wp_filesystem->is_writable( ""$wp_content/upgrade/temp-backup"" ) : false );
+
+$plugins_dir_exists      = ( $filesystem_is_connected ? $wp_filesystem->is_dir( ""$wp_content/upgrade/temp-backup/plugins"" ) : false );
+$plugins_dir_is_writable = ( $filesystem_is_connected ? $wp_filesystem->is_writable( ""$wp_content/upgrade/temp-backup/plugins"" ) : false );
+$themes_dir_exists       = ( $filesystem_is_connected ? $wp_filesystem->is_dir( ""$wp_content/upgrade/temp-backup/themes"" ) : false );
+$themes_dir_is_writable  = ( $filesystem_is_connected ? $wp_filesystem->is_writable( ""$wp_content/upgrade/temp-backup/themes"" ) : false );
+}}}
+
+It should be noted that by providing `false` as the default value for all fields, we are essentially marking this check as valid, which may not be true at all, because if WordPress can't connect to the filesystem, it should instead be a failed test.
+The directories should probably be considered non-writable if they can't even be reached, this needs different logic further into the checks as well?
+
+This may still lead to a warning as well, if the `connect()` function is missing variables, in testing where no information is provided, it only complained about a missing hostname, we'll handle that in a separate ticket for the Filesystem API component.",Clorith
+Future Releases,64071,Site Health false positive: WP_DEBUG_LOG warning when debug.log is outside wp-content,hbhalodia,Site Health,,normal,normal,Future Release,defect (bug),assigned,has-patch,2025-10-03T05:28:36Z,2026-08-04T23:32:51Z,"Site Health shows a security warning about `WP_DEBUG_LOG` being publicly accessible, even when the debug log file is stored outside the `wp-content` directory and is not publicly accessible.
+
+=== Steps to Reproduce
+1. Configure WordPress with custom debug log location outside `wp-content`:
+   {{{#!php
+define('WP_DEBUG', true);
+define('WP_DEBUG_LOG', '/var/www/logs/debug.log'); // Outside wp-content
+define('WP_DEBUG_DISPLAY', false);
+   }}}
+2. Ensure the `/logs/` directory is not mapped as a public URL
+3. Verify the file is NOT accessible via HTTP (returns 404)
+4. Check Site Health (Tools → Site Health → Info)
+
+=== Expected Behavior
+Site Health should verify whether the debug log file is actually publicly accessible before showing the security warning.
+
+=== Actual Behavior
+Site Health shows:
+
+""Your site is set to log errors to a potentially public file""
+""The value, WP_DEBUG_LOG, has been added to this website's configuration file. This means any errors on the site will be written to a file which is potentially available to all users.""
+
+This is a false positive when the log file is stored outside wp-content or protected by server configuration.
+
+=== Suggested Fix
+Enhance the Site Health check to:
+1. Detect if `WP_DEBUG_LOG` points to a custom path outside `wp-content`
+2. Attempt to verify if the file is publicly accessible via HTTP
+3. Only show the warning if the file is actually in a public directory
+
+=== Environment
+
+WordPress Version: 6.8.3
+Server: Docker (nginx + php-fpm)
+Debug log location: `/var/www/logs/debug.log` (outside web root)
+Public accessibility: Verified 404 via `curl -I https://example.com/logs/debug.log`
+
+=== Additional Context
+This affects Docker/containerized WordPress installations where logs are commonly stored in separate volumes outside the public web directory for security and log management purposes.
+",dannythedog
+Future Releases,61890,Handle WP_Term dynamic properties for PHP 8.2,,Taxonomy,4.4,normal,minor,Future Release,defect (bug),new,needs-unit-tests,2024-08-16T19:47:45Z,2025-11-03T18:23:53Z,"For PHP 8.2+ compatibility, the scope of this ticket is to handle `WP_Term`'s dynamic properties and its incomplete set of magic methods.
+
+As noted in epic ticket #56034:
+>Dynamic (non-explicitly declared) properties are deprecated as of PHP 8.2 and are expected to become a fatal error in PHP 9.0, though this last part is not 100% certain yet.
+>
+>RFC: https://wiki.php.net/rfc/deprecate_dynamic_properties
+
+The epic ticket provides recommendations for how to handle dynamic properties:
+
+
+== Mitigation Approaches
+
+This ticket offers 2 different approaches. It uses the epic ticket #56034 as the guide for mitigation.
+
+=== **Approach 1: Declare Core's known, named and deprecate dynamic properties.**
+
+Per #56034:
+>Situation: Known, named, dynamic property
+>Resolution: Declare the property on the (parent) class
+
+This approach proposes to:
+* Soft remove support of dynamic properties by deprecating getting dynamic properties.
+* Identify and declare all of Core's known, named dynamic properties on the `WP_Term` class.
+
+Goals:
+* Remove Core's dynamic properties.
+* Alert extenders via deprecation notice and dev note.
+* Extenders to remove their `WP_Term` dynamic properties and replace with a different custom handling approach. (Note: need to figure out what to recommend to extenders for this migration process.)
+
+Tasks:
+
+1. Identify all of the known, named dynamic properties Core adds and uses.
+
+Beyond the `'data'` dynamic property (previously discussed in #58087), Core adds and uses a lot of other known, named dynamic properties. For example:
+
+*  `wp_tag_cloud()` adds `link` and `id` dynamic properties. 
+* `_make_cat_compat()` adds `cat_ID`, `category_count`, `category_description`, `cat_name`, `category_nicename`, `category_parent`.
+
+A first step is to identify all of the dynamic properties that Core adds and uses.
+
+2. Determine affects / impacts of the preferred solution
+
+#56034 provides guidance for known, named dynamic properties:
+>Declare the property on the (parent) class
+
+Consideration will be needed for how declaring these properties on the class will affect the usage of the `WP_Term::to_array()` method.
+
+If found to have an unwanted affect, the compatible fields approach (e.g. `WP_User_Query`) can be explored (see #58897).
+
+=== **Approach 2: Add full support for dynamic properties on `WP_Term`**.
+
+Update: [comment:30 Approach 2 was found to not be viable] as it will not support native PHP `(array)` type casting.
+
+Per #56034:
+>Situation: Known use of unknown dynamic properties
+>Solution: Declare the full set of magic methods on a class
+>...
+>If the class really ''**should**'' support dynamic properties, the magic methods should be implemented on the class itself (or its parent).
+
+This approach proposes to:
+* Fully support dynamic properties on `WP_Term`. 
+* Add a full set of magic methods on the `WP_Term` class.
+
+What if extenders are also adding and using dynamic properties?
+It's been possible since WP_Term was introduced in 2015 in WP 4.4.0 via [34997].
+
+Has it been supported since introduction?
+Yes, as Core itself needed it supported.
+
+Since its introduction, this class has supported and actively added / used dynamic properties. Core itself active uses and adds dynamic properties to `WP_Term` objects. Following its example, extenders also add dynamic properties.
+
+With `WP_Term` being marked as `final`, there's not a way for extenders to declare their dynamic property needs on a custom child class.
+
+It's reasonable to determine that `WP_Term` should fully support dynamic properties. Doing so maintains backward compatibility (BC) with the (hopefully) the lowest risks of breaking things for users.
+
+**References**:
+* The changes are part of #56034, which is the larger Dynamic Properties proposal and initiative.
+* See #58087 for an extensive discussion and contextual history of the `WP_Term::$data` dynamic property.",hellofromTonya
+Future Releases,63256,Unnecessary array_map() call in get_terms() when object_ids is not set,audrasjb,Taxonomy,4.7,lowest,normal,Future Release,defect (bug),reviewing,has-patch,2025-04-09T11:10:53Z,2026-08-19T12:56:53Z,"The `get_terms()` function always triggers the `else` block because the result is cast to an array and sent to `array_map()`, even when `object_ids` isn't set. This is unnecessary since the default value of `object_ids` is `null`.
+
+The default value here is `null`: https://github.com/WordPress/wordpress-develop/blob/ac648a15245df2261c0782f7e1c618911f392601/src/wp-includes/class-wp-term-query.php#L199C1-L199C4
+
+The else block runs here: https://github.com/WordPress/wordpress-develop/blob/ac648a15245df2261c0782f7e1c618911f392601/src/wp-includes/class-wp-term-query.php#L596-L600",dilipbheda
+Future Releases,50568,Improve WP_Term's sanitization calls,pbearne,Taxonomy,5.5,normal,normal,Future Release,enhancement,assigned,has-patch,2020-07-06T07:04:45Z,2026-07-15T04:02:13Z,"Akin to `WP_Post::filter()`, I think `WP_Term::filter()` should have a bypass, too. This will significantly improve performance wherever terms are used (list edit screens, category widgets, blocks) because the bypass prevents redundant re-sanitization.
+
+The attached patch will shave off a 30% load time at `wp-admin/edit.php` after #50567's implementation. This patch tests for the `WP_Term` object's `::$filter` state, and only re-sanitizes the term when the state differs from the input argument. 
+
+You'll also find that `sanitize_term()` now looks a lot like `sanitize_post()`--the same goes for `get_term()`'s resemblance to `get_post()`. Overall, it seems posts have received a lot more love over the years, and this patch steals some of that.
+
+There are a few issues with terms, however. For example, `update_term_cache()` caches terms regardless of being shared, while `WP_Term::get_instance()` tries to prevent that. The `$filter = 'display'` argument is used in contexts where `raw` would do fine, too (e.g. @ `WP_Terms_List_Table::single_row()`). If we iron those issues out, we can fully phase out the re-sanitization of terms.",Cybr
+Future Releases,62997,Put the final nail in the coffin of shared terms,,Taxonomy,,normal,normal,Future Release,enhancement,assigned,has-patch,2025-02-21T01:02:46Z,2025-07-02T22:34:40Z,"Prior to WordPress 4.3, a term with a name that existed as both a category and a tag was actually a shared term. Shared terms were phased out in #21950 (4.1), #5809 (4.2), and #30261 (4.3). A site that's running 4.3 or later does not contain shared terms.
+
+One item on [https://make.wordpress.org/core/2013/07/28/potential-roadmap-for-taxonomy-meta-and-post-relationships/ the taxonomy roadmap from 2013] that was never completed was #30262 - combining the `terms` and `term_taxonomy` tables to facilitate the simplification of term queries.
+
+Implementing this appears to be doable. [https://github.com/WordPress/wordpress-develop/pull/8354 I have a work in progress PR which is looking promising], however it is blocked by the fact that WordPress still supports shared terms. If a site upgrades from a version prior to 4.3 straight to the latest version then it's not guaranteed that the `term_taxonomy` table contains unique `term_id` values, which is a prerequisite for combining the `terms` and `term_taxonomy` tables.
+
+To unblock this we need to ensure no shared terms are present. The upgrade routine should prevent the upgrade from continuing if shared terms might be present, and show a message explaining that the site must be updated to an interim version in order to first ensure any shared terms are split. This will ''only'' affect WordPress sites running a version prior to 4.3 and attempting to update to the latest version.
+
+With this protection in place, all shared term handling can be removed and #30262 can proceed.",johnbillion
+Future Releases,40351,"Term post re-counts scale poorly, are common and difficult to avoid",whyisjake,Taxonomy,4.8,normal,normal,Future Release,enhancement,reopened,has-patch,2017-04-04T01:18:28Z,2024-05-02T17:53:11Z,"Under normal conditions whenever a post status transition occurs, `_update_term_count_on_transition_post_status` attempts to completely recalculate the post counts for each term related to the post by re-counting each term's total number of post relationships..  For sites with large term relationship tables, large numbers of total terms and high numbers of terms per post, this recalculation does not scale well and can lead to wp-admin lag (while saving a post for example) or failed queries.
+
+A typical bad scenario looks like this:
+
+Consider a site with a large term_relationship table and a post with (say) 30 terms assigned to it.  When that post is updated, an eventual call to `_update_post_term_count` will cause that function to execute 60 total queries on some very large tables. 30 are SELECTs:
+
+`SELECT COUNT(*) FROM $wpdb->term_relationships, $wpdb->posts WHERE $wpdb->posts.ID = $wpdb->term_relationships.object_id AND post_status = 'publish' AND post_type IN ('"" . implode(""', '"", $object_types ) . ""') AND term_taxonomy_id = %d`
+
+(This is actually the hopeful case, since if we need to count attachments too, those are added to the above query via a subselect which probably makes things worse.)
+
+Interspersed among the 30 SELECTs are 30 UPDATEs to the tt table,  generated by:
+
+`$wpdb->update( $wpdb->term_taxonomy, compact( 'count' ), array( 'term_taxonomy_id' => $term ) );`
+
+One result of all of this can be failed queries -- typically the SELECTs -- and incorrect term post counts.  Even more frequently the issue manifests as slow post updating behavior (the lag a user feels while waiting for a post to save or publish.)
+
+We currently provide two mechanisms (besides just unhooking `_update_term_count_on_transition_post_status` entirely and not updating term post counts at all) to do something about this problem.  The first is to defer post counts, but this just delays the badness until a later call of `wp_update_term_count`.  The second is to define a per-taxonomy custom update callback using `update_count_callback`.
+
+Neither of these mechanisms is intended to improve performance, and both are obscure.  It would be better to by default increment or decrement post counts directly in the tt table in response to posts entering or leaving published (or other countable) stati, and reserve complete recalculations for special occasions (such as when a term is edited.)  Using this strategy, the 60 total queries in the example above could -- on publish -- be replaced by a '''a single''' query that would look something like:
+
+`UPDATE {$wpdb->term_taxonomy} AS tt SET tt.count = tt.count + 1 WHERE tt.term_taxonomy_id IN ( .... )`
+
+(where the final list is a list of tt_ids.)
+
+This solution is implemented now as a plugin here:  https://github.com/Automattic/lightweight-term-count-update.
+
+Patch based on this on the way soon.",mattoperry
+Future Releases,57586,term_exists() return type not consistent regarding wp_insert_term(),,Taxonomy,3.0,normal,normal,Future Release,enhancement,new,dev-feedback,2023-01-30T10:14:03Z,2023-09-15T03:57:43Z,"`term_exists()` returns an array of strings containing `term_id` and `term_taxonomy_id`. Although `wp_insert_term()` as well as `wp_update_term()` return an array of integers.
+For consistency, it'd be better to return alway the same type. Also, it'd be less error prone.",hugod
+Future Releases,64729,Missing “Live Preview” button for block themes after installation on the “Add Themes” screen,,Themes,6.9,normal,normal,Future Release,defect (bug),new,has-patch,2026-02-26T00:29:09Z,2026-08-15T14:25:16Z,"On the Add Themes screen (wp-admin/theme-install.php), when installing themes from search results or browsing via tabs/filters, the first theme card does not display the ""Live Preview"" button after installation completes.
+
+Only the ""Activate"" button is shown for the first installed theme card. All subsequent installed theme cards correctly display both ""Activate"" and ""Live Preview"" buttons.
+
+This issue occurs consistently across:
+
+- Search results
+- Popular tab
+- New tab
+- Block Themes tab
+- Feature Filter results
+
+Steps to Reproduce:
+
+1. Log into the WordPress administration dashboard.
+2. Navigate to Appearance → Themes → Add New Theme.
+3. Use any of the following:
+   - Search for a keyword (e.g., ""hello""), OR
+   - Click the Popular tab, OR
+   - Click the New tab, OR
+   - Click the Block Themes tab, OR
+   - Apply any Feature Filter.
+4. On the first theme card in the results, click the Install button.
+5. Wait for the installation to complete.
+6. Observe that the button updates to ""Activate"", but there is no ""Live Preview"" button.
+7. Install the second theme in the results list.
+8. Wait for the installation to complete.
+9. Observe that both the ""Activate"" and ""Live Preview"" buttons are correctly displayed.
+
+Expected Results:
+
+All installed theme cards in the results should display both:
+- Activate
+- Live Preview
+
+Actual Results:
+
+The first theme card only displays:
+- Activate
+
+The ""Live Preview"" button is missing.
+
+Subsequent installed theme cards correctly display both buttons.",huzaifaalmesbah
+Future Releases,53333,Better handling for forced plugin autoupdates,,Upgrade/Install,,normal,normal,Awaiting Review,defect (bug),new,has-patch,2021-06-04T07:23:35Z,2021-11-04T00:41:57Z,"When an auto-update for a plugin is forced from WordPress.org (for security purposes), and the update is not to the latest current release, we're forced to adjust the API response in a way which can confuse some WordPressers
+
+For example, Let's say `ACME Widget` has released three major versions, `1.0, 2.0, 3.0` and a security vulnerability is found that allows an RCE attack. Since each version of the plugin is significantly different they release `1.1, 2.1, 3.1` and request the Plugins Security team to perform an autoupdate.
+
+Currently, the flow is that a site with 1.0 installed is:
+ - Yesterday the UI showed an update to 3.0
+ - Today the UI shows an update available, 1.1 NOT 3.0
+ - If possible, the Auto Update will push the site from 1.0 => 1.1, and email the user about the update occurring.
+ - If not possible, the site will just show 1.1 as the latest release (Although WordPress.org will show 3.1)
+ - Once the site is running 1.1, they'll see an update to 3.1.
+
+I would like to adjust this so that:
+ - The UI always shows the latest version, 3.1
+ - The autoupdate attempts to push the site to 1.1
+ - The site isn't forced to go 1.0 -> 1.1 -> 3.1 to upgrade manually, and can instead upgrade from 1.0 directly to 3.1
+
+This causes confusion for some people when they receive an email saying a plugin was autoupdated, but it wasn't to the latest version of a plugin, and even more confusing when the latest release was a few days ago.
+
+#51695 would be of benefit here too, as the email will then include a note that it was a security update.
+
+The way I envision this happening, is adjusting the API response for plugins/themes.
+For example, here's a current response:
+{{{
+{
+  ""plugins"": {
+    ""acme/widgets.php"": {
+      ""id"": ""w.org/plugins/acme-widgets"",
+      ""slug"": ""acme-widgets"",
+      ""plugin"": ""adme/widgets.php"",
+      ""new_version"": ""1.1"",
+      ""url"": ""https://wordpress.org/plugins/acme-widgets/"",
+      ""package"": ""https://downloads.wordpress.org/plugin/acme-widgets.1.1.zip"",
+      ""autoupdate"": true,
+   }
+}
+}}}
+
+and here's what I'm thinking:
+{{{
+{
+  ""plugins"": {
+    ""acme/widgets.php"": {
+      ""id"": ""w.org/plugins/acme-widgets"",
+      ""slug"": ""acme-widgets"",
+      ""plugin"": ""adme/widgets.php"",
+      ""new_version"": ""3.1"",
+      ""url"": ""https://wordpress.org/plugins/acme-widgets/"",
+      ""package"": ""https://downloads.wordpress.org/plugin/acme-widgets.3.1.zip"",
+      ""upgrade_notice"": ""Fix a bug"",
+      ""autoupdate"": [ {
+          ""new_version"": ""1.1"",
+          ""package"": ""https://downloads.wordpress.org/plugin/acme-widgets.1.1.zip"",
+          ""upgrade_notice"": ""Security update, fix bugs"",
+      } ],
+   }
+}
+}}}
+
+Notes
+ - The additional data is minimal and not duplicating existing fields
+ - The plugins update API would need to be bumped to a `1.2` endpoint, to change the output based on the client revision.
+ - If the site has auto-updates enabled for the plugin, it'd attempt the 3.1 update rather than the minimal 1.1 first.
+ - The API response supports the ability to have multiple versions presented, but currently this is based on the assumption of a singular item, just a bit of future proofing.
+
+An attached PR explores this idea, although will be pending implementation on WordPress.org prior to it being testable. I've got a draft `1.2` endpoint that works like this, and will follow up with that next week pending feedback from others.",dd32
+Future Releases,54582,Problem with deleting old files at the end of a core update when the filesystem is case-insensitive,SergeyBiryukov*,Upgrade/Install,,high,major,Future Release,defect (bug),accepted,dev-feedback,2021-12-05T22:53:38Z,2025-07-07T17:32:53Z,"WP 5.9 updates the external Requests library (used by [https://developer.wordpress.org/reference/functions/wp_remote_get/ wp_remote_get()], et. al).  As part of that update, a number of filenames have changed in case only, e.g.
+
+* wp-includes/Requests/IRI.php => wp-includes/Requests/Iri.php
+* wp-includes/Requests/Transport/cURL.php => wp-includes/Requests/Transport/Curl.php
+
+When updating to 5.9-beta1 via `wp-cli` on a system that uses a case-insensitive filesystem (not only Windows, but that's the most obvioous example) via the `wp core update --version=5.9-beta` command, all those files that have been renamed in case only get incorrectly deleted (in [https://github.com/wp-cli/core-command/blob/5d5cc4631381cad926b5c73841df31250cc8ff5e/src/Core_Command.php#L1352 Core_Command::cleanup_extra_files()]) which results in PHP fatal error(s).  This was discovered during the 5.9-beta1 release party, and an [https://github.com/wp-cli/core-command/issues/195 issue was created] against that wp-cli command.
+
+Core has it's own means on deleting files from previous releases, but it doesn't come into play until a major release package to built.  [https://core.trac.wordpress.org/browser/trunk/src/wp-admin/includes/update-core.php#L21 wp-admin/includes/update-core.php] defines the `$_old_files` array that contains files from all previous WP versions that should be deleted by core after an update has been performed.  That array is not amended until just before the `major` version package is created (see [https://make.wordpress.org/core/handbook/about/release-cycle/releasing-major-versions/#dry-run Releasing Major Versions] in the Core Handbook].
+
+I've been experimenting and I think the exact same thing will happen when 5.9 is is released and sites are updated via the Dashboard.
+
+To test this hypothesis I did the following on a Windows machine (with basically a WAMP stack):
+
+1. Installed 5.8.2
+2. Edited `wp-admin/includes/class-core-upgrader.php` and added `global $_old_files; $_old_files[] = 'wp-includes/Requests/IRI.php';` just before [https://core.trac.wordpress.org/browser/trunk/src/wp-admin/includes/class-core-upgrader.php#L172 line 172].  This simulates that file being added to the `$_old_files` array in [https://core.trac.wordpress.org/browser/trunk/src/wp-admin/includes/update-core.php#L21 wp-admin/includes/update-core.php] of the 5.9 release package.
+3. Added `define( 'WP_AUTO_UPDATE_CORE', 'beta' );` to `wp-config.php`.  This allows core to update to 5.9-beta1 in `Dashboard > Updates` (without the need for wp-cli nor the [https://wordpress.org/plugins/wordpress-beta-tester Beta Tester plugin].
+4. Went to `Dashboard > Updates` and clicked on the `Update to version 5.9-beta1` button
+5. When the update finished, I looked on disk and found that neither `wp-includes/Requests/IRI.php` nor `wp-includes/Requests/Iri.php` existed
+6. Went back to `Dashboard > Updates` (which causes [https://developer.wordpress.org/reference/functions/wp_version_check/ wp_version_check()], and thus `wp_remote_get()`, to be called...resulting in a fatal error (`Fatal error: Uncaught Error: Class 'WpOrg\Requests\Iri' not found in ABSPATH\wp-includes\Requests\Requests.php on line 682`)
+
+One might thing that to avoid this problem, any files whose name case in case only just shouldn'd be added to `$_old_files`.  Unfortunately, that would be bad for sites with case-senstive filesystems, because then files with both filenames would exist on disk after the update (e.g., both `wp-includes/Requests/Iri.php` and /wp-includes/Requests-IRI.php`).
+
+To prove this to myself, I then did the following on a machine with a case-sensitive filesystem (centos 7):
+
+1. installed 5.8.2
+2. Added `define( 'WP_AUTO_UPDATE_CORE', 'beta' );` to `wp-config.php`
+3. Went to `Dashboard > Updates` and clicked on the `Update to version 5.9-beta1` button
+4. When the update finished, I looked on disk and found that both `wp-includes/Requests/IRI.php` and `wp-includes/Requests/Iri.php` existed
+5. Rolled back to 5.8.2
+6. Edited `wp-admin/includes/class-core-upgrader.php and added `global $_old_files; $_old_files[] = 'wp-includes/Requests/IRI.php';` just before line 172
+7. Went to `Dashboard > Updates` and clicked on the `Update to version 5.9-beta1` button
+8. When the update finished, I looked on disk and found that only `wp-includes/Requests/Iri.php` existed, as it should be
+
+As mentioned, I've only tested these hypotheses on Windows and linux (centos).  It would be great if someone could test on MacOS (in both it's case-sensitive and case-insensitive filesystem configurations)!!!
+
+What do I think should be done to solve this?  The ""delete old files"" routines in both core and wp-cli should check whether the filesystem is case-insensitive and, if so, not delete files whose names have changed only in case (note: the current [https://github.com/wp-cli/core-command/pull/196 PR] against wp-cli's `wp core update` command doesn't yet do this).  I've been experimenting with how to detect whether the filesystem is case-insensitive (hint: just checking the OS is **not** sufficient, for a number of reasons).  I'll add some comments about this after I finish opening this ticket.
+
+Related: #54546, #54547, https://github.com/wp-cli/core-command/issues/195",pbiron
+Future Releases,54589,"Audit and preload current ""from"" version files into memory before upgrading filesystem to the ""to"" version",,Upgrade/Install,2.7,normal,normal,Future Release,enhancement,new,has-patch,2021-12-06T14:31:04Z,2022-06-09T06:42:35Z,"Follow-up to #54546.
+
+Some terms for clarity:
+* current ""from"" version: the current version of WordPress on the site
+* new ""to"" version: the version of WordPress that the site will be upgraded to after the upgrade process is complete 
+
+== The Problem
+
+In the `wp-admin/includes/update-core.php` file, the filesystem is upgraded to the new ""to"" version before all of the upgrader process is completed.
+
+What happens if the rest of the upgrader process doesn't yet have its code loaded into memory?
+
+* Fatal error, for example #54546
+* Unexpected behavior due to intermingling of ""from"" and ""to"" version of code
+
+A fatal error happened in #54546 when cURL timed out and attempted to throw an exception when its file hadn't yet been loaded into memory. The exception class was changed, which would be handled by the ""to"" version autoloader but was not recognized by the ""from"" version autoloader in memory.
+
+While #54546 is a specific instance, it revealed a fundamental problem in Core's upgrader.
+
+== The Goal
+
+Ensure all files from the current (""from"") version of WordPress that may be needed during the upgrade process are loaded into memory ''before'' upgrading the filesystem and database to the ""to"" version of WordPress.
+
+== Audit and Preload current ""from"" version files into memory
+
+An audit will be needed to identify all of the files that are or could be used during the upgrade process, including alternative paths such as errors which may have dependencies.
+
+A preloader mechanism will be needed capable of loading nested directories (such as loading an entire library or API into memory such as Requests) and individual files.
+
+Consideration will be needed for:
+* differences in current ""from"" versions of files and code
+* possibly for downgrades from ""to"" version back to the ""from"" version
+* case-insensitive filesystems as identified in #54582
+
+Props to @jrf, @pbiron, @costdev, @schlessera, @sergeybiryukov, and @mkaz for extensive investigation and testing.",hellofromTonya
+Future Releases,60835,Fix and improve handling of uploading of font files,,Upload,6.5,normal,normal,Future Release,defect (bug),new,dev-feedback,2024-03-24T20:04:05Z,2025-01-30T20:59:08Z,"Follow up to #60652 and [57868].
+
+As discussed at https://github.com/WordPress/wordpress-develop/pull/6211 the code that enables uploading of font files by replacing the output of `wp_handle_upload()` by using the `upload_dir` filter is not the best solution. In addition it implements nested filters that can be pretty confusing so understand and/or use for plugin and theme authors.
+
+A more straightforward solution is needed for this and similar cases in the future.",azaozz
+Future Releases,24251,Reconsider SVG inclusion to get_allowed_mime_types,,Upload,,normal,normal,Awaiting Review,enhancement,reopened,dev-feedback,2013-05-02T19:36:57Z,2026-02-12T11:54:50Z,"There are some who think SVG should be included in core as an allowed mime type.  Makes fine enough sense to me, since there is a good argument for it, and we have support for WordPerfect documents...so there's that.
+
+Related: #20990",JustinSainton
+Future Releases,58001,Lazy load user capabilities in WP_User object,spacedmonkey,Users,,normal,normal,Future Release,enhancement,assigned,changes-requested,2023-03-28T14:59:03Z,2026-09-29T22:22:08Z,"WP_User object are used throughout WordPress and are loaded on the front end [https://github.com/WordPress/wordpress-develop/blob/907eb2893f331f5d9cda1f277d3dd3137deb0f50/src/wp-includes/class-wp-query.php#L4715 in WP_Query]. This means creating a WP_User object and this calls `for_site` method. This calls to user meta and setups capability data. For a page with multiple users on it, this setup of users, can be done multiple times. Loading user meta for all the users, can be a problem, as this can be a lot of rows of data. For example, this can result in 150 rows being loaded from the database for just 10 users. For multisites or sites that have plugins that are heavy users of user meta, that number can get much higher. 
+
+User meta is only loaded along with users, as it is needed for capability data. To improve performance, find someway to lazy load the capability only when they are used and also lazily load user meta at the same time.  ",spacedmonkey
+Future Releases,38133,"Core widget fields fail to render value of ""0"" when empty() checks are used",stevenkword,Widgets,2.6,normal,normal,Future Release,defect (bug),reviewing,has-patch,2016-09-22T19:52:55Z,2025-07-29T11:27:40Z,"If you put a single zero 0 the instance property for in many default widgets, it won't output any thing if an `empty()` check is used since `empty( '0' ) === true`. You can try putting a 0 in any widget title or content. It works if you put 00 or anything else.
+
+The reason being our use of `empty( $variable )` and `! empty( $variable )` in the default widgets. `empty` returns FALSE if var exists and has a non-empty, non-zero value.
+
+So it will be better to use `isset( $variable) && $variable != ''` instead. Wanted to submit a patch but wanted to know if above method will be the best one.",hardeepasrani
+Future Releases,42743,Disable wp_options autoload for inactive widgets,pbearne,Widgets,,normal,normal,Future Release,enhancement,assigned,,2017-11-29T04:25:59Z,2025-01-15T16:55:23Z,"Options/settings for all widgets are saved in wp_options with autoload=yes, but autoload is enabled for the wp_options even for deactivated widgets.
+
+On sites with many widgets installed (but not even activated), the size of data transferred from the DB to the PHP host on each and every page request can add significant overhead and introduce noticeable slowdowns.
+
+I can't see a reason why autoload can't be disabled on deactivation of a widget, preloaded on navigation to the widget settings page, and then re-enabled when said widget is activated.",ComputerGuru
+Future Releases,18315,Add an index to the GUID column in the posts table,,Database,3.2.1,normal,normal,,enhancement,reopened,dev-feedback,2011-08-02T04:31:01Z,2019-06-04T19:22:38Z,"Running queries on the GUID column in the posts table is slow because the column is not indexed. The attached patch adds an index.
+
+Note, this affects ticket #18286 - I will update that ticket with appropriate patches to reflect this request.",alexkingorg
+Future Releases,23309,Not all WP_Query::query_vars get updated during WP_Query::get_posts(),,Query,,normal,normal,,defect (bug),new,needs-unit-tests,2013-01-28T15:40:56Z,2026-04-09T10:50:11Z,"There is a lot of logic within the WP_Query::get_posts() method that fills in missing query vars with defaults and manipulates others based on the rest of the query.  However, some of the final states for many of the variables aren't updated in the WP_Query::query_vars array.  For example, the post type is lost as a local variable and post_status is used for building compiling mysql expressions, but never directly updated.
+
+The result is that any plugins that want to recreate the query for another system, (ie, an external search provider) must directly copy much of the business logic that WP_Query::get_posts() has embedded in it in order to fill in for the incomplete query_var array.
+
+",prettyboymp
+Future Releases,49278,Improve meta query,,Query,5.3.2,normal,normal,,enhancement,reopened,dev-feedback,2020-01-23T16:32:32Z,2025-02-27T01:04:20Z,"When having a couple of Meta Query statements in WP_Query the query becomes very slow. I think this is because of the way the JOINs are created. 
+
+Currently the JOINs are only done on the Post ID. The JOIN can become enormous, which means that filtering (the WHERE part) will take a lot of time. 
+
+I checked /wp-includes/class-wp-meta-query.php and posted the code between line 557 and 573 .
+{{{
+// JOIN clauses for NOT EXISTS have their own syntax.
+			if ( 'NOT EXISTS' === $meta_compare ) {
+				$join .= "" LEFT JOIN $this->meta_table"";
+				$join .= $i ? "" AS $alias"" : '';
+
+				if ( 'LIKE' === $meta_compare_key ) {
+					$join .= $wpdb->prepare( "" ON ($this->primary_table.$this->primary_id_column = $alias.$this->meta_id_column AND $alias.meta_key LIKE %s )"", '%' . $wpdb->esc_like( $clause['key'] ) . '%' );
+				} else {
+					$join .= $wpdb->prepare( "" ON ($this->primary_table.$this->primary_id_column = $alias.$this->meta_id_column AND $alias.meta_key = %s )"", $clause['key'] );
+				}
+
+				// All other JOIN clauses.
+			} else {
+				$join .= "" INNER JOIN $this->meta_table"";
+				$join .= $i ? "" AS $alias"" : '';
+				$join .= "" ON ( $this->primary_table.$this->primary_id_column = $alias.$this->meta_id_column )"";
+			}
+}}}
+
+Apparantly when using the 'NOT EXISTS' compare the 'AND $alias.meta_key' part is added to the JOIN, but when NOT using the 'NOT EXISTS' compare this part is not there. 
+This means that when NOT using the 'NOT EXISTS' compare the a lot of data is joined in the temporary data set. I played with this part a bit and when adding the 'AND $alias.meta_key' part to those JOINs as well it sped up my query a lot. My query went from 38 seconds to 0.01 seconds with the same results. 
+
+My 'test' code:
+{{{
+// JOIN clauses for NOT EXISTS have their own syntax.
+			if ( 'NOT EXISTS' === $meta_compare ) {
+				$join .= "" LEFT JOIN $this->meta_table"";
+				$join .= $i ? "" AS $alias"" : '';
+
+				if ( 'LIKE' === $meta_compare_key ) {
+					$join .= $wpdb->prepare( "" ON ($this->primary_table.$this->primary_id_column = $alias.$this->meta_id_column AND $alias.meta_key LIKE %s )"", '%' . $wpdb->esc_like( $clause['key'] ) . '%' );
+				} else {
+					$join .= $wpdb->prepare( "" ON ($this->primary_table.$this->primary_id_column = $alias.$this->meta_id_column AND $alias.meta_key = %s )"", $clause['key'] );
+				}
+
+				// All other JOIN clauses.
+			} else {
+				$join .= "" INNER JOIN $this->meta_table"";
+				$join .= $i ? "" AS $alias"" : '';
+
+				$valid_compares = array(
+                    '=',
+                    '!=',
+                    '>',
+                    '>=',
+                    '<',
+                    '<=',
+                    'IN',
+                    'NOT IN',
+                    'EXISTS',
+                );
+				if( in_array($meta_compare, $valid_compares ) && !empty($clause['key']) && 'LIKE' !== $meta_compare_key ) {
+                    $join .= $wpdb->prepare( "" ON ( $this->primary_table.$this->primary_id_column = $alias.$this->meta_id_column AND $alias.meta_key = %s )"", $clause['key']);
+                }
+				else {
+                    $join .= "" ON ( $this->primary_table.$this->primary_id_column = $alias.$this->meta_id_column )"";
+                }
+			}
+}}}
+
+I'm not really sure if this works in all cases (with all compare/compare_key variations), but I think it would be good to check it out (on Github I've seen that the last improvements here have been done at least 2 years ago). 
+
+For now I 'solved' my slow query by parsing the JOIN and WHERE on the filter 'get_meta_sql' and add the 'AND' part in the JOIN. 
+
+Below the query that gets created before and after the changes.
+
+Query before (38 seconds):
+{{{
+SELECT SQL_CALC_FOUND_ROWS  riff19_posts.ID FROM riff19_posts  INNER JOIN riff19_postmeta ON ( riff19_posts.ID = riff19_postmeta.post_id )  INNER JOIN riff19_postmeta AS mt1 ON ( riff19_posts.ID = mt1.post_id )  INNER JOIN riff19_postmeta AS mt2 ON ( riff19_posts.ID = mt2.post_id )  INNER JOIN riff19_postmeta AS mt3 ON ( riff19_posts.ID = mt3.post_id ) JOIN riff19_icl_translations wpml_translations
+							ON riff19_posts.ID = wpml_translations.element_id
+								AND wpml_translations.element_type = CONCAT('post_', riff19_posts.post_type)  WHERE 1=1  AND ( 
+  ( riff19_postmeta.meta_key = 'pinplugin_event_start_date' AND CAST(riff19_postmeta.meta_value AS DATE) < '2020-01-23' ) 
+  OR 
+  ( 
+    ( 
+      ( mt1.meta_key = 'pinplugin_event_start_date' AND CAST(mt1.meta_value AS DATE) = '2020-01-23' ) 
+      AND 
+      mt2.meta_key = 'pinplugin_event_start_time' 
+      AND 
+      ( mt3.meta_key = 'pinplugin_event_end_time' AND CAST(mt3.meta_value AS TIME) <= '17:19:19' )
+    )
+  )
+) AND riff19_posts.post_type = 'event' AND (riff19_posts.post_status = 'publish' OR riff19_posts.post_status = 'acf-disabled' OR riff19_posts.post_status = 'private') AND ( ( ( wpml_translations.language_code = 'nl' OR 0 ) AND riff19_posts.post_type  IN ('post','page','attachment','wp_block','location','person','news','blog','case','service','event','vacancy','whitepaper' )  ) OR riff19_posts.post_type  NOT  IN ('post','page','attachment','wp_block','location','person','news','blog','case','service','event','vacancy','whitepaper' )  ) GROUP BY riff19_posts.ID ORDER BY riff19_posts.menu_order, CAST(riff19_postmeta.meta_value AS DATE) DESC, CAST(mt2.meta_value AS TIME) DESC, CAST(mt3.meta_value AS TIME) DESC LIMIT 0, 12
+}}}
+
+Query after (0.0028 seconds):
+{{{
+SELECT SQL_CALC_FOUND_ROWS  riff19_posts.ID FROM riff19_posts  INNER JOIN riff19_postmeta ON ( riff19_posts.ID = riff19_postmeta.post_id AND riff19_postmeta.meta_key = 'pinplugin_event_start_date') INNER JOIN riff19_postmeta AS mt1 ON ( riff19_posts.ID = mt1.post_id AND mt1.meta_key = 'pinplugin_event_start_date') INNER JOIN riff19_postmeta AS mt2 ON ( riff19_posts.ID = mt2.post_id AND mt2.meta_key = 'pinplugin_event_start_time') INNER JOIN riff19_postmeta AS mt3 ON ( riff19_posts.ID = mt3.post_id AND mt3.meta_key = 'pinplugin_event_end_time') JOIN riff19_icl_translations wpml_translations
+							ON riff19_posts.ID = wpml_translations.element_id
+								AND wpml_translations.element_type = CONCAT('post_', riff19_posts.post_type)  WHERE 1=1  AND ( 
+  ( riff19_postmeta.meta_key = 'pinplugin_event_start_date' AND CAST(riff19_postmeta.meta_value AS DATE) < '2020-01-23' ) 
+  OR 
+  ( 
+    ( 
+      ( mt1.meta_key = 'pinplugin_event_start_date' AND CAST(mt1.meta_value AS DATE) = '2020-01-23' ) 
+      AND 
+      mt2.meta_key = 'pinplugin_event_start_time' 
+      AND 
+      ( mt3.meta_key = 'pinplugin_event_end_time' AND CAST(mt3.meta_value AS TIME) <= '17:18:05' )
+    )
+  )
+) AND riff19_posts.post_type = 'event' AND (riff19_posts.post_status = 'publish' OR riff19_posts.post_status = 'acf-disabled' OR riff19_posts.post_status = 'private') AND ( ( ( wpml_translations.language_code = 'nl' OR 0 ) AND riff19_posts.post_type  IN ('post','page','attachment','wp_block','location','person','news','blog','case','service','event','vacancy','whitepaper' )  ) OR riff19_posts.post_type  NOT  IN ('post','page','attachment','wp_block','location','person','news','blog','case','service','event','vacancy','whitepaper' )  ) GROUP BY riff19_posts.ID ORDER BY riff19_posts.menu_order, CAST(riff19_postmeta.meta_value AS DATE) DESC, CAST(mt2.meta_value AS TIME) DESC, CAST(mt3.meta_value AS TIME) DESC LIMIT 0, 12
+}}}",jillebehm

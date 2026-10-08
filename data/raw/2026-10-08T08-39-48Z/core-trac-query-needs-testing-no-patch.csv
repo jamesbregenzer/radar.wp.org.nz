@@ -1,0 +1,263 @@
+﻿id,Summary,Status,Keywords,Owner,Type,Priority
+40339,If $home_path=='wp' then WP::parse_request() will remove 'wp' from 'wp-json/wc/v1/products' in $pathinfo,new,needs-testing has-patch has-unit-tests,,defect (bug),high
+7965,Database upgrade complete message should be an admin notice,new,has-patch needs-testing,,enhancement,normal
+13743,Ability to choose a network default theme,reopened,has-patch has-screenshots needs-testing,,enhancement,normal
+14060,"Misleading ""You do not have sufficient permissions to access this page.""",reviewing,has-patch has-screenshots has-test-info dev-feedback 2nd-opinion has-unit-tests early needs-testing,SergeyBiryukov,defect (bug),normal
+15467,Multisite with separate users table,reopened,needs-codex needs-testing,,feature request,normal
+15865,Make it easy to disable options / user settings,reopened,needs-refresh needs-testing,,enhancement,normal
+15955,move_uploaded_file mangles non-ascii characters on Windows platforms,accepted,close needs-testing,SergeyBiryukov,defect (bug),normal
+16293,"In multisite installs, users with id 1 can't be deleted",reopened,has-patch needs-testing needs-unit-tests dev-feedback,,defect (bug),normal
+16460,Category/tag converter should support all public taxonomies,new,needs-testing needs-patch,,feature request,normal
+16495,Make iso8601_to_datetime a bit more compliant,new,needs-patch needs-refresh needs-testing,,defect (bug),normal
+17374,get_pages() with child_of forgets sort,assigned,dev-feedback needs-testing needs-refresh,DrewAPicture,defect (bug),normal
+17382,XMLRPC wp_getUsersBlogs Scalability,new,needs-patch needs-testing,,defect (bug),normal
+17394,Network Admin -> Sites -> Users not report correctly,reopened,needs-testing needs-patch,,defect (bug),normal
+18613,get_adjacent_post() doesn't find private posts,new,needs-testing,,enhancement,normal
+19173,Issues with wp_editor() when used inside of a meta box.,reopened,has-patch needs-testing,azaozz,defect (bug),normal
+20109,Valid htaccess rule causes 404 after upgrade to 3.3.1,new,needs-patch needs-testing,,defect (bug),normal
+20746,Accessing non-existing theme folder in Network install gives 500 error,reopened,needs-testing has-patch dev-feedback 2nd-opinion,,defect (bug),normal
+20854,PHP warning caused by missing 'spam' and 'deleted' fields in a custom user table,reopened,needs-testing needs-patch,Nikolaos Raftopoulos,defect (bug),normal
+20859,Theme Installer: Preview should be scrollable on iPad and Kindle Fire,new,needs-patch needs-testing,,defect (bug),normal
+21546,Site Settings page is a hot mess,reopened,needs-patch needs-testing,,enhancement,normal
+21700,Problem obtaining the Feed of an archive of tag “RSS”,new,needs-testing needs-patch,,defect (bug),normal
+21989,update_option() calls sanitize_option() twice when option does not exist,accepted,dev-feedback has-patch needs-testing has-unit-tests,pbearne,defect (bug),normal
+22041,Importer dies silently when multisite upload limit is reached,reopened,needs-patch needs-testing,,enhancement,normal
+22330,Optimize regexes to remove protocol from URL,new,has-patch needs-unit-tests needs-testing,,enhancement,normal
+22367,"Usernames with ""@"" char are assumed email addresses, causing incorrect look-up in several places",reviewing,has-patch needs-testing,johnjamesjacoby,defect (bug),normal
+22558,Attachment term counts feels/are inaccurate,new,2nd-opinion needs-testing,,defect (bug),normal
+23197,"wp-activate.php, without explanation, does not load site plugins",reopened,needs-testing has-patch,,defect (bug),normal
+23464,WXR importer: Poor UX when creating new user to import to,new,needs-patch needs-testing,,enhancement,normal
+24241,Whitelist trackbacks/pingbacks from own site,new,has-patch needs-testing has-unit-tests needs-refresh,,enhancement,normal
+24963,"IIS Multisite, Suspected bug in web.config code for URL Rewrite (404 wp-login)",new,needs-testing,,defect (bug),normal
+25122,First nav menu automatically adds all pages (including sub pages) but doesn't preserve page hierarchy,reopened,needs-patch needs-testing,nacin,enhancement,normal
+25714,Notices with translation upgrade,new,needs-patch needs-testing,,defect (bug),normal
+26524,Quick edit form looks strange for localized version,new,needs-patch needs-testing,,defect (bug),normal
+26571,"Increase flexibility of ""At a Glance"" Dashboard Widget to match ""Right Now"" Widget",reviewing,has-patch needs-testing needs-docs,chriscct7,enhancement,normal
+26848,Image thumbnail on large images with ratio of 4:1,assigned,needs-patch needs-testing,markoheijnen,defect (bug),normal
+26868,"Function 'make_clickable()' doesn't make hyperlinks from explicit URLs using the `mailto:`, `tel:` and other schemes that do not start with `//`",new,needs-unit-tests needs-testing needs-refresh 2nd-opinion,,enhancement,normal
+27079,Very long waiting if we have a lot taxonomy terms.,new,needs-patch needs-testing,,enhancement,normal
+27148,comments in page code converted to displayed text upon submission,new,needs-patch needs-testing,,defect (bug),normal
+27165,Incorrect nonce supplied when authenticated session expires,new,needs-testing,,defect (bug),normal
+27832,All sites automatically marked as archived after upgrade,new,needs-patch needs-testing,,defect (bug),normal
+28212,determine_current_user filter with priority <10 gets overridden,new,needs-testing has-patch has-unit-tests,,defect (bug),normal
+28297,Losing custom nav menu data while importing / exporting XML,new,needs-patch needs-testing,,defect (bug),normal
+29261,Enqueue script in Widget,new,needs-testing,,defect (bug),normal
+29368,Pasted media do not appear in the library,new,needs-patch needs-testing,,feature request,normal
+29418,Taxonomy archive query not including all of its post types.,reviewing,needs-testing dev-feedback,SergeyBiryukov,defect (bug),normal
+29462,comment pagination in reverse order should display a full number of the latest comments,reopened,needs-patch needs-testing 2nd-opinion,,defect (bug),normal
+29821,bulk_edit_custom_box hook causes tags to display within created fieldset,new,needs-testing needs-patch,,defect (bug),normal
+33073,"Some strings need ""no HTML entities"" translator comments",assigned,good-first-bug has-patch needs-refresh dev-feedback needs-testing,audrasjb,enhancement,normal
+33629,"Post excerpts have become WAY too long after updating to WP 4.3, please fix.",new,needs-testing,,defect (bug),normal
+33821,redirect_canonical does not consider port in $compare_original,reopened,has-patch has-test-info has-unit-tests needs-testing changes-requested,,defect (bug),normal
+34130,Thickbox previous arrow,new,needs-testing close,,defect (bug),normal
+34188,Post lockdown,new,needs-patch needs-testing,,defect (bug),normal
+34631,Extra compat for mbstring: mb_strpos(),new,has-patch needs-testing 2nd-opinion needs-unit-tests,,enhancement,normal
+34683,Default .htaccess config creates rewrite infinite loops for path-based multisite installations,new,needs-patch needs-testing,,defect (bug),normal
+34848,Add support for updating post meta in bulk,assigned,has-patch has-unit-tests needs-testing close,chriscct7,enhancement,normal
+35204,Refresh HiDPI support,new,needs-patch needs-testing,,defect (bug),normal
+35871,before_delete_post incorrectly triggered from edit.php to post.php,new,needs-testing,,defect (bug),normal
+36171,Proposed clean up of get_the_category_list() and link filter,new,needs-testing needs-unit-tests,,enhancement,normal
+36201,Admin Pagination URLs Use Wrong Hostname,reopened,has-patch needs-testing dev-feedback,,defect (bug),normal
+36882,Add a reusable admin CSS class for destructive actions,accepted,has-patch needs-testing dev-feedback,joedolson,enhancement,normal
+37255,Update attachment functions to accept a post object in addition to ID,accepted,needs-testing needs-dev-note needs-test-info 2nd-opinion close,johnbillion,enhancement,normal
+38067,New filter `wp_post_lock_status`,new,has-patch has-test-info needs-testing,,enhancement,normal
+38238,Sorting a list table by some kind of count should default to DESC initially,reviewing,has-patch has-unit-tests needs-testing,helen,enhancement,normal
+38936,Alter Table Always Expects a COLUMN; Crashes on a CONSTRAINT,new,needs-testing dev-feedback,,defect (bug),normal
+39003,menu_page_url() not working on Ajax call,new,needs-testing reporter-feedback,,defect (bug),normal
+39447,Improvement to the get_the_posts_navigation,reviewing,needs-testing needs-patch needs-unit-tests,SergeyBiryukov,enhancement,normal
+40032,Automatic redirects with _wp_old_slug won't mantain GET parameters if present,new,has-patch needs-testing has-unit-tests,,defect (bug),normal
+40241,Showing wrong Core current version on the update page.,new,has-patch needs-testing,,defect (bug),normal
+40370,"add_image_sizes does not create the ""crop position"" versions of the image",reopened,good-first-bug has-patch 2nd-opinion has-unit-tests needs-testing,,enhancement,normal
+40434,Optimize SQL in Admin - In the Post/CPT List `wp-admin/edit.php` > the function get_posts(),new,needs-testing needs-patch,,enhancement,normal
+40485,Add function for retrieving metadata from registered script,new,has-patch has-unit-tests needs-testing 2nd-opinion,,feature request,normal
+40790,Ability to filter $post_type in _get_last_post_time,new,has-patch needs-testing dev-feedback,,enhancement,normal
+40940,Twenty Twelve uses invalid linear-gradient() syntax,assigned,has-patch needs-testing,,defect (bug),normal
+40964,WordPress 4.8 Pasting into editor functionality changed,new,needs-testing,,defect (bug),normal
+41081,"Improve Custom Menu widget, show notification if menu is empty or no menu selected",assigned,good-first-bug has-patch 2nd-opinion needs-testing needs-screenshots needs-refresh,mdifelice,enhancement,normal
+41180,ABSPATH definition - incorrect on chrooted vhost,new,has-patch needs-testing,,defect (bug),normal
+41305,Add lazily evaluated translations,assigned,has-patch early dev-feedback needs-testing has-unit-tests,timothyblynjacobs,enhancement,normal
+41358,Shutdown hooks can significantly slow down REST API responses,new,has-patch dev-feedback needs-testing,,defect (bug),normal
+41445,post_parent can prevent media from embedding correctly,reopened,dev-feedback needs-unit-tests has-test-info needs-patch needs-testing,adamsilverstein,defect (bug),normal
+41471,Page dropdown walker must check selected against value field,new,has-patch needs-unit-tests needs-testing,,enhancement,normal
+41990,wp_add_inline_script() does not print if the handler has already processed,new,has-patch 2nd-opinion needs-testing,,defect (bug),normal
+42080,get_site_url() does not always return the appropriate protocol,new,needs-testing,,defect (bug),normal
+42164,Conditional Tags not working when using ugly URL,new,needs-patch needs-unit-tests needs-testing,,defect (bug),normal
+42288,Validation of custom menu link,new,needs-patch needs-testing,,defect (bug),normal
+42329,"Customizer: interacting with text fields in a ""wide"" widget shifts child panel position in Safari.",new,needs-testing,,defect (bug),normal
+42670,Symlinked plugin makes plugin_basename function return wrong basename,assigned,has-unit-tests needs-testing has-patch has-test-info dev-feedback,brianhenryie,defect (bug),normal
+42833,WordPress forces non-ssl login in described circumstance even though FORCE_SSL_ADMIN is set in wp-config,new,needs-testing,,defect (bug),normal
+43010,Attribute Name Escape,new,needs-testing needs-unit-tests has-patch,,enhancement,normal
+43019,Hook to validate post form data before save,new,has-patch needs-testing,,enhancement,normal
+43233,Network transients,new,has-patch 2nd-opinion needs-testing,,enhancement,normal
+43746,Custom post type single post feed returns a 404 if has_archive is set to false when calling register_post_type(),reviewing,2nd-opinion has-patch needs-testing has-unit-tests,SergeyBiryukov,defect (bug),normal
+43749,Update zxcvbn to 4.4.2,assigned,needs-testing needs-refresh,,enhancement,normal
+43879,Add tools for anonymizing of post authors,assigned,"has-patch, needs-testing, needs-unit-tests, 2nd-opinion",tz-media,enhancement,normal
+43885,WP_Role and WP_Roles::get_role() missing Display Name,new,dev-feedback has-patch needs-testing,,enhancement,normal
+43899,Move the view mode switcher into screen options for multisite users and sites,new,has-patch has-unit-tests needs-testing,,defect (bug),normal
+44283,Enclosure can't deal with CDN media files - WPCore redirects the URL,new,needs-testing needs-patch has-screenshots 2nd-opinion,,defect (bug),normal
+44284,Remove e.preventDefault(); code line from widgets.js file,new,has-screenshots has-patch needs-testing,,defect (bug),normal
+44445,wp_cache_init() and WP_Object_Cache constructor has a memory leak,assigned,dev-feedback needs-testing,pbearne,defect (bug),normal
+44511,Widgets generated by wp_register_sidebar_widget can not be add via customizer,new,needs-testing reporter-feedback,,defect (bug),normal
+44602,meta_query to support FIND_IN_SET,new,needs-testing,,enhancement,normal
+44641,Customizing Button Text in Custom Media Manager Frame Doesn't Work Anymore,assigned,has-patch needs-testing 2nd-opinion,antpb,defect (bug),normal
+44658,Support BETWEEN for term names in WP_Tax_Query/WP_Term_Query,new,needs-testing has-unit-tests 2nd-opinion needs-dev-note needs-patch,,feature request,normal
+44921,User nicename discovery is slow to return,accepted,has-patch needs-testing has-unit-tests needs-refresh,pbearne,enhancement,normal
+44964,`redirect_guess_404_permalink` doesn't support array in `post_type` var,new,needs-testing dev-feedback has-patch has-unit-tests,,defect (bug),normal
+44973,Issues with $wpdb->get_col_info,new,needs-testing,,defect (bug),normal
+44980,When using a mobile browser (iOS 12) and the Visual Editor you won’t be able to properly select/highlight text,new,needs-testing,,defect (bug),normal
+45013,Wrong links when installing in subdirectory =,new,has-screenshots needs-testing,,defect (bug),normal
+45033,Add TIDAL to oEmbed whitelist,reopened,has-patch needs-testing,,defect (bug),normal
+45354,Adding index for meta_key and post_id in postmeta,new,needs-testing dev-feedback has-patch has-unit-tests,,enhancement,normal
+45897,Chinese page uri dump fail,new,needs-testing has-patch,,defect (bug),normal
+45910,Improve and extend focus styles for Windows High Contrast mode,assigned,needs-testing has-patch,rcreators,defect (bug),normal
+46017,"""Mine"" comment count isn't updated when replying to or moderating a comment.",new,needs-testing has-patch has-unit-tests,,defect (bug),normal
+46033,Please fix redirect in wp-login.php,new,needs-testing,,defect (bug),normal
+46190,Firefox Emoji Detection Slow,new,needs-testing,,enhancement,normal
+46540,Admin bar CSS shouldn't be added in the customizer,new,has-patch needs-testing 2nd-opinion,,defect (bug),normal
+46869,Fix PHPCS configuration,new,needs-testing,,defect (bug),normal
+46905,Erase Personal Data without verify enable erase option and change status issue,new,has-screenshots needs-testing 2nd-opinion,,defect (bug),normal
+46947,‘❤’ in Comment Generates DB Error,reopened,needs-testing needs-patch reporter-feedback,,defect (bug),normal
+46966,urlencode query string parameters,new,has-patch needs-testing,,defect (bug),normal
+46970,Remove white Space - iPhone 6/7/8,new,needs-design has-screenshots needs-testing needs-patch,,defect (bug),normal
+47187,<!--more--> tag on same line as content prevents any edits to that line,accepted,needs-testing,SergeyBiryukov,defect (bug),normal
+47352,Take into account the current admin email address when rate limiting the recovery mode email,new,servehappy dev-feedback has-patch needs-testing,,defect (bug),normal
+47988,Unexpected behaviour when draft post has the same page_name as published post,new,good-first-bug has-test-info has-patch has-unit-tests needs-testing,,defect (bug),normal
+48193,Improve the WordPress loop,new,has-patch dev-feedback needs-testing has-unit-tests 2nd-opinion,,enhancement,normal
+48328,IIS 7+ with standard FCGI an URL_REWRITE mangles REQUEST_URI,new,needs-patch needs-testing,,defect (bug),normal
+48361,Select Files on iOS doesn't trigger on modal if start on Upload Files tab and switch to Media Library tab,assigned,needs-patch needs-testing,adamsilverstein,defect (bug),normal
+48522,Attachment size not generated when large images uploaded,new,2nd-opinion needs-testing needs-unit-tests has-patch,,defect (bug),normal
+48729,Twenty Twenty: Margin reset for first-child and last-child is overridden for heading and blocks with alignment,new,needs-testing 2nd-opinion,,defect (bug),normal
+48802,Twenty Twenty: Fixed Background Image on Cover template bugs on iPad,new,has-screenshots needs-patch needs-testing,,defect (bug),normal
+49408,Why is the action wp_ajax_wp_link_ajax not using wp_send_json(),new,has-patch needs-testing has-unit-tests,,enhancement,normal
+49865,_unzip_file_pclzip attempting to create directories all the way up to /,new,needs-test-info needs-testing close,,defect (bug),normal
+49948,Site Meta: Adding additional useful functions,new,needs-testing,,enhancement,normal
+50100,Native domain mapping does not handle both WWW and non-WWW versions of a domain - both should work,new,needs-testing,,enhancement,normal
+50422,Prevent Browser Caching From Getting Involved With wp_redirect and wp_safe_redirect (Leaving the Browser to Purely Honor the Redirect Code Used),new,needs-testing has-patch,,enhancement,normal
+50699,Fix and improve arranging metaboxes,accepted,needs-design has-patch has-unit-tests needs-testing,joedolson,enhancement,normal
+50781,500 error caused by customize_changeset_uuid for non-authenticated users,new,needs-unit-tests needs-testing needs-patch 2nd-opinion,,defect (bug),normal
+50787,Consolidate the logic for displaying WP & PHP compatibility messages for themes,accepted,needs-testing needs-patch,SergeyBiryukov,task (blessed),normal
+51004,New sitemaps feature work only on root site in a multisite subdirectory setup,reopened,needs-testing,,defect (bug),normal
+51058,attachment_url_to_postid does not retrieve post ID of really large images,new,has-patch needs-testing,,defect (bug),normal
+51446,CORS issues with QUnit while running tests,new,has-patch needs-testing dev-feedback has-unit-tests needs-refresh,,defect (bug),normal
+51623,Does WordPress run a clean-up cron-job for menu items having the draft status?,new,needs-testing,,defect (bug),normal
+52376,Redirect loop occurs in taxonomy archive with URL-encoded slug.,new,has-patch needs-testing,,defect (bug),normal
+52405,activate_{$plugin} not passing $network_wide boolean to action handler,new,has-patch needs-testing,,defect (bug),normal
+52464,The value of argument passed to the update_option_new_admin_email() is not a valid email.,reviewing,has-patch needs-unit-tests needs-testing needs-test-info reporter-feedback,SergeyBiryukov,defect (bug),normal
+52738,Use of get_object_vars() in sanitize_post() and WP_Post constructor does not handle null byte,new,has-patch has-unit-tests needs-testing changes-requested,,defect (bug),normal
+52848,Widgets z-index issue hides the widget's update button when other widgets remain open,new,needs-testing,,defect (bug),normal
+52879,The SCRIPT_DEBUG constant is ignored when concatenating scripts,new,needs-patch needs-testing needs-refresh,,defect (bug),normal
+53035,Copy suggested policy text to clipboard on click success message is not showing,new,has-screenshots needs-testing needs-refresh,,defect (bug),normal
+53047,"My ""Posts"" page (when a static front is selected) uses the old editor",reopened,needs-testing needs-test-info,,defect (bug),normal
+53136,"Error with ""Add to Reusable blocks"" in WordPress 5.7.1",new,reporter-feedback needs-testing,,defect (bug),normal
+53439,Updating failed. The response is not a valid JSON response.,new,2nd-opinion needs-testing,,defect (bug),normal
+53450,[WP_Meta_Query] Add faster LIKE based 'STARTSWITH' and 'ENDSWITH' compare modes for value query,new,dev-feedback has-patch has-unit-tests early early-like-actually-early needs-testing,,enhancement,normal
+53529,Block based widget admin screen causes a NS_ERROR_FAILURE error in Firefox,reopened,needs-testing needs-patch,,defect (bug),normal
+53552,Inactive Widgets prevent placement of new widget if `multiple` is false,new,needs-testing needs-patch needs-design,,defect (bug),normal
+53732,Widgets option shows blank,new,reporter-feedback needs-testing,,defect (bug),normal
+54016,Media Library: Bulk delete elements in grid view takes very long,new,has-patch 2nd-opinion needs-testing,,enhancement,normal
+54034,Update jQuery UI Touch Punch to the latest version,assigned,has-patch needs-testing needs-test-info dev-feedback changes-requested,Hareesh Pillai,enhancement,normal
+54042,Extending wpdb::prepare() to support IN() operator,new,has-patch dev-feedback needs-testing early has-unit-tests changes-requested,,enhancement,normal
+54151,Dashboard widgets e2e tests,assigned,has-patch needs-testing,justinahinon,enhancement,normal
+54152,Core posts e2e tests,new,has-patch needs-testing has-unit-tests,,enhancement,normal
+54205,jqxhr is undefined inside of deferred.done() when using wp.media to add a custom image upload,new,needs-patch needs-testing has-test-info,,defect (bug),normal
+54293,Expand functionality of themes REST API,new,needs-unit-tests has-patch needs-testing,,enhancement,normal
+54351,Checking for temp update directories may throw warnings,new,needs-patch needs-testing early dev-feedback,,defect (bug),normal
+54546,Fatal error receive while updating WP 5.8.2 to WP 5.9.,new,needs-testing has-patch dev-feedback,,defect (bug),normal
+54758,Front page not embeddable when using a static page_on_front,new,has-patch has-unit-tests needs-testing,,defect (bug),normal
+54931,get_block_template filter not fired when template saved in posts,new,has-patch needs-testing,,defect (bug),normal
+55019,Missing the Upload Featured image and Categories option after update the WP 5.9,new,needs-patch needs-testing has-screenshots,,defect (bug),normal
+55036,Sharpen thumbnails with Imagick adaptiveSharpenImage(),assigned,needs-patch needs-testing close,antpb,enhancement,normal
+55089,ajax `wp_ajax_update_plugin` show download failed when contain another update (eg: translations) with same process fail.,assigned,needs-testing reporter-feedback,,enhancement,normal
+55284,thumbnails issue,new,needs-testing,,defect (bug),normal
+55336,Query strings with reserved characters get wrongly redirected to encoded variant at the root level.,new,2nd-opinion needs-testing has-test-info,,defect (bug),normal
+55469,WP_Filesystem_SSH2::chmod() should use ssh2_sftp_chmod(),new,has-patch needs-testing,,enhancement,normal
+55523,Remove deprecation notice from get_the_excerpt,reviewing,has-patch needs-testing has-unit-tests,,defect (bug),normal
+55597,WordPress 6.0-beta2-53224 not creating .htaccess,assigned,needs-testing needs-patch,,defect (bug),normal
+55691,New site editor uses WP_SITEURL instead of WP_HOME,reviewing,needs-testing has-patch needs-test-info reporter-feedback,audrasjb,defect (bug),normal
+56089,Meta data of menu items not removed from wp_postmeta table after removing the menu item before being saved.,new,needs-test-info needs-testing,,defect (bug),normal
+56090,wp_update_user doesn't update user_activation_key on users with apostrophes in their email,new,needs-testing needs-test-info,,defect (bug),normal
+56320,Update mediaelement.js to the latest version,accepted,has-patch needs-testing 2nd-opinion,adamsilverstein,defect (bug),normal
+56381,WordPress creates invalid web.config -file,new,needs-testing,,defect (bug),normal
+56615,Running `build` scripts on Windows machines produces different results,assigned,needs-testing needs-patch,,defect (bug),normal
+56821,meta_query late row lookup for performance improvement,new,needs-patch needs-testing,,enhancement,normal
+56842,WordPress performance drop due to introduce Gutenberg,new,has-test-info needs-testing,,defect (bug),normal
+56886,Admin facing add site screen missing search engine visibility field,new,good-first-bug has-patch needs-testing,,enhancement,normal
+57083,wp_list_authors and WP Search Users,new,needs-testing reporter-feedback,,defect (bug),normal
+57500,Plugin update results in mixing files of old and new versions,new,needs-testing needs-test-info reporter-feedback,,defect (bug),normal
+57525,Incorrect home link,new,needs-testing,,defect (bug),normal
+57586,term_exists() return type not consistent regarding wp_insert_term(),new,has-patch dev-feedback early needs-dev-note needs-testing,,enhancement,normal
+57731,Bug: WP_User_Query returns wrong user details,new,needs-testing has-test-info,,defect (bug),normal
+57817,Navigation block frame responsive issue,new,needs-testing reporter-feedback,,defect (bug),normal
+57825,Something's wrong with the way the 'admin_init' hook and/or the wp_update_post function works,new,needs-patch dev-feedback needs-testing,,defect (bug),normal
+57858,"If permalink structure is set to /%category%/%postname% , WordPress will match a /0/ path as a category archive",new,has-test-info needs-testing has-patch has-unit-tests,,defect (bug),normal
+57943,Massive SQL statement shown in Dashboard WordPress Events and News. WordPress database error Got a packet bigger than 'max_allowed_packet',new,has-test-info needs-testing reporter-feedback,,defect (bug),normal
+58236,theme.json customTemplates with child themes work wrong,new,needs-testing,,defect (bug),normal
+58416,Media Title field should soft wrap in Media Modal: For better readability/editing of long titles.,new,has-patch has-screenshots has-test-info needs-testing needs-unit-tests,,enhancement,normal
+58693,wordpress posts custom-meta box issue,new,needs-testing,,defect (bug),normal
+58801,Prefetch Block Editor from Posts page,assigned,dev-feedback needs-unit-tests needs-testing has-patch,adamsilverstein,enhancement,normal
+58871,support uca14.0.0 collation in database where available,new,has-patch has-unit-tests needs-testing needs-refresh,,enhancement,normal
+59365,Deprecated notice when calling get_admin_page_title() on some dashboard pages.,new,php81 has-patch needs-testing,,defect (bug),normal
+59845,kritischen Fehler seit Update auf WordPress 6.4,new,needs-testing,,enhancement,normal
+60478,Upgrade to jQuery 4.0,assigned,needs-testing early has-patch,Clorith,task (blessed),normal
+60628,Issues with avif image  imagecreatefromavif not working. Resizing not possible.,assigned,avif has-patch has-unit-tests early reporter-feedback needs-testing,adamsilverstein,defect (bug),normal
+60788,Content-Disposition support in download_url() seems broken,new,has-patch 2nd-opinion needs-testing needs-unit-tests,,defect (bug),normal
+61330,Plugin Dependencies: Refresh plugin-install.php instead of redirecting on activation,new,has-patch needs-testing has-test-info 2nd-opinion needs-unit-tests,,defect (bug),normal
+61391,Maintenance Error on Login After Setting Up WordPress 6.6 Beta 1 on Localhost,reopened,reporter-feedback needs-testing,,defect (bug),normal
+61750,Spacing issues since 6.6 (Gutenberg with Block- or Hybrid Themes),new,needs-patch 2nd-opinion needs-testing,,enhancement,normal
+61885,Twenty Fifteen: Search Block button does not have theme's styling in the editor,new,has-screenshots has-test-info needs-testing,,defect (bug),normal
+61889,Function dbDelta() splits queries on semi-colon in column COMMENT and table COMMENT,new,has-patch needs-testing,,defect (bug),normal
+62744,Twenty Seventeen: Quote block Appearance settings do not affect citation,new,needs-testing has-patch,,enhancement,normal
+62810,Pattern with Query Loop and Cover block renders wrongly in preview,new,needs-testing,,defect (bug),normal
+63013,Twenty Nineteen: Use `sass` instead of `node-sass`,new,has-patch needs-testing,,enhancement,normal
+63024,Address the errors that cause annotations in the e2e test workflows,new,needs-testing,,defect (bug),normal
+63109,test_get_block_editor_settings_theme_json_settings failing,new,has-test-info has-patch needs-testing dev-feedback,,defect (bug),normal
+63188,"Getting Header ""REMOTE_ADDR"" is user-controlled and should be properly validated before use errors into the core files.",new,needs-testing 2nd-opinion changes-requested,,defect (bug),normal
+63197,Sanity Checks in mkdir and delete for FTPext Filesystem,new,needs-testing dev-feedback has-test-info has-patch,,defect (bug),normal
+63386,Twenty Seventeen: Latest Posts block having issue with alignment options,new,has-patch has-test-info needs-testing,,defect (bug),normal
+63568,WP_Font_Face: Font names that contain single quotes are not wrapped in double quotes,accepted,has-patch has-test-info has-screenshots has-unit-tests needs-testing dev-feedback,audrasjb,defect (bug),normal
+63768,WP_Query will generate an unexpected SQL query when using switch_to_blog and post_type = any,new,needs-testing,,defect (bug),normal
+63825,"Creating a post containing UTF-8, then changing WP_CHARSET to ""latin1"", makes posts un-editable.",new,needs-testing has-screenshots close needs-test-info,,defect (bug),normal
+63882,Plugins: Preflight activation to avoid WSOD when plugin code uses syntax incompatible with PHP runtime,new,has-patch needs-testing,,defect (bug),normal
+64024,wp_die() status code Plugins component updates (parent ticket: #64009),new,has-patch needs-testing needs-test-info,,defect (bug),normal
+64025,wp_die() status code posts component updates (parent ticket: #64009),new,has-patch needs-testing has-test-info,,enhancement,normal
+64056,Media / REST API: Uploading non-resizable image formats (SVG) generates multiple PHP warnings,new,has-patch needs-testing close,,enhancement,normal
+64376,redirect_canonical() causes unnecessary 301 redirects for query string encoding variants (+ vs %20),new,has-patch has-unit-tests needs-testing has-test-info,,defect (bug),normal
+64523,_do_query needs exception processing in class-wpdb.php,new,has-patch needs-testing needs-unit-tests has-pr,,defect (bug),normal
+64670,WP_REST_Posts_Controller::update_item() not passing parent to wp_unique_post_slug() for draft child,new,has-patch needs-testing,,defect (bug),normal
+64707,Site Health: Opcode cache test reports a false negative when OPcache runs in file-cache-only mode,accepted,has-patch needs-testing,westonruter,defect (bug),normal
+64714,"Inconsistent vertical spacing between the headings and their content in the dashboard widgets: Site Health Status, Quick Edit, Activity, and WordPress Events and News.",new,has-patch needs-testing,,defect (bug),normal
+64810,A password protected post can be sticky but sometimes this behaviour is forbidden.,new,has-screenshots has-patch has-unit-tests needs-testing has-test-info,,defect (bug),normal
+64830,"Introduce a helper function to extract the major.minor ""branch"" version",new,has-patch needs-refresh needs-testing,,enhancement,normal
+64842,Upload problems with Umlauts in ID3 Tags,new,has-patch needs-testing,,defect (bug),normal
+64863,"Eliminate switch_to_blog() from get_blog_option(), update_blog_option(), WP_Site::get_details(), and get_blog_post() using $wpdb->get_blog_prefix()",new,has-patch needs-testing has-unit-tests,,enhancement,normal
+64902,wp_save_image() fatal error when wp_save_image_file() returns WP_Error,new,has-patch needs-testing has-test-info,,defect (bug),normal
+64921,REST API POST /wp/v2/posts: Undefined property stdClass::$id (line 766),accepted,has-patch needs-testing reporter-feedback has-test-info has-unit-tests early,westonruter,defect (bug),normal
+64991,"New param ""allow_multiple_terms"" in `register_taxonomy` for single term restriction",new,has-patch has-unit-tests needs-testing,,feature request,normal
+65048,wp_ajax_fetch_list(): Sanitize $_GET input before nonce construction,assigned,has-patch needs-testing has-test-info,rajeshcp,defect (bug),normal
+65052,Nonce check order flaw in post-quickdraft-save,assigned,has-patch needs-testing has-test-info has-unit-tests,rajeshcp,defect (bug),normal
+65054,$_GET['pagenow'] and $_GET['widget'] unsanitized in dashboard AJAX handler,assigned,has-patch needs-testing has-test-info has-unit-tests,rajeshcp,defect (bug),normal
+65111,Twenty Sixteen: Center text in image captions,new,has-patch needs-testing,,enhancement,normal
+65120,Add `wp_elements_block_supports_class_name` filter to `wp_get_elements_class_name()`,new,has-patch needs-testing has-test-info 2nd-opinion,,enhancement,normal
+65171,wp_check_post_lock_window filter values below 120s break post lock detection in backgrounded tabs,new,has-patch needs-unit-tests needs-testing,,defect (bug),normal
+65281,Custom Time & Date Format Fields Allow Empty Save Instead of Validation,new,has-patch has-unit-tests has-test-info needs-testing,,defect (bug),normal
+65348,"Adding menu items in bulk, checked items forgotten when navigating",new,has-patch has-unit-tests needs-testing,,defect (bug),normal
+65350,Possible duplicate update event firing during wp_maybe_auto_update,new,needs-testing 2nd-opinion,,defect (bug),normal
+65381,Uncaught TypeError: Cannot read properties of undefined (reading 'borderColor') in block-editor.min.js on WordPress 7.0,new,needs-testing reporter-feedback,,defect (bug),normal
+65395,"Site Health falsely reports ""Opcode cache is not enabled"" on shared hosting (WP 7.0)",new,has-patch has-unit-tests needs-testing,,defect (bug),normal
+65480,Custom HTML Block hangs when switching tabs and scrolling (Gutenberg/WordPress 7.0),new,needs-testing close,,defect (bug),normal
+65496,Theme testing workflow will fail when multiple themes have uncommitted changes to built files.,new,has-patch needs-testing,,defect (bug),normal
+65515,"ThickBox ReferenceError: imgLoader is not defined due to ""use strict"" contamination in load-scripts.php",reviewing,has-patch has-unit-tests needs-testing reporter-feedback,wildworks,defect (bug),normal
+65626,7.0.1 9.9797 lagging at WP_Query->get_posts() on site with 16K= posts,new,needs-testing needs-patch reporter-feedback,,defect (bug),normal
+65638,AI: Add embedding generation support to WordPress,new,has-patch needs-testing has-unit-tests,,enhancement,normal
+65661,Media: Enable client-side media uploads in the Media Library,new,has-patch needs-testing has-unit-tests,,enhancement,normal
+65718,Multisite: the blogname is required during site creation but can be emptied later,new,has-patch needs-testing,,defect (bug),normal
+65731,Changing the site timezone can immediately invalidate fresh privacy-request confirmation links,new,has-patch has-unit-tests needs-testing,,defect (bug),normal
+65734,Classic Editor: Support pasted WebP image URLs in TinyMCE smart paste,new,has-patch needs-testing,,enhancement,normal
+65746,Prevent unnecessary announcements for screen readers in the various themes and media browsers,assigned,has-patch needs-testing,afercia,defect (bug),normal
+65757,Proposal: Make the Interactivity API extensible,new,has-patch needs-testing 2nd-opinion,,defect (bug),normal
+65897,Surface community-contributed patterns from the Pattern Directory in the editor (opt-in),assigned,has-patch needs-testing has-unit-tests,ugyensupport,enhancement,normal
+66075,"Name the item, or give a count, in the plugin/theme auto-update email subject lines",new,has-patch needs-testing has-unit-tests,,enhancement,normal
+66142,Empty custom date/time fields are saved instead of remaining null in WordPress 7.1.1,new,needs-testing has-patch has-unit-tests close,,defect (bug),normal
+66145,Regression in WP 7.1.1: WooCommerce product archives do not render ul.products container,new,needs-testing needs-patch,,defect (bug),normal
+66239,"Integrate WordPress.org closed, suspended, and outdated plugins and themes API data into Core",new,has-unit-tests has-patch needs-testing,,feature request,normal
+63256,Unnecessary array_map() call in get_terms() when object_ids is not set,reviewing,has-patch has-unit-tests needs-testing has-test-info early,audrasjb,defect (bug),lowest
