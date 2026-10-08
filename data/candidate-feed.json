@@ -1,0 +1,684 @@
+{
+  "candidateCount": 3,
+  "candidates": [
+    {
+      "candidateId": "candidate:v2:70742f2247cf03556dc315d42138947e",
+      "derivedPriority": {
+        "order": 1,
+        "score": 96,
+        "tier": "priority"
+      },
+      "familyCandidates": [
+        {
+          "confidence": "medium",
+          "familyId": "CORE_CODE_REVIEW",
+          "sourceIds": [
+            "core-trac-report-13-has-patch",
+            "core-trac-report-15-has-patch-needs-testing"
+          ]
+        },
+        {
+          "confidence": "high",
+          "familyId": "CORE_PATCH_TEST",
+          "sourceIds": [
+            "core-trac-report-15-has-patch-needs-testing"
+          ]
+        }
+      ],
+      "freshness": {
+        "observedAt": "2026-10-07T11:01:00Z",
+        "referenceTime": "2026-10-07T12:00:00Z",
+        "state": "fresh"
+      },
+      "id": "candidate:v2:70742f2247cf03556dc315d42138947e",
+      "observedAt": "2026-10-07T11:01:00Z",
+      "opportunityId": "opportunity:v2:core-trac:123",
+      "relationships": [],
+      "resource": {
+        "id": "core-trac:123",
+        "identity": "123",
+        "resourceType": "CORE_TRAC_TICKET",
+        "revision": "resource-revision-v2-0f2ec1219a528082f6833bd17ae3f4eb",
+        "title": "Improve the editor test",
+        "upstreamState": "new",
+        "url": "https://core.trac.wordpress.org/ticket/123"
+      },
+      "resourceRefs": [
+        {
+          "id": "core-trac:123",
+          "revision": "resource-revision-v2-0f2ec1219a528082f6833bd17ae3f4eb"
+        }
+      ],
+      "revision": "candidate-revision-v2-073dc26d6c66044887872e8dd16ca42c",
+      "score": {
+        "reasons": [
+          "1 direct opportunity source membership(s)",
+          "2 approved contribution family candidate(s)",
+          "explicit current contribution need"
+        ],
+        "value": 96
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceHealth": [
+        {
+          "failure": null,
+          "freshness": "fresh",
+          "observedAt": "2026-10-07T11:01:00Z",
+          "semanticValidation": {
+            "findings": [],
+            "state": "passed"
+          },
+          "sourceFamily": "CORE_TRAC",
+          "sourceId": "core-trac-report-13-has-patch",
+          "sourceRevision": "report-13-fixture",
+          "sourceRole": "SIGNAL",
+          "state": "healthy"
+        },
+        {
+          "failure": null,
+          "freshness": "fresh",
+          "observedAt": "2026-10-07T11:00:00Z",
+          "semanticValidation": {
+            "findings": [],
+            "state": "passed"
+          },
+          "sourceFamily": "CORE_TRAC",
+          "sourceId": "core-trac-report-15-has-patch-needs-testing",
+          "sourceRevision": "report-15-fixture",
+          "sourceRole": "DIRECT_OPPORTUNITY",
+          "state": "healthy"
+        }
+      ],
+      "sourceMemberships": [
+        {
+          "candidateFamilyMappings": [
+            {
+              "confidence": "medium",
+              "familyId": "CORE_PATCH_TEST"
+            },
+            {
+              "confidence": "medium",
+              "familyId": "CORE_CODE_REVIEW"
+            }
+          ],
+          "evidence": {
+            "_comments": "4",
+            "changetime": "2026-10-06T00:00:00Z",
+            "comments": "4",
+            "component": "Editor",
+            "id": "123",
+            "keywords": "has-patch",
+            "milestone": "6.9",
+            "owner": "",
+            "priority": "normal",
+            "status": "new",
+            "summary": "Improve the editor test",
+            "time": "2026-10-01T00:00:00Z",
+            "type": "defect",
+            "version": "trunk"
+          },
+          "freshness": "fresh",
+          "limitations": [
+            "Has-patch alone is not enough to prove a testing or review increment without additional signals."
+          ],
+          "observedAt": "2026-10-07T11:01:00Z",
+          "presentInCurrentObservation": true,
+          "semanticMeaning": "Tickets with a public patch signal.",
+          "semanticValidation": {
+            "findings": [],
+            "state": "passed"
+          },
+          "sourceFamily": "CORE_TRAC",
+          "sourceId": "core-trac-report-13-has-patch",
+          "sourceRevision": "report-13-fixture",
+          "sourceRole": "SIGNAL",
+          "sourceUrl": "https://core.trac.wordpress.org/report/13?format=csv"
+        },
+        {
+          "candidateFamilyMappings": [
+            {
+              "confidence": "high",
+              "familyId": "CORE_PATCH_TEST"
+            },
+            {
+              "confidence": "medium",
+              "familyId": "CORE_CODE_REVIEW"
+            }
+          ],
+          "evidence": {
+            "_comments": "4",
+            "changetime": "2026-10-06T00:00:00Z",
+            "comments": "4",
+            "component": "Editor",
+            "id": "123",
+            "keywords": "has-patch needs-testing",
+            "milestone": "6.9",
+            "owner": "",
+            "priority": "normal",
+            "status": "new",
+            "summary": "Improve the editor test",
+            "time": "2026-10-01T00:00:00Z",
+            "type": "defect",
+            "version": "trunk"
+          },
+          "freshness": "fresh",
+          "limitations": [
+            "Report membership does not prove the patch still applies or that no newer review exists."
+          ],
+          "observedAt": "2026-10-07T11:00:00Z",
+          "presentInCurrentObservation": true,
+          "semanticMeaning": "Tickets that already have a patch and explicitly need testing.",
+          "semanticValidation": {
+            "findings": [],
+            "state": "passed"
+          },
+          "sourceFamily": "CORE_TRAC",
+          "sourceId": "core-trac-report-15-has-patch-needs-testing",
+          "sourceRevision": "report-15-fixture",
+          "sourceRole": "DIRECT_OPPORTUNITY",
+          "sourceUrl": "https://core.trac.wordpress.org/report/15?format=csv"
+        }
+      ],
+      "sourceRevision": "report-15-fixture",
+      "whyNow": [
+        "Tickets that already have a patch and explicitly need testing."
+      ]
+    },
+    {
+      "candidateId": "candidate:v2:50f759712231a04b812d407148fc826a",
+      "derivedPriority": {
+        "order": 2,
+        "score": 83,
+        "tier": "standard"
+      },
+      "familyCandidates": [
+        {
+          "confidence": "high",
+          "familyId": "ACCESSIBILITY_TEST",
+          "sourceIds": [
+            "accessibility-requests"
+          ]
+        }
+      ],
+      "freshness": {
+        "observedAt": "2026-10-07T11:02:00Z",
+        "referenceTime": "2026-10-07T12:00:00Z",
+        "state": "fresh"
+      },
+      "id": "candidate:v2:50f759712231a04b812d407148fc826a",
+      "observedAt": "2026-10-07T11:02:00Z",
+      "opportunityId": "opportunity:v2:accessibility-requests:a-1",
+      "relationships": [],
+      "resource": {
+        "id": "accessibility-requests:a-1",
+        "identity": "a-1",
+        "resourceType": "ACCESSIBILITY_REQUEST",
+        "revision": "resource-revision-v2-42b46c2d979220dc2ccd4a655c03bd9d",
+        "title": "Test keyboard navigation",
+        "upstreamState": "open",
+        "url": "https://example.test/a-1"
+      },
+      "resourceRefs": [
+        {
+          "id": "accessibility-requests:a-1",
+          "revision": "resource-revision-v2-42b46c2d979220dc2ccd4a655c03bd9d"
+        }
+      ],
+      "revision": "candidate-revision-v2-45f271812c6ca9d482c11bd8e7867cd0",
+      "score": {
+        "reasons": [
+          "1 direct opportunity source membership(s)",
+          "1 approved contribution family candidate(s)"
+        ],
+        "value": 83
+      },
+      "sourceFamily": "ACCESSIBILITY_REQUESTS",
+      "sourceHealth": [
+        {
+          "failure": null,
+          "freshness": "fresh",
+          "observedAt": "2026-10-07T11:02:00Z",
+          "semanticValidation": {
+            "findings": [],
+            "state": "passed"
+          },
+          "sourceFamily": "ACCESSIBILITY_REQUESTS",
+          "sourceId": "accessibility-requests",
+          "sourceRevision": null,
+          "sourceRole": "DIRECT_OPPORTUNITY",
+          "state": "healthy"
+        }
+      ],
+      "sourceMemberships": [
+        {
+          "candidateFamilyMappings": [
+            {
+              "confidence": "high",
+              "familyId": "ACCESSIBILITY_TEST"
+            }
+          ],
+          "evidence": {
+            "id": "a-1",
+            "status": "open",
+            "title": "Test keyboard navigation",
+            "url": "https://example.test/a-1"
+          },
+          "freshness": "fresh",
+          "limitations": [],
+          "observedAt": "2026-10-07T11:02:00Z",
+          "presentInCurrentObservation": true,
+          "semanticMeaning": "Public accessibility test request.",
+          "semanticValidation": {
+            "findings": [],
+            "state": "passed"
+          },
+          "sourceFamily": "ACCESSIBILITY_REQUESTS",
+          "sourceId": "accessibility-requests",
+          "sourceRevision": null,
+          "sourceRole": "DIRECT_OPPORTUNITY",
+          "sourceUrl": null
+        }
+      ],
+      "sourceRevision": null,
+      "whyNow": [
+        "Public accessibility test request."
+      ]
+    },
+    {
+      "candidateId": "candidate:v2:553249bc097992e205097f4c19f2f2d3",
+      "derivedPriority": {
+        "order": 3,
+        "score": 83,
+        "tier": "standard"
+      },
+      "familyCandidates": [
+        {
+          "confidence": "high",
+          "familyId": "CORE_PATCH_IMPLEMENTATION",
+          "sourceIds": [
+            "core-trac-report-16-needs-patch"
+          ]
+        }
+      ],
+      "freshness": {
+        "observedAt": "2026-10-06T11:00:00Z",
+        "referenceTime": "2026-10-07T12:00:00Z",
+        "state": "stale"
+      },
+      "id": "candidate:v2:553249bc097992e205097f4c19f2f2d3",
+      "observedAt": "2026-10-06T11:00:00Z",
+      "opportunityId": "opportunity:v2:core-trac:456",
+      "relationships": [],
+      "resource": {
+        "id": "core-trac:456",
+        "identity": "456",
+        "resourceType": "CORE_TRAC_TICKET",
+        "revision": "resource-revision-v2-2f1f16b9d056fcc8b208b366f5c3c996",
+        "title": "Add a missing patch",
+        "upstreamState": "new",
+        "url": "https://core.trac.wordpress.org/ticket/456"
+      },
+      "resourceRefs": [
+        {
+          "id": "core-trac:456",
+          "revision": "resource-revision-v2-2f1f16b9d056fcc8b208b366f5c3c996"
+        }
+      ],
+      "revision": "candidate-revision-v2-9b8e0eeb62163625c6a32a5e5cbc3643",
+      "score": {
+        "reasons": [
+          "1 direct opportunity source membership(s)",
+          "1 approved contribution family candidate(s)",
+          "explicit current contribution need",
+          "last-known-good evidence is stale"
+        ],
+        "value": 83
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceHealth": [
+        {
+          "failure": "SOURCE_OBSERVATION_FAILED_LAST_KNOWN_GOOD_RETAINED",
+          "freshness": "stale",
+          "observedAt": "2026-10-07T11:03:00Z",
+          "semanticValidation": {
+            "findings": [
+              "acquisition did not succeed"
+            ],
+            "state": "failed"
+          },
+          "sourceFamily": "CORE_TRAC",
+          "sourceId": "core-trac-report-16-needs-patch",
+          "sourceRevision": "report-16-old",
+          "sourceRole": "DIRECT_OPPORTUNITY",
+          "state": "degraded"
+        }
+      ],
+      "sourceMemberships": [
+        {
+          "candidateFamilyMappings": [
+            {
+              "confidence": "high",
+              "familyId": "CORE_PATCH_IMPLEMENTATION"
+            }
+          ],
+          "evidence": {
+            "id": "456",
+            "keywords": "needs-patch",
+            "status": "new",
+            "summary": "Add a missing patch"
+          },
+          "freshness": "stale",
+          "limitations": [
+            "Needs-patch does not prove implementation is small, safe, or personally suitable."
+          ],
+          "observedAt": "2026-10-06T11:00:00Z",
+          "presentInCurrentObservation": false,
+          "semanticMeaning": "Tickets where a public patch is missing or requested.",
+          "semanticValidation": {
+            "findings": [
+              "row 0 missing fields: _comments, changetime, comments, component, milestone, owner, priority, time, type, version"
+            ],
+            "state": "failed"
+          },
+          "sourceFamily": "CORE_TRAC",
+          "sourceId": "core-trac-report-16-needs-patch",
+          "sourceRevision": "report-16-old",
+          "sourceRole": "DIRECT_OPPORTUNITY",
+          "sourceUrl": "https://core.trac.wordpress.org/report/16?format=csv"
+        }
+      ],
+      "sourceRevision": "report-16-old",
+      "whyNow": [
+        "Tickets where a public patch is missing or requested."
+      ]
+    }
+  ],
+  "feedRevision": "candidate-feed-revision-v2-777801ab9bf98d121708dcc12b0631d3",
+  "referenceTime": "2026-10-07T12:00:00Z",
+  "schema": "radar-candidate-feed.v2",
+  "sourceHealth": [
+    {
+      "failure": null,
+      "freshness": "fresh",
+      "observedAt": "2026-10-07T11:02:00Z",
+      "semanticValidation": {
+        "findings": [],
+        "state": "passed"
+      },
+      "sourceFamily": "ACCESSIBILITY_REQUESTS",
+      "sourceId": "accessibility-requests",
+      "sourceRevision": null,
+      "sourceRole": "DIRECT_OPPORTUNITY",
+      "state": "healthy"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-query-needs-testing-no-patch",
+      "sourceRevision": null,
+      "sourceRole": "DIRECT_OPPORTUNITY",
+      "state": "failed"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-1-active-reconciliation",
+      "sourceRevision": null,
+      "sourceRole": "RECONCILIATION",
+      "state": "failed"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-10-dev-bug-wrangler-feedback",
+      "sourceRevision": null,
+      "sourceRole": "SIGNAL",
+      "state": "failed"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-11-reporter-feedback-steps",
+      "sourceRevision": null,
+      "sourceRole": "DIRECT_OPPORTUNITY",
+      "state": "failed"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-12-needs-unit-tests",
+      "sourceRevision": null,
+      "sourceRole": "DIRECT_OPPORTUNITY",
+      "state": "failed"
+    },
+    {
+      "failure": null,
+      "freshness": "fresh",
+      "observedAt": "2026-10-07T11:01:00Z",
+      "semanticValidation": {
+        "findings": [],
+        "state": "passed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-13-has-patch",
+      "sourceRevision": "report-13-fixture",
+      "sourceRole": "SIGNAL",
+      "state": "healthy"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-14-needs-early-attention",
+      "sourceRevision": null,
+      "sourceRole": "SIGNAL",
+      "state": "failed"
+    },
+    {
+      "failure": null,
+      "freshness": "fresh",
+      "observedAt": "2026-10-07T11:00:00Z",
+      "semanticValidation": {
+        "findings": [],
+        "state": "passed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-15-has-patch-needs-testing",
+      "sourceRevision": "report-15-fixture",
+      "sourceRole": "DIRECT_OPPORTUNITY",
+      "state": "healthy"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED_LAST_KNOWN_GOOD_RETAINED",
+      "freshness": "stale",
+      "observedAt": "2026-10-07T11:03:00Z",
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-16-needs-patch",
+      "sourceRevision": "report-16-old",
+      "sourceRole": "DIRECT_OPPORTUNITY",
+      "state": "degraded"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-18-release-blockers",
+      "sourceRevision": null,
+      "sourceRole": "DIRECT_OPPORTUNITY",
+      "state": "failed"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-21-latest-tickets",
+      "sourceRevision": null,
+      "sourceRole": "RECONCILIATION",
+      "state": "failed"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-22-active-tickets",
+      "sourceRevision": null,
+      "sourceRole": "RECONCILIATION",
+      "state": "failed"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-36-needs-user-docs",
+      "sourceRevision": null,
+      "sourceRole": "DIRECT_OPPORTUNITY",
+      "state": "failed"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-44-good-first-bugs",
+      "sourceRevision": null,
+      "sourceRole": "DIRECT_OPPORTUNITY",
+      "state": "failed"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-45-needs-patch-none-uploaded",
+      "sourceRevision": null,
+      "sourceRole": "DIRECT_OPPORTUNITY",
+      "state": "failed"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-46-patches-defects-needing-review",
+      "sourceRevision": null,
+      "sourceRole": "DIRECT_OPPORTUNITY",
+      "state": "failed"
+    },
+    {
+      "failure": "SOURCE_OBSERVATION_FAILED",
+      "freshness": "none",
+      "observedAt": null,
+      "semanticValidation": {
+        "findings": [
+          "acquisition did not succeed"
+        ],
+        "state": "failed"
+      },
+      "sourceFamily": "CORE_TRAC",
+      "sourceId": "core-trac-report-69-bugs-needing-reproduction",
+      "sourceRevision": null,
+      "sourceRole": "DIRECT_OPPORTUNITY",
+      "state": "failed"
+    }
+  ],
+  "version": 2
+}

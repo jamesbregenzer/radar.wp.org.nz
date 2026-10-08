@@ -1,296 +1,869 @@
 {
   "schema": "radar-core-trac-source-registry.v2",
   "version": 2,
-  "statusVocabulary": ["IMPLEMENTED", "CERTIFIED", "OPERATIONAL", "MISSION_VALIDATED"],
   "sourceFamily": "CORE_TRAC",
-  "registryStatus": "IMPLEMENTED",
-  "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
+  "expectedFields": [
+    "id",
+    "summary",
+    "status",
+    "component",
+    "owner",
+    "type",
+    "priority",
+    "milestone",
+    "version",
+    "keywords",
+    "time",
+    "changetime",
+    "comments",
+    "_comments"
+  ],
   "sources": [
     {
       "id": "core-trac-report-15-has-patch-needs-testing",
-      "locator": {"kind": "trac-report", "report": 15},
+      "locator": {
+        "kind": "trac-report",
+        "report": 15
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/15",
       "csvUrl": "https://core.trac.wordpress.org/report/15?format=csv",
       "semanticMeaning": "Tickets that already have a patch and explicitly need testing.",
       "sourceRole": "DIRECT_OPPORTUNITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"requiredKeywordsAll": ["has-patch", "needs-testing"], "statusNot": ["closed"]},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [{"familyId": "CORE_PATCH_TEST", "confidence": "high"}, {"familyId": "CORE_CODE_REVIEW", "confidence": "medium"}],
-      "limitations": ["Report membership does not prove the patch still applies or that no newer review exists."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "requiredKeywordsAll": [
+          "has-patch",
+          "needs-testing"
+        ],
+        "statusNot": [
+          "closed"
+        ]
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "CORE_PATCH_TEST",
+          "confidence": "high"
+        },
+        {
+          "familyId": "CORE_CODE_REVIEW",
+          "confidence": "medium"
+        }
+      ],
+      "limitations": [
+        "Report membership does not prove the patch still applies or that no newer review exists."
+      ]
     },
     {
       "id": "core-trac-report-10-dev-bug-wrangler-feedback",
-      "locator": {"kind": "trac-report", "report": 10},
+      "locator": {
+        "kind": "trac-report",
+        "report": 10
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/10",
       "csvUrl": "https://core.trac.wordpress.org/report/10?format=csv",
       "semanticMeaning": "Tickets with maintainer, developer, or bug-wrangler feedback signals.",
       "sourceRole": "SIGNAL",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"requiredKeywordsAny": ["dev-feedback", "2nd-opinion", "needs-dev-note"], "statusNot": ["closed"], "allowEmpty": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [{"familyId": "CORE_CODE_REVIEW", "confidence": "medium"}, {"familyId": "CORE_BUG_GARDENING", "confidence": "medium"}],
-      "limitations": ["Feedback keywords are broad signals and do not always identify a specific missing contribution increment alone."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "requiredKeywordsAny": [
+          "dev-feedback",
+          "2nd-opinion",
+          "needs-dev-note"
+        ],
+        "statusNot": [
+          "closed"
+        ],
+        "allowEmpty": true
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "CORE_CODE_REVIEW",
+          "confidence": "medium"
+        },
+        {
+          "familyId": "CORE_BUG_GARDENING",
+          "confidence": "medium"
+        }
+      ],
+      "limitations": [
+        "Feedback keywords are broad signals and do not always identify a specific missing contribution increment alone."
+      ]
     },
     {
       "id": "core-trac-report-11-reporter-feedback-steps",
-      "locator": {"kind": "trac-report", "report": 11},
+      "locator": {
+        "kind": "trac-report",
+        "report": 11
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/11",
       "csvUrl": "https://core.trac.wordpress.org/report/11?format=csv",
       "semanticMeaning": "Tickets where reporter feedback or reproduction steps may be missing.",
       "sourceRole": "DIRECT_OPPORTUNITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"requiredKeywordsAny": ["reporter-feedback", "needs-testing", "close"], "statusNot": ["closed"], "allowEmpty": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [{"familyId": "CORE_BUG_REPRODUCTION", "confidence": "medium"}, {"familyId": "CORE_BUG_GARDENING", "confidence": "medium"}],
-      "limitations": ["The report can include tickets that need clarification rather than reproduction work."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "requiredKeywordsAny": [
+          "reporter-feedback",
+          "needs-testing",
+          "close"
+        ],
+        "statusNot": [
+          "closed"
+        ],
+        "allowEmpty": true
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "CORE_BUG_REPRODUCTION",
+          "confidence": "medium"
+        },
+        {
+          "familyId": "CORE_BUG_GARDENING",
+          "confidence": "medium"
+        }
+      ],
+      "limitations": [
+        "The report can include tickets that need clarification rather than reproduction work."
+      ]
     },
     {
       "id": "core-trac-report-12-needs-unit-tests",
-      "locator": {"kind": "trac-report", "report": 12},
+      "locator": {
+        "kind": "trac-report",
+        "report": 12
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/12",
       "csvUrl": "https://core.trac.wordpress.org/report/12?format=csv",
       "semanticMeaning": "Tickets where unit or automated test coverage is requested.",
       "sourceRole": "DIRECT_OPPORTUNITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"requiredKeywordsAny": ["needs-unit-tests", "needs-tests", "needs-testing"], "statusNot": ["closed"], "allowEmpty": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [{"familyId": "CORE_AUTOMATED_TEST", "confidence": "high"}, {"familyId": "CORE_REGRESSION_TEST", "confidence": "medium"}],
-      "limitations": ["Report membership does not prove the right test scope without ticket and patch reread."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "requiredKeywordsAny": [
+          "needs-unit-tests",
+          "needs-tests",
+          "needs-testing"
+        ],
+        "statusNot": [
+          "closed"
+        ],
+        "allowEmpty": true
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "CORE_AUTOMATED_TEST",
+          "confidence": "high"
+        },
+        {
+          "familyId": "CORE_REGRESSION_TEST",
+          "confidence": "medium"
+        }
+      ],
+      "limitations": [
+        "Report membership does not prove the right test scope without ticket and patch reread."
+      ]
     },
     {
       "id": "core-trac-report-13-has-patch",
-      "locator": {"kind": "trac-report", "report": 13},
+      "locator": {
+        "kind": "trac-report",
+        "report": 13
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/13",
       "csvUrl": "https://core.trac.wordpress.org/report/13?format=csv",
       "semanticMeaning": "Tickets with a public patch signal.",
       "sourceRole": "SIGNAL",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"requiredKeywordsAll": ["has-patch"], "statusNot": ["closed"]},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [{"familyId": "CORE_PATCH_TEST", "confidence": "medium"}, {"familyId": "CORE_CODE_REVIEW", "confidence": "medium"}],
-      "limitations": ["Has-patch alone is not enough to prove a testing or review increment without additional signals."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "requiredKeywordsAll": [
+          "has-patch"
+        ],
+        "statusNot": [
+          "closed"
+        ]
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "CORE_PATCH_TEST",
+          "confidence": "medium"
+        },
+        {
+          "familyId": "CORE_CODE_REVIEW",
+          "confidence": "medium"
+        }
+      ],
+      "limitations": [
+        "Has-patch alone is not enough to prove a testing or review increment without additional signals."
+      ]
     },
     {
       "id": "core-trac-report-14-needs-early-attention",
-      "locator": {"kind": "trac-report", "report": 14},
+      "locator": {
+        "kind": "trac-report",
+        "report": 14
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/14",
       "csvUrl": "https://core.trac.wordpress.org/report/14?format=csv",
       "semanticMeaning": "Tickets that need early attention before a release or milestone risk grows.",
       "sourceRole": "SIGNAL",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"statusNot": ["closed"], "allowEmpty": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [{"familyId": "CORE_BUG_GARDENING", "confidence": "medium"}, {"familyId": "CORE_CODE_REVIEW", "confidence": "low"}],
-      "limitations": ["Early-attention timing is a timeliness signal, not a contribution family by itself."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "statusNot": [
+          "closed"
+        ],
+        "allowEmpty": true
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "CORE_BUG_GARDENING",
+          "confidence": "medium"
+        },
+        {
+          "familyId": "CORE_CODE_REVIEW",
+          "confidence": "low"
+        }
+      ],
+      "limitations": [
+        "Early-attention timing is a timeliness signal, not a contribution family by itself."
+      ]
     },
     {
       "id": "core-trac-report-16-needs-patch",
-      "locator": {"kind": "trac-report", "report": 16},
+      "locator": {
+        "kind": "trac-report",
+        "report": 16
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/16",
       "csvUrl": "https://core.trac.wordpress.org/report/16?format=csv",
       "semanticMeaning": "Tickets where a public patch is missing or requested.",
       "sourceRole": "DIRECT_OPPORTUNITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"requiredKeywordsAny": ["needs-patch"], "statusNot": ["closed"], "forbiddenKeywordsAny": ["has-patch"]},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [{"familyId": "CORE_PATCH_IMPLEMENTATION", "confidence": "high"}],
-      "limitations": ["Needs-patch does not prove implementation is small, safe, or personally suitable."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "requiredKeywordsAny": [
+          "needs-patch"
+        ],
+        "statusNot": [
+          "closed"
+        ],
+        "forbiddenKeywordsAny": [
+          "has-patch"
+        ]
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "CORE_PATCH_IMPLEMENTATION",
+          "confidence": "high"
+        }
+      ],
+      "limitations": [
+        "Needs-patch does not prove implementation is small, safe, or personally suitable."
+      ]
     },
     {
       "id": "core-trac-report-18-release-blockers",
-      "locator": {"kind": "trac-report", "report": 18},
+      "locator": {
+        "kind": "trac-report",
+        "report": 18
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/18",
       "csvUrl": "https://core.trac.wordpress.org/report/18?format=csv",
       "semanticMeaning": "Tickets identified as release blockers or release-critical work.",
       "sourceRole": "DIRECT_OPPORTUNITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"statusNot": ["closed"], "allowEmpty": true},
-      "freshnessExpectation": {"maxAgeHours": 6},
-      "candidateFamilyMappings": [{"familyId": "BETA_RC_TEST", "confidence": "medium"}, {"familyId": "CORE_PATCH_TEST", "confidence": "medium"}, {"familyId": "CORE_CODE_REVIEW", "confidence": "medium"}],
-      "limitations": ["Release urgency can raise timeliness but cannot bypass source reread or safety gates."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "statusNot": [
+          "closed"
+        ],
+        "allowEmpty": true
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 6
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "BETA_RC_TEST",
+          "confidence": "medium"
+        },
+        {
+          "familyId": "CORE_PATCH_TEST",
+          "confidence": "medium"
+        },
+        {
+          "familyId": "CORE_CODE_REVIEW",
+          "confidence": "medium"
+        }
+      ],
+      "limitations": [
+        "Release urgency can raise timeliness but cannot bypass source reread or safety gates."
+      ]
     },
     {
       "id": "core-trac-report-21-latest-tickets",
-      "locator": {"kind": "trac-report", "report": 21},
+      "locator": {
+        "kind": "trac-report",
+        "report": 21
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/21",
       "csvUrl": "https://core.trac.wordpress.org/report/21?format=csv",
       "semanticMeaning": "Latest tickets used for broad observation and disappearance reconciliation.",
       "sourceRole": "RECONCILIATION",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"allowEmpty": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "allowEmpty": true
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
       "candidateFamilyMappings": [],
-      "limitations": ["Latest-ticket presence is not an opportunity signal by itself."]
+      "limitations": [
+        "Latest-ticket presence is not an opportunity signal by itself."
+      ]
     },
     {
       "id": "core-trac-report-22-active-tickets",
-      "locator": {"kind": "trac-report", "report": 22},
+      "locator": {
+        "kind": "trac-report",
+        "report": 22
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/22",
       "csvUrl": "https://core.trac.wordpress.org/report/22?format=csv",
       "semanticMeaning": "Active tickets used to confirm current open-resource presence.",
       "sourceRole": "RECONCILIATION",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"statusNot": ["closed"], "allowEmpty": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "statusNot": [
+          "closed"
+        ],
+        "allowEmpty": true
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
       "candidateFamilyMappings": [],
-      "limitations": ["Active-ticket presence is broad context and does not define the missing contribution increment."]
+      "limitations": [
+        "Active-ticket presence is broad context and does not define the missing contribution increment."
+      ]
     },
     {
       "id": "core-trac-report-36-needs-user-docs",
-      "locator": {"kind": "trac-report", "report": 36},
+      "locator": {
+        "kind": "trac-report",
+        "report": 36
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/36",
       "csvUrl": "https://core.trac.wordpress.org/report/36?format=csv",
       "semanticMeaning": "Tickets that need user documentation or documentation review.",
       "sourceRole": "DIRECT_OPPORTUNITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"requiredKeywordsAny": ["needs-user-docs", "needs-docs", "docs-feedback"], "statusNot": ["closed"], "allowEmpty": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [{"familyId": "DOCS_REVIEW", "confidence": "high"}, {"familyId": "CORE_INLINE_DOCS", "confidence": "medium"}],
-      "limitations": ["User-docs need does not prove the correct destination or wording without live reread."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "requiredKeywordsAny": [
+          "needs-user-docs",
+          "needs-docs",
+          "docs-feedback"
+        ],
+        "statusNot": [
+          "closed"
+        ],
+        "allowEmpty": true
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "DOCS_REVIEW",
+          "confidence": "high"
+        },
+        {
+          "familyId": "CORE_INLINE_DOCS",
+          "confidence": "medium"
+        }
+      ],
+      "limitations": [
+        "User-docs need does not prove the correct destination or wording without live reread."
+      ]
     },
     {
       "id": "core-trac-report-44-good-first-bugs",
-      "locator": {"kind": "trac-report", "report": 44},
+      "locator": {
+        "kind": "trac-report",
+        "report": 44
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/44",
       "csvUrl": "https://core.trac.wordpress.org/report/44?format=csv",
       "semanticMeaning": "Beginner-friendly Core tickets suitable for bounded contribution investigation.",
       "sourceRole": "DIRECT_OPPORTUNITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"requiredKeywordsAny": ["good-first-bug", "good-first-bugs"], "statusNot": ["closed"], "allowEmpty": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [{"familyId": "CORE_BUG_GARDENING", "confidence": "medium"}, {"familyId": "CORE_PATCH_IMPLEMENTATION", "confidence": "low"}],
-      "limitations": ["Good-first-bug is a suitability signal, not proof of useful action."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "requiredKeywordsAny": [
+          "good-first-bug",
+          "good-first-bugs"
+        ],
+        "statusNot": [
+          "closed"
+        ],
+        "allowEmpty": true
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "CORE_BUG_GARDENING",
+          "confidence": "medium"
+        },
+        {
+          "familyId": "CORE_PATCH_IMPLEMENTATION",
+          "confidence": "low"
+        }
+      ],
+      "limitations": [
+        "Good-first-bug is a suitability signal, not proof of useful action."
+      ]
     },
     {
       "id": "core-trac-report-45-needs-patch-none-uploaded",
-      "locator": {"kind": "trac-report", "report": 45},
+      "locator": {
+        "kind": "trac-report",
+        "report": 45
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/45",
       "csvUrl": "https://core.trac.wordpress.org/report/45?format=csv",
       "semanticMeaning": "Tickets that need a patch and do not currently expose an uploaded patch.",
       "sourceRole": "DIRECT_OPPORTUNITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"requiredKeywordsAny": ["needs-patch"], "forbiddenKeywordsAny": ["has-patch"], "statusNot": ["closed"], "allowEmpty": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [{"familyId": "CORE_PATCH_IMPLEMENTATION", "confidence": "high"}],
-      "limitations": ["Absence of an uploaded patch in a report must be reread before assuming no PR or attachment exists."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "requiredKeywordsAny": [
+          "needs-patch"
+        ],
+        "forbiddenKeywordsAny": [
+          "has-patch"
+        ],
+        "statusNot": [
+          "closed"
+        ],
+        "allowEmpty": true
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "CORE_PATCH_IMPLEMENTATION",
+          "confidence": "high"
+        }
+      ],
+      "limitations": [
+        "Absence of an uploaded patch in a report must be reread before assuming no PR or attachment exists."
+      ]
     },
     {
       "id": "core-trac-report-46-patches-defects-needing-review",
-      "locator": {"kind": "trac-report", "report": 46},
+      "locator": {
+        "kind": "trac-report",
+        "report": 46
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/46",
       "csvUrl": "https://core.trac.wordpress.org/report/46?format=csv",
       "semanticMeaning": "Defect tickets with patches that likely need review or verification.",
       "sourceRole": "DIRECT_OPPORTUNITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"requiredKeywordsAny": ["has-patch", "needs-testing"], "statusNot": ["closed"], "allowEmpty": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [{"familyId": "CORE_CODE_REVIEW", "confidence": "medium"}, {"familyId": "CORE_PATCH_TEST", "confidence": "high"}],
-      "limitations": ["Defect review needs still require current patch, environment, and discussion reread."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "requiredKeywordsAny": [
+          "has-patch",
+          "needs-testing"
+        ],
+        "statusNot": [
+          "closed"
+        ],
+        "allowEmpty": true
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "CORE_CODE_REVIEW",
+          "confidence": "medium"
+        },
+        {
+          "familyId": "CORE_PATCH_TEST",
+          "confidence": "high"
+        }
+      ],
+      "limitations": [
+        "Defect review needs still require current patch, environment, and discussion reread."
+      ]
     },
     {
       "id": "core-trac-report-69-bugs-needing-reproduction",
-      "locator": {"kind": "trac-report", "report": 69},
+      "locator": {
+        "kind": "trac-report",
+        "report": 69
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/69",
       "csvUrl": "https://core.trac.wordpress.org/report/69?format=csv",
       "semanticMeaning": "Bugs that need reproduction, diagnosis, or current confirmation.",
       "sourceRole": "DIRECT_OPPORTUNITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"requiredKeywordsAny": ["needs-testing", "reporter-feedback", "close"], "statusNot": ["closed"], "allowEmpty": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [{"familyId": "CORE_BUG_REPRODUCTION", "confidence": "high"}],
-      "limitations": ["Reproduction need cannot be confirmed without reading the latest ticket context."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "requiredKeywordsAny": [
+          "needs-testing",
+          "reporter-feedback",
+          "close"
+        ],
+        "statusNot": [
+          "closed"
+        ],
+        "allowEmpty": true
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "CORE_BUG_REPRODUCTION",
+          "confidence": "high"
+        }
+      ],
+      "limitations": [
+        "Reproduction need cannot be confirmed without reading the latest ticket context."
+      ]
     },
     {
       "id": "core-trac-report-1-active-reconciliation",
-      "locator": {"kind": "trac-report", "report": 1},
+      "locator": {
+        "kind": "trac-report",
+        "report": 1
+      },
       "htmlUrl": "https://core.trac.wordpress.org/report/1",
       "csvUrl": "https://core.trac.wordpress.org/report/1?format=csv",
       "semanticMeaning": "Broad active-ticket reconciliation source.",
       "sourceRole": "RECONCILIATION",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"allowEmpty": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "allowEmpty": true
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
       "candidateFamilyMappings": [],
-      "limitations": ["Broad reconciliation is used to detect drift and disappearance, not to create candidates by itself."]
+      "limitations": [
+        "Broad reconciliation is used to detect drift and disappearance, not to create candidates by itself."
+      ]
     },
     {
       "id": "core-trac-query-needs-testing-no-patch",
-      "locator": {"kind": "trac-query", "query": "status=!closed&keywords=~needs-testing&keywords=!~has-patch"},
+      "locator": {
+        "kind": "trac-query",
+        "query": "status=!closed&keywords=~needs-testing&keywords=!~has-patch"
+      },
       "htmlUrl": "https://core.trac.wordpress.org/query?status=%21closed&keywords=~needs-testing&keywords=%21~has-patch",
       "csvUrl": "https://core.trac.wordpress.org/query?status=%21closed&keywords=~needs-testing&keywords=%21~has-patch&format=csv",
       "semanticMeaning": "Tickets that need testing but do not expose a has-patch signal.",
       "sourceRole": "DIRECT_OPPORTUNITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"requiredKeywordsAll": ["needs-testing"], "forbiddenKeywordsAny": ["has-patch"], "statusNot": ["closed"]},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [{"familyId": "CORE_BUG_REPRODUCTION", "confidence": "medium"}, {"familyId": "CORE_PATCH_TEST", "confidence": "low"}],
-      "limitations": ["Testing need without a patch may require reproduction or clarification rather than patch testing."]
-    },
-    {
-      "id": "legacy-v1-media-has-patch",
-      "legacyQuerySlug": "media_has_patch",
-      "htmlUrl": "https://core.trac.wordpress.org/query?status=%21closed&keywords=~media",
-      "csvUrl": "https://core.trac.wordpress.org/query?status=%21closed&keywords=~media&format=csv",
-      "semanticMeaning": "V1 compatibility query for Media has-patch-style discovery.",
-      "sourceRole": "LEGACY_V1_COMPATIBILITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"legacyCompatibilityOnly": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [],
-      "limitations": ["V1 compatibility only. Not a primary Core Trac V2 discovery source."]
-    },
-    {
-      "id": "legacy-v1-accessibility-has-patch",
-      "legacyQuerySlug": "accessibility_has_patch",
-      "htmlUrl": "https://core.trac.wordpress.org/query?status=%21closed&keywords=~accessibility",
-      "csvUrl": "https://core.trac.wordpress.org/query?status=%21closed&keywords=~accessibility&format=csv",
-      "semanticMeaning": "V1 compatibility query for Accessibility has-patch-style discovery.",
-      "sourceRole": "LEGACY_V1_COMPATIBILITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"legacyCompatibilityOnly": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [],
-      "limitations": ["V1 compatibility only. Not a primary Core Trac V2 discovery source."]
-    },
-    {
-      "id": "legacy-v1-docs-needs-testing",
-      "legacyQuerySlug": "docs_needs_testing",
-      "htmlUrl": "https://core.trac.wordpress.org/query?status=%21closed&keywords=~docs",
-      "csvUrl": "https://core.trac.wordpress.org/query?status=%21closed&keywords=~docs&format=csv",
-      "semanticMeaning": "V1 compatibility query for documentation testing discovery.",
-      "sourceRole": "LEGACY_V1_COMPATIBILITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"legacyCompatibilityOnly": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [],
-      "limitations": ["V1 compatibility only. Not a primary Core Trac V2 discovery source."]
-    },
-    {
-      "id": "legacy-v1-good-first-bugs",
-      "legacyQuerySlug": "good_first_bugs",
-      "htmlUrl": "https://core.trac.wordpress.org/query?status=%21closed&keywords=~good-first-bug",
-      "csvUrl": "https://core.trac.wordpress.org/query?status=%21closed&keywords=~good-first-bug&format=csv",
-      "semanticMeaning": "V1 compatibility query for good-first-bug discovery.",
-      "sourceRole": "LEGACY_V1_COMPATIBILITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"legacyCompatibilityOnly": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [],
-      "limitations": ["V1 compatibility only. Not a primary Core Trac V2 discovery source."]
-    },
-    {
-      "id": "legacy-v1-general-needs-testing",
-      "legacyQuerySlug": "general_needs_testing",
-      "htmlUrl": "https://core.trac.wordpress.org/query?status=%21closed&keywords=~needs-testing",
-      "csvUrl": "https://core.trac.wordpress.org/query?status=%21closed&keywords=~needs-testing&format=csv",
-      "semanticMeaning": "V1 compatibility query for general needs-testing discovery.",
-      "sourceRole": "LEGACY_V1_COMPATIBILITY",
-      "expectedFields": ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"],
-      "semanticValidation": {"legacyCompatibilityOnly": true},
-      "freshnessExpectation": {"maxAgeHours": 24},
-      "candidateFamilyMappings": [],
-      "limitations": ["V1 compatibility only. Not a primary Core Trac V2 discovery source."]
+      "expectedFields": [
+        "id",
+        "summary",
+        "status",
+        "component",
+        "owner",
+        "type",
+        "priority",
+        "milestone",
+        "version",
+        "keywords",
+        "time",
+        "changetime",
+        "comments",
+        "_comments"
+      ],
+      "semanticValidation": {
+        "requiredKeywordsAll": [
+          "needs-testing"
+        ],
+        "forbiddenKeywordsAny": [
+          "has-patch"
+        ],
+        "statusNot": [
+          "closed"
+        ]
+      },
+      "freshnessExpectation": {
+        "maxAgeHours": 24
+      },
+      "candidateFamilyMappings": [
+        {
+          "familyId": "CORE_BUG_REPRODUCTION",
+          "confidence": "medium"
+        },
+        {
+          "familyId": "CORE_PATCH_TEST",
+          "confidence": "low"
+        }
+      ],
+      "limitations": [
+        "Testing need without a patch may require reproduction or clarification rather than patch testing."
+      ]
     }
   ]
 }
