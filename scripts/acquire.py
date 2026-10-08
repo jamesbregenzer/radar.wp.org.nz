@@ -10,6 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 TRAC_REGISTRY = ROOT / "config/core-trac-v2-source-registry.json"
 WAVE2_CONFIG = ROOT / "config/wave2-sources.json"
 DEFAULT_RAW_ROOT = ROOT / "data/raw"
+DEFAULT_DOWNLOADS = ROOT / "data/downloads"
+FIREFOX_PROFILE = ROOT / "data/.firefox-profile"
 PRIMARY_ROLES = {"DIRECT_OPPORTUNITY", "SIGNAL", "RECONCILIATION"}
 CSV_NAME = re.compile(r"^(?:query|report_[0-9]+)(?: \([0-9]+\))?\.csv$")
 DEFAULT_TIMEOUT = 90
@@ -49,8 +51,22 @@ def wait_for_new_csv(downloads: Path, before: dict[Path, tuple[int, int]], timeo
             if candidate.exists() and candidate.stat().st_size == size: return candidate
         time.sleep(0.2)
     raise TimeoutError("Firefox did not create a new query.csv or report_N.csv")
+def prepare_firefox_profile(downloads: Path = DEFAULT_DOWNLOADS, profile: Path = FIREFOX_PROFILE) -> None:
+    downloads.mkdir(parents=True, exist_ok=True)
+    profile.mkdir(parents=True, exist_ok=True)
+    prefs = "\n".join([
+        f'user_pref("browser.download.dir", {json.dumps(str(downloads))});',
+        'user_pref("browser.download.folderList", 2);',
+        'user_pref("browser.download.useDownloadDir", true);',
+        'user_pref("browser.download.always_ask_before_handling_new_types", false);',
+        'user_pref("browser.helperApps.alwaysAsk.force", false);',
+        'user_pref("browser.helperApps.neverAsk.saveToDisk", "text/csv,application/csv,application/octet-stream");',
+    ]) + "\n"
+    (profile / "user.js").write_text(prefs, encoding="utf-8")
+
 def open_firefox(url: str, browser: str = "Firefox") -> None:
-    subprocess.run(["open", "-n", "-a", browser, "--args", url], check=True)
+    prepare_firefox_profile()
+    subprocess.run(["open", "-n", "-a", browser, "--args", "-no-remote", "-profile", str(FIREFOX_PROFILE), url], check=True)
 def close_firefox(browser: str = "Firefox") -> None:
     subprocess.run(["osascript", "-e", f'tell application "{browser}" to quit'], check=False)
 def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dict[str, str]]]:
@@ -122,7 +138,7 @@ def acquire_wave2(config: dict[str, Any], run_dir: Path, observed_at: str, *, fe
     return make_observation(source, observed_at, rows=rows, result="success", revision=sha256_bytes(json.dumps(resources, sort_keys=True).encode()), raw_artifacts=raw_artifacts)
 
 def acquire_run(*, raw_root: Path = DEFAULT_RAW_ROOT, observed_at: str | None = None, downloads: Path | None = None, timeout: int = DEFAULT_TIMEOUT, trac_sources: list[dict[str, Any]] | None = None, wave2_sources: list[dict[str, Any]] | None = None, trac_acquirer: Callable[..., dict[str, Any]] = acquire_core_trac, wave2_acquirer: Callable[..., dict[str, Any]] = acquire_wave2) -> dict[str, Any]:
-    observed = observed_at or utc_now(); run_dir = raw_root / run_slug(observed); run_dir.mkdir(parents=True, exist_ok=True); downloads_path = downloads or (Path.home() / "Downloads")
+    observed = observed_at or utc_now(); run_dir = raw_root / run_slug(observed); run_dir.mkdir(parents=True, exist_ok=True); downloads_path = downloads or DEFAULT_DOWNLOADS
     trac_sources = trac_sources if trac_sources is not None else primary_core_trac_sources(); wave2_sources = wave2_sources if wave2_sources is not None else load_json(WAVE2_CONFIG).get("sources", []); observations = []
     for source in trac_sources: observations.append(trac_acquirer(source, run_dir, observed, downloads_path, timeout))
     for source in wave2_sources:
@@ -133,5 +149,5 @@ def acquire_run(*, raw_root: Path = DEFAULT_RAW_ROOT, observed_at: str | None = 
     manifest = {"schema": "radar-observation-set.v2", "version": 2, "runId": run_slug(observed), "observedAt": observed, "observations": observations}; manifest["success"] = any(item["acquisitionResult"] == "success" for item in observations); write_json(run_dir / "run.json", manifest); return manifest
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("--raw-root", type=Path, default=DEFAULT_RAW_ROOT); parser.add_argument("--downloads", type=Path, default=Path.home() / "Downloads"); parser.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT); args = parser.parse_args(); manifest = acquire_run(raw_root=args.raw_root, downloads=args.downloads, timeout=args.timeout); print(json.dumps(manifest, indent=2, sort_keys=True)); return 0 if manifest["success"] else 1
+    parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("--raw-root", type=Path, default=DEFAULT_RAW_ROOT); parser.add_argument("--downloads", type=Path, default=DEFAULT_DOWNLOADS); parser.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT); args = parser.parse_args(); manifest = acquire_run(raw_root=args.raw_root, downloads=args.downloads, timeout=args.timeout); print(json.dumps(manifest, indent=2, sort_keys=True)); return 0 if manifest["success"] else 1
 if __name__ == "__main__": raise SystemExit(main())

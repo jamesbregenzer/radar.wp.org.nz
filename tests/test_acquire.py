@@ -7,7 +7,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from acquire import acquire_core_trac, acquire_run, acquire_wave2, download_is_incomplete, new_csv_file, validate_csv
+from acquire import acquire_core_trac, acquire_run, acquire_wave2, download_is_incomplete, new_csv_file, prepare_firefox_profile, validate_csv
 from process import build_feed
 
 class AcquireTests(unittest.TestCase):
@@ -33,6 +33,16 @@ class AcquireTests(unittest.TestCase):
                 wait_for_new_csv(downloads, {}, timeout=0)
             with self.assertRaises(ValueError):
                 validate_csv(candidate.read_bytes(), ["id", "summary"])
+
+    def test_firefox_profile_is_configured_for_radar_downloads(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            downloads = Path(temporary) / "downloads"
+            profile = Path(temporary) / "profile"
+            prepare_firefox_profile(downloads, profile)
+            prefs = (profile / "user.js").read_text()
+            self.assertIn(f'"browser.download.dir", {json.dumps(str(downloads))}', prefs)
+            self.assertIn('"browser.download.folderList", 2', prefs)
+            self.assertIn('"browser.helperApps.neverAsk.saveToDisk", "text/csv', prefs)
 
     def test_wave2_shape_validation_happens_before_successful_observation(self):
         config = {"sourceFamily": "MAKE_TEST_RELEASE_SIGNALS", "adapter": "wp_rest_posts"}
