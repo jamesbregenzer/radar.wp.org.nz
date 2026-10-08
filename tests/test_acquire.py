@@ -21,6 +21,8 @@ class AcquireTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             downloads = Path(temporary); (downloads / "report_2 (1).csv").write_text("id\n1\n"); (downloads / "notes.txt").write_text("x")
             self.assertEqual(new_csv_file({}, downloads).name, "report_2 (1).csv")
+            (downloads / "report_2(2).csv").write_text("id\n2\n")
+            self.assertEqual(new_csv_file({}, downloads).name, "report_2(2).csv")
 
     def test_incomplete_downloads_and_missing_ticket_ids_are_rejected(self):
         with tempfile.TemporaryDirectory() as temporary:
