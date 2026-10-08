@@ -12,6 +12,7 @@ WAVE2_CONFIG = ROOT / "config/wave2-sources.json"
 DEFAULT_RAW_ROOT = ROOT / "data/raw"
 DEFAULT_DOWNLOADS = ROOT / "data/downloads"
 FIREFOX_PROFILE = ROOT / "data/.firefox-profile"
+FIREFOX_EXECUTABLE = Path("/Applications/Firefox.app/Contents/MacOS/firefox")
 PRIMARY_ROLES = {"DIRECT_OPPORTUNITY", "SIGNAL", "RECONCILIATION"}
 CSV_NAME = re.compile(r"^(?:query|report_[0-9]+)(?:\s*\([0-9]+\))?\.csv$")
 DEFAULT_TIMEOUT = 90
@@ -83,9 +84,12 @@ def prepare_firefox_profile(downloads: Path = DEFAULT_DOWNLOADS, profile: Path =
     ]) + "\n"
     (profile / "user.js").write_text(prefs, encoding="utf-8")
 
-def open_firefox(url: str, browser: str = "Firefox") -> None:
-    prepare_firefox_profile()
-    subprocess.run(["open", "-n", "-a", browser, "--args", "-no-remote", "-profile", str(FIREFOX_PROFILE), url], check=True)
+def firefox_command(url: str, profile: Path = FIREFOX_PROFILE) -> list[str]:
+    return [str(FIREFOX_EXECUTABLE), "-no-remote", "-profile", str(profile), url]
+
+def open_firefox(url: str, *, downloads: Path = DEFAULT_DOWNLOADS, profile: Path = FIREFOX_PROFILE) -> None:
+    prepare_firefox_profile(downloads, profile)
+    subprocess.run(firefox_command(url, profile), check=True)
 def close_firefox(browser: str = "Firefox") -> None:
     subprocess.run(["osascript", "-e", f'tell application "{browser}" to quit'], check=False)
 def normalize_csv_header(header: str) -> str | None:

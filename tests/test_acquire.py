@@ -4,13 +4,28 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from acquire import acquire_core_trac, acquire_run, acquire_wave2, download_is_incomplete, new_csv_file, prepare_firefox_profile, validate_csv
+from acquire import FIREFOX_EXECUTABLE, acquire_core_trac, acquire_run, acquire_wave2, download_is_incomplete, firefox_command, new_csv_file, open_firefox, prepare_firefox_profile, validate_csv
 from process import build_feed
 
 class AcquireTests(unittest.TestCase):
+    def test_firefox_command_uses_executable_and_dedicated_profile(self):
+        profile = Path("/Users/thor/Sites/wp-core-radar/data/.firefox-profile")
+        self.assertEqual(firefox_command("https://example.test/report?format=csv", profile), [str(FIREFOX_EXECUTABLE), "-no-remote", "-profile", str(profile), "https://example.test/report?format=csv"])
+        self.assertNotIn("open", firefox_command("https://example.test/report?format=csv", profile))
+
+    def test_open_firefox_runs_direct_executable(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            downloads = Path(temporary) / "downloads"; profile = Path(temporary) / "profile"
+            with patch("acquire.subprocess.run") as run:
+                open_firefox("https://example.test/report?format=csv", downloads=downloads, profile=profile)
+            run.assert_called_once_with([str(FIREFOX_EXECUTABLE), "-no-remote", "-profile", str(profile), "https://example.test/report?format=csv"], check=True)
+            prefs = (profile / "user.js").read_text()
+            self.assertIn(f'"browser.download.dir", {json.dumps(str(downloads))}', prefs)
+
     def test_core_trac_writes_canonical_observation_and_keeps_raw_csv(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); source = {"id": "core-trac-report", "sourceRole": "DIRECT_OPPORTUNITY", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary"], "candidateFamilyMappings": [{"familyId": "TEST", "confidence": "high"}], "identityField": "id"}; body = b"id,summary\n123,Fix it\n"; (downloads / "report_1.csv").write_bytes(body)
