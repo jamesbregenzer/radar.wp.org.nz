@@ -32,7 +32,7 @@ class AcquireTests(unittest.TestCase):
 
     def test_firefox_command_uses_executable_and_dedicated_profile(self):
         profile = Path("/Users/thor/Sites/wp-core-radar/data/.firefox-profile")
-        self.assertEqual(firefox_command("https://example.test/report?format=csv", profile), [str(FIREFOX_EXECUTABLE), "-no-remote", "-profile", str(profile), "https://example.test/report?format=csv"])
+        self.assertEqual(firefox_command("https://example.test/report?format=csv", profile), [str(FIREFOX_EXECUTABLE), "-foreground", "-no-remote", "-profile", str(profile), "https://example.test/report?format=csv"])
         self.assertNotIn("open", firefox_command("https://example.test/report?format=csv", profile))
 
     def test_open_firefox_runs_direct_executable(self):
@@ -40,7 +40,7 @@ class AcquireTests(unittest.TestCase):
             downloads = Path(temporary) / "downloads"; profile = Path(temporary) / "profile"
             with patch("acquire.subprocess.Popen") as process, patch("acquire.radar_firefox_pids", return_value=[]):
                 open_firefox("https://example.test/report?format=csv", downloads=downloads, profile=profile)
-            process.assert_called_once_with([str(FIREFOX_EXECUTABLE), "-no-remote", "-profile", str(profile), "https://example.test/report?format=csv"], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            process.assert_called_once_with([str(FIREFOX_EXECUTABLE), "-foreground", "-no-remote", "-profile", str(profile), "https://example.test/report?format=csv"], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             prefs = (profile / "user.js").read_text()
             self.assertIn(f'"browser.download.dir", {json.dumps(str(downloads))}', prefs)
 

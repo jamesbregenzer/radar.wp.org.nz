@@ -87,7 +87,7 @@ def prepare_firefox_profile(downloads: Path = DEFAULT_DOWNLOADS, profile: Path =
     (profile / "user.js").write_text(prefs, encoding="utf-8")
 
 def firefox_command(url: str, profile: Path = FIREFOX_PROFILE) -> list[str]:
-    return [str(FIREFOX_EXECUTABLE), "-no-remote", "-profile", str(profile), url]
+    return [str(FIREFOX_EXECUTABLE), "-foreground", "-no-remote", "-profile", str(profile), url]
 
 _RADAR_FIREFOX_PROCESS: subprocess.Popen | None = None
 
