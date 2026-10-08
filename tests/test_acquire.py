@@ -56,6 +56,12 @@ class AcquireTests(unittest.TestCase):
         with patch("acquire.subprocess.run", return_value=result):
             self.assertEqual(radar_firefox_pids(Path("/Users/thor/Sites/wp-core-radar/data/.firefox-profile")), [111])
 
+    def test_profile_bearing_child_maps_to_radar_firefox_parent(self):
+        ps = " 333 /Applications/Firefox.app/Contents/MacOS/firefox -foreground\n 334 333 /Applications/Firefox.app/Contents/MacOS/plugin-container -parentPid 333 -profile /Users/thor/Sites/wp-core-radar/data/.firefox-profile\n"
+        result = type("Result", (), {"stdout": ps})()
+        with patch("acquire.subprocess.run", return_value=result):
+            self.assertEqual(radar_firefox_pids(Path("/Users/thor/Sites/wp-core-radar/data/.firefox-profile")), [333])
+
     def test_close_firefox_escalates_only_tracked_process_after_bounded_wait(self):
         radar = self.FakeProcess(waits_until_exit=False)
         with tempfile.TemporaryDirectory() as temporary, patch("acquire.radar_firefox_pids", return_value=[]):

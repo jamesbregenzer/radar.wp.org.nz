@@ -127,17 +127,29 @@ _RADAR_FIREFOX_PROCESS: RadarFirefoxProcess | subprocess.Popen | None = None
 def radar_firefox_pids(profile: Path = FIREFOX_PROFILE) -> list[int]:
     result = subprocess.run(["ps", "-axo", "pid=,command="], capture_output=True, text=True, check=False)
     marker = f"-profile {profile}"
-    pids = []
+    rows: dict[int, tuple[int, str]] = {}
     for line in result.stdout.splitlines():
-        if str(FIREFOX_EXECUTABLE) not in line or marker not in line:
-            continue
         try:
-            pid = int(line.strip().split(None, 1)[0])
+            fields = line.strip().split(None, 1)
+            pid = int(fields[0])
+            command = fields[1]
         except (IndexError, ValueError):
             continue
-        if pid != os.getpid():
-            pids.append(pid)
-    return pids
+        parent = 0
+        parent_match = re.search(r"-parentPid (\d+)", command)
+        if parent_match:
+            parent = int(parent_match.group(1))
+        rows[pid] = (parent, command)
+    pids = set()
+    for pid, (parent, command) in rows.items():
+        if marker not in command:
+            continue
+        candidate = pid
+        while candidate in rows and str(FIREFOX_EXECUTABLE) not in rows[candidate][1]:
+            candidate = rows[candidate][0]
+        if candidate in rows and str(FIREFOX_EXECUTABLE) in rows[candidate][1] and candidate != os.getpid():
+            pids.add(candidate)
+    return sorted(pids)
 
 def ensure_firefox_profile_available(profile: Path = FIREFOX_PROFILE, timeout: float = FIREFOX_PROFILE_WAIT_TIMEOUT) -> None:
     deadline = time.monotonic() + timeout
