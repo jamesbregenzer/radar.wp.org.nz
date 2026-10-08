@@ -1,0 +1,202 @@
+﻿id,Summary,Keywords,Milestone,Status,Owner,Created
+15386,WP_List_Table::get_columns does not work for plugins,has-patch has-unit-tests dev-feedback close,Future Release,reopened,scribu,11/11/2010 02:42:28 PM
+16858,Usage of HTTP_HOST in the administration,has-patch,Awaiting Review,reviewing,,03/15/2011 01:33:47 PM
+22623,"Some string tweaks - duplicity, context, mistake",has-patch has-unit-tests good-first-bug,Future Release,new,,11/28/2012 08:56:41 PM
+24447,Avoid losing data after nonces expire,early has-patch has-unit-tests,Future Release,assigned,iseulde,05/29/2013 07:55:35 AM
+25939,"add_options_page(..., 'options.php') and 1000 vars limit",has-patch 2nd-opinion dev-feedback,Awaiting Review,reviewing,SergeyBiryukov,11/13/2013 03:00:43 PM
+27747,Inconsistent type default between `submit_button()` and `get_submit_button()`,has-patch dev-feedback,Awaiting Review,new,,04/10/2014 08:03:52 AM
+29030,Screen Options Poor Update/Rendering Causes Many things to Break,dev-feedback has-patch,Awaiting Review,new,,07/26/2014 01:21:46 AM
+31199,Potential reference to unset variable in get_bulk_actions (WP_Posts_List_Table),has-patch reporter-feedback close has-unit-tests,Future Release,accepted,chriscct7,02/01/2015 04:44:14 PM
+32017,Fix class name typo from 'hndle' to 'handle',has-patch has-screenshots,Awaiting Review,new,,04/19/2015 03:43:53 PM
+34088,Add delay to admin menu arrow's disappearance,has-patch,Awaiting Review,new,,09/29/2015 11:11:19 PM
+35561,function wp_admin_canonical_url() not using configured site url when constructing canonical url link tag,reporter-feedback dev-feedback has-patch,Awaiting Review,new,,01/21/2016 04:00:36 PM
+36081,Activity dashboard widget is not using word-wrap: break-word,has-ui-feedback dev-feedback has-patch,Future Release,assigned,mrahmadawais,03/03/2016 07:40:11 AM
+36201,Admin Pagination URLs Use Wrong Hostname,has-patch needs-testing dev-feedback,Future Release,reopened,,03/10/2016 09:18:06 PM
+37712,Opacity not applied to admin menu icon when it selected,has-patch,Future Release,new,,08/18/2016 08:09:28 AM
+38076,Network admin plugin pages can be accessed on non-multisite,has-patch dev-feedback has-unit-tests,Future Release,new,,09/16/2016 07:56:07 PM
+38304,It is not possible to filter posts by category or date on mobile devices,has-patch has-screenshots,Awaiting Review,new,,10/13/2016 03:08:15 PM
+39261,Possible wrong base color for admin SVG-icons,has-patch 2nd-opinion,Awaiting Review,new,,12/13/2016 09:27:44 AM
+39651,Find Posts modal does not show post-type labels correctly,has-patch,Future Release,new,,01/20/2017 11:59:21 AM
+40581,When all columns are 'special' ...,has-patch has-screenshots,Future Release,new,,04/26/2017 05:10:37 PM
+40701,Admin menu icon distorted in Chrome when #adminmenu folded,has-patch,Awaiting Review,new,,05/09/2017 11:17:06 AM
+42254,Duplicate news entries in Events & News dashboard widget,good-first-bug has-patch has-unit-tests needs-refresh,Future Release,assigned,Iceable,10/17/2017 06:15:20 PM
+42468,"Iron out the usage of 'homepage', 'home page', 'front page'",has-patch,Awaiting Review,new,,11/08/2017 02:41:43 PM
+42486,The Tools screen is blank for users who cannot manage categories or tags,has-patch 2nd-opinion has-screenshots,Awaiting Review,assigned,,11/09/2017 05:05:12 PM
+42527,"Admin menus: PHP warning ""open_basedir restriction..."" when `_wp_menu_output` is called",has-patch,Awaiting Review,new,,11/13/2017 10:13:25 AM
+42586,Code Editor: Inconsistent results between finding in CodeMirror vs browser,changes-requested has-patch has-unit-tests,Future Release,new,,11/16/2017 04:43:25 PM
+43331,Color picker breaks admin panel in many templates,has-screenshots has-patch dev-feedback 2nd-opinion close,Awaiting Review,new,,02/15/2018 01:05:04 PM
+43611,Duplicate _ajax_nonce input cause conflict between find_post_div and post_custom_div,has-patch has-unit-tests,Awaiting Review,new,,03/22/2018 06:39:18 PM
+43630,HAVING without GROUP BY in /wp-admin/includes/template.php,has-patch,Awaiting Review,new,,03/25/2018 04:09:42 PM
+43723,Sanitize user_contactmethods output,has-patch 2nd-opinion dev-feedback,Awaiting Review,new,,04/09/2018 02:12:16 PM
+44631,Limit the displayed search phrase for the posts list table,has-screenshots has-patch,Awaiting Review,new,,07/24/2018 09:31:00 AM
+44710,Upload plugin and theme functionalities are not removing uploaded files after failure conditions.,has-patch has-unit-tests,Awaiting Review,new,,08/03/2018 12:11:59 AM
+45130,Defer jQuery WordPress Admin & Customizer doesn't work properly,has-patch has-unit-tests,Awaiting Review,new,,10/19/2018 01:35:56 PM
+46307,Custom admin menu items don't provide their title on medium breakpoint,has-patch,Future Release,assigned,garrett-eclipse,02/22/2019 06:52:05 AM
+46364,update.php coding standards:trigger_error() function,has-patch,Awaiting Review,new,,02/27/2019 07:26:33 PM
+47505,Create a comprehensive input validation API for WordPress editor and administration interface,needs-design input-validation form-controls has-patch has-unit-tests,Future Release,accepted,audrasjb,06/07/2019 02:24:03 PM
+47640,"WP_Posts_List_Table::get_views() doesn't allow the ""Mine"" counts to be filtered",has-screenshots has-patch has-unit-tests,Awaiting Review,new,,07/02/2019 04:37:23 PM
+47690,remove_submenu_page() doesn't remove corresponding entry from $_wp_submenu_nopriv,has-patch needs-test-info has-unit-tests,Future Release,reviewing,johnbillion,07/12/2019 10:41:09 AM
+47788,send_headers hook does not work in wp-login or wp-admin,2nd-opinion has-patch,Awaiting Review,new,,07/28/2019 10:18:17 AM
+48881,Fix inline SVG error with wp_admin_css_color,has-patch reporter-feedback,Awaiting Review,new,,12/05/2019 04:31:07 AM
+49694,All pages menu on admin panel has DOM errors,has-patch,Future Release,new,,03/24/2020 07:41:52 PM
+49820,Input and select elements are misaligned in the admin area,has-patch,Awaiting Review,new,,04/05/2020 04:36:03 PM
+50423,The expand icon at the bottom of the collapsed admin menu is not easily discoverable.,has-screenshots has-patch,Awaiting Review,new,,06/18/2020 05:03:28 PM
+50815,Use consistent checks for displaying the Filter button in different list tables,has-patch,Future Release,reviewing,SergeyBiryukov,07/29/2020 11:01:05 PM
+51282,Select element does not honor admin color scheme on hover,has-patch,Awaiting Review,new,,09/09/2020 06:56:21 PM
+51383,PHP error body class added for suppressed errors,has-patch has-unit-tests,Future Release,reviewing,,09/23/2020 06:27:14 PM
+52035,The `add_submenu_page()` position is ignored.,has-patch,Awaiting Review,new,,12/11/2020 04:03:26 PM
+52151,Post / Page / Plugin Title Columns broken,has-patch early has-unit-tests,Future Release,accepted,audrasjb,12/22/2020 11:38:39 AM
+52919,Dashboard tabs issue on focus,has-screenshots has-patch,Awaiting Review,new,,03/26/2021 09:27:49 AM
+54216,missing base href in wp-admin,has-patch,Awaiting Review,new,,10/04/2021 12:24:27 PM
+54808,Posts search term does not wrap well on mobile,has-screenshots has-patch,Future Release,new,,01/13/2022 11:20:59 AM
+55368,Handle ajax failure when doing actions on themes/plugins,has-patch has-unit-tests,Awaiting Review,reopened,,03/11/2022 05:36:32 AM
+55501,Multiple loader issue on admin general setting page.,has-patch changes-requested,Awaiting Review,new,,03/31/2022 01:56:36 PM
+56254,PHP Warning:  Undefined array key 1 wp-admin\menu-header.php on line 202,php81 has-patch needs-unit-tests,Awaiting Review,new,,07/20/2022 10:30:24 AM
+56302,Admin menu links have relative URLs,has-screenshots dev-feedback has-patch has-test-info has-unit-tests,Awaiting Review,new,,07/29/2022 06:01:54 AM
+57268,Add Escaping properly in Class Custom background Page,has-patch has-unit-tests,Awaiting Review,new,,12/03/2022 10:10:30 AM
+57577,Admin: Color schema is not applied correctly to beta labels in site editor,has-patch has-test-info changes-requested,Future Release,new,,01/29/2023 10:33:02 AM
+57772,wpfooter credit hide the plugin activation button,has-patch,Awaiting Review,assigned,,02/20/2023 08:00:19 PM
+58161,WordPress post editor pagination uses inconsistent URL variable to rest of site,has-test-info has-patch has-unit-tests,Awaiting Review,new,,04/20/2023 01:32:20 AM
+58335,WordPress Dashboard Collapse Menu Transition issue.,has-screenshots has-patch,Awaiting Review,new,,05/17/2023 04:37:06 AM
+58455,The admin menu remains sticky when displaying warning or error messages on the Site Health page.,has-patch has-screenshots has-test-info changes-requested,Future Release,reviewing,audrasjb,06/05/2023 12:15:55 PM
+58488,Improve performance of wp-admin -> Comments,has-patch,Awaiting Review,new,,06/08/2023 11:12:24 AM
+58909,width problem in the administration interface,has-screenshots has-patch,Awaiting Review,new,,07/26/2023 07:58:35 AM
+59272,wp-admin search/column order not working when running not on port 80,has-patch has-unit-tests,Awaiting Review,new,,09/02/2023 12:49:40 PM
+60695,Links in the admin-menu are generated incorrectly for mu-plugins,has-patch,Awaiting Review,new,,03/05/2024 03:27:57 PM
+61479,Warnings when use remove_menu_page() with a non exist page.,has-screenshots has-patch,Awaiting Review,new,,06/21/2024 10:38:14 AM
+61503,Hook parent_file,has-patch,Awaiting Review,new,,06/25/2024 08:12:24 PM
+61575,Node Modules in sub-directories not getting ignored while exporting the theme,has-patch close,Awaiting Review,new,,07/04/2024 08:34:05 PM
+62619,Remove `wp_kses_post()` filtering from admin notices,has-patch,Future Release,new,,11/29/2024 07:14:31 PM
+62998,Deactivate button and search filter on plugin list page,has-patch,Awaiting Review,new,,02/21/2025 09:12:45 AM
+63033,The padding on the right and left of the WordPress admin bar (#wpadminbar) is not the same.,needs-design-feedback has-patch 2nd-opinion,Awaiting Review,new,,02/28/2025 06:38:18 AM
+63209,The search engine for admin posts does not support quotes,2nd-opinion has-patch has-unit-tests,Awaiting Review,new,,04/01/2025 08:01:43 AM
+63835,"Admin pages listing displays post time instead of modified time for posts with status not equal ""published""",has-patch,Awaiting Review,new,,08/17/2025 09:02:22 AM
+64020,Site icon: Don't force cropping,has-patch dev-feedback changes-requested,Future Release,new,,09/22/2025 11:43:49 AM
+64623,Prevent losing data when clicking links on Settings pages,has-patch changes-requested has-unit-tests,Future Release,accepted,joedolson,02/10/2026 09:22:00 PM
+64721,menu-header.php uses relative file_exists() causing wrong submenu URL when PHP CWD is not wp-admin/,has-patch 2nd-opinion close,Awaiting Review,assigned,,02/24/2026 11:54:46 PM
+64942,Inconsistent paddings/margins for dashboard widgets,has-screenshots admin-reskin has-patch,Awaiting Review,new,,03/24/2026 04:38:29 PM
+65018,WordPress Post Edit Screen Content Overflow Issue in version 7.0 RC2,has-patch has-test-info,Awaiting Review,new,,04/03/2026 10:34:57 AM
+65048,wp_ajax_fetch_list(): Sanitize $_GET input before nonce construction,has-patch needs-testing has-test-info,Awaiting Review,assigned,rajeshcp,04/09/2026 10:09:59 AM
+65128,Warning on the post page.,has-patch 2nd-opinion,Awaiting Review,new,,04/25/2026 01:42:06 PM
+65151,Dashboard Widgets not draggable,admin-reskin has-screenshots has-patch early,Future Release,reopened,,04/29/2026 10:09:07 AM
+65154,Dashboard widgets empty container alignment issue,has-patch,Awaiting Review,new,,04/30/2026 06:50:50 AM
+65218,update-core.php - plugin slug is not clean,has-patch early,Future Release,accepted,audrasjb,05/11/2026 01:58:25 PM
+65266,Admin sidebar menu item shows a 0.19px height difference causing slight spacing and alignment inconsistency.,has-patch,Awaiting Review,new,,05/19/2026 07:07:09 AM
+65294,A temporary blank white screen appears when add new Post,has-screenshots has-patch,Future Release,new,,05/21/2026 09:00:30 AM
+65316,Mobile admin list tables have poor usability and responsive layout issues on small screens,has-patch has-screenshots needs-design,Future Release,new,,05/22/2026 07:54:59 AM
+65341,wp_ajax_widgets_order looks for is_array( $_POST['sidebars'] ) but dosn't check for isset( $_POST['sidebars'] ),has-patch has-unit-tests,Awaiting Review,new,,05/25/2026 09:26:44 PM
+65439,"wp_dashboard_quota() throws an uncaught DivisionByZeroError (fatal ""critical error"") when a multisite subsite's upload quota is 0 MB",has-patch has-tests has-unit-tests,Awaiting Review,new,,06/08/2026 11:25:56 PM
+65444,Align admin CSS border-radius values with design system tokens,has-patch,Awaiting Review,new,,06/09/2026 01:15:22 PM
+65510,wp_dropdown_pages() lacks support for selecting show_option_no_change when used alongside show_option_none,has-patch has-unit-tests,Awaiting Review,new,,06/22/2026 10:33:41 AM
+65539,Quick Draft: Improve the 'highlight' styling of newly added drafts,has-patch,Awaiting Review,new,,06/25/2026 07:23:33 AM
+65703,wp_admin_notice(): pass `type` instead of `error/updated` via additional_classes,good-first-bugs has-patch,Awaiting Review,accepted,joedolson,07/24/2026 08:49:43 AM
+65812,"Unreachable ""All selected plugins are up to date."" admin notice in plugins.php",good-first-bug has-patch,Awaiting Review,accepted,aminurislam01,08/05/2026 12:16:21 PM
+65877,Limit page jumping on blog and post overview pages,reporter-feedback has-patch,Awaiting Review,new,,08/14/2026 09:18:24 AM
+66247,Admin: Button styles are not consistent in active-while-focused states,has-patch,Awaiting Review,new,,10/05/2026 07:45:47 PM
+60029,Admin unable to create new Application Password for user with no role on main site (multisite),changes-requested has-patch has-test-info has-unit-tests early,Future Release,reviewing,audrasjb,12/07/2023 01:40:27 PM
+62070,PHP Deprecated warnings with null values for success and reject URLs,php81 has-patch,Awaiting Review,new,,09/18/2024 10:31:35 AM
+66000,Application Passwords warning persists after HTTP Basic Authentication is disabled,has-patch has-unit-tests,Awaiting Review,new,,08/31/2026 11:49:26 AM
+60314,Revisions: PHP Warning:  Undefined array key 0 in .../wp-includes/meta.php on line 642,has-patch,Awaiting Review,new,,01/22/2024 06:57:06 AM
+14913,Multisite Requires Client Information to Load Files,has-patch needs-refresh,Awaiting Review,new,filosofo,09/20/2010 08:55:36 PM
+18525,"zlib.output_compression ""on"" in server conflicts with autoupdate",has-patch dev-feedback close,Awaiting Review,reopened,,08/26/2011 08:11:45 PM
+22239,wp_ob_end_flush_all() tries to destroy non-destroyable output buffers,has-patch has-unit-tests dev-feedback has-test-info reported-upstream,Future Release,new,,10/21/2012 03:20:47 AM
+34634,Empty PHP_SELF causes 404 pages to load front page with 200 status code,has-patch has-unit-tests,Awaiting Review,new,,11/09/2015 02:34:39 PM
+41180,ABSPATH definition - incorrect on chrooted vhost,has-patch needs-testing,Awaiting Review,new,,06/27/2017 08:17:39 AM
+43869,Do not initialize current user too early in `get_user_locale()`,has-patch has-unit-tests 2nd-opinion,Future Release,reviewing,SergeyBiryukov,04/26/2018 01:58:48 PM
+45958,Errors displayed on shutdown handler,has-screenshots has-patch reporter-feedback needs-test-info close,Awaiting Review,new,,01/12/2019 01:59:04 PM
+48693,Silence ini_set caused error or check if function_exists first,has-patch needs-dev-note dev-feedback changes-requested,Future Release,accepted,SergeyBiryukov,11/18/2019 09:01:40 AM
+34185,"Excluding certain PHPUnit test groups results in ""Database is dead"" notice and tests terminate",has-patch has-unit-tests,Awaiting Review,new,,10/07/2015 07:35:43 AM
+36786,Can't pass filter names to `MockAction::get_call_count()`,has-patch has-unit-tests,Future Release,new,,05/09/2016 04:20:03 AM
+37207,Multiple unit tests for add_rewrite_endpoint lose custom endpoints,has-patch has-unit-tests,Future Release,new,,06/28/2016 02:47:28 AM
+39356,grunt precommit doesn't work on full checkouts of develop.svn,has-patch,Future Release,new,,12/21/2016 05:46:13 AM
+42064,wp_crop_image() does not work when fopen() is disabled,has-patch has-unit-tests,Awaiting Review,new,,10/02/2017 07:10:07 PM
+42714,Unit tests: Move remaining classes out of includes/utils.php into their own file,has-patch,Awaiting Review,new,,11/27/2017 03:15:00 PM
+43663,Unit Test test_theme_file_uri_returns_valid_uri fails on directories with spaces,dev-feedback has-patch,Awaiting Review,new,,03/29/2018 10:15:47 PM
+48978,Add a new test case for E2E test (Show admin bar if user logged in),has-patch has-unit-tests 2nd-opinion,Future Release,assigned,,12/15/2019 05:37:52 AM
+49491,Escape command arguments of env:cli before passing to docker-compose,has-patch,Future Release,new,,02/22/2020 02:48:04 PM
+51446,CORS issues with QUnit while running tests,has-patch needs-testing dev-feedback has-unit-tests needs-refresh,Awaiting Review,new,,10/05/2020 04:01:48 AM
+52331,Consider using more precise browser versions for `browserslist`,2nd-opinion has-patch has-unit-tests,Awaiting Review,new,,01/20/2021 06:52:13 PM
+52830,Tests: Uploads remain after running test suite.,has-patch has-unit-tests,Awaiting Review,new,,03/17/2021 05:17:30 AM
+53861,Promote a database error during test bootstrap to a failure,has-patch has-unit-tests,Awaiting Review,new,,08/02/2021 07:35:54 PM
+54064,Add phpcs run command to Docker,has-patch,Awaiting Review,new,,09/02/2021 07:35:48 PM
+54754,test for is_blog_installed(),has-patch has-unit-tests,Future Release,assigned,,01/05/2022 09:50:26 PM
+55192,unit tests for _wp_check_existing_file_names,has-patch has-unit-tests dev-feedback,Future Release,assigned,,02/17/2022 11:25:24 PM
+56545,Add a gutenberg plugin enabled run to PHPUnit Tests workflow,has-patch close,Awaiting Review,assigned,desrosj,09/11/2022 05:59:28 PM
+59110,Make the database container in the local Docker environment more generic,has-patch,Future Release,new,,08/15/2023 02:48:33 PM
+60016,Fixed wp_suspend_cache_invalidation to always return bool/empty,has-patch has-unit-tests,Awaiting Review,new,,12/05/2023 10:55:41 PM
+60144,Broken Dev Container + Codespaces,has-patch,Future Release,new,,12/23/2023 04:44:06 AM
+60231,Replace constant ABSPATH . WPINC with BLOCKS_PATH in the require-dynamic-blocks.php,has-patch,Awaiting Review,new,,01/11/2024 01:53:13 PM
+62196,Improve documentation for using the local Docker environment on Windows,good-first-bug has-patch,Awaiting Review,new,,10/09/2024 06:11:26 PM
+63355,Image tests skipped in GitHub Actions,has-patch,Future Release,assigned,desrosj,04/26/2025 11:39:10 AM
+63617,Account for when artifacts expire or go missing during performance testing,has-patch,Awaiting Review,new,,06/23/2025 07:39:28 PM
+64228,Update `sinon` npm dependency,good-first-bug has-patch has-unit-tests,Awaiting Review,new,,11/11/2025 01:35:49 AM
+64579,Build: env:install fails intermittently with database connection refused,has-patch,Awaiting Review,new,,02/01/2026 04:02:56 AM
+65496,Theme testing workflow will fail when multiple themes have uncommitted changes to built files.,has-patch needs-testing,Future Release,new,,06/19/2026 06:39:45 PM
+65770,PHPUnit tests: Build once and reuse.,has-patch,Awaiting Review,new,,07/31/2026 01:16:37 AM
+65858,Add descriptions for all registered Grunt tasks,good-first-bug has-patch,Awaiting Review,new,,08/12/2026 02:27:51 PM
+65950,Make sure all scripts and tasks provided to developers are always functional,has-patch,Awaiting Review,assigned,afercia,08/24/2026 12:44:16 PM
+66223,Add tests for wp_admin_bar_shortlink_menu,has-patch has-unit-tests,Awaiting Review,new,,10/01/2026 06:18:49 AM
+30575,Twenty Fourteen: Submenu items on dropdown menus nearly impossible to select on some Android mobile tablets,good-first-bug has-patch,Future Release,assigned,,12/02/2014 04:01:22 PM
+40292,Twenty Seventeen: Use echo file_get_contents() instead of require_once() to pull in SVG file contents,has-patch 2nd-opinion,Future Release,new,,03/29/2017 04:16:12 AM
+40796,Twenty Seventeen: Overriding WordPress globals is prohibited,dev-feedback has-patch needs-unit-tests,Awaiting Review,new,,05/18/2017 06:04:14 AM
+40940,Twenty Twelve uses invalid linear-gradient() syntax,has-patch needs-testing,Awaiting Review,assigned,,06/07/2017 02:57:13 PM
+41884,Twenty Seventeen: responsive (gallery) images are too large,has-patch dev-feedback,Future Release,new,,09/14/2017 07:36:03 PM
+45795,Twenty Nineteen: missing license information for assets,has-patch 2nd-opinion,Future Release,assigned,williampatton,12/30/2018 02:54:22 PM
+45903,Twenty Nineteen: Some menu clicks trigger console errors,has-screenshots has-patch needs-refresh,Future Release,assigned,,01/10/2019 03:50:18 PM
+45991,Twenty Nineteen: Post headings are overflowing the content area,has-patch,Future Release,new,,01/15/2019 10:11:02 AM
+46055,Twenty Seventeen: Blockquotes aligned right are not rechecked when widgets are added in the Customizer,has-screenshots has-patch,Future Release,new,,01/21/2019 10:02:28 PM
+46215,Twenty Nineteen: Aligning table to center not working on front end,has-patch has-screenshots changes-requested,Future Release,new,,02/08/2019 12:36:18 PM
+46976,Twenty Nineteen: remove postcss-focus-within,has-test-info changes-requested has-patch,Future Release,new,,04/18/2019 10:22:35 AM
+47044,Twenty Nineteen: Add padding for full-aligned text blocks inside of a full-width column block.,has-screenshots has-patch changes-requested,Future Release,assigned,,04/25/2019 01:19:46 PM
+47051,Twenty Nineteen theme sub-menu returns error in WAVE accessibility tool,has-patch,Future Release,accepted,joedolson,04/26/2019 04:21:38 PM
+48617,Twenty Twenty: Figure elements with inline style can overflow content bounds,has-patch dev-feedback has-test-info,Future Release,assigned,nielslange,11/13/2019 10:30:45 PM
+48684,Twenty Twenty: Issue with primary color in the block editor,has-screenshots has-patch,Future Release,new,,11/17/2019 02:10:12 PM
+48718,Twenty Twenty: Block Left/Right Align Display Issues,has-screenshots has-patch,Future Release,assigned,,11/19/2019 12:08:27 AM
+48734,Twenty Twenty: [em] tag with blank string inside ruins theme layout,has-screenshots has-patch 2nd-opinion,Future Release,accepted,audrasjb,11/19/2019 07:21:36 PM
+49030,Twenty Twenty: video resize functionality also impacts other elements on the page,has-patch dev-feedback,Future Release,new,,12/18/2019 05:34:13 PM
+49787,Twenty Nineteen: Highlight text color isn't reflected in the editor,has-patch,Future Release,assigned,poena,04/02/2020 09:59:12 PM
+49929,Twenty Twenty: CSS issue for modal-menu.php,has-patch,Awaiting Review,new,,04/16/2020 11:39:35 PM
+49931,Twenty Nineteen: Group color styles prevent custom colors,has-patch 2nd-opinion reporter-feedback,Future Release,assigned,,04/17/2020 09:42:10 AM
+50418,Twenty Twenty: Inline Images displaying as block,has-patch 2nd-opinion has-test-info has-screenshots changes-requested,Future Release,new,,06/17/2020 11:51:12 PM
+52543,Twenty Twenty: Vendor prefix build steps are missing configuration,has-patch reporter-feedback,Future Release,assigned,,02/16/2021 06:16:02 PM
+52683,"Twenty Twenty-One: Block ""more"" text in link can't be changed",has-patch needs-refresh,Future Release,reviewing,,03/01/2021 02:03:56 PM
+52716,Twenty Seventeen: consider style updates for box-shadow on linked images,has-patch needs-refresh,Future Release,assigned,,03/04/2021 08:32:41 PM
+53158,Twenty Twenty: Pullquote block editor styling does not match front,has-patch dev-feedback has-test-info,Future Release,assigned,,05/05/2021 12:10:48 AM
+55063,Twenty Eleven: Quote block italic styling works in reverse,has-patch has-test-info dev-feedback,Future Release,new,,02/03/2022 03:34:47 PM
+55183,Twenty Thirteen: Table color not reflect on the frontpage,has-patch dev-feedback,Awaiting Review,new,,02/17/2022 08:31:44 AM
+55545,Twenty Fourteen: featured posts slider not working with an odd number of slides on mobile,has-patch,Future Release,new,,04/08/2022 04:46:25 AM
+55934,"Twenty Twenty: ""Add citation"" text font-weight issue in Quote block",has-patch,Awaiting Review,reopened,,06/06/2022 10:51:25 AM
+56073,Twenty Seventeen: Pullquote Block: Color and Font size issue,has-patch changes-requested,Future Release,new,,06/26/2022 11:57:58 AM
+56075,Twenty Twenty-One: Link color issue coming in front-end and backend side,has-patch,Future Release,new,,06/27/2022 10:04:34 AM
+56153,"Twenty Twenty: Query loop block with full width and having template of image, title and date has full width issue in editor side",has-test-info has-screenshot good-first-bug has-patch,Future Release,assigned,,07/05/2022 05:38:20 PM
+56193,Twenty Twenty: font size issue in Post Title block,has-patch,Awaiting Review,new,,07/11/2022 10:36:25 AM
+56341,Twenty Twenty-Two: Long text strings cause horizontal overflow,has-patch has-test-info,Awaiting Review,new,,08/05/2022 12:07:40 PM
+56360,Twenty Twenty: Font size issue in H1 Heading block,has-patch,Awaiting Review,new,,08/10/2022 10:53:10 AM
+56455,Twenty Nineteen: Text Color issue in Pullquote Block,has-patch has-test-info has-screenshots changes-requested,Future Release,new,,08/29/2022 07:16:04 AM
+56638,Twenty Twenty-One: submit button colors inside a block with background color,has-patch changes-requested has-test-info,Future Release,reopened,,09/23/2022 02:10:49 PM
+57415,Twenty Twenty One: Text color not reflected backend and Front side in media & text block,has-screenshots has-patch,Awaiting Review,new,,01/03/2023 01:34:51 PM
+58077,Twenty Twelve: Table block - Top border inconsistent with rest of the table,has-patch,Awaiting Review,new,,04/04/2023 07:25:47 AM
+58297,Twenty Seventeen: Table block does not have same design in editor and front.,has-patch,Awaiting Review,new,,05/11/2023 11:15:35 AM
+58495,Twenty Twenty: Pullquote block issues with font weight and italics,has-screenshots has-patch,Awaiting Review,new,,06/08/2023 01:33:24 PM
+58499,Twenty Twenty: Table block having issue with color,has-patch needs-test-info,Awaiting Review,new,,06/09/2023 07:33:23 AM
+58500,Twenty Twenty: Separator block's Default style is wider than Wide Line style in editor,has-patch changes-requested has-test-info,Awaiting Review,assigned,,06/09/2023 08:22:02 AM
+58608,Twenty Twenty-One: Text color is not reflected when having background color,has-patch has-screenshots has-test-info changes-requested,Future Release,assigned,,06/23/2023 11:15:47 AM
+58934,Twenty Twelve: Table Block does not align center on front end,has-patch changes-requested,Future Release,new,,07/29/2023 02:42:36 PM
+59164,Twenty Nineteen : Site Title Block Color Section is not reflecting properly in Editor & Frontend Side,has-patch,Future Release,new,,08/22/2023 12:42:49 PM
+59203,Twenty Nineteen: fix Separator block's full-width size and placement,has-patch changes-requested,Awaiting Review,new,,08/25/2023 10:51:40 AM
+59207,Twenty Thirteen: correct styling for Button & File block links in front-end widget areas (Footer & Sidebar),has-patch dev-feedback has-test-info,Future Release,new,,08/25/2023 05:56:24 PM
+59457,Twenty Nineteen: Calendar block does not have theme preset text colors in the editor,has-patch needs-refresh,Future Release,new,,09/26/2023 01:16:19 PM
+59602,Twenty Fifteen: typography issues in the editor with Table and Calendar blocks and captions,has-patch has-test-info changes-requested,Future Release,new,,10/12/2023 04:57:54 AM
+59692,Twenty Fifteen theme having multiple issue with pullquote block.,has-patch,Future Release,new,,10/20/2023 09:19:13 AM
+59693,Twenty Fifteen: Rendering issues in Noto font(s),has-patch,Future Release,assigned,desrosj,10/20/2023 11:26:37 AM
+59706,Twenty Twenty: Latest Posts block colors and padding,dev-feedback changes-requested has-patch,Awaiting Review,new,,10/23/2023 11:59:17 AM
+59746,Twenty Twenty-One: Adding User Biographical Info without space breaks the container and adds horizontal scroll,has-patch has-test-info has-screenshots,Awaiting Review,new,,10/26/2023 10:43:35 AM
+59880,Twenty Thirteen: Pullquote block having no effect when we change font-size,has-patch,Future Release,new,,11/10/2023 05:01:19 PM
+60012,Twenty Sixteen: Pullquote block Appearance setting is not working properly,has-patch,Future Release,new,,12/05/2023 09:37:35 AM
+60336,Twenty Sixteen: Table block having issue with border when text color is used.,has-patch has-test-info changes-requested,Future Release,new,,01/24/2024 09:48:00 AM
+60374,Twenty Sixteen: Navigation block inherits colors from button styles,has-patch needs-test-info,Future Release,assigned,,01/30/2024 08:25:25 AM
+60408,Twenty Nineteen: Theme block styles are not applied to blocks in the widget area,has-patch changes-requested 2nd-opinion,Future Release,new,,02/01/2024 08:36:13 AM
+60621,Twenty Nineteen: Search block lacks styling in the editor,changes-requested has-patch,Future Release,new,,02/23/2024 10:10:38 AM
+60859,"Twenty Twenty-one: Table block selected text color not appear when we select ""Stripes"" style.",has-patch,Future Release,new,,03/29/2024 04:58:28 AM
+60872,Twenty Nineteen : Read More Block Text Decoration is not working properly,has-screenshots has-patch changes-requested,Future Release,new,,04/01/2024 11:06:10 AM
+60880,Twenty Nineteen: paragraph does not inherit font size from parent block within the editor,has-test-info has-screenshots has-patch,Future Release,new,,04/02/2024 10:29:47 AM
