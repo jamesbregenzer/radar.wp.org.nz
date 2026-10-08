@@ -17,7 +17,7 @@ PRIMARY_ROLES = {"DIRECT_OPPORTUNITY", "SIGNAL", "RECONCILIATION"}
 CSV_NAME = re.compile(r"^(?:query|report_[0-9]+)(?:\s*\([0-9]+\))?\.csv$")
 DEFAULT_TIMEOUT = 90
 CORE_TRAC_RETRY_DELAY = 1
-FIREFOX_STOP_TIMEOUT = 5
+FIREFOX_STOP_TIMEOUT = 15
 FIREFOX_PROFILE_WAIT_TIMEOUT = 5
 REQUIRED_CSV_FIELDS = {"id", "summary", "status"}
 OPTIONAL_CSV_FIELDS = {"keywords", "workflow", "component", "owner", "type", "priority", "milestone", "version", "time", "changetime", "comments", "_comments"}
@@ -83,46 +83,22 @@ def prepare_firefox_profile(downloads: Path = DEFAULT_DOWNLOADS, profile: Path =
         'user_pref("browser.download.always_ask_before_handling_new_types", false);',
         'user_pref("browser.helperApps.alwaysAsk.force", false);',
         'user_pref("browser.helperApps.neverAsk.saveToDisk", "text/csv,application/csv,application/octet-stream");',
+        'user_pref("browser.sessionstore.resume_from_crash", false);',
+        'user_pref("browser.startup.couldRestoreSession.count", -1);',
+        'user_pref("browser.sessionstore.max_resumed_crashes", -1);',
+        'user_pref("browser.shell.checkDefaultBrowser", false);',
     ]) + "\n"
     (profile / "user.js").write_text(prefs, encoding="utf-8")
 
 def firefox_command(url: str, profile: Path = FIREFOX_PROFILE) -> list[str]:
     return [str(FIREFOX_EXECUTABLE), "-no-remote", "-profile", str(profile), url]
 
-class RadarFirefoxProcess:
-    """Track the profile-specific process after Firefox's macOS launcher hands off."""
-    def __init__(self, launcher: subprocess.Popen, pid: int | None = None) -> None:
+class FirefoxSession:
+    def __init__(self, launcher: subprocess.Popen, profile: Path = FIREFOX_PROFILE) -> None:
         self.launcher = launcher
-        self.pid = pid
-
-    def poll(self) -> int | None:
-        if self.pid is None:
-            return self.launcher.poll()
-        return None if self.pid in radar_firefox_pids() else 0
-
-    def terminate(self) -> None:
-        if self.pid is None:
-            self.launcher.terminate()
-        else:
-            os.kill(self.pid, signal.SIGTERM)
-
-    def kill(self) -> None:
-        if self.pid is None:
-            self.launcher.kill()
-        else:
-            os.kill(self.pid, signal.SIGKILL)
-
-    def wait(self, timeout: float | None = None) -> int:
-        if self.pid is None:
-            return self.launcher.wait(timeout=timeout)
-        deadline = None if timeout is None else time.monotonic() + timeout
-        while self.pid in radar_firefox_pids():
-            if deadline is not None and time.monotonic() >= deadline:
-                raise subprocess.TimeoutExpired("Radar Firefox", timeout)
-            time.sleep(0.1)
-        return 0
-
-_RADAR_FIREFOX_PROCESS: RadarFirefoxProcess | subprocess.Popen | None = None
+        self.profile = profile
+        self.graceful_quit_count = 0
+        self.emergency_kill_used = False
 
 def radar_firefox_pids(profile: Path = FIREFOX_PROFILE) -> list[int]:
     result = subprocess.run(["ps", "-axo", "pid=,command="], capture_output=True, text=True, check=False)
@@ -165,63 +141,36 @@ def ensure_firefox_profile_available(profile: Path = FIREFOX_PROFILE, timeout: f
             raise RuntimeError(f"Radar Firefox profile is still held by process(es): {', '.join(map(str, pids))}")
         time.sleep(0.1)
 
-def stop_radar_profile_processes(profile: Path = FIREFOX_PROFILE) -> None:
-    """Drain only Firefox processes associated with Radar's dedicated profile."""
-    pids = radar_firefox_pids(profile)
-    for pid in pids:
-        try:
-            os.kill(pid, signal.SIGTERM)
-        except ProcessLookupError:
-            pass
-    deadline = time.monotonic() + FIREFOX_STOP_TIMEOUT
-    while pids and time.monotonic() < deadline:
-        time.sleep(0.1)
-        pids = radar_firefox_pids(profile)
-    for pid in pids:
-        try:
-            os.kill(pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-    if pids:
-        deadline = time.monotonic() + FIREFOX_STOP_TIMEOUT
-        while radar_firefox_pids(profile) and time.monotonic() < deadline:
-            time.sleep(0.1)
+def navigate_firefox(url: str, profile: Path = FIREFOX_PROFILE) -> None:
+    subprocess.run([str(FIREFOX_EXECUTABLE), "-profile", str(profile), url], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-def open_firefox(url: str, *, downloads: Path = DEFAULT_DOWNLOADS, profile: Path = FIREFOX_PROFILE) -> RadarFirefoxProcess | subprocess.Popen:
-    global _RADAR_FIREFOX_PROCESS
+def open_firefox(url: str, *, downloads: Path = DEFAULT_DOWNLOADS, profile: Path = FIREFOX_PROFILE) -> FirefoxSession:
     prepare_firefox_profile(downloads, profile)
     ensure_firefox_profile_available(profile)
     launcher = subprocess.Popen(firefox_command(url, profile), start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    deadline = time.monotonic() + 5
-    tracked_pid = None
-    while time.monotonic() < deadline:
-        pids = radar_firefox_pids(profile)
-        if pids:
-            tracked_pid = pids[0]
-            break
-        if launcher.poll() is not None:
-            time.sleep(0.1)
-        else:
-            time.sleep(0.1)
-    _RADAR_FIREFOX_PROCESS = RadarFirefoxProcess(launcher, tracked_pid) if tracked_pid else launcher
-    return _RADAR_FIREFOX_PROCESS
+    return FirefoxSession(launcher, profile)
 
-def close_firefox(process: subprocess.Popen | None = None, *, profile: Path = FIREFOX_PROFILE) -> None:
-    global _RADAR_FIREFOX_PROCESS
-    process = process or _RADAR_FIREFOX_PROCESS
-    try:
-        if process is not None and process.poll() is None:
-            process.terminate()
-            try:
-                process.wait(timeout=FIREFOX_STOP_TIMEOUT)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait(timeout=FIREFOX_STOP_TIMEOUT)
-        stop_radar_profile_processes(profile)
+def close_firefox(session: FirefoxSession | None = None, *, profile: Path = FIREFOX_PROFILE) -> None:
+    if session is None:
         ensure_firefox_profile_available(profile)
-    finally:
-        if process is _RADAR_FIREFOX_PROCESS:
-            _RADAR_FIREFOX_PROCESS = None
+        return
+    pids = radar_firefox_pids(session.profile)
+    if pids:
+        script = f'tell application "System Events" to tell (first process whose unix id is {pids[0]}) to keystroke "q" using command down'
+        subprocess.run(["/usr/bin/osascript", "-e", script], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        session.graceful_quit_count += 1
+    deadline = time.monotonic() + FIREFOX_STOP_TIMEOUT
+    while radar_firefox_pids(session.profile) and time.monotonic() < deadline:
+        time.sleep(0.25)
+    remaining = radar_firefox_pids(session.profile)
+    if remaining:
+        session.emergency_kill_used = True
+        for pid in remaining:
+            try:
+                os.kill(pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+    ensure_firefox_profile_available(profile)
 def normalize_csv_header(header: str) -> str | None:
     return CSV_FIELD_ALIASES.get(header.lstrip("\ufeff").strip().casefold())
 
@@ -258,13 +207,16 @@ def make_observation(source: dict[str, Any], observed_at: str, *, rows: list[dic
     if error: record["error"] = error
     return record
 
-def acquire_core_trac(source: dict[str, Any], run_dir: Path, observed_at: str, downloads: Path, timeout: int, *, opener: Callable[[str], subprocess.Popen | None] = open_firefox, waiter: Callable[[Path, dict[Path, tuple[int, int]], int], Path] = wait_for_new_csv, closer: Callable[[subprocess.Popen | None], None] = close_firefox) -> dict[str, Any]:
+def acquire_core_trac(source: dict[str, Any], run_dir: Path, observed_at: str, downloads: Path, timeout: int, *, opener: Callable[[str], Any] = open_firefox, waiter: Callable[[Path, dict[Path, tuple[int, int]], int], Path] = wait_for_new_csv, closer: Callable[[Any], None] = close_firefox, session: FirefoxSession | None = None, first_in_session: bool = False, navigator: Callable[[str], None] = navigate_firefox) -> dict[str, Any]:
     run_dir.mkdir(parents=True, exist_ok=True); last_error: Exception | None = None
     for attempt in range(2):
         before = download_state(downloads); retry = False; fatal = False
         process = None
         try:
-            process = opener(source["csvUrl"])
+            if session is None:
+                process = opener(source["csvUrl"])
+            elif not (first_in_session and attempt == 0):
+                navigator(source["csvUrl"])
             try:
                 downloaded = waiter(downloads, before, timeout)
             except TimeoutError as error:
@@ -281,7 +233,8 @@ def acquire_core_trac(source: dict[str, Any], run_dir: Path, observed_at: str, d
         except Exception as error:
             last_error = error; fatal = True
         finally:
-            closer(process)
+            if session is None:
+                closer(process)
         if fatal or not retry:
             break
         time.sleep(CORE_TRAC_RETRY_DELAY)
@@ -329,7 +282,19 @@ def acquire_wave2(config: dict[str, Any], run_dir: Path, observed_at: str, *, fe
 def acquire_run(*, raw_root: Path = DEFAULT_RAW_ROOT, observed_at: str | None = None, downloads: Path | None = None, timeout: int = DEFAULT_TIMEOUT, trac_sources: list[dict[str, Any]] | None = None, wave2_sources: list[dict[str, Any]] | None = None, trac_acquirer: Callable[..., dict[str, Any]] = acquire_core_trac, wave2_acquirer: Callable[..., dict[str, Any]] = acquire_wave2) -> dict[str, Any]:
     observed = observed_at or utc_now(); run_dir = raw_root / run_slug(observed); run_dir.mkdir(parents=True, exist_ok=True); downloads_path = downloads or DEFAULT_DOWNLOADS
     trac_sources = trac_sources if trac_sources is not None else primary_core_trac_sources(); wave2_sources = wave2_sources if wave2_sources is not None else load_json(WAVE2_CONFIG).get("sources", []); observations = []
-    for source in trac_sources: observations.append(trac_acquirer(source, run_dir, observed, downloads_path, timeout))
+    if trac_acquirer is acquire_core_trac:
+        session = None
+        try:
+            if trac_sources:
+                session = open_firefox(trac_sources[0]["csvUrl"], downloads=downloads_path)
+            for index, source in enumerate(trac_sources):
+                observations.append(trac_acquirer(source, run_dir, observed, downloads_path, timeout, session=session, first_in_session=index == 0))
+        finally:
+            if session is not None:
+                close_firefox(session)
+    else:
+        for source in trac_sources:
+            observations.append(trac_acquirer(source, run_dir, observed, downloads_path, timeout))
     for source in wave2_sources:
         try: observations.append(wave2_acquirer(source, run_dir, observed))
         except Exception as error:

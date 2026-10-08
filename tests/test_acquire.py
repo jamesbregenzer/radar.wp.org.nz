@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from acquire import FIREFOX_EXECUTABLE, acquire_core_trac, acquire_run, acquire_wave2, close_firefox, download_is_incomplete, ensure_firefox_profile_available, firefox_command, new_csv_file, open_firefox, prepare_firefox_profile, radar_firefox_pids, stop_radar_profile_processes, validate_csv
+from acquire import FIREFOX_EXECUTABLE, FirefoxSession, acquire_core_trac, acquire_run, acquire_wave2, close_firefox, download_is_incomplete, ensure_firefox_profile_available, firefox_command, navigate_firefox, new_csv_file, open_firefox, prepare_firefox_profile, radar_firefox_pids, validate_csv
 from process import build_feed
 
 class AcquireTests(unittest.TestCase):
@@ -44,35 +44,47 @@ class AcquireTests(unittest.TestCase):
             prefs = (profile / "user.js").read_text()
             self.assertIn(f'"browser.download.dir", {json.dumps(str(downloads))}', prefs)
 
-    def test_close_firefox_targets_only_tracked_process_and_waits(self):
-        radar = self.FakeProcess(); unrelated = self.FakeProcess()
-        with tempfile.TemporaryDirectory() as temporary, patch("acquire.radar_firefox_pids", return_value=[]):
-            close_firefox(radar, profile=Path(temporary))
-        self.assertTrue(radar.terminated); self.assertEqual(radar.wait_calls, 1); self.assertFalse(unrelated.terminated)
+    def test_profile_has_crash_recovery_suppression_prefs(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            profile = Path(temporary) / "profile"
+            prepare_firefox_profile(Path(temporary) / "downloads", profile)
+            prefs = (profile / "user.js").read_text()
+            for pref in ("browser.sessionstore.resume_from_crash", "browser.startup.couldRestoreSession.count", "browser.sessionstore.max_resumed_crashes", "browser.shell.checkDefaultBrowser"):
+                self.assertIn(pref, prefs)
 
-    def test_normal_firefox_profile_is_not_targeted(self):
-        ps = f" 111 {FIREFOX_EXECUTABLE} -no-remote -profile /Users/thor/Sites/wp-core-radar/data/.firefox-profile https://example\n 222 {FIREFOX_EXECUTABLE} -profile /Users/thor/Library/Application Support/Firefox/Profiles/default https://example\n"
-        result = type("Result", (), {"stdout": ps})()
-        with patch("acquire.subprocess.run", return_value=result):
-            self.assertEqual(radar_firefox_pids(Path("/Users/thor/Sites/wp-core-radar/data/.firefox-profile")), [111])
+    def test_navigation_reuses_profile_without_new_instance_flag(self):
+        with patch("acquire.subprocess.run") as run:
+            navigate_firefox("https://example.test/next", Path("/tmp/radar-profile"))
+        command = run.call_args.args[0]
+        self.assertEqual(command[:3], [str(FIREFOX_EXECUTABLE), "-profile", "/tmp/radar-profile"])
+        self.assertNotIn("-no-remote", command)
 
-    def test_profile_bearing_child_maps_to_radar_firefox_parent(self):
-        ps = " 333 /Applications/Firefox.app/Contents/MacOS/firefox -foreground\n 334 333 /Applications/Firefox.app/Contents/MacOS/plugin-container -parentPid 333 -profile /Users/thor/Sites/wp-core-radar/data/.firefox-profile\n"
-        result = type("Result", (), {"stdout": ps})()
-        with patch("acquire.subprocess.run", return_value=result):
-            self.assertEqual(radar_firefox_pids(Path("/Users/thor/Sites/wp-core-radar/data/.firefox-profile")), [333])
+    def test_close_firefox_uses_one_graceful_quit_and_waits_for_lock_release(self):
+        session = FirefoxSession(self.FakeProcess(), Path("/tmp/radar-profile"))
+        with patch("acquire.radar_firefox_pids", side_effect=[[123], [], [], []]), patch("acquire.subprocess.run") as run:
+            close_firefox(session)
+        self.assertEqual(session.graceful_quit_count, 1)
+        self.assertFalse(session.emergency_kill_used)
+        self.assertEqual(run.call_count, 1)
+        self.assertIn("unix id is 123", run.call_args.args[0][-1])
 
-    def test_close_firefox_escalates_only_tracked_process_after_bounded_wait(self):
-        radar = self.FakeProcess(waits_until_exit=False)
-        with tempfile.TemporaryDirectory() as temporary, patch("acquire.radar_firefox_pids", return_value=[]):
-            close_firefox(radar, profile=Path(temporary))
-        self.assertTrue(radar.terminated); self.assertTrue(radar.killed); self.assertEqual(radar.wait_calls, 2)
-
-    def test_close_drains_only_remaining_radar_profile_processes(self):
-        radar = self.FakeProcess()
-        with tempfile.TemporaryDirectory() as temporary, patch("acquire.radar_firefox_pids", side_effect=[[456], [], []]), patch("acquire.os.kill") as kill:
-            close_firefox(radar, profile=Path(temporary))
-        kill.assert_called_once_with(456, __import__("signal").SIGTERM)
+    def test_one_session_handles_multiple_sources_and_retries_in_session(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); downloads = root / "downloads"; downloads.mkdir()
+            session = FirefoxSession(self.FakeProcess(), root / "profile")
+            sources = [{"id": "one", "csvUrl": "https://example.test/one", "expectedFields": ["id", "summary", "status"]}, {"id": "two", "csvUrl": "https://example.test/two", "expectedFields": ["id", "summary", "status"]}]
+            navigations = []
+            waits = iter([downloads / "report_1.csv", TimeoutError("no download"), downloads / "report_2.csv", downloads / "report_3.csv"])
+            def waiter(*_):
+                value = next(waits)
+                if isinstance(value, Exception):
+                    raise value
+                value.write_text("id,summary,status\n123,Fix it,new\n")
+                return value
+            for index, source in enumerate(sources):
+                record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, session=session, first_in_session=index == 0, navigator=navigations.append, waiter=waiter)
+                self.assertEqual(record["acquisitionResult"], "success")
+            self.assertEqual(navigations, ["https://example.test/two", "https://example.test/two"])
 
     def test_stale_profile_lock_is_removed_only_when_unheld(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -93,18 +105,6 @@ class AcquireTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "12345"):
                 open_firefox("https://example.test/report?format=csv", downloads=Path(temporary) / "downloads", profile=Path(temporary) / "profile")
             process.assert_not_called()
-
-    def test_sequential_acquisitions_close_and_relaunch_cleanly(self):
-        with tempfile.TemporaryDirectory() as temporary, patch("acquire.radar_firefox_pids", return_value=[]):
-            root = Path(temporary); downloads = root / "downloads"; downloads.mkdir(); processes = [self.FakeProcess(), self.FakeProcess()]; started = list(processes); opened = []
-            source = {"id": "sequential", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}
-            def opener(url): opened.append(url); return processes.pop(0)
-            def waiter(*_):
-                path = downloads / f"report_{len(opened)}.csv"; path.write_text("id,summary,status\n123,Fix it,new\n"); return path
-            for _ in range(2):
-                record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=opener, waiter=waiter, closer=lambda process: close_firefox(process, profile=root / "profile"))
-                self.assertEqual(record["acquisitionResult"], "success")
-            self.assertEqual(len(opened), 2); self.assertTrue(all(process.terminated for process in started))
 
     def test_core_trac_writes_canonical_observation_and_keeps_raw_csv(self):
         with tempfile.TemporaryDirectory() as temporary:
