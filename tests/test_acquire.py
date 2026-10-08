@@ -17,6 +17,32 @@ class AcquireTests(unittest.TestCase):
             record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda _: None, waiter=lambda *_: downloads / "report_1.csv", closer=lambda: None)
             self.assertEqual(record["schema"], "radar-observation.v2"); self.assertEqual(record["acquisitionResult"], "success"); self.assertEqual(record["rows"][0]["id"], "123"); self.assertEqual(record["rawArtifacts"][0]["sha256"], __import__("hashlib").sha256(body).hexdigest())
 
+    def test_core_trac_retries_one_download_timeout(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); source = {"id": "retry", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}; body = b"id,summary,status\n123,Fix it,new\n"; path = downloads / "report_1.csv"; path.write_bytes(body); waits = iter([TimeoutError("no download"), path]); opens = []; closes = []
+            def waiter(*_):
+                result = next(waits)
+                if isinstance(result, Exception): raise result
+                return result
+            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda url: opens.append(url), waiter=waiter, closer=lambda: closes.append(True))
+            self.assertEqual(record["acquisitionResult"], "success"); self.assertEqual(len(opens), 2); self.assertEqual(len(closes), 2)
+
+    def test_core_trac_retries_timeout_once_then_fails_without_blocking_next_source(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); bad = {"id": "bad", "csvUrl": "https://example.test/bad", "expectedFields": ["id", "summary", "status"]}; good = {"id": "good", "csvUrl": "https://example.test/good", "expectedFields": ["id", "summary", "status"]}; path = downloads / "report_1.csv"; path.write_text("id,summary,status\n123,Fix it,new\n"); timeout_waits = {"bad": 0}
+            def acquirer(source, run_dir, observed, directory, timeout):
+                if source["id"] == "bad":
+                    return acquire_core_trac(source, run_dir, observed, directory, timeout, waiter=lambda *_: (_ for _ in ()).throw(TimeoutError("no download")), opener=lambda _: None, closer=lambda: None)
+                return acquire_core_trac(source, run_dir, observed, directory, timeout, waiter=lambda *_: path, opener=lambda _: None, closer=lambda: None)
+            manifest = acquire_run(raw_root=root / "raw", observed_at="2026-10-07T12:00:00Z", downloads=downloads, trac_sources=[bad, good], wave2_sources=[], trac_acquirer=acquirer)
+            self.assertEqual([item["acquisitionResult"] for item in manifest["observations"]], ["failed", "success"])
+
+    def test_malformed_csv_is_not_retried(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); source = {"id": "malformed", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}; path = downloads / "report_1.csv"; path.write_text("id,summary\n123,Missing status\n"); opens = []
+            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda url: opens.append(url), waiter=lambda *_: path, closer=lambda: None)
+            self.assertEqual(record["acquisitionResult"], "failed"); self.assertEqual(len(opens), 1); self.assertIn("ValueError", record["error"])
+
     def test_report_names_are_detected(self):
         with tempfile.TemporaryDirectory() as temporary:
             downloads = Path(temporary); (downloads / "report_2 (1).csv").write_text("id\n1\n"); (downloads / "notes.txt").write_text("x")

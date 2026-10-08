@@ -15,6 +15,7 @@ FIREFOX_PROFILE = ROOT / "data/.firefox-profile"
 PRIMARY_ROLES = {"DIRECT_OPPORTUNITY", "SIGNAL", "RECONCILIATION"}
 CSV_NAME = re.compile(r"^(?:query|report_[0-9]+)(?:\s*\([0-9]+\))?\.csv$")
 DEFAULT_TIMEOUT = 90
+CORE_TRAC_RETRY_DELAY = 1
 REQUIRED_CSV_FIELDS = {"id", "summary", "status"}
 OPTIONAL_CSV_FIELDS = {"keywords", "workflow", "component", "owner", "type", "priority", "milestone", "version", "time", "changetime", "comments", "_comments"}
 CSV_FIELD_ALIASES = {
@@ -124,15 +125,32 @@ def make_observation(source: dict[str, Any], observed_at: str, *, rows: list[dic
     return record
 
 def acquire_core_trac(source: dict[str, Any], run_dir: Path, observed_at: str, downloads: Path, timeout: int, *, opener: Callable[[str], None] = open_firefox, waiter: Callable[[Path, dict[Path, tuple[int, int]], int], Path] = wait_for_new_csv, closer: Callable[[], None] = close_firefox) -> dict[str, Any]:
-    run_dir.mkdir(parents=True, exist_ok=True); before = download_state(downloads)
-    try:
-        opener(source["csvUrl"]); downloaded = waiter(downloads, before, timeout); body = downloaded.read_bytes()
-        row_count, rows = validate_csv(body, list(source.get("expectedFields") or [])); artifact = run_dir / f"{source_slug(source['id'])}.csv"; artifact.write_bytes(body); sha = sha256_bytes(body)
-        artifact_path = str(artifact.relative_to(ROOT)) if artifact.is_relative_to(ROOT) else artifact.name
-        return make_observation(source, observed_at, rows=rows, result="success", revision=sha, raw_artifacts=[{"path": artifact_path, "sha256": sha, "byteLength": len(body), "contentType": "text/csv", "rowCount": row_count}])
-    except Exception as error:
-        return make_observation(source, observed_at, rows=[], result="failed", revision=None, raw_artifacts=[], error=f"{type(error).__name__}: {error}")
-    finally: closer()
+    run_dir.mkdir(parents=True, exist_ok=True); last_error: Exception | None = None
+    for attempt in range(2):
+        before = download_state(downloads); retry = False; fatal = False
+        try:
+            opener(source["csvUrl"])
+            try:
+                downloaded = waiter(downloads, before, timeout)
+            except TimeoutError as error:
+                last_error = error
+                retry = attempt == 0
+            else:
+                last_error = None
+            if not retry and last_error is None:
+                body = downloaded.read_bytes()
+                row_count, rows = validate_csv(body, list(source.get("expectedFields") or [])); artifact = run_dir / f"{source_slug(source['id'])}.csv"; artifact.write_bytes(body); sha = sha256_bytes(body)
+                artifact_path = str(artifact.relative_to(ROOT)) if artifact.is_relative_to(ROOT) else artifact.name
+                return make_observation(source, observed_at, rows=rows, result="success", revision=sha, raw_artifacts=[{"path": artifact_path, "sha256": sha, "byteLength": len(body), "contentType": "text/csv", "rowCount": row_count}])
+        except Exception as error:
+            last_error = error; fatal = True
+        finally:
+            closer()
+        if fatal or not retry:
+            break
+        time.sleep(CORE_TRAC_RETRY_DELAY)
+    error = last_error or RuntimeError("Core Trac acquisition failed")
+    return make_observation(source, observed_at, rows=[], result="failed", revision=None, raw_artifacts=[], error=f"{type(error).__name__}: {error}")
 
 def fetch_wave2_source(config: dict[str, Any]) -> list[tuple[str, bytes, dict[str, str], int]]:
     from wave2_sources import configured_responses, fetch_public
