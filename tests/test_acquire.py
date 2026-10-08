@@ -20,9 +20,9 @@ class AcquireTests(unittest.TestCase):
     def test_open_firefox_runs_direct_executable(self):
         with tempfile.TemporaryDirectory() as temporary:
             downloads = Path(temporary) / "downloads"; profile = Path(temporary) / "profile"
-            with patch("acquire.subprocess.run") as run:
+            with patch("acquire.subprocess.Popen") as process:
                 open_firefox("https://example.test/report?format=csv", downloads=downloads, profile=profile)
-            run.assert_called_once_with([str(FIREFOX_EXECUTABLE), "-no-remote", "-profile", str(profile), "https://example.test/report?format=csv"], check=True)
+            process.assert_called_once_with([str(FIREFOX_EXECUTABLE), "-no-remote", "-profile", str(profile), "https://example.test/report?format=csv"], start_new_session=True)
             prefs = (profile / "user.js").read_text()
             self.assertIn(f'"browser.download.dir", {json.dumps(str(downloads))}', prefs)
 

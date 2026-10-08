@@ -89,7 +89,7 @@ def firefox_command(url: str, profile: Path = FIREFOX_PROFILE) -> list[str]:
 
 def open_firefox(url: str, *, downloads: Path = DEFAULT_DOWNLOADS, profile: Path = FIREFOX_PROFILE) -> None:
     prepare_firefox_profile(downloads, profile)
-    subprocess.run(firefox_command(url, profile), check=True)
+    subprocess.Popen(firefox_command(url, profile), start_new_session=True)
 def close_firefox(browser: str = "Firefox") -> None:
     subprocess.run(["osascript", "-e", f'tell application "{browser}" to quit'], check=False)
 def normalize_csv_header(header: str) -> str | None:
