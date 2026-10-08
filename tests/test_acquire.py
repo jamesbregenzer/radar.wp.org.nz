@@ -31,6 +31,7 @@ class AcquireTests(unittest.TestCase):
             root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); source = {"id": "core-trac-report", "sourceRole": "DIRECT_OPPORTUNITY", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary"], "candidateFamilyMappings": [{"familyId": "TEST", "confidence": "high"}], "identityField": "id"}; body = b"id,summary\n123,Fix it\n"; (downloads / "report_1.csv").write_bytes(body)
             record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda _: None, waiter=lambda *_: downloads / "report_1.csv", closer=lambda: None)
             self.assertEqual(record["schema"], "radar-observation.v2"); self.assertEqual(record["acquisitionResult"], "success"); self.assertEqual(record["rows"][0]["id"], "123"); self.assertEqual(record["rawArtifacts"][0]["sha256"], __import__("hashlib").sha256(body).hexdigest())
+            self.assertFalse((downloads / "report_1.csv").exists())
 
     def test_core_trac_retries_one_download_timeout(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -57,6 +58,20 @@ class AcquireTests(unittest.TestCase):
             root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); source = {"id": "malformed", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}; path = downloads / "report_1.csv"; path.write_text("id,summary\n123,Missing status\n"); opens = []
             record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda url: opens.append(url), waiter=lambda *_: path, closer=lambda: None)
             self.assertEqual(record["acquisitionResult"], "failed"); self.assertEqual(len(opens), 1); self.assertIn("ValueError", record["error"])
+            self.assertTrue(path.exists())
+
+    def test_artifact_write_failure_retains_staging_csv(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); source = {"id": "write-failure", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}; path = downloads / "report_1.csv"; path.write_text("id,summary,status\n123,Fix it,new\n")
+            with patch("acquire.Path.write_bytes", side_effect=OSError("artifact write failed")):
+                record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda _: None, waiter=lambda *_: path, closer=lambda: None)
+            self.assertEqual(record["acquisitionResult"], "failed"); self.assertTrue(path.exists())
+
+    def test_successful_acquisition_leaves_unrelated_downloads_untouched(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); unrelated = downloads / "notes.csv"; unrelated.write_text("unrelated\n"); consumed = downloads / "report_1.csv"; consumed.write_text("id,summary,status\n123,Fix it,new\n"); source = {"id": "cleanup", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}
+            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda _: None, waiter=lambda *_: consumed, closer=lambda: None)
+            self.assertEqual(record["acquisitionResult"], "success"); self.assertFalse(consumed.exists()); self.assertTrue(unrelated.exists())
 
     def test_report_names_are_detected(self):
         with tempfile.TemporaryDirectory() as temporary:

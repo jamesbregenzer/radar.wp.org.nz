@@ -145,6 +145,7 @@ def acquire_core_trac(source: dict[str, Any], run_dir: Path, observed_at: str, d
                 body = downloaded.read_bytes()
                 row_count, rows = validate_csv(body, list(source.get("expectedFields") or [])); artifact = run_dir / f"{source_slug(source['id'])}.csv"; artifact.write_bytes(body); sha = sha256_bytes(body)
                 artifact_path = str(artifact.relative_to(ROOT)) if artifact.is_relative_to(ROOT) else artifact.name
+                downloaded.unlink()
                 return make_observation(source, observed_at, rows=rows, result="success", revision=sha, raw_artifacts=[{"path": artifact_path, "sha256": sha, "byteLength": len(body), "contentType": "text/csv", "rowCount": row_count}])
         except Exception as error:
             last_error = error; fatal = True
