@@ -12,6 +12,13 @@ from acquire import FIREFOX_EXECUTABLE, acquire_core_trac, acquire_run, acquire_
 from process import build_feed
 
 class AcquireTests(unittest.TestCase):
+    def test_report_46_uses_direct_csv_query(self):
+        registry = json.loads((ROOT / "config/core-trac-v2-source-registry.json").read_text())
+        source = next(item for item in registry["sources"] if item["id"] == "core-trac-report-46-patches-defects-needing-review")
+        self.assertIn("/query?", source["csvUrl"])
+        self.assertIn("format=csv", source["csvUrl"])
+        self.assertEqual(source["htmlUrl"], "https://core.trac.wordpress.org/report/46")
+
     def test_firefox_command_uses_executable_and_dedicated_profile(self):
         profile = Path("/Users/thor/Sites/wp-core-radar/data/.firefox-profile")
         self.assertEqual(firefox_command("https://example.test/report?format=csv", profile), [str(FIREFOX_EXECUTABLE), "-no-remote", "-profile", str(profile), "https://example.test/report?format=csv"])

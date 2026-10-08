@@ -678,7 +678,7 @@
         "report": 46
       },
       "htmlUrl": "https://core.trac.wordpress.org/report/46",
-      "csvUrl": "https://core.trac.wordpress.org/report/46?format=csv",
+      "csvUrl": "https://core.trac.wordpress.org/query?format=csv&status=accepted&status=assigned&status=new&status=reopened&status=reviewing&keywords=~has-patch&type=defect+(bug)&milestone=Awaiting+Review&milestone=Future+Release&group=component&max=200&col=id&col=summary&col=keywords&col=milestone&col=status&col=owner&col=time&order=id",
       "semanticMeaning": "Defect tickets with patches that likely need review or verification.",
       "sourceRole": "DIRECT_OPPORTUNITY",
       "expectedFields": [
