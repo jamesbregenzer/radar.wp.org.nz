@@ -1,0 +1,1722 @@
+﻿__group__,ticket,summary,component,_version,_priority,_severity,milestone,type,_status,_created,modified,_description,_reporter,workflow
+Unclaimed — jump right in!,62064,Refresh Authorize Application page UI,Application Passwords,7.1.2,normal,normal,7.2,defect (bug),new,2024-09-17T23:14:51Z,2026-10-07T05:20:14Z,The Authorize Application screen that you get popped into when approving an Application Password via a logged in account has some UI deficiencies for particularly long links and primary and secondary buttons that are stacked with varying formatted text between them.  This feels like a good opportunity for a UI improvement to make this experience a bit less visually complex and cognitively confusing for users.,JeffPaul,has-patch
+Unclaimed — jump right in!,22623,"Some string tweaks - duplicity, context, mistake",Administration,3.0,normal,normal,Future Release,defect (bug),new,2012-11-28T20:56:41Z,2026-07-24T07:19:56Z,"1) String ""Path"" has a little different meaning for TinyMCE (HTML position) and Multisite list sites column (subdirectory address). Can we have a context?
+
+2) When you click ""Deactivate"" action link bellow any site (in Multisite admin), site is marked as ""Deleted"" instead of ""Deactivated""? You can ""Activate"" deleted site? Strange...
+
+3) We have strings ""No results found."" (twice) and ""No matches found."" One string would be better instead of three similar strings?
+
+4) String ""Show header text with your image."" is not accurate. You can show header text without header image.",pavelevap,has-patch
+Unclaimed — jump right in!,37578,Dashboard Recent Activity widget - new filters to manipulate output,Administration,4.6,normal,normal,Future Release,enhancement,new,2016-08-05T01:41:43Z,2026-08-10T16:31:31Z,"It is currently not possible to manipulate the recent post activity dashboard widget. Output is built using `wp_dashboard_recent_posts()`. 2 filters could be introduced for the parameters for future and recent posts.
+
+This would allow easy interaction with the parameters array, for instance increasing the amount of posts shown, changing order, post status, CSS ID etc - would definitely make it more useful!
+
+I realise that there is a filter `dashboard_recent_posts_query_args` inside the`wp_dashboard_recent_posts()` function (used to build the queries, useful for switching post type etc), but there is currently no way to interact with the calls to this function.",Jonnyauk,has-patch
+Unclaimed — jump right in!,58255,wp_send_json_error should respect error state passed in WP_Error.,Administration,,normal,normal,Awaiting Review,enhancement,new,2023-05-04T11:00:43Z,2026-08-21T08:00:13Z,WP_Error objects support setting the error state. This is used heavily in the REST API. The function `wp_send_json_error` supports error status code and passing WP_Error as an argument. The `wp_send_json_error` function could respect the status code in WP_Error. ,spacedmonkey,has-patch
+Unclaimed — jump right in!,65858,Add descriptions for all registered Grunt tasks,Build/Test Tools,,normal,normal,Awaiting Review,defect (bug),new,2026-08-12T14:27:51Z,2026-10-02T05:53:16Z,"There are currently 46 Grunt tasks registered in the `Gruntfile.js`. However, only 15 have a description defined and three others have a meaningful docblock.
+
+Every registered task should at a minimum have a `description` defined as this is surfaced through `grunt --help`. But ideally every task also has a preceding docblock with additional details and ticket references for helpful context.",desrosj,has-patch
+Unclaimed — jump right in!,62196,Improve documentation for using the local Docker environment on Windows,Build/Test Tools,,normal,normal,Awaiting Review,defect (bug),new,2024-10-09T18:11:26Z,2026-09-11T20:41:14Z,"The README.md file has some basic instructions for getting the local Docker development environment up and running. Unfortunately, the instructions do not work on Windows. While it does take a bit more effort, the environment can run on Windows. These extra steps should be better documented.",desrosj,has-patch
+Unclaimed — jump right in!,64228,Update `sinon` npm dependency,Build/Test Tools,,normal,normal,Awaiting Review,defect (bug),new,2025-11-11T01:35:49Z,2026-07-02T07:51:22Z,"The [https://www.npmjs.com/package/sinon Sinon dependency] is used to create spies and stubs for use within QUnit tests.
+
+There are some breaking changes that are causing issues in the test suite that need to be addressed before upgrading.
+
+Here is the output when running `npm run grunt qunit:compiled` using `sinon@21.0.0`:
+{{{
+Running ""qunit:files"" (qunit) task
+Testing tests/qunit/compiled.html JQMIGRATE: Migrate is installed, version 3.4.1
+Failed to load resource: net::ERR_FILE_NOT_FOUND
+.............................................................................................Access to XMLHttpRequest at 'file:///wp-admin/admin-ajax.php' from origin 'null' has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: http, data, isolated-app, chrome-extension, chrome, https, chrome-untrusted.
+Failed to load resource: net::ERR_FAILED
+.....................................................................................FF.................................
+>> dashboard > communityEvents.getTimeZone > modern browsers should return a time zone name
+>> Message: undefined
+>> Actual: UTC
+>> Expected: America/Chicago
+>>   at Object.<anonymous> (file:///home/runner/work/wordpress-develop/wordpress-develop/tests/qunit/wp-admin/js/dashboard.js:154:12)
+>>     at callSandboxedFn (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:172:29)
+>>     at Object.sinonAsyncSandboxedTest (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:192:30)
+>> dashboard > communityEvents.getTimeZone > older browsers should fallback to a raw UTC offset
+>> Message: negative offset
+>> Actual: UTC
+>> Expected: -300
+>>   at Object.<anonymous> (file:///home/runner/work/wordpress-develop/wordpress-develop/tests/qunit/wp-admin/js/dashboard.js:166:12)
+>>     at callSandboxedFn (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:172:29)
+>>     at Object.sinonAsyncSandboxedTest (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:192:30)
+>> Message: no offset
+>> Actual: UTC
+>> Expected: 0
+>>   at Object.<anonymous> (file:///home/runner/work/wordpress-develop/wordpress-develop/tests/qunit/wp-admin/js/dashboard.js:170:12)
+>>     at callSandboxedFn (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:172:29)
+>>     at Object.sinonAsyncSandboxedTest (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:192:30)
+>> Message: positive offset
+>> Actual: UTC
+>> Expected: 300
+>>   at Object.<anonymous> (file:///home/runner/work/wordpress-develop/wordpress-develop/tests/qunit/wp-admin/js/dashboard.js:174:12)
+>>     at callSandboxedFn (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:172:29)
+>>     at Object.sinonAsyncSandboxedTest (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:192:30)
+Testing tests/qunit/index.html JQMIGRATE: Migrate is installed with logging active, version 3.4.1
+Failed to load resource: net::ERR_FILE_NOT_FOUND
+.............................................................................................Access to XMLHttpRequest at 'file:///wp-admin/admin-ajax.php' from origin 'null' has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: http, data, isolated-app, chrome-extension, chrome, https, chrome-untrusted.
+Failed to load resource: net::ERR_FAILED
+.....................................................................................FF.................................
+>> dashboard > communityEvents.getTimeZone > modern browsers should return a time zone name
+>> Message: undefined
+>> Actual: UTC
+>> Expected: America/Chicago
+>>   at Object.<anonymous> (file:///home/runner/work/wordpress-develop/wordpress-develop/tests/qunit/wp-admin/js/dashboard.js:154:12)
+>>     at callSandboxedFn (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:172:29)
+>>     at Object.sinonAsyncSandboxedTest (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:192:30)
+>> dashboard > communityEvents.getTimeZone > older browsers should fallback to a raw UTC offset
+>> Message: negative offset
+>> Actual: UTC
+>> Expected: -300
+>>   at Object.<anonymous> (file:///home/runner/work/wordpress-develop/wordpress-develop/tests/qunit/wp-admin/js/dashboard.js:166:12)
+>>     at callSandboxedFn (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:172:29)
+>>     at Object.sinonAsyncSandboxedTest (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:192:30)
+>> Message: no offset
+>> Actual: UTC
+>> Expected: 0
+>>   at Object.<anonymous> (file:///home/runner/work/wordpress-develop/wordpress-develop/tests/qunit/wp-admin/js/dashboard.js:170:12)
+>>     at callSandboxedFn (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:172:29)
+>>     at Object.sinonAsyncSandboxedTest (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:192:30)
+>> Message: positive offset
+>> Actual: UTC
+>> Expected: 300
+>>   at Object.<anonymous> (file:///home/runner/work/wordpress-develop/wordpress-develop/tests/qunit/wp-admin/js/dashboard.js:174:12)
+>>     at callSandboxedFn (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:172:29)
+>>     at Object.sinonAsyncSandboxedTest (file:///home/runner/work/wordpress-develop/wordpress-develop/node_modules/sinon-test/dist/sinon-test.js:192:30)
+Warning: 426 tests completed in 5685ms, with 4 failed, 0 skipped, and 0 todo. Use --force to continue.
+}}}
+",desrosj,has-patch
+Unclaimed — jump right in!,64298,Move the `failed-workflow` job logic into a reusable workflow,Build/Test Tools,,normal,normal,Future Release,enhancement,reopened,2025-11-24T18:22:43Z,2026-07-10T02:10:23Z,"The `failed-workflow` job is present in all workflows that run on `push` events in all branches receiving security updates.
+
+While the logic within the job is minimal, it still relies on a 3rd-party action and backports are required periodically to ensure the job continues working as expected.
+
+The logic within this job should be moved to a reusable workflow in `trunk` that all other branches can reference. This not only eliminates the maintenance burden, but also allows older branches to take advantage of any improvements made to the logic without needing to backport.",desrosj,has-patch
+Unclaimed — jump right in!,50393,Run `composer compat` as a part of `grunt (precommit|prerelease)`,Build/Test Tools,,low,normal,Future Release,enhancement,new,2020-06-15T15:36:21Z,2026-07-15T13:40:48Z,"Now that the PHPCompatibilityWP ruleset passes in Core (see #49922), `composer compat` should be run in `grunt precommit` to help prevent new potential compatibility issues from being committed.",desrosj,has-patch
+Unclaimed — jump right in!,64882,"Twenty Fourteen's ""featured"" tag is being removed from posts",Bundled Theme,,normal,normal,Awaiting Review,defect (bug),new,2026-03-18T13:23:28Z,2026-10-01T09:05:24Z,"Original issue: https://github.com/WordPress/gutenberg/issues/8544
+
+Reported in 2018:
+
+
+When used with the Twenty Fourteen theme, Gutenberg removes the featured tag that makes posts show up in the home page's Featured Content section. Attempts to re-add the featured tag result in new tags called featured, but with slugs such as featured-2 and featured-3, so that the posts still do not appear in Featured Content.
+
+A workaround would appear to be to change the featured content tag name (in Customizer/Featured Content/Tag Name) to anything else and then to change it back to featured.
+
+To Reproduce
+Steps to reproduce the behavior:
+Install WordPress 4.9.8 on development server.
+Install and activate Twenty Fourteen theme (v2.2).
+Create three posts, each with several tags, among which is featured.
+The posts will now be visible in Featured Content on the Home Page.
+Install the Gutenberg plugin.
+In the Gutenberg editor, the featured tag will now be invisible. If each post is saved, it will lose its featured tag and status, disappearing from Featured Content.
+If one attempts to re-add the featured tag inside the Gutenberg editor, a new tag named featured will be created with the slug featured-2, so that the post will not appear in Featured Content. Further attempts will result in featured-3, featured-4, etc.
+Expected behavior
+From the point of view of the Gutenberg editor, featured should just be a tag like any other. As far as I know, it's Twenty Fourteen that treats it as being special, and even that can be adjusted.
+Additional context
+Gutenberg v3.4.0
+
+----
+
+Today, Gutenberg does not have to be active for this problem to appear.
+
+
+== Testing instructions:
+Install and activate Twenty Fourteen theme.
+Create a post and add a tag called featured. See how when you save, this tag is not visible in the field in the block editor.
+Save the post and view the homepage. Confirm that the post does **not** show at the top of the page, just below the header, with a black background (or featured image). Instead, it shows among the other posts in the blog.
+
+
+
+== Suggested solution:
+In twentyfourteen\inc\featured-content.php, inside {{{public static function hide_the_featured_term}}}
+locate:
+
+{{{
+// This filter is only appropriate on the front end.
+if ( is_admin() ) {
+return $terms;
+}
+}}}
+
+And change it to
+
+{{{
+// This filter is only appropriate on the front end.
+if ( is_admin() || wp_is_serving_rest_request() ) {
+return $terms;
+}
+}}}
+Test again and confirm that the post is now featured.
+
+
+
+",poena,has-patch
+Unclaimed — jump right in!,30575,Twenty Fourteen: Submenu items on dropdown menus nearly impossible to select on some Android mobile tablets,Bundled Theme,4.0.1,normal,normal,Future Release,defect (bug),assigned,2014-12-02T16:01:22Z,2025-07-24T09:36:52Z,"On larger Android tablets, it's next to impossible select a submenu item from the dropdown menu, since it appears too quickly to be tapped.
+
+Replicated on [http://wp-themes.com/twentyfourteen/ Twenty Fourteen demo] site using:
+
+- Samsung Galaxy note 10.1 2014 edition, running Android 4.4.2, using the ""Browser"" app and Chrome. Tester noted that ""When I use my stylus, I am able to hover over the menus so I can choose the correct one.""
+
+- Nexus 7 in landscape mode, Android 4.4.2, Chrome
+
+Screencast: https://cloudup.com/imicb2EvVyc
+
+
+This does '''not''' seem to affect the mobile menu, which kicks in at smaller screen sizes, such as the Nexus 7 in portrait mode. It only affects screen sizes at which the regular dropdown menu is displayed.
+
+Reported in [http://en.forums.wordpress.com/topic/not-functional-drop-down-menus-on-20-14-theme-and-android-platform this forum thread]
+
+
+
+
+",zoonini,has-patch
+Unclaimed — jump right in!,62010,Twenty Twelve: fix heading typography in the editor,Bundled Theme,,normal,normal,Future Release,defect (bug),reopened,2024-09-08T10:47:20Z,2026-10-01T08:58:14Z,> When activating the 'Twenty Twelve' theme and creating any post then display 'Add title' font size is very low compare to others,dilip2615,has-patch
+Unclaimed — jump right in!,56153,"Twenty Twenty: Query loop block with full width and having template of image, title and date has full width issue in editor side",Bundled Theme,6.0,normal,normal,Future Release,defect (bug),assigned,2022-07-05T17:38:20Z,2025-11-26T20:58:44Z,"While using query loop block in twenty-twenty theme having full width selected. The image in the template of the query loop block is not displaying in full width on the editor side. but in front, the image is displaying properly. The front and editor sides should be the same.
+
+Steps to reproduce:
+1. Add query loop block.
+2. Select the template in the query loop block having an image.
+3. Set the query loop block as full width.
+4. Now you can clearly see the issue. the image will not display in full width on the editor side. But if you check on the front side the image will appear in full width.
+
+Attaching image for better understanding.",smit08,has-patch
+Unclaimed — jump right in!,62289,Twenty Twenty: Search block looks different in editor and front end.,Bundled Theme,6.6.2,normal,normal,Future Release,defect (bug),new,2024-10-23T18:25:34Z,2024-11-23T12:57:42Z,"Steps to reproduce the issue:-
+1. Choose Search block.
+2. In editor and front side both you can able to see search label font is different and also input styling is different.",nidhidhandhukiya,has-patch
+Unclaimed — jump right in!,65485,Performance: Avoid redundant cache invalidation in wp_insert_* functions when processing meta_input,Cache API,,normal,normal,Awaiting Review,enhancement,new,2026-06-18T20:44:26Z,2026-06-20T17:09:39Z,"== The Problem ==
+Functions like `wp_insert_post()`, `wp_insert_comment()`, `wp_insert_site()`, and `wp_insert_user()` accept a `meta_input` parameter (or equivalent) to create or update multiple pieces of meta data at once via a `foreach` loop. 
+
+However, Core hooks the cache invalidation function `wp_cache_set_posts_last_changed` (and its equivalents for users, comments, and sites) directly to the meta action hooks:
+{{{#!php
+<?php
+add_action( 'added_post_meta', 'wp_cache_set_posts_last_changed' );
+add_action( 'updated_post_meta', 'wp_cache_set_posts_last_changed' );
+add_action( 'deleted_post_meta', 'wp_cache_set_posts_last_changed' );
+}}}
+
+Because these are fired on every individual meta update, passing an array of 5 meta keys results in the cache being invalidated 5 consecutive times during a single insertion process. This is highly redundant and wasteful. Furthermore, `wp_insert_post()` already calls `clean_post_cache()` at the end of its execution, which inherently handles the necessary cache clearing.
+
+== The Proposed Solution ==
+To optimize database and object cache performance, we should temporarily unhook the `_last_changed` cache invalidation callbacks before iterating through the `meta_input` loop, and re-hook them immediately after the loop finishes. 
+
+For example, in `wp_insert_post()`:
+
+{{{#!php
+<?php
+// Temporarily unhook to prevent redundant cache invalidation per meta key
+$has_action = remove_action( 'updated_post_meta', 'wp_cache_set_posts_last_changed' );
+
+foreach ( $meta_input as $meta_key => $meta_value ) {
+    update_post_meta( $post_id, $meta_key, $meta_value );
+}
+
+// Re-hook after the loop completes
+if ( $has_action ) {
+    add_action( 'updated_post_meta', 'wp_cache_set_posts_last_changed' );
+}
+}}}
+
+== Scope of Impact ==
+This optimization pattern should be applied across all major `wp_insert_*` functions that handle bulk meta input loops:
+ * `wp_insert_post()`
+ * `wp_insert_comment()`
+ * `wp_insert_user()`
+ * `wp_insert_site()`
+
+By preventing these redundant internal cache sets, we can noticeably reduce object cache overhead during bulk creation/import processes.",spacedmonkey,has-patch
+Unclaimed — jump right in!,37417,Customize Nav Menus: more visible way to navigate the preview to a menu item object,Customize,4.3,normal,normal,Future Release,enhancement,new,2016-07-20T02:22:43Z,2022-05-17T10:31:57Z,"Nav menus in the customizer have the benefit of live preview. One of the more hidden aspects of this experience is the ability to view a menu item's object in the preview with the ""original"" link in the menu item options. Unfortunately, being hidden in the item properties dropdown, this feature is little-known.
+
+Can we add a link for this to the menu item handle somehow? I've create a preliminary (fully-functional) patch for this, and while I like the UX I think the UI could use work (feels cluttered). This helps to reinforce the connection between menus and content, as well as making it easier to see what an item is linking to when the current menu isn't shown in the preview. It also helps users that may not know that you can navigate links within the preview.",celloexpressions,has-patch
+Unclaimed — jump right in!,37758,The Link Checker tool does not detect some links,Editor,4.6,normal,normal,Awaiting Review,defect (bug),new,2016-08-21T14:25:45Z,2023-09-16T12:09:45Z,"hello,
+
+The Link Checker tool in WordPress 4.6 doesn’t detect an error when you put something before ‘http(s)‘. Example: xhttps://www.google.com
+
+And the tool does not detect error if a missing letter in ""http"".
+examples :
+ttps://core.trac.wordpress.org/newticket
+htps://core.trac.wordpress.org/newticket
+htts://core.trac.wordpress.org/newticket",Djibs13,has-patch
+Unclaimed — jump right in!,58824,Add a filter to change the classes in posts list table in admin,General,,normal,normal,Awaiting Review,enhancement,new,2023-07-17T19:26:57Z,2026-04-09T05:24:03Z,"Currently, there is no way to change the classes in the posts list table, and the posts list table template is hardcoded. So there is no way to add any classes, for example, specific classes for custom post types there.
+
+**Proposal:**
+
+Add a filter to ""WP_List_Table::get_table_classes()"" function, like this:
+
+
+{{{#!php
+<?php
+return apply_filters( 'post_list_table_classes', array( 'widefat', 'fixed', 'striped', $mode_class, $this->_args['plural'] ), $this );
+}}}
+
+
+",zahardoc,has-patch
+Unclaimed — jump right in!,55376,Use wp_filesize in core,General,,normal,normal,Future Release,enhancement,new,2022-03-11T14:42:42Z,2026-09-30T06:54:50Z,"Introduced in [52837] as part of #49412, the `wp_filesize` function is a wrapper around filesize. It has some improves on this function, like casting to int and filters. The filesize function is call throughout core functions. This function may be useful in more contexts. ",spacedmonkey,has-patch
+Unclaimed — jump right in!,29798,unified theme and plugin uploader,General,,normal,normal,Future Release,feature request,new,2014-09-29T15:35:12Z,2026-09-28T13:46:34Z,"Hi,
+
+many users try to install plugins as themes and than they get a message stylesheet missing.
+
+""The theme is missing the style.css stylesheet""
+
+The same with installing themes as plugins.
+
+""The package could not be installed. No valid plugins were found.""
+
+I think it would make it much easier for the people to make the upload unified and check the header to find out if its a theme or plugin and than just redirect to the correct page after the instal.
+
+Or at least add a message ""This is a plugin please go to this page to install it"" and ""This is a Theme please go to this page to install it""
+",svenl77,has-patch
+Unclaimed — jump right in!,49661,"mails, Howdy, wp_mail() and filters spreading",Mail,1.5.1.2,normal,normal,Future Release,defect (bug),reviewing,2020-03-17T17:55:11Z,2026-04-09T07:22:36Z,"Hello,
+
+The different mails that are build to be sent with function wp_mail() have different ways of doing it. Some are using str_replace(), others are using sprintf(), have a different vocabulary (SITENAME, SITE_NAME, ###SITENAME### ...)
+
+Last but not least, some have different filters : from No filters to subject and/or content and/or mail headers and here again with different vocabularies ( filter_prefix_content or filter_prefix_message) ...
+
+So when you want to change some mails that belong to a group of mails (admin, network, privacy ..), you have to dig in the code and eventually ask for specific changes for this or that mail.
+
+With privacy, and locally for legal purpose, related mails must be sent by a new profile in the organisation, by some sort of a new WP ""role"" that is still to be created : the cop ... for Chief Of Privacy . In Europe, we call him a dpo.
+
+The following patch proposes to have all mails equals (except some specific ones related to wp updates).
+
+Subject and Mail body are templates.
+The {{Mustache}} standard is adopted.
+All mails have an id and belong to a group.
+
+This is an encapsulation of wp_mail() with some conventions to get the best results.
+
+With the patch, i attach here 
+* a zip file that is a set of .eml files (with some logging in it for debugging purpose)
+
+As a proof of concept, i also attach the three plugins i developped
+* logphpmailer.php : to save eml files
+* wp_mailer_filter.php : sample plugin filtering mail using the new filters of wp_mailer class (here for privacy mails)
+* wp_mailer_logger.php : appends some logging to mail content using the new filters of wp_mailer class
+
+the patch also fixes a bug i detected on the Reply-To mail header (double quotes doubled, added by wp AND phpmailer)
+
+I know this is a big one. Due to CoVid, i am stuck at home in front of my keyboard.
+
+Regards",arena,has-patch
+Unclaimed — jump right in!,48489,Big image size threshold should take into account registered image sizes.,Media,5.3,normal,normal,Future Release,defect (bug),new,2019-11-03T20:22:54Z,2026-08-18T08:44:44Z,"The ""big image"" upper size threshold is set to `2560`. If an image size is registered that has a width or height larger than this, then the image will be unexpectedly cropped to `2560`.
+
+The value that gets passed through to the `big_image_size_threshold` filter should be set to the maximum value of either `2560` or the largest width or height from all registered image sizes.
+
+",johnbillion,has-patch
+Unclaimed — jump right in!,65737,mediaelementplayer-legacy - the Flash message is no longer needed.,Media,7.1,low,minor,Future Release,defect (bug),reviewing,2026-07-27T19:57:34Z,2026-07-28T23:13:07Z,"I don't think this message is still needed in 2026:
+
+`'mejs.install-flash'       => __( 'You are using a browser that does not have Flash player enabled or installed. Please turn on your Flash player plugin or download the latest version from https://get.adobe.com/flashplayer/' ),`
+
+From: https://github.com/WordPress/wordpress-develop/blob/940e7a357729f7683a11658fc841a42711321a5e/src/wp-includes/script-loader.php#L1102
+
+It is injected into my sites as part of `<script id=mediaelement-core-js-before>`
+
+Following that link eventually goes to Adobe's FAQ about Flash which says:
+
+> Since Adobe no longer supports Flash Player after December 31, 2020 and blocked Flash content from running in Flash Player beginning January 12, 2021, Adobe strongly recommends all users immediately uninstall Flash Player to help protect their systems.
+
+As far as I can tell, WordPress's MediaElement will never produce a SWF file for playback - so this error message will never be seen by users.
+
+All occurrences should probably be removed https://github.com/search?q=repo%3AWordPress%2Fwordpress-develop+install-flash&type=code",edent,has-patch
+Unclaimed — jump right in!,41675,Add filter to bypass display/query for Media Months filter in media modal,Media,,normal,normal,Awaiting Review,enhancement,reviewing,2017-08-19T18:27:26Z,2025-01-29T19:44:02Z,"I am investigating slow running queries to try and cut down the page load time for edit pages in the admin.
+
+The media months dropdown filter runs a somewhat expensive query for what it is.
+On our production database, it adds about 500 ms of query execution time to the page load.
+
+There doesn't seem to be a way to be able to disable this drop down. 
+The query that is run populates the field.
+But when there are a mass quantity of media, this is not an optimal method of search.
+
+There should be an option/filter to disable the display and query for this.",CrazyJaco,has-patch
+Unclaimed — jump right in!,40370,"add_image_sizes does not create the ""crop position"" versions of the image",Media,2.9,normal,normal,Future Release,enhancement,reopened,2017-04-05T13:29:32Z,2024-05-20T17:16:01Z,"I wanted to introduce 3 different version of post thumbnails - each with different cropping position (top, center, left) , so i added them like this:
+
+{{{#!php
+add_image_size( 'newscentered', 400, 400, array( 'center', 'center') );
+add_image_size( 'newstop', 400, 400, array( 'center', 'top' ) );
+add_image_size( 'newsbottom', 400, 400, array( 'center', 'bottom' ) );
+}}}
+
+
+Now, whenever i use the the_post_thumbnail() with the name of my custom image size i always get the same image, cropped to the default WordPress crop position of ('center', 'center') .
+
+Why is that happening? I did 'refresh' the thumbnails and tried also uploading fresh image files and still i can't get 3 differently cropped versions of the image.
+
+I noticed that when i set the cropping defaults using the following function and set the cropping there, then it works:
+
+{{{#!php
+set_post_thumbnail_size( 400, 400, array('center', 'bottom'));
+}}}
+
+
+... but it affects the cropping of all of my thumbnails, so i can only get one ""crop position"" for all my images.
+
+Guys, is this some kind of bug or do i configure something in a wrong way?
+
+I'm using the newest official WordPress version",piejesus,has-patch
+Unclaimed — jump right in!,56886,Admin facing add site screen missing search engine visibility field,Networks and Sites,,normal,normal,Future Release,enhancement,new,2022-10-22T11:05:39Z,2026-10-01T08:39:52Z,"When a user wants to add a new site on Multisite configs, they can use the site privacy radio buttons, see screenshot below:
+
+==== /wp-signup.php ====
+[[Image(https://cldup.com/0bMdIrVLRE.png)]]
+
+But when a super admin wants to add a new site, they have no way to choose this setting during site creation, they need to create a ""public"" site, then go into the Reading settings to eventually switch to hidden to search engines. In this particular case, a super admin has less power than a regular user :)
+
+==== /wp-admin/network/site-new.php ====
+[[Image(https://cldup.com/Tg7E2F-bwR.png)]]
+
+The attached patch is adding these missing site privacy radio buttons to let a super admin decide whether a new site should be ""public"" or not.
+
+==== patched /wp-admin/network/site-new.php ====
+[[Image(https://cldup.com/hiFEfNw3_V.png)]]
+ ",imath,has-patch
+Unclaimed — jump right in!,39706,Add $unique param to add_{$meta_type}_meta actions,"Options, Meta APIs",3.1,normal,normal,Future Release,enhancement,new,2017-01-26T17:11:05Z,2026-08-27T12:24:00Z,"The hooks `add_{$meta_type}_meta` and similar provide context about `$object_id`, `$meta_key`, `$_meta_value` and such, but do not tell whether the meta data added or updated is supposed to be `$unique`.
+
+Adding this information could be helpful. My use case for instance is propagating meta data across posts.",barryceelen,has-patch
+Unclaimed — jump right in!,44042,Hook for ‘delete_option’ behaviour required,"Options, Meta APIs",1.2,normal,normal,Future Release,enhancement,new,2018-05-11T07:45:45Z,2025-11-05T15:16:54Z,"Hi, I posted this  about one month ago in the wordpress support forum: [https://wordpress.org/support/topic/hook-for-delete_option-behaviour-required/] 
+
+I did not receive any answers there but referred to this forum, so I post it here again:\\
+
+Hi, I would need to prevent and change the deletion of certain options by the WP core function ‘delete_option’.
+There is a hook 
+{{{
+do_action( 'delete_option', $option );
+}}}
+ available here: [https://core.trac.wordpress.org/browser/tags/4.9.4/src/wp-includes/option.php#L532]\\
+But this does neither provide a way to exit the delete_option function before the option is deleted nor to change the option name to be deleted. In fact this existing hook seems to be pretty useless.
+Therefore I would need a filter in the first line of the delete_option core function like 
+{{{
+$option = apply_filters( 'delete_option_name', $option );
+}}}
+.
+Or change the line 535 from 
+{{{
+$option = trim( $option );
+}}}
+ to 
+{{{
+$option = trim( apply_filters( 'delete_option_name', $option ));
+}}}
+
+Any chances to get this into core immediately?\\
+
+Thx, Robert
+",RobertoDonPedro,has-patch
+Unclaimed — jump right in!,49194,"Page Template dropdown ordering should be by title, not value","Posts, Post Types",,normal,minor,Future Release,defect (bug),reviewing,2020-01-14T12:11:11Z,2026-09-11T15:37:12Z,"The ordering of items within the Page Template dropdown field is sorted by the value alphabetically, which often creates what appears to be an unordered display when viewing on the front end.
+
+I this should be changed so the ordering of the dropdown options is based on the alphabetical order of the list items themselves.",leec87,has-patch
+Unclaimed — jump right in!,40860,"Post that is ""Pending Review"" and Scheduled shows incorrect ""Last Modified"" date in Post Listing","Posts, Post Types",,normal,normal,Future Release,defect (bug),new,2017-05-25T03:21:23Z,2026-06-20T23:03:42Z,"Reproduction steps:
+
+1. Create a new post
+2. Schedule the post for a date in the future
+3. Set the status to ""Pending Review""
+4. Save the post
+5. Return to Posts listing
+6. Observe that the ""Date"" column has an incorrect ""Last Modified"" flag",yearginsm,has-patch
+Unclaimed — jump right in!,44805,Resurrecting post from trash reverts its slug,"Posts, Post Types",4.5,normal,normal,Future Release,defect (bug),assigned,2018-08-16T06:26:13Z,2026-08-18T09:49:59Z,"=== Steps to reproduce
+
+Using the REST API:
+
+* Create a post
+* Delete the post (not forced)
+* Update the post's slug
+* Update the post's status to `publish`
+
+==== Create
+
+`POST wp-json/wp/v2/posts`
+
+{{{#!json
+{
+  ""status"": ""publish"",
+  ""slug"": ""a"",
+  ""title"": ""a""
+}
+}}}
+
+==== Delete
+
+`DELETE wp-json/wp/v2/posts/<id>`
+
+==== Update slug
+
+`POST wp-json/wp/v2/posts/<id>`
+
+{{{#!json
+{
+  ""slug"": ""foo""
+}
+}}}
+
+==== Update status
+
+`POST wp-json/wp/v2/posts/<id>`
+
+{{{#!json
+{
+  ""status"": ""publish""
+}
+}}}
+
+=== Expected 
+
+Post should be published with a slug of `foo` (the updated value)
+
+=== Actual
+
+Post is published with a slug of `a` (the old value)
+",ajmccluskey,has-patch
+Unclaimed — jump right in!,47988,Unexpected behaviour when draft post has the same page_name as published post,"Posts, Post Types",2.8,normal,normal,Future Release,defect (bug),new,2019-09-06T02:49:20Z,2026-10-01T08:47:39Z,"> What steps should be taken to consistently reproduce the problem?
+
+{{{
+wp rewrite structure '/%postname%/'
+
+wp post create --post_title=""Example post title"" --post_status=publish --post_name=my-chosen-post-name
+
+wp post create --post_title=""A draft post"" --post_status=draft --post_name=my-chosen-post-name
+}}}
+
+Visit http://www.example.com/my-chosen-post-name 
+
+> In case it's relevant to the ticket, what is the expected output or result? 
+
+We're expecting the published post to be displayed.
+
+> What did you see instead?
+
+If you're authenticated and have permission to view drafts, the draft post will populate the `Global $post` object and be displayed.
+
+Anonymous users will get a 404 page or the browser will throw a `Too many redirects` error.
+
+> Does the problem occur even when you deactivate all plugins and use the default theme?
+
+Yes.
+
+> Please provide any additional information that you think we'd find useful. (OS and browser for UI defects, server environment for crashes, etc.)
+
+The core behaviour of the WP Admin post edit screen doesn't allow us to get into this state because `post_name` values are not stored for a post until it transitions to the `publish` post status. When this transition does happen `wp_unique_post_slug()` ensures the `post_name` being saved unique.
+
+We first encountered this issue via the Yoast SEO plugin metabox which allows a ''Slug'' to be saved for draft posts. As you can see with the WP-CLI commands above, however, there are other ways of getting to this state.
+
+The draft post is loaded for authenticated requests because the default query vars `order_by => post_date` and `order => DESC` means the draft post created after the published post populates the `WP_Query->post` property.
+
+Anonymous requests are not able to view the draft post, so before returning a 404, `redirect_canonical()` calls `redirect_guess_404_permalink()` which builds a query for a published post where `page_name` is `LIKE` the post name and finds the published post and redirects to it... and the loop continues.",ajfleming,has-patch
+Unclaimed — jump right in!,48954,"""Sticky"" post state shows even for non-Post post-types","Posts, Post Types",,normal,normal,Future Release,enhancement,new,2019-12-12T21:54:48Z,2026-09-28T04:05:08Z,"Reported in the support forums: https://wordpress.org/support/topic/sticky-tag-remains/
+
+When users of my Post Type Switcher plugin switch a Post into a Page, that page still shows as ""Sticky"" in the Pages list-table UI, even though Pages do not support the ""sticky"" functionality.",johnjamesjacoby,has-patch
+Unclaimed — jump right in!,63534,Add `link_to` label to post types,"Posts, Post Types",,normal,normal,Awaiting Review,enhancement,new,2025-06-05T09:27:51Z,2025-09-27T06:33:35Z,"In order to fix the Gutenberg issue 55057, we think the best way would be to add a new label which could be used as it instead of using `sprintf`
+
+{{{
+<ToggleControl
+	__nextHasNoMarginBottom
+	label={
+		postType?.labels.singular_name
+			? sprintf(
+					// translators: %s: Name of the post type e.g: ""post"".
+					__( 'Link to %s' ),
+					postType.labels.singular_name
+			  )
+			: __( 'Link to post' )
+	}
+	onChange={ () =>
+		setAttributes( { isLink: ! isLink } )
+	}
+	checked={ isLink }
+/>
+}}}
+
+https://github.com/WordPress/gutenberg/issues/55057",benoitchantre,has-patch
+Unclaimed — jump right in!,32824,Consistent search fields between posts and terms,"Posts, Post Types",,normal,normal,Future Release,enhancement,new,2015-06-29T13:42:54Z,2026-07-02T07:51:26Z,"Searching for posts [https://core.trac.wordpress.org/browser/tags/4.2.2/src/wp-includes/query.php#L2091 currently checks] the `post_title` and `post_content` fields, while [https://core.trac.wordpress.org/browser/tags/4.2.2/src/wp-includes/taxonomy.php#L1899 searching terms] checks the `name` and `slug` fields. Could `post_name` be added to the where clause for posts, and `description` be added to terms? That way, searching would consistently check an entity's title, slug, and content.",ashworthcreative,has-patch
+Unclaimed — jump right in!,39106,Make hierarchy level indicator text changeable [WP List],"Posts, Post Types",4.6.1,low,minor,Future Release,enhancement,assigned,2016-12-06T10:09:08Z,2026-04-09T06:02:55Z,"
+In `WP_Posts_List_Table` class, dashes(—) used to indicate the hierarchy level of post item, which is not changeble by any filter, we can add a new filter to replace this string. 
+
+
+
+{{{
+$pad = str_repeat( '&#8212; ', $this->current_level );
+}}}
+
+
+
+https://github.com/WordPress/WordPress/blob/master/wp-admin/includes/class-wp-posts-list-table.php#L918-L919
+
+Source: http://wordpress.stackexchange.com/questions/248405/replace-dashes-before-title-in-page-list",gk.loveweb,has-patch
+Unclaimed — jump right in!,54442,Provide feedback if initiating an email for a personal data request action has failed,Privacy,4.9.6,normal,normal,Future Release,defect (bug),new,2021-11-15T08:53:04Z,2026-08-06T23:45:05Z,"When creating a request for an export or a delete personal data request and the confirmation email is enabled, the user doesn't get any feedback if `wp_send_user_request()` was successful. The function returns a `WP_Error` object on failure which should be checked and displayed to the user.
+
+Source: https://core.trac.wordpress.org/browser/tags/5.8.2/src/wp-admin/includes/privacy-tools.php?marks=168-171#L168",ocean90,has-patch
+Unclaimed — jump right in!,51811,Query inconsistency between WP_Query and WP_Term_Query,Query,4.6,normal,normal,Awaiting Review,enhancement,new,2020-11-18T01:25:43Z,2026-09-23T06:49:09Z,"For the sake of standardization and simplicity would it be beneficial to use 's' for searches in WP_Term_Query rather than using 'search'?
+
+
+{{{
+$wpquery = new WP_Query( array( 's'=>'search term' ) );
+}}}
+
+{{{
+$wptermquery = new WP_Term_Query( array( 'search'=>'search term' ) );
+}}}
+
+
+Not entirely sure why there's a differentiation between how a search term is used in the query args.  For the sake of standardization and a reduction in confused developers (like I was about 30 minutes ago) I think this is worth some consideration.",tonydjukic,has-patch
+Unclaimed — jump right in!,64168,Inaccurate JSON schema for template-parts endpoint,REST API,5.8,normal,normal,Future Release,defect (bug),new,2025-10-29T12:59:11Z,2026-08-28T04:51:47Z,"The schema provided by the `wp/v2/template-parts` REST API endpoint has some inaccuracies:
+
+1. The `origin` property can be `null` as well as a string. This property maps directly to `WP_Block_Template::origin` which is `string|null`.
+2. The `modified` property can be `false` as well as a date-time string.
+
+
+Both of these properties can be seen with null/false values by performing an authenticated request to `/wp/v2/template-parts` on a freshly installed vanilla WordPress site.
+
+Any updates will need unit test coverage.
+
+Here's an untested update to the `modified` property to replace its type and format.
+
+{{{
+'oneOf' => array(
+	array(
+		'type'   => 'string',
+		'format' => 'date-time'
+	),
+	array(
+		'type' => 'boolean',
+		'enum' => array( false ),
+	)
+),
+}}}
+",johnbillion,has-patch
+Unclaimed — jump right in!,63967,REST API test methods using supported image format to test unsupported logic checks,REST API,,normal,normal,Future Release,defect (bug),new,2025-09-12T16:12:14Z,2025-09-29T12:15:25Z,"The `WP_Test_REST_Attachments_Controller::test_upload_unsupported_image_type` and `WP_Test_REST_Attachments_Controller::test_upload_unsupported_image_type_with_filter` test methods try to validate that the attachment controller correctly handles scenarios where an unsupported image type is provided. They are currently using the AVIF.
+
+It's becoming more and more common for environments to include AVIF support. As a result, these tests are often skipped. A more obscure format should be used to ensure the test runs more consistently.",desrosj,has-patch
+Unclaimed — jump right in!,43502,`WP_REST_Posts_Controller::prepare_item_for_response()` doesn't reset postdata after calling setup_postdata(),REST API,4.9.4,normal,normal,Future Release,defect (bug),new,2018-03-08T16:45:41Z,2026-09-27T14:30:03Z,"Hi all,
+
+I seem to have stumbled upon a small oversight in `WP_REST_Posts_Controller::prepare_item_for_response()` , where it doesn't reset postdata after calling `setup_postdata()`, rendering this part of the API useless for developers who want to use this API in their custom code.
+
+Ran into it while writing a custom function, that uses this part of the API to convert a regular post object into an object that matches the json scheme of the API.
+
+I’ve fixed it temporarily by doing setting `$GLOBALS[ 'post' ] = $original_post_id` in my function (and by passing `original_post_id` as parameter to my function) - but it seems to me that this should be fixed in core.
+
+{{{#!php
+function convert_post_object_to_rest_response($post)
+{
+
+    global $wp_rest_server;
+    $post_type = get_post_type_object($post->post_type);
+    $request = WP_REST_Request::from_url(rest_url(sprintf('wp/v2/%s/%d', $post_type->rest_base, $post->ID)));
+    $request = rest_do_request($request);
+    $data = $wp_rest_server->response_to_data($request, isset($_GET[ '_embed' ]));
+    return $data;
+
+}
+}}}
+
+It returns the right data, which is great - but when i in turn use this function to supply a field in one of my endpoints with this dat, all fields below it seem to inherit the ID i’ve passed.
+
+i’ve traced this back to `WP_REST_Posts_Controller::prepare_item_for_response`, where it’s doing a `setup_postdata` call without resetting it later.
+
+For now i’ve fixed it by setting `$GLOBALS[ 'post' ] = $original_post_id` in my function (and by passing `original_post_id` as parameter to my function), but I figured i'd report it here so it can be fixed from the core.
+",gerbenvandijk,has-patch
+Unclaimed — jump right in!,50074,Add filter on post/etc action links in the REST API,REST API,4.9.8,normal,normal,Future Release,enhancement,new,2020-05-04T13:30:16Z,2021-09-08T14:54:45Z,"With Gutenberg increasingly using more action links to control behaviour in the block editor, having a filter to adjust these links would be super useful. This allows developers to avoid a shotgun approach of hacking Gutenberg's UI, or using the very low-level filters to remove these actions.
+
+This is probably useful to have as a general API to also ''add'' additional actions; e.g. for implementing something similar to Gutenberg's actions.",rmccue,has-patch
+Unclaimed — jump right in!,65486,Performance: Avoid redundant cache invalidation in WP_REST_Meta_Fields during batch meta updates,REST API,,normal,normal,Awaiting Review,enhancement,new,2026-06-18T20:50:54Z,2026-06-19T05:15:16Z,"== The Problem ==
+The `WP_REST_Meta_Fields` class handles updating, adding, and deleting metadata for various object types via the REST API. When a request modifies multiple meta keys at once, it iterates through them and performs the updates individually.
+
+These operations trigger Core's cache invalidation hooks via the underlying `added_*_meta`, `updated_*_meta`, and `deleted_*_meta` hooks. 
+
+When a REST API request updates a large batch of meta fields for an object, the object's `last_changed` cache is cleared and reset repeatedly in the same request execution. This creates unnecessary overhead for database and object cache layers.
+
+== The Proposed Solution ==
+We should temporarily unhook the `_last_changed` invalidation functions before processing multiple meta updates inside `WP_REST_Meta_Fields`, and re-hook them once the operations are complete.
+
+To do this cleanly across different object types, each subclass extending `WP_REST_Meta_Fields` should define its specific cache invalidation callback function as a property. For example:
+
+{{{#!php
+<?php
+class WP_REST_Post_Meta_Fields extends WP_REST_Meta_Fields {
+    // ...
+    protected $cache_callback = 'wp_cache_set_posts_last_changed';
+}
+}}}
+
+Then, in the base `WP_REST_Meta_Fields` class, we can dynamically target the hooks using `get_meta_type()` and the subclass property:
+
+{{{#!php
+<?php
+$meta_type = $this->get_meta_type(); // e.g., 'post', 'user', 'comment', 'term'
+$hook_name = ""updated_{$meta_type}_meta"";
+
+// Temporarily unhook the redundant cache invalidation callback
+$has_action = false;
+if ( ! empty( $this->cache_callback ) ) {
+    $has_action = remove_action( $hook_name, $this->cache_callback );
+}
+
+// ... existing code that loops through and updates/deletes multiple meta keys ...
+
+// Re-hook after the batch operations complete
+if ( $has_action ) {
+    add_action( $hook_name, $this->cache_callback );
+}
+}}}
+
+== Scope of Impact ==
+* `WP_REST_Meta_Fields` abstract class and its extending subclasses (`WP_REST_Post_Meta_Fields`, `WP_REST_User_Meta_Fields`, `WP_REST_Comment_Meta_Fields`, `WP_REST_Term_Meta_Fields`).
+* This optimization will significantly reduce object cache thrashing during complex REST API `POST` or `PUT` requests carrying heavy meta payloads.",spacedmonkey,has-patch
+Unclaimed — jump right in!,41616,REST API: Expose old slugs,REST API,4.8.1,normal,normal,Future Release,enhancement,new,2017-08-12T05:32:45Z,2024-07-22T10:30:16Z,"Expose the old slugs for all posts including custom post types in the REST API.
+
+For example, when building a React-powered app using the WordPress REST API the old slugs are required so that users can be automatically redirected if they clicked on an old link.
+
+To expose the old slugs I created a small plugin (see below):
+{{{#!php
+<?php
+add_action( 'rest_api_init', 'expose_old_slugs_in_api' );
+ 
+function expose_old_slugs_in_api() {
+  $post_types = get_post_types( array( 'show_in_rest' => true, 'show_in_nav_menus' => true ) ) ;
+
+  $args = array(
+    'get_callback' => 'get_old_slugs_for_api', 
+    'schema' => null
+  );
+  
+  foreach ($post_types as $type) {    
+    register_rest_field( $type, 'old_slugs', $args );
+  }  
+}
+ 
+function get_old_slugs_for_api( $object ) {
+  //get the id of the post object array
+  $post_id = $object['id'];
+
+  //return the post meta
+  return get_post_meta( $post_id, '_wp_old_slug' );
+}
+}}}
+
+",crosescu,has-patch
+Unclaimed — jump right in!,38813,REST API: Test schema registration for required fields.,REST API,,normal,normal,Future Release,enhancement,assigned,2016-11-16T06:21:36Z,2026-08-28T14:10:57Z,"Follow-up from #38792.
+
+For all endpoints included in WordPress core, we want to make sure arguments and parameters are consistently registered and expose a nice, stable API to the world. While we can check this manually, building it into the unit tests is even better.
+
+@jnylen0 wrote an initial version [https://gist.github.com/nylen/9021f6d19157a023a0a8a607a3adb28a in Node-based JS], so we can port this to PHP and use the built-in schema rather than sending a HTTP request.",rmccue,has-patch
+Unclaimed — jump right in!,41554,REST API: Use `wp.apiRequest` helper to build URLs for media embed requests,REST API,,normal,normal,Awaiting Review,enhancement,new,2017-08-03T17:41:04Z,2026-04-09T04:25:13Z,"Follow-up to #40919.
+
+Let's explore getting rid of the `oEmbedProxyUrl` [https://github.com/WordPress/wordpress-develop/blob/1c28b4a/src/wp-includes/media.php#L3449 property] used to pass a REST API URL down to `wp-admin` code that calls out to this endpoint ([https://github.com/WordPress/wordpress-develop/blob/1c28b4a/src/wp-includes/js/media/views/embed/link.js#L56 example]).  We can use the helper library introduced in #40919 instead:
+
+{{{#!js
+wp.apiRequest( {
+    namespace: 'oembed/1.0',
+    path: '/proxy',
+    // ...
+} );
+}}}
+
+This helper will allow us to eliminate all `rest_url` calls passed to client code through script localization.  This will eventually lead to a lot of duplication, but it seems like it should be very clear from the requesting code which API endpoint is being called.",jnylen0,has-patch
+Unclaimed — jump right in!,39473,get_routes() called multiple times within single REST request causing the rest_endpoints() filter to also fire more than once,REST API,4.4,normal,normal,Awaiting Review,enhancement,new,2017-01-04T21:59:38Z,2026-09-25T06:26:59Z,"Hi all,
+
+Many thanks for creating the REST API, and also for getting it into core! :)
+
+When I had a closer look at how to integrate this in our projects I noticed something peculiar with the rest_endpoints() filter: it is called multiple times over; in some cases twice, in others three times.
+
+So I did a little digging around and found that the root cause seemed to be the use of get_routes() at multiple locations:
+- in the rest_pre_dispatch filter (rest_handle_options_request)
+- in the rest_post_dispatch filter (rest_send_allow_header)
+- in the dispatch() itself
+- in the get_index() method
+- in the get_namespace_index() method
+
+After looking how these locations interact with each other, I couldn't detect any code which altered the generated route map between consecutive calls to get_routes().
+
+I will add a patch in which I propose to store the generated route map in the class, and re-use that one instead of generating yet again the same array (and also re-filtering the same array).
+
+Since the name 'endpoints' is already taken, and being used in the initialization as well, I thought it would be prune to use another variable name: $route_map, which is also being used in the current doc-block.
+
+I did not profile this patch (not really sure how to do that), so I'm not sure if storing this rather large associative array is a good thing to do. However generating it multiple times (and re-filtering it also) may also be quite 'expensive'.
+
+Thanks,
+Ruud
+
+
+",ruud@…,has-patch
+Unclaimed — jump right in!,58844,Revisions: Compare Revisions layout issues on mobile,Revisions,3.6,normal,normal,Future Release,defect (bug),new,2023-07-18T20:45:48Z,2023-11-30T22:50:02Z,"This is a follow-up to #33830.
+
+""Restore This Revision"" button in wp-admin revision page can become hidden behind the diff panel in mobile view, particularly if the post author has a longer name. 
+
+The problem occurs when the author info (Name & Timestamp) stacks below the Avatar. ",plari,has-patch
+Unclaimed — jump right in!,64812,Scripts: wp_enqueue_registered_block_scripts_and_styles() does not include modules,Script Loader,6.5,normal,normal,Future Release,defect (bug),new,2026-03-05T12:14:48Z,2026-04-02T13:43:55Z,"The `wp_enqueue_registered_block_scripts_and_styles()` [https://github.com/WordPress/wordpress-develop/blob/0dc7dffd31eb038b780ca9a0c65e2bcda98a9393/src/wp-includes/script-loader.php#L2736-L2781 function] enqueues block scripts and styles. However, it does not include script modules.
+
+The entire function depends on `wp_should_load_block_assets_on_demand()`. If that function returns `true`, then not enqueuing anything is the correct behavior.
+
+However, if block assets should be loaded ''eagerly'', then a block's script modules should also be enqueued.
+
+This can break blocks that depend on modules for sites and themes that depend on eagerly loading block assets.",jonsurrell,has-patch
+Unclaimed — jump right in!,26649,escaped shortcodes should not be expanded during 'get_the_excerpt',Shortcodes,3.7.1,normal,normal,Future Release,defect (bug),reopened,2013-12-16T15:13:48Z,2026-07-23T23:39:32Z,"It is possible for ""the_content"" filter to be invoked while processing ""get_the_excerpt"".
+
+If the do_shortcodes() filter hook is attached to both ""the_content"" and ""get_the_excerpt"" then this can lead to an unexpected expansion of an escaped shortcode.
+
+This can lead to unwanted side effects, as reported here.
+http://www.oik-plugins.com/2013/12/escaped-shortcodes-unexpectedly-expanded-get_the_excerpt/
+
+
+This minor problem can be alleviated by a simple change to strip_shortcode_tag(), returning the HTML code &#91; as the first character rather than the left square bracket.
+{{{
+function strip_shortcode_tag( $m ) {
+	// allow [[foo]] syntax for escaping a tag
+	if ( $m[1] == '[' && $m[6] == ']' ) {
+		return ""&#91;"" . substr($m[0], 2, -1) ;
+	}
+	return $m[1] . $m[6];
+}
+}}}
+
+I don't believe that it's necessary to make the same change in do_shortcode_tag().
+
+
+",bobbingwide,has-patch
+Unclaimed — jump right in!,51230,WP_DEBUG is flagged when using the development environment type,Site Health,5.5,normal,normal,Awaiting Review,defect (bug),new,2020-09-03T12:43:59Z,2026-08-14T19:07:07Z,"This was a request from the comments of the New `wp_get_environment_type() function in WordPress 5.5 post from @robertreiser:
+
+> Setting the environment to development also sets WP_DEBUG, which makes sense and I had WP_DEBUG enabled anyway on my development site.
+> 
+> But the site health tool still shows an error regarding the use of WP_DEBUG:
+> 
+> Your site is set to display errors to site visitors
+> 
+> In case if setting the environment to development, this should no longer be shown as an error in the site health tool.
+",desrosj,has-patch
+Unclaimed — jump right in!,60532,Add a `pre_set_object_terms` action,Taxonomy,6.5,normal,normal,Awaiting Review,enhancement,new,2024-02-13T19:42:58Z,2026-08-10T07:08:18Z,"Working with some custom terms & taxonomies, and it looks like there's no way to hook in to `wp_set_object_terms` _before_ the terms are updated.  
+
+In the end, the `$old_tt_ids` is passed to the `set_object_terms` action(added in r12261).  But, these are the `term_taxonomy_id`s and a a bit harder to work with than the plain terms.  Also, these are provided _after_ the terms are updated.  So, there's no way to short-circuit the updating.
+
+However, I think it would be useful to have a `pre_` action that can work on the current terms before commiting the changes.",davidbaumwald,has-patch
+Unclaimed — jump right in!,37669,Shiny Updates: Cancelling the filesystem credentials when updating within the pop-up prevents updating again (without closing/opening) and leaves UI artefacts,Themes,4.6,normal,normal,Future Release,defect (bug),new,2016-08-15T14:16:55Z,2026-08-18T08:45:10Z,"Reproducible on RC3: 4.6-RC3-38260
+
+Reproducible: every time
+
+Steps to reproduce:
+
+1) Set up WordPress, and set permissions to that the 'filesystem credentials' dialog will be required when performing theme updates.
+
+2) Tweak a version number so that you will have a theme that needs an update. Then, go to /wp-admin/themes.php
+
+3) Do *not* click on the immediately visible ""Update now"". Instead, click on the theme such that the pop-up pops up.
+
+4) Click on the ""Update now"" link within the pop-up. If step 1) was done correctly, then the filesystem dialog should now pop up.
+
+5) Close the filesystem credentials dialog. 
+
+Result: ""Updating..."" will still show there. But nothing will be updating. You cannot update until you close the pop-up and re-open it.
+
+Excepted result: The ""update now"" link re-appears, and ""Updating.."" disappears.
+
+Result: nothing happens.
+
+#37285 is similar, but a separate (and now fixed) issue.
+",DavidAnderson,has-patch
+Unclaimed — jump right in!,64588,Update message slightly uneven,Upgrade/Install,,normal,trivial,Awaiting Review,defect (bug),new,2026-02-03T15:03:40Z,2026-10-07T11:36:32Z,"After updating a plugin there's a message ""Plugin updated successfully. More details."" The margin is 1px off. It has a top margin of 6px and a bottom margin of 7px. Because it's only 1px, it's hard to show.
+
+The values are calculated by
+
+
+{{{
+.notice p, .notice-title, div.updated p, div.error p, .form-table td .notice p {
+    margin: 0.5em 0;
+}}}
+
+The computed values are 6.5px. I assume one time it gets rounded down, on time up.",Presskopp,has-patch
+Unclaimed — jump right in!,48937,Auto-refresh maintenance mode screen,Upgrade/Install,,normal,normal,Future Release,enhancement,new,2019-12-11T15:35:48Z,2026-08-19T06:36:13Z,"''I [https://wordpress.org/support/topic/feature-request-with-solution-auto-refresh-maintenance-mode-screen/ already posted this] on the community forums, and was advised to post here instead.''
+
+While WordPress updates a theme, a plugin or its core, it conveniently displays a message to any visitor:
+
+> Briefly unavailable for maintenance. Check back in a minute.
+
+Unfortunately, when presented with such a bland screen, most visitors will immediately leave and find a different website.
+
+If the visitor hasn’t disabled Javascript in his browser, it would be most helpful to make this a little more informative and add some automation:
+
+> Briefly unavailable for maintenance.
+> This page will automatically load when it is available.
+
+Have the webpage automatically refresh the page every (say) 10 seconds.
+
+Obviously, if the user has disabled Javascript, you can only display the brief message.
+
+= Solution
+
+I’m not really a programmer, but I’ve taken the default WordPress method and modified it to do just this — see below. You are welcome to use it as is, or to use the ideas and code within, to implement this feature automatically. I have tested this and it seems to work perfectly. A programmer might find a better way to implement it than I have done.
+
+There is one problem with what I’ve done, and that is the lack of translation for other languages. I don’t know how to cater for that.
+
+Thank you
+
+= Revised contents
+
+I took the file /wp-content/maintenance.php and modified it as follows. All that I did was to add a <script> section and modify the <div> section within the <body>. I changed nothing else.
+
+{{{
+<!DOCTYPE html>
+<html xmlns=""http://www.w3.org/1999/xhtml"" dir='ltr'>
+<head>
+	<meta http-equiv=""Content-Type"" content=""text/html; charset=UTF-8"" />
+	<meta name=""viewport"" content=""width=device-width"">
+			<title>Maintenance</title>
+	<style type=""text/css"">
+		html {
+			background: #f1f1f1;
+		}
+		body {
+			background: #fff;
+			color: #444;
+			font-family: -apple-system, BlinkMacSystemFont, ""Segoe UI"", Roboto, Oxygen-Sans, Ubuntu, Cantarell, ""Helvetica Neue"", sans-serif;
+			margin: 2em auto;
+			padding: 1em 2em;
+			max-width: 700px;
+			-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.13);
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.13);
+		}
+		h1 {
+			border-bottom: 1px solid #dadada;
+			clear: both;
+			color: #666;
+			font-size: 24px;
+			margin: 30px 0 0 0;
+			padding: 0;
+			padding-bottom: 7px;
+		}
+		#error-page {
+			margin-top: 50px;
+		}
+		#error-page p,
+		#error-page .wp-die-message {
+			font-size: 14px;
+			line-height: 1.5;
+			margin: 25px 0 20px;
+		}
+		#error-page code {
+			font-family: Consolas, Monaco, monospace;
+		}
+		ul li {
+			margin-bottom: 10px;
+			font-size: 14px ;
+		}
+		a {
+			color: #0073aa;
+		}
+		a:hover,
+		a:active {
+			color: #00a0d2;
+		}
+		a:focus {
+			color: #124964;
+			-webkit-box-shadow:
+				0 0 0 1px #5b9dd9,
+				0 0 2px 1px rgba(30, 140, 190, 0.8);
+			box-shadow:
+				0 0 0 1px #5b9dd9,
+				0 0 2px 1px rgba(30, 140, 190, 0.8);
+			outline: none;
+		}
+		.button {
+			background: #f7f7f7;
+			border: 1px solid #ccc;
+			color: #555;
+			display: inline-block;
+			text-decoration: none;
+			font-size: 13px;
+			line-height: 2;
+			height: 28px;
+			margin: 0;
+			padding: 0 10px 1px;
+			cursor: pointer;
+			-webkit-border-radius: 3px;
+			-webkit-appearance: none;
+			border-radius: 3px;
+			white-space: nowrap;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing:    border-box;
+			box-sizing:         border-box;
+
+			-webkit-box-shadow: 0 1px 0 #ccc;
+			box-shadow: 0 1px 0 #ccc;
+			vertical-align: top;
+		}
+
+		.button.button-large {
+			height: 30px;
+			line-height: 2.15384615;
+			padding: 0 12px 2px;
+		}
+
+		.button:hover,
+		.button:focus {
+			background: #fafafa;
+			border-color: #999;
+			color: #23282d;
+		}
+
+		.button:focus {
+			border-color: #5b9dd9;
+			-webkit-box-shadow: 0 0 3px rgba(0, 115, 170, 0.8);
+			box-shadow: 0 0 3px rgba(0, 115, 170, 0.8);
+			outline: none;
+		}
+
+		.button:active {
+			background: #eee;
+			border-color: #999;
+			-webkit-box-shadow: inset 0 2px 5px -3px rgba(0, 0, 0, 0.5);
+			box-shadow: inset 0 2px 5px -3px rgba(0, 0, 0, 0.5);
+		}
+
+	</style>
+
+	<script type='text/javascript'>
+		// Return ""sleep for a while"".
+		function sleep(ms)
+		{
+			return new Promise(resolve => setTimeout(resolve, ms));
+		}
+
+		// Sleep before doing refreshing.
+		async function refreshAfterPause()
+		{
+			await sleep(100);			// Pause to allow the page to fully load.
+
+			// Fill the relevant prompts, only if Javascript is enabled.
+			document.getElementById('reload').innerHTML = 'This page will automatically reload when it is available.';
+			document.getElementById('refresh').innerHTML = 'Waiting&hellip;';
+
+			await sleep(5000);			// Wait 5 seconds.
+
+			// Show that I'm about to check.
+			document.getElementById('refresh').innerHTML = 'Checking&hellip;';
+
+			await sleep(5000);			// Wait another 5 seconds.
+			window.location.reload(true);		// Reload the page, not from the cache.
+		}
+
+		refreshAfterPause();				// Refresh the screen after a pause.
+	</script>
+</head>
+<body id=""error-page"">
+	<div class=""wp-die-message"">
+		<p>Sorry&hellip; Briefly unavailable for scheduled maintenance.</p>
+		<p id=""reload"">Please try again in a minute.</p>
+		<p>Thank you for your patience.</p>
+		<p id=""refresh""></p>
+	</div>
+</body>
+</html>
+}}}",Paddy Landau,has-patch
+Unclaimed — jump right in!,66213,Users: Associate profile screen descriptions with their controls,Users,,normal,normal,Awaiting Review,defect (bug),new,2026-09-30T00:48:57Z,2026-09-30T09:33:52Z,"Discovered while reviewing #66205.
+
+The shared user profile/edit screen contains several descriptions that are visually adjacent to their controls but are not programmatically associated with them:
+
+* The read-only `#user_login` input and its “Usernames cannot be changed.” description.
+* The `#description` Biographical Info textarea and its explanatory paragraph.
+* The `#generate-reset-link` button and the paragraph explaining the effect of sending a password reset link.
+* The session action button and its explanatory paragraph in each conditional state, including the disabled “Log Out Everywhere Else” state and the enabled `#destroy-sessions` states.
+
+All of these controls are rendered from `wp-admin/user-edit.php`. The `wp-admin/user/profile.php` and `wp-admin/user/user-edit.php` files are wrappers around that shared screen. The same renderer is also used by Site Admin and Network Admin, so the issue affects all three administration contexts.
+
+The required markers for Nickname and Email are already part of their associated labels. The profile picture description is a separate Gravatar link rather than a control description. Other descriptions on the screen, including Email, Repeat New Password, and New Application Password Name, already follow the established pattern of an `id` on the description and an `aria-describedby` reference on the control.
+
+== Steps to reproduce ==
+
+1. Open a user profile or edit-user screen, for example:
+   * `wp-admin/profile.php`
+   * `wp-admin/network/user-edit.php?user_id=1`
+   * `wp-admin/user/profile.php`
+2. Inspect the Username and Biographical Info controls with browser accessibility tools or a screen reader.
+3. When editing another user, inspect the Send Reset Link button.
+4. Inspect the session action button. Its description varies according to the number of sessions and whether the current user or another user is being edited.
+5. Observe that the adjacent descriptions are not exposed as accessible descriptions for these controls.
+
+== Expected result ==
+
+Each control programmatically references its descriptive text, consistent with the existing pattern elsewhere on the same screen.
+
+== Suggested change ==
+
+Add unique IDs to the relevant description elements and matching `aria-describedby` attributes to the inputs, textarea, and buttons. Each conditional session description should use the same stable ID referenced by its corresponding button.",johnjamesjacoby,has-patch
+Unclaimed — jump right in!,52976,user emails comparison should be case insensitive,Users,4.3,normal,normal,Awaiting Review,defect (bug),new,2021-04-06T00:08:20Z,2026-08-20T12:18:38Z,"In [https://core.trac.wordpress.org/browser/tags/5.7/src/wp-includes/user.php#L2188 user.php] for WordPress 5.7, email update comparisons are case sensitive. Is there a specific reason for this? Because emails are case insensitive. Here is the line that does that:
+{{{
+#!php
+if ( isset( $userdata['user_email'] ) && $user['user_email'] !== $userdata['user_email'] )
+}}}
+ 
+Can the function: 
+{{{
+#!php
+strcasecmp
+}}}
+
+be used instead? The problem is that there is a plugin that uses the function: 
+
+{{{
+#!php
+wp_update_user
+}}}
+
+And it would send a notification for email change even if it was the casing of the characters only.
+
+Thanks for your time and consideration",asaifm,has-patch
+Unclaimed — jump right in!,49639,Add a filter on wp_insert_user function regarding $user_pass,Users,,normal,normal,Awaiting Review,enhancement,new,2020-03-13T06:40:12Z,2026-10-07T11:14:10Z,"/5.3/src/wp-includes/user.php
+`function wp_insert_user ( $userdata )` 1542 line
+Please apply the below filter so that I can add a rule on user typed password before hashing the password.
+{{{
+$pre_user_password = apply_filters(  'pre_user_password', $user_pass );
+}}}
+Thank you.
+
+Best regards,
+Jen",stokim,has-patch
+Unclaimed — jump right in!,61343,Improve caching in get_calendar function,Widgets,,normal,normal,Future Release,enhancement,new,2024-06-01T21:50:35Z,2026-07-23T19:43:45Z,"The `get_calendar` function is used to generate the calendar. There are a number of things that can be done to improve the performance of this function. 
+
+- Replace the raw query to posts table with call to WP_Query query class. 
+- Change cache invalidation from 
+{{{#!php
+add_action( 'save_post', 'delete_get_calendar_cache' );
+add_action( 'delete_post', 'delete_get_calendar_cache' );
+}}}
+to 
+{{{#!php
+add_action( 'clean_post_cache', 'delete_get_calendar_cache' );
+}}}
+- Instead of store all caches in a simple cache key, break them up and invalidate caches in another way. 
+
+
+
+",spacedmonkey,has-patch
+Unclaimed — jump right in!,38622,XML-RPC wp_newComment should return an error when a field exceeds the maximum length,XML-RPC,4.5,low,normal,Awaiting Review,defect (bug),reopened,2016-11-02T16:09:56Z,2026-08-03T20:54:50Z,"We return a `WP_Error` in `wp_handle_comment_submission()` when the comment content, author name, author email, or author url exceeds the maximum length of its respective database column.  See #10377.
+
+We should do the same in the XML-RPC `wp_newComment()` method.",rachelbaker,has-patch
+Unclaimed — jump right in!,27326,wp_list_pages - exclude parameter changes behaviour depending on depth,"Posts, Post Types",3.8.1,normal,normal,,defect (bug),new,2014-03-08T15:01:38Z,2025-06-23T10:25:15Z,"Let's say I have four top level pages with IDs 1,2 and 3 and each has three children, say, (11,12,13), (21,22,23) and (31,32,33).
+
+If I run 
+{{{
+<?php wp_list_pages(); ?>
+}}}
+ on that I'll get all the pages shown. So it'll be a list like:
+
+{{{
+1
+    11
+    12
+    13
+2
+    21
+    22
+    23
+3
+    31
+    32
+    33
+}}}
+
+
+If I run 
+{{{
+<?php wp_list_pages(exclude=3); ?>
+}}}
+ then page 3 will not be shown and the hierarchy will collapse so 31,32,33 appear in the top level of the hierarchy. So what I'll get is:
+  
+{{{
+1
+    11
+    12
+    13
+2
+    21
+    22
+    23
+31
+32
+33
+}}}
+
+Given the existence of a separate ''exclude_tree'' argument, that is pretty much what I'd expect to happen, after all it has to show the child pages somehow. If I now introduce a ''depth'' argument so it is:
+{{{
+<?php wp_list_pages(depth=3&exclude=3); ?>
+}}}
+ I'd expect the same thing to happen as the ''depth'' shouldn't make any difference. What actually happens is that the 
+''exclude'' now behaves similarly to ''exclude_tree''. What I actually get is:
+
+{{{
+1
+  11 12 13
+2
+  21 22 23
+}}}
+
+Now that to me doesn't make sense.",nosnurg,has-patch
+Tickets with a contributor working on them.,66211,Tests: Make PHPUnit data providers public and static,Build/Test Tools,,normal,normal,7.2,task (blessed),accepted,2026-09-29T21:38:33Z,2026-10-07T14:58:16Z,"Split from #62004.
+
+PHPUnit 10 deprecated data providers that are not public and static, and PHPUnit 11 removed support for them. On trunk, about 960 of 1,140 data provider methods are not static, across the 512 files that use `@dataProvider`.
+
+Most need only the `static` keyword. A provider that uses `$this` needs a small rework. PHPUnit 9 accepts static providers, so this can land now.
+
+To keep reviews small, please send one PR per directory, and comment here with the directory you're taking.",lancewillett,has-patch
+Tickets with a contributor working on them.,64664,Update Lodash to version 4.17.23,External Libraries,,normal,normal,6.9.2,enhancement,reopened,2026-02-18T01:08:51Z,2026-02-19T03:28:06Z,"A new version of the Lodash external library is available.
+
+For a full list of changes, see the [https://github.com/lodash/lodash/compare/4.17.21...4.17.23 4.17.21 to 4.17.23 comparison on GitHub].",desrosj,has-patch
+Tickets with a contributor working on them.,65817,PHPStan code quality improvements for 7.2,General,,normal,normal,7.2,task (blessed),reviewing,2026-08-05T15:04:00Z,2026-10-07T22:47:07Z,"This ticket is for various code quality issues and improvements surfaced via PHPStan.
+
+PHPStan was integrated into the development workflow in #61175, and the rule level was bumped from 0 to 5 in #64680, with existing errors suppressed with [https://phpstan.org/user-guide/baseline baselines].
+
+Anyone looking for code quality issues to fix should look at the errors in the baselines in [https://github.com/WordPress/wordpress-develop/tree/trunk/tests/phpstan/baselines tests/phpstan/baselines]. Priority should be given to errors which are on the lower [https://phpstan.org/user-guide/rule-levels rule levels]. 
+
+Baselines added for each rule level:
+
+1. r63019
+2. r63020
+2. r63021 & r63022
+4. r63023
+5. r63024
+
+👉 Please do not open PRs which fix all errors at once, or even all errors in one error-specific baseline, unless there are just a few. Conversely, avoid opening a PR to just fix a single error out of many, unless it is justified. Try to keep PRs organized by component or by file. PRs can be opened referencing this Trac ticket, avoiding the need to open a ticket for these ongoing improvements. Code archeology will often be needed to understand why a given error exists and this discovery should be included in each PR as background.
+
+For information about how to use PHPStan in the wordpress-develop codebase, see the [https://github.com/WordPress/wordpress-develop/tree/trunk/tests/phpstan#readme README]. In particular, note how baselines are regenerated after errors are fixed.
+
+Previously:
+
+- #64898 (7.1)
+- #64238 (7.0)
+- #63268 (6.9)
+- #52217 (6.8)
+- #51423 (6.2) 
+",desrosj,has-patch
+Tickets with a contributor working on them.,49381,Add Javascript Documentation to privacy-tools.js,Privacy,,normal,normal,7.2,enhancement,reviewing,2020-02-07T06:26:43Z,2026-10-01T03:27:37Z,"Stemming from a [https://core.trac.wordpress.org/ticket/44264#comment:18 comment] on #44264 the privacy-tools.js functions should be properly documented;
+Javascript Documentation guidelines - https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/javascript/#functions",garrett-eclipse,has-patch
+Tickets with a contributor working on them.,42254,Duplicate news entries in Events & News dashboard widget,Administration,4.8,low,minor,Future Release,defect (bug),assigned,2017-10-17T18:15:20Z,2023-10-11T14:26:43Z,"The first item in the News widget is always the latest post from the `wordpress.org/news` blog. The next 3 posts are selected from the `planet.wordpress.org` feed, which itself includes the `wordpress.org/news` blog.
+
+This can lead to duplicate entries:
+
+[[Image(https://cldup.com/R67ghZqMRh.png)]]
+
+One potential solution is to search the list of Planet feed items, to check ifany of them match the current News item. If one does, it would be removed, so that the next oldest item takes its place.
+
+Reported by @sergeybiryukov on Slack https://wordpress.slack.com/archives/C02RQBWTW/p1507073219000123
+",iandunn,has-patch
+Tickets with a contributor working on them.,65812,"Unreachable ""All selected plugins are up to date."" admin notice in plugins.php",Administration,,normal,normal,Awaiting Review,defect (bug),accepted,2026-08-05T12:16:21Z,2026-08-11T05:49:04Z,"The admin notice ""All selected plugins are up to date."" on the Plugins screen is unreachable - it can never be displayed.
+
+In `wp-admin/plugins.php` the message lives in the results-notice chain:
+
+{{{#!php
+} elseif ( 'update-selected' === $action ) {
+    wp_admin_notice( __( 'All selected plugins are up to date.' ), $updated_notice_args );
+}
+}}}
+
+However, `$action` is assigned once (from `WP_Plugins_List_Table::current_action()`) and is never reassigned. Whenever `$action === 'update-selected'`, the earlier `switch ( $action )` block enters `case 'update-selected':`, which renders the bulk-update iframe and ends in an **unconditional `exit;`**. Execution therefore never reaches the notice chain with `$action === 'update-selected'`, so the `elseif` is always false. (PHPStan reports the comparison as ""will always evaluate to false."")
+
+'''How to confirm'''
+No user action can produce the notice. Selecting the bulk ""Update"" action always renders the iframe update screen (`update.php?action=update-selected`) and exits; there is no path back to the plugins list that shows this message. The string ""All selected plugins are up to date."" exists nowhere else in wp-admin.
+
+'''History (why it is dead)'''
+The branch was introduced together with bulk plugin updates in #11542(2010-01-26) and was reachable then: the handler filtered the selection to out-of-date plugins and did `break` (not `exit`) when all were current, falling through to the notice (originally worded ""No out of date plugins were selected."").
+
+The iframe rewrite in #11232 (2010-03-06) removed that filtering and the `break`, making `case 'update-selected'` end in an unconditional `exit;`, but left the notice branch behind. It has been unreachable ever since (~15 years), surviving a re-word (2015), the `==` → `===` sweep (2020), and the `wp_admin_notice()` conversion.
+
+'''Proposed fix'''
+Remove the dead `elseif ( 'update-selected' === $action )` branch, since the iframe update screen already reports the ""up to date"" outcome.",aminurislam01,has-patch
+Tickets with a contributor working on them.,65703,wp_admin_notice(): pass `type` instead of `error/updated` via additional_classes,Administration,,normal,normal,Awaiting Review,defect (bug),accepted,2026-07-24T08:49:43Z,2026-07-28T07:14:01Z,"While working on this #65690 and [https://github.com/WordPress/wordpress-develop/pull/12661 PR] -  , I got one feedback from the copilot [https://github.com/WordPress/wordpress-develop/pull/12661#discussion_r3643298778 here].
+
+The feedback says that,
+
+{{{
+wp_admin_notice() supports a type argument (e.g. error), which produces the canonical notice notice-error class. Using additional_classes => array( 'error', ... ) is legacy-style and makes the class semantics less clear for new notices; prefer type => 'error' and keep hide-if-js as an additional class.
+}}}
+
+When I looked at the codebase, I found inconsistency accross the codebase, some use legacy-style and use `type` argument to construct the notice. 
+
+I would like to propose issue here and improve code quality, so that we can consistently use the new variation i.e., to add the `type` argument, instead of legacy-style i.e., to add `classes` to the admin notices.
+
+Below is the detailed version created by `AI`, Claude Code, Opus 4.8 with details like where is inconsistency accross the codebase.
+
+----
+
+== AI Summary
+
+Since WordPress 6.4, `wp_admin_notice()` and `wp_get_admin_notice()` accept a `type` argument (`error`, `success`, `warning`, `info`) that outputs the standard `notice notice-<type>` classes.
+
+Core is inconsistent in how it uses this. Some calls correctly pass `type`, while many others pass the legacy status class (`error` or `updated`) directly through `additional_classes`. Both render the same (core styles `div.error` / `.notice-error` and `div.updated` / `.notice-success` identically), but using `type` makes the intent explicit and keeps every call site consistent.
+
+'''Correct usage''' — `source:trunk/src/wp-login.php`:
+{{{#!php
+<?php
+wp_admin_notice(
+	$errors,
+	array(
+		'type'           => 'error',
+		'id'             => 'login_error',
+		'paragraph_wrap' => false,
+	)
+);
+}}}
+
+'''Inconsistent usage''' — `source:trunk/src/wp-admin/upload.php`:
+{{{#!php
+<?php
+wp_admin_notice(
+	$js_required_message,
+	array(
+		'additional_classes' => array( 'error', 'hide-if-js' ),
+	)
+);
+}}}
+
+== Proposed change ==
+
+Convert the legacy status class to the `type` argument, keeping any other (non-status) classes in `additional_classes`:
+
+ * `additional_classes => array( 'error' )` → `type => 'error'`
+ * `additional_classes => array( 'updated' )` → `type => 'success'`  (`updated` is the legacy green/success class)
+ * `additional_classes => array( 'error', 'hidden' )` → `type => 'error'` + `additional_classes => array( 'hidden' )`
+
+Output markup is equivalent, so this is low risk and can be split across multiple patches or in a single PR depends.
+
+Line numbers are against `trunk` at the time of writing.
+
+[[br]]
+
+== Group 1 — `'error'` → `type => 'error'` (50) ==
+
+||=  File  =||=  Line(s)  =||=  Classes to keep  =||
+|| src/wp-admin/import.php || 73 || — ||
+|| src/wp-admin/edit-form-advanced.php || 469 || `hidden` ||
+|| src/wp-admin/theme-editor.php || 316, 353 || — ||
+|| src/wp-admin/themes.php || 304, 321, 350 || — ||
+|| src/wp-admin/update-core.php || 1078, 1088 || — ||
+|| src/wp-admin/edit-comments.php || 308 || — ||
+|| src/wp-admin/plugins.php || 350, 364, 652, 704, 723 || — ||
+|| src/wp-admin/users.php || 328, 720, 740, 760, 790, 816 || — ||
+|| src/wp-admin/upload.php || 243 || `hide-if-js` ||
+|| src/wp-admin/user-new.php || 407, 436 || — ||
+|| src/wp-admin/widgets-form.php || 433 || — ||
+|| src/wp-admin/plugin-editor.php || 37 || — ||
+|| src/wp-admin/theme-install.php || 189 || `hide-if-js` ||
+|| src/wp-admin/user-edit.php || 256 || — ||
+|| src/wp-admin/async-upload.php || 137 || `error-div` ||
+|| src/wp-admin/nav-menus.php || 316, 348, 391, 449, 478, 494 || — ||
+|| src/wp-admin/network/themes.php || 142, 153 || — ||
+|| src/wp-admin/includes/file.php || 2524 || — ||
+|| src/wp-admin/includes/class-wp-plugin-install-list-table.php || 298 || `inline` ||
+|| src/wp-admin/includes/network.php || 127, 168, 284, 435, 458 || 284: `inline` ||
+|| src/wp-admin/includes/template.php || 1023, 1447 || 1447: `inline` ||
+|| src/wp-admin/includes/user.php || 559 || `default-password-nag` ||
+|| src/wp-admin/includes/nav-menu.php || 1464 || — ||
+|| src/wp-admin/includes/class-bulk-upgrader-skin.php || 199 || — ||
+|| src/wp-includes/media-template.php || 389 || — ||
+
+[[br]]
+
+== Group 2 — `'updated'` → `type => 'success'` (39) ==
+
+||=  File  =||=  Line(s)  =||=  Classes to keep  =||
+|| src/wp-admin/edit-form-advanced.php || 454 || — ||
+|| src/wp-admin/theme-editor.php || 199 || — ||
+|| src/wp-admin/themes.php || 266, 276, 285, 295, 312, 329, 338 || — ||
+|| src/wp-admin/options-general.php || 284 || `inline` ||
+|| src/wp-admin/edit-comments.php || 424 || — ||
+|| src/wp-admin/edit-link-form.php || 100 || — ||
+|| src/wp-admin/plugins.php || 661 || — ||
+|| src/wp-admin/nav-menus.php || 288, 325, 361, 538, 704 || — ||
+|| src/wp-admin/plugin-editor.php || 204 || also `is-dismissible` → `dismissible => true` ||
+|| src/wp-admin/user-new.php || 419 || — ||
+|| src/wp-admin/widgets-form.php || 423 || — ||
+|| src/wp-admin/users.php || 656, 682, 700, 710, 729, 749, 769, 780, 798 || 780, 798: `fade` ||
+|| src/wp-admin/upload.php || 229, 446 || — ||
+|| src/wp-admin/user-edit.php || 233, 599 || 599: `inline` ||
+|| src/wp-admin/link-manager.php || 129 || — ||
+|| src/wp-admin/edit.php || 476 || — ||
+|| src/wp-admin/includes/nav-menu.php || 1519 || — ||
+|| src/wp-admin/includes/class-custom-background.php || 271 || — ||
+|| src/wp-admin/includes/class-custom-image-header.php || 540 || — ||
+
+[[br]]
+
+== Group 3 — Dynamic status class (2) ==
+
+These build the class from a variable and need a conditional `type` instead:
+
+||=  File  =||=  Line  =||=  Detail  =||
+|| src/wp-admin/edit-tags.php || 360 || `$class = isset( $_REQUEST['error'] ) ? 'error' : 'updated';` — set `type` to `'error'` / `'success'` ||
+|| src/wp-admin/includes/network.php || 234 || `$message_class` is `''`, `'updated'`, or `'error'` (set at lines 201–213) — map to `type`; keep `inline` ||
+[[br]]
+== Not included (correct as-is) ==
+
+These `additional_classes` values are behavioural/modifier classes with no `type` equivalent and should stay: `notice-alt`, `inline`, `hidden`, `fade`, `hide-if-js` / `hide-if-no-js`, `below-h2`, `update-message`, `update-nag` (a distinct legacy style, not one of the four types), the login-specific `message` / `reset-pass` / `register`, and `notice-missing-attachment`. Substrings such as `error-div`, `community-events-errors` and `policy-text-updated` are unrelated class names, not status types.
+
+Thanks,
+",hbhalodia,has-patch
+Tickets with a contributor working on them.,41580,Review the usage of the `::-moz-focus-inner` CSS fix for the buttons extra padding in Firefox,Administration,,normal,normal,Awaiting Review,enhancement,assigned,2017-08-07T14:55:54Z,2025-06-23T11:18:47Z,"For a number of years, Firefox used to set some extra padding on the buttons (or inputs of type button/submit/reset). To address this, WordPress uses a known fix targeting the proprietary Firefox pseudo element `::-moz-focus-inner`.
+
+Seems something has changed recently and starting with Firefox 53, FF doesn't apply the extra padding any longer. I ''think'' the relevant Bugzilla ticket Firefox 53 release notes, though.
+
+Testing a bit on Windows, in the screenshot below:
+- on the left, Firefox 48: buttons without and with the CSS fix: there's a clear size difference
+- on the right: Firefox 54: buttons without and with the CSS fix: no size difference
+
+[[Image(https://cldup.com/7AkzV22mi3.png)]]
+
+Codepen available here: https://codepen.io/afercia/full/Gvrzwz/
+
+Seems these rules used across the admin stylesheets could be simplified a bit. The only part that needs to stay is `border-width: 0;` or, maybe better, `border: 0;` which is necessary on Windows to remove the dotted line on :focus:
+
+[[Image(https://cldup.com/aynypgSW6Y.png)]]
+
+This could be also a good opportunity for some clean-up. For example, seems to me in `press-this.css` there are two identical rules. ",afercia,has-patch
+Tickets with a contributor working on them.,27888,Feature request: `get_current_admin_url()` and `get_current_admin_hook()`,Administration,3.9,normal,normal,Awaiting Review,feature request,assigned,2014-04-18T12:22:45Z,2026-01-18T12:21:23Z,"It would be sweet if to be able to get the current page's url using some kind of API. And its hook, for that matter. For instance:
+
+{{{
+    public function get_current_admin_page_url()
+    {
+        if (!is_admin()) {
+            return false;
+        }
+
+        global $pagenow;
+        global $typenow;
+        global $taxnow;
+        global $plugin_page;
+
+        $url = $pagenow;
+        if (!empty($plugin_page)) {
+            $url .= '?page='.$plugin_page;
+        }
+        elseif (!empty($typenow)) {
+            $url .= '?post_type='.$typenow;
+        }
+        elseif (!empty($taxnow)) {
+            $url .= '?taxonomy='.$taxnow;
+        }
+
+        return $url;
+    }
+}}}
+
+And something similar for `get_current_admin_hook()`.",Denis-de-Bernardy,has-patch
+Tickets with a contributor working on them.,54510,Add a GitHub Action workflow which alerts contributors if they propose changes to third party files,Build/Test Tools,,normal,normal,Future Release,task (blessed),reviewing,2021-11-25T14:06:52Z,2026-01-09T04:55:12Z,"WordPress core includes files from several third party libraries such as ID3, SimplePie, and Requests. Changes to these libraries shouldn't be made directly in core, they should be made upstream.
+
+If a contributor opens a pull request proposing changes to these files it would be great if a comment was automatically posted to the PR explaining that they've proposed changes to a third party library and they should visit the corresponding project's repo for info about contributing to it.
+
+While there's not much we can do about this when a contributor submits a patch to a file in an affected path, it should be possible to do this when a PR is submitted via GitHub. A GitHub Action workflow could use the `path` keyword to post a comment to the PR whenever a file in an affected path is changed.
+
+There are also files that get copied from Gutenberg and can clobber those in core, I opened https://github.com/WordPress/gutenberg/issues/36868 to discuss that.",johnbillion,has-patch
+Tickets with a contributor working on them.,51284,Update style for side meta boxes,Editor,5.5.1,normal,normal,Future Release,enhancement,assigned,2020-09-10T02:56:22Z,2024-07-09T15:48:02Z,"In the latest version 5.5.1, WordPress adds the arrows to the meta box handles to allows users to move a meta box up or down.
+
+That works nicely for meta boxes below the content area. However, for the side boxes, the arrows takes a lot of space and reduce the space for the meta box title.
+
+The 2nd problem is that the toggle icon (collapse/expand) is different from the Gutenberg panel icon.
+
+I attach a screenshot to see the problems clearer.
+",rilwis,has-patch
+Tickets with a contributor working on them.,44083,Add action to wp_mkdir_p() when directory is created successfully,Filesystem API,2.0.1,normal,normal,Future Release,enhancement,reviewing,2018-05-15T00:11:46Z,2025-06-05T10:06:32Z,"It would be nice if the `wp_mkdir_p()` function contained a hook for plugins to interact with when a directory gets created.
+
+The use-case I have currently is that Easy Digital Downloads (for example) creates `.htaccess` files and empty `index.php` files in its own `uploads/edd` directory, and each directory inside it, as one way of protecting those empty directories from being publicly browsable.
+
+Because there is no action hook here, EDD uses a daily transient, which leaves new directories potentially open until the transient expires.
+
+An action hook on directory creation would allow for EDD to create those files immediately.",johnjamesjacoby,has-patch
+Tickets with a contributor working on them.,36036,Multiple CDATA regressions in wp-includes,General,3.4,normal,normal,Future Release,defect (bug),assigned,2016-03-01T23:45:26Z,2020-11-25T19:40:06Z,"There is invalid XHTML at lines 2084-2097 of wp-includes/theme.php ( https://github.com/WordPress/WordPress/blob/3f3fe5a7ed6473e995f9b96ee4bcf36fe4c71a35/wp-includes/theme.php#L2084-L2097 )
+
+This script block needs to be escaped with /*<![CDATA[*/ ..script content.. /*]]>*/
+
+Otherwise it will cause rendering errors for people serving XHTML as application/xhtml+xml
+
+This was not always like this, as 5 years ago when I made my strict XHTMl theme there were no errors. I recently re-enabled serving as application/xhtml+xml and to my surprise find this regression in the WP codebase.",sephr,has-patch
+Tickets with a contributor working on them.,14808,Add Editor Documentation Functions URL for theme-defined functions,General,,normal,normal,Future Release,enhancement,assigned,2010-09-08T00:57:20Z,2025-04-03T13:36:47Z,"Currently, functions that are called within template files shown on the editor are included in the list of functions that you can try and lookup documentation for.
+
+(The $ignore_functions array only seems to be for functions defined, not called, in a file.)
+
+As the http://api.wordpress.org/core/handbook/1.0/?function=... seems to be hard-coded in, it's not possible for themes to overwrite it for functions they've defined.
+
+Is it possible to allow themes to define where the documentation lookup should be for their own functions?",GamajoTech,has-patch
+Tickets with a contributor working on them.,37280,Remove boldness from update notices,General,,normal,normal,Future Release,enhancement,assigned,2016-07-04T22:08:13Z,2021-11-14T10:49:16Z,"Previously: https://wordpress.slack.com/archives/design/p1466093104000007
+
+The notices are currently inconsistent, some are bold, some are not, and some use bold only to highlight words.
+
+OH: ''Bold text is just wasted bandwidth.''",ocean90,has-patch
+Tickets with a contributor working on them.,17146,Don't limit screen meta tab CSS to content within #screen-meta,Help/About,3.1,normal,normal,Future Release,enhancement,new,2011-04-15T20:36:40Z,2025-07-19T07:36:30Z,"Currently, the styles for screen meta tabs are limited to items within #screen-meta. I think we should use the .screen-meta-toggle class instead, so these styles can be used elsewhere in the admin without duplicating the CSS.
+
+I ran into this problem when working on the fullscreen plugin and adding a help tab, but not inside #screen-meta.",koopersmith,has-patch
+Tickets with a contributor working on them.,36259,Switching language should update date and time formats,I18N,,normal,normal,Future Release,defect (bug),assigned,2016-03-16T07:43:07Z,2025-11-10T09:18:08Z,"Previously: #11226
+
+1. Install WordPress in English.
+2. Switch language to Russian.
+3. Date and time formats in General Settings are still `F j, Y` and `g:i a`, which doesn't make sense for Russian and doesn't match the locale defaults (`d.m.Y` and `H:i`, respectively).",SergeyBiryukov,"has-patch, needs-unit-tests"
+Tickets with a contributor working on them.,33073,"Some strings need ""no HTML entities"" translator comments",I18N,,normal,normal,Future Release,enhancement,assigned,2015-07-22T14:44:59Z,2024-09-30T18:00:30Z,"This is a renewal of #10005, which was apparently my first patch to WP 6 years ago, but never got accepted. #10005 was closed as fixed, but it truth it was not (see my last comment there).
+
+So, I'm opening a new ticket about this... and updating the description and patch from 6 years :)
+
+Here goes!
+
+Several strings need to have an indication warning translators against the inclusion of HTML entities within their translation, because of where the strings are user (RSS feeds, e-mails, JavaScript...). 
+
+Case in point: in French, there should be a non-breaking space (&nbsp;) before any double sign (; : ! ?). So, translators would turn ""URL: %s"" into ""Adresse web&nbsp;: %s"". But since it is used in e-mails, it is displayed as-is. And for strings that are used in feeds, it breaks them...
+
+Suggestions comment: ""Do not add HTML entities (&nbsp;, etc): used in [context]"".
+
+Patch fixes all strings that I could find. 
+
+I do hope it is a simple enough patch, and not too close to RC, that it could make it into 4.3.
+
+Thanks!",xibe,has-patch
+Tickets with a contributor working on them.,61430,Adding escaping function in wp_interactivity_data_wp_context PHPDoc,Interactivity API,6.5,normal,minor,Future Release,enhancement,accepted,2024-06-13T12:02:23Z,2024-09-30T02:22:36Z,"in the /wp-includes/interactivity-api/interactivity-api.php the following example is given in the PHPDoc:
+
+{{{#!php
+<div <?php echo wp_interactivity_data_wp_context( array( 'isOpen' => true, 'count' => 0 ) ); ?>>
+}}}
+
+We should always follow best practices, so I propose adding proper escaping:
+
+{{{#!php
+<div <?php echo wwp_kses_data( wp_interactivity_data_wp_context( array( 'isOpen' => true, 'count' => 0  ) ) ); ?>>
+}}}
+",mosne,has-patch
+Tickets with a contributor working on them.,54416,Some WordPress generated emails escape special chars in the email address while other emails do not.,Mail,5.8,normal,major,Future Release,defect (bug),assigned,2021-11-10T22:28:51Z,2025-09-22T21:53:03Z,"When a user's email address contains an apostrophe, WordPress will escape the apostrophe in the email address for some WordPress generated emails, while it will not for other WordPress generated emails.
+
+For example o'connor@domain.com will be escaped to o\'connor@domain.com for the 'Email Changed' and 'Password Changed' emails that are sent to the user. 
+
+For other emails, such as the 'User Lost Password' email, the email address is not escaped and is sent properly. ",ltuspe,has-patch
+Tickets with a contributor working on them.,13822,Menu items that get unpublished still appear,Menus,3.0,normal,normal,Future Release,defect (bug),reopened,2010-06-10T16:30:12Z,2026-04-18T19:17:16Z,"We need to properly account for menu items linked to unpublished/pending post type objects.
+
+My thought is they should probably be hidden from the frontend with an indication on the backend (like ""(Pending)"") that they are are unpublished/pending.
+
+We need to properly handle private posts too.",nacin,has-patch
+Tickets with a contributor working on them.,38836,A current_page_parent CSS class is not added to relevant WP menu items if the query is for a custom post type single item,Menus,,normal,normal,Future Release,enhancement,reviewing,2016-11-17T00:05:51Z,2026-04-08T04:32:08Z,A {{{current_page_parent}}} CSS class doesn't get added to relevant post type archive menu items if the current query is for a custom post type single item.,henry.wright,has-patch
+Tickets with a contributor working on them.,19272,Add Filter to Nav Menu Support Themes Text,Menus,,normal,trivial,Future Release,enhancement,assigned,2011-11-16T22:47:52Z,2022-07-01T09:51:33Z,"Frameworks could use a filter here to customize the message: `_n('Your theme supports %s menu. Select which menu you would like to use.', 'Your theme supports %s menus. Select which menu appears in each location.', $num_locations )`. For example, it may be the child theme that doesn't support the menus. Also, if none are supported (say via add_theme_support), then when it's zero, it says: ""Your theme supports 0 menus. Select which menu appears in each location."" (which doesn't make much sense). So adding a filter can enable theme developers to further customize.
+
+An example use case:
+{{{
+add_filter( 'nav_menu_theme_support_text' , 'wps_nav_menu_theme_support_text' );
+function wps_nav_menu_theme_support_text ( $num_locations ) {
+	if ( $num_locations == 0 )
+		$text = 'Your child theme does not support custom menus.';
+	else
+		$text = _n('Your theme supports %s menu. Select which menu you would like to use.', 'Your theme supports %s menus. Select which menu appears in each location.', $num_locations );
+	return $text;
+}
+}}}",wpsmith,has-patch
+Tickets with a contributor working on them.,40353,Site URL and Home URL inputs are not properly validating,"Options, Meta APIs",,normal,normal,Awaiting Review,defect (bug),assigned,2017-04-04T12:33:11Z,2020-04-08T20:34:50Z,"In wp-admin/options-general.php > General settings the URLs not properly validating. I tried the following with WordPress address (URL) input:
+
+http://local.mysite. com
+http://local.my?site.com
+http://local.my*site.com
+
+In all three cases WP saves the entry and then the page breaks! A proper handling is required.",subrataemfluence,has-patch
+Tickets with a contributor working on them.,32322,Custom permalink structure incorrect for Future posts,Permalinks,4.2,normal,normal,Future Release,defect (bug),assigned,2015-05-09T10:01:55Z,2025-08-11T06:30:48Z,"From V4.2 there is a bug with custom permalink structures used for Future posts that are visible on the front end.
+
+Example: 
+- You have your custom permalink structure set up as ""Post name"".
+- ""Published"" posts show up with the correct permalink structure i.e. mysite.com/single-post/
+- ""posts marked as ""Future"" but visible in the front end (i.e. if you're wanting to show posts that are scheduled) show up with the default permalink structure i.e. mysite.com/?p=618
+
+Rolling back through the versions of WordPress, all was working correctly in v4.1.5 and then stopped working from v4.2",greencode,has-patch
+Tickets with a contributor working on them.,23749,Post Format Archive Conditional Tag,Post Formats,,normal,normal,Future Release,enhancement,assigned,2013-03-12T20:27:04Z,2026-08-07T00:51:56Z,"As far as I know there is no conditional tag for detecting when a post format archive is shown. I bumped into this problem while creating a theme for quick-blogging and realized that I couldn't create a menu (easily) and style the 'current' post format menu item differently. 
+
+I will try and submit a diff if I can although I've never done it before so it may take me a while :) 
+
+ ",danielpataki,has-patch
+Tickets with a contributor working on them.,36738,No validation for $post_date_gmt parameter,"Posts, Post Types",3.5,normal,normal,Future Release,defect (bug),assigned,2016-05-03T11:52:59Z,2025-09-12T12:14:44Z,"1) When publishing a post via `wp_insert_post()`and the `$post_date_gmt` parameter has a wrong format it's silently set to `0000-00-00 00:00:00`.
+
+2) If `$post_date` is omitted in the parameter array WP tries to determine it from `$post_date_gmt`. A wrong formatted `$post_date_gmt` leads to a `post_date` of `1970-01-01 00:00:00`.
+
+Just like `$post_date`it should throw an error to give a programmer the right hint for his malfunctioning code.
+
+
+",Latz,has-patch
+Tickets with a contributor working on them.,31977,"Ping status of pages changes to ""closed"" in quick edit","Posts, Post Types",4.2,normal,normal,Future Release,defect (bug),assigned,2015-04-15T11:14:50Z,2026-08-07T00:30:35Z,"WP version: 4.2-beta4
+
+Every page is created with ping_status set to ""open"". If the page is edited in the ""full"" edit form, the ping_status remains untouched. However, if the page is edited in the quick edit form, the ping_status field is changed to ""closed"" since WP 4.2.
+
+Since pages don't support the ping functionality, I suppose it shouldn't change the field. Maybe ""closed"" is the propper one, but it should be set on the creation.
+
+It makes testing of our plugin a little bit tricky.
+
+Thanks.
+Jan",JanVoracek,has-patch
+Tickets with a contributor working on them.,60038,Pass original array of arguments to hooks that fire within `wp_insert_post()`,"Posts, Post Types",,normal,normal,Future Release,enhancement,reviewing,2023-12-08T16:55:31Z,2024-09-30T18:03:40Z,"The `$postarr` value passed to the `wp_insert_post()` function contains context that can be useful to callbacks attached to the actions that fire within this function, but this value isn't passed to any of them. Strangely enough it ''is'' passed to most of the filters there.
+
+As an example, a plugin of mine needs to perform logic within a callback on the `wp_insert_post` action based on a mixture of the `tax_input` argument and a custom argument. The `wp_insert_post_data` filter needs to be used to access these values.
+
+The `$postarr` value gets copied to `$unsanitized_postarr`. This is the value that should be passed to the actions because it contains the original input array, rather than `$postarr` which includes defaults and sanitised values. Or both should be passed, as per the filters in the function.
+
+This affects the following actions:
+
+* `pre_post_update`
+* `edit_attachment`
+* `attachment_updated`
+* `add_attachment`
+* `edit_post_{$post->post_type}`
+* `edit_post`
+* `post_updated`
+* `save_post_{$post->post_type}`
+* `save_post`
+* `wp_insert_post`
+
+And the following filters:
+
+* `add_trashed_suffix_to_trashed_posts`
+",johnbillion,has-patch
+Tickets with a contributor working on them.,57416,Do not split query if requesting one post,Query,3.0,normal,normal,Future Release,enhancement,assigned,2023-01-03T13:49:30Z,2026-06-05T12:44:54Z,"When using WP_Query and requesting posts_per_page = 1, there is little to no value in splitting the query and priming posts using _prime_post_caches. This results in one query to get the posts and another to prime it. This means two database queries when this could simply be one. ",spacedmonkey,has-patch
+Tickets with a contributor working on them.,41266,Not hard coding the table alias prefix in WP_Meta_Query would make class more extendable,Query,4.8,normal,normal,Future Release,enhancement,assigned,2017-07-07T13:36:44Z,2021-11-07T19:58:01Z,"Hi,
+
+I am extending the WP_Meta_Query class for my own uses with custom tables that have the same structure as meta tables. It is an incredibly useful class for this. However the fact that the table alias prefix {{{mt}}} on line 535 is hard coded forces me to do awkward and complex string replaces if I want to use my extensions alongside built in meta queries.
+
+I think changing the prefix from being hard coded to a property/function of the meta query object would make this class much more versatile for plugin developers.
+",thomaslhotta,has-patch
+Tickets with a contributor working on them.,35833,"Adding a table with the ""widefat"" class on post and taxonomy list table screens causes the quick edit UI and bulk edit to fail",Quick/Bulk Edit,4.4.2,normal,normal,Future Release,enhancement,assigned,2016-02-15T05:11:47Z,2024-09-16T17:10:08Z,"This is a very strange issue. On a fresh WP install running twentysixteen with no plugins activated, including this code causes the quick edit UI to miscalculate its width and end up looking wacky:
+
+
+{{{
+add_action( 'load-edit.php', 'xxx_test_table_in_help_tab' );
+function xxx_test_table_in_help_tab() {
+    $test_table_args = array(
+        'id'       => 'test_help_table',
+        'title'    => 'Something',
+        'content'  => '<table class=""widefat""><tr><td>Something</td></tr></table>',
+    );
+    get_current_screen()->add_help_tab( $test_table_args );
+}
+}}}
+
+
+I'm attaching a screenshot of what the quick edit UI looks like with this code in place. Removing the class ""widefat"" restores the quick edit UI to normal. As strange as it sounds, I believe the presence of the widefat class is causing something in the quick edit JS to miscalculate. I haven't found the exact line where the issue is, but it seems to all come down to the presence of the ""widefat"" class.",Braad,has-patch
+Tickets with a contributor working on them.,40197,meta cap 'publish_post' is not being used,Role/Capability,3.5,normal,normal,Awaiting Review,defect (bug),reviewing,2017-03-18T14:48:43Z,2024-10-25T17:29:58Z,#21288 adds ''publish_post'' to meta cap but it is not being called anywhere. I tried to log it using ''map_meta_cap'' at the post edit page. There is only ''publish_posts'' called but not ''publish_post'',panjmp,has-patch
+Tickets with a contributor working on them.,40602,Implement immutable cache headers,Script Loader,,normal,normal,Future Release,enhancement,assigned,2017-04-29T00:01:18Z,2025-02-12T19:33:25Z,"When you have js files that will not change in a certain version of Wordpress, why not set the immutable cache that is enabled on various browsers?
+
+https://hacks.mozilla.org/2017/01/using-immutable-caching-to-speed-up-the-web/
+
+
+For example this url should never change output unless user changed the wordpress version, in which case the ver= will change, forcing browser to load that url.
+
+/wp-admin/load-scripts.php?c=gzip&amp;load%5B%5D=jquery-core,jquery-migrate,jquery-ui-core,jquery-ui-widget,jquery-ui-mouse,underscore,mediaelement,jquery-ui-sortable&amp;ver=4.7.4",programmin,has-patch
+Tickets with a contributor working on them.,40696,no chance to control wp_count_terms (),Taxonomy,4.7.4,normal,normal,Future Release,enhancement,accepted,2017-05-08T22:15:56Z,2022-09-19T19:18:21Z,"Hey!
+
+I'm wondering if i have no chance to filter the resulting number of wp_count_terms ().
+Theres no filter available there.
+
+wp_count_terms () calls get_terms () but it returns the result of $term_query before (""Count queries are not filtered, for legacy reasons."") the ""get_terms"" filter is appliable. So i see no chance to control result of wp_count_terms () without (heavy) diggin in to WP_Term_Query().
+
+Is there a chance for a filter before the function returns in this case?
+
+thank you a lot,
+Christian",krizkroz,has-patch
+Tickets with a contributor working on them.,62991,Issue: Non-Clickable Area in Admin Profile Dropdown,Toolbar,,normal,normal,Future Release,enhancement,assigned,2025-02-20T07:35:26Z,2026-02-08T09:45:45Z,"When hovering over the far-right section of the admin profile dropdown in WordPress, a portion of the area is not clickable. This issue affects user interaction, as clicking on certain parts of the dropdown does not register any action.
+
+Steps to Reproduce:
+Log in to the WordPress dashboard.
+Hover over the top-right ""Howdy, Admin"" section to reveal the dropdown.
+Move the cursor towards the far-right side of the dropdown.
+Attempt to click within the red-marked area (as shown in the attached screenshot).
+
+Expected Behavior:
+The entire dropdown area should be clickable without any unresponsive sections.
+
+Actual Behavior:
+A portion of the dropdown on the far-right is unclickable, causing usability issues.
+
+Additional Notes:
+This issue might be due to improper CSS handling, possibly an unintended margin or padding.
+A potential fix could involve checking the CSS rules for .ab-sub-wrapper or inspecting any overflow properties affecting the dropdown.
+
+",r0nak,has-patch
+Tickets with a contributor working on them.,41314,"If the required fields are not set on user profile's save, every field's value will be dropped",Users,4.8,normal,normal,Awaiting Review,defect (bug),assigned,2017-07-13T17:43:36Z,2026-07-24T00:11:17Z,"Hi,
+
+In the user profile screen, there are some required fields such as email and nickname. 
+
+Let's say I have added some extra fields using `edit_user_profile` and `show_user_profile` action hooks. These fields are filled by the user, and do not have to be required.
+
+If the user fills every field (let's say 20 fields, took 10 minutes to fill) but clears the email field and save the form, there will be shown an admin error:
+
+
+    '''ERROR''': Please enter an email.
+
+Every field that was filled by the user will be dropped, and has to be refilled.
+
+The point is, until the required fields are empty, there is no reason to let the user save the form in the first place.
+
+This issue has been discussed in the WordPress Development StackExchange. I've posted 3 solutions for this issue, which can be improvement or bug resolve. 
+
+Below is a link to the question on WPSE. I would be happy to write an accurate solution, in case the development team decides to push this into their future patches. 
+
+https://wordpress.stackexchange.com/q/272940/94498
+
+King regards,
+Jack",jackjohansson,has-patch
+Tickets with a contributor working on them.,41937,"Change name of ""wp-settings-"" and ""wp-settings-time-"" cookie",Users,,normal,normal,Awaiting Review,enhancement,assigned,2017-09-21T04:14:42Z,2021-12-03T07:23:26Z,"There is no option to change the cookie names of:
+- wp-settings-time-
+- wp-settings-
+
+Can you add options?
+It will be nice to add in wp-config.php like other cookies?
+
+Thanks in advance.",Neustradamus,has-patch
+Tickets with a contributor working on them.,43706,Email with link to change admin email does not include proposed new email address.,Users,4.9.5,normal,normal,Future Release,enhancement,reviewing,2018-04-05T23:56:22Z,2026-10-03T09:28:51Z,"This is a follow-up to #39112.
+
+This can be precarious -- I've received this note twice since locking out the previous administrator (not sure how he is attempting to change the address yet) and there's no way to determine who is requesting the admin email change. The email with the link to change the admin email follows.
+
+Howdy [name],
+
+You recently requested to have the administration email address on
+your site changed.
+
+If this is correct, please click on the following link to change it:
+https://siteurl.com/wp-admin/options.php?adminhash=[hash]
+
+You can safely ignore and delete this email if you do not want to
+take this action.
+
+This email has been sent to [current admin email]
+
+Regards,
+All at sitename
+http://siteurl.com",sshanky,has-patch
+Tickets with a contributor working on them.,41672,REST create user: existing_user_login is returned before existing_user_email,Users,4.7,normal,normal,Future Release,enhancement,assigned,2017-08-19T01:37:10Z,2026-01-21T00:52:30Z,"When I post to `/wp-json/wp/v2/users` to create a user:
+{{{
+{
+	""email"": ""brianhenryie@gmail.com"",
+	""username"": ""brianhenryie"",
+	""password"": ""password""
+}
+}}}
+and a user with that username and email address exists, the response is:
+{{{
+{
+    ""code"": ""existing_user_login"",
+    ""message"": ""Sorry, that username already exists!"",
+    ""data"": null
+}
+}}}
+whereas a more useful response would be the existing_user_email response:
+{{{
+{
+    ""code"": ""existing_user_email"",
+    ""message"": ""Sorry, that email address is already used!"",
+    ""data"": null
+}
+}}}
+which is learned once the original POST is updated with a new username.
+
+i.e. existing_user_email tells a user if they already have an account. This information could be used to attempt to log in.",bbrian,has-patch
+Tickets with a contributor working on them.,41081,"Improve Custom Menu widget, show notification if menu is empty or no menu selected",Widgets,4.9,normal,normal,Future Release,enhancement,assigned,2017-06-16T13:33:58Z,2026-06-15T21:46:17Z,"If you choose a menu for Custom Menu widget and we remove all items in that menu OR the menu is not selected -> nothing shows on the page.
+Maybe we should add a text message that will inform the user that the menu is empty or is not selected?",alexvorn2,has-patch
+Tickets with a contributor working on them.,20902,redirect_canonical() on using permalink: Not all $_GET being redirected,Canonical,3.4,normal,normal,,defect (bug),reviewing,2012-06-11T09:30:08Z,2026-09-29T20:12:09Z,"Using permalink, I suppose that all query_var entered manually on URL or using $_GET will be redirected to proper permalink. Apparently not all being redirected at all. AFAIC:
+
+1. /?post_format=image : should be redirected to /type/image/
+2. /?pagename=blog : should be redirected to /blog/
+3. /?author_name=admin : should be redirected to /author/admin/
+
+Unfortunately, they are not.
+
+It can be done by filtering redirect_canonical() but it will be better  if it's being done by default as we can see that /?category_name=cat will be redirected to /category/cat/",arieputranto,has-patch
+Tickets with a contributor working on them.,31029,Allow 0 columns in gallery settings,Media,4.1,normal,normal,,defect (bug),assigned,2015-01-15T23:02:38Z,2022-10-26T19:47:56Z,"Gallery columns ""0"" is a valid setting and correctly outputs a proper CSS class
+`class=""gallery galleryid-43 gallery-columns-0 gallery-size-thumbnail"">`
+
+Using that CSS class, as a theme author, I could easily build, for example, a grid layout with items displayed inline (or whatever layout other than ""columns""), overriding just a very few CSS rules.
+
+I could set `columns=""0""` manually, however, each time I'd edit the gallery settings through the media views UI, `columns=""0""` would be removed and it would fallback to the default 3 columns.
+
+[[Image(https://cldup.com/7zoOccOC1H.png)]]
+
+I would propose to add and allow a ""none"" columns setting, with value ""0"".
+
+P.S. just noticed: same if I want to add a value higher than ""9"". Setting an arbitrary limit to ""9"" is an assumption that, as developers, we shouldn't do. What if I want, say, 10 images per row?",afercia,has-patch
