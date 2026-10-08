@@ -154,11 +154,8 @@ def close_firefox(session: FirefoxSession | None = None, *, profile: Path = FIRE
     if session is None:
         ensure_firefox_profile_available(profile)
         return
-    pids = radar_firefox_pids(session.profile)
-    if pids:
-        script = f'tell application "System Events" to tell (first process whose unix id is {pids[0]}) to keystroke "q" using command down'
-        subprocess.run(["/usr/bin/osascript", "-e", script], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        session.graceful_quit_count += 1
+    subprocess.run(["/usr/bin/osascript", "-e", 'tell application "Firefox" to quit'], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    session.graceful_quit_count += 1
     deadline = time.monotonic() + FIREFOX_STOP_TIMEOUT
     while radar_firefox_pids(session.profile) and time.monotonic() < deadline:
         time.sleep(0.25)

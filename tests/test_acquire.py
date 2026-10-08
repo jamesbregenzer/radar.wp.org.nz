@@ -66,7 +66,7 @@ class AcquireTests(unittest.TestCase):
         self.assertEqual(session.graceful_quit_count, 1)
         self.assertFalse(session.emergency_kill_used)
         self.assertEqual(run.call_count, 1)
-        self.assertIn("unix id is 123", run.call_args.args[0][-1])
+        self.assertIn('tell application "Firefox" to quit', run.call_args.args[0][-1])
 
     def test_one_session_handles_multiple_sources_and_retries_in_session(self):
         with tempfile.TemporaryDirectory() as temporary:
