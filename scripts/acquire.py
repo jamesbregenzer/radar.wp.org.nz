@@ -165,6 +165,28 @@ def ensure_firefox_profile_available(profile: Path = FIREFOX_PROFILE, timeout: f
             raise RuntimeError(f"Radar Firefox profile is still held by process(es): {', '.join(map(str, pids))}")
         time.sleep(0.1)
 
+def stop_radar_profile_processes(profile: Path = FIREFOX_PROFILE) -> None:
+    """Drain only Firefox processes associated with Radar's dedicated profile."""
+    pids = radar_firefox_pids(profile)
+    for pid in pids:
+        try:
+            os.kill(pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+    deadline = time.monotonic() + FIREFOX_STOP_TIMEOUT
+    while pids and time.monotonic() < deadline:
+        time.sleep(0.1)
+        pids = radar_firefox_pids(profile)
+    for pid in pids:
+        try:
+            os.kill(pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+    if pids:
+        deadline = time.monotonic() + FIREFOX_STOP_TIMEOUT
+        while radar_firefox_pids(profile) and time.monotonic() < deadline:
+            time.sleep(0.1)
+
 def open_firefox(url: str, *, downloads: Path = DEFAULT_DOWNLOADS, profile: Path = FIREFOX_PROFILE) -> RadarFirefoxProcess | subprocess.Popen:
     global _RADAR_FIREFOX_PROCESS
     prepare_firefox_profile(downloads, profile)
@@ -195,6 +217,7 @@ def close_firefox(process: subprocess.Popen | None = None, *, profile: Path = FI
             except subprocess.TimeoutExpired:
                 process.kill()
                 process.wait(timeout=FIREFOX_STOP_TIMEOUT)
+        stop_radar_profile_processes(profile)
         ensure_firefox_profile_available(profile)
     finally:
         if process is _RADAR_FIREFOX_PROCESS:

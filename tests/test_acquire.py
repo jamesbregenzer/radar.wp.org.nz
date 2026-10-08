@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from acquire import FIREFOX_EXECUTABLE, acquire_core_trac, acquire_run, acquire_wave2, close_firefox, download_is_incomplete, ensure_firefox_profile_available, firefox_command, new_csv_file, open_firefox, prepare_firefox_profile, radar_firefox_pids, validate_csv
+from acquire import FIREFOX_EXECUTABLE, acquire_core_trac, acquire_run, acquire_wave2, close_firefox, download_is_incomplete, ensure_firefox_profile_available, firefox_command, new_csv_file, open_firefox, prepare_firefox_profile, radar_firefox_pids, stop_radar_profile_processes, validate_csv
 from process import build_feed
 
 class AcquireTests(unittest.TestCase):
@@ -67,6 +67,12 @@ class AcquireTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary, patch("acquire.radar_firefox_pids", return_value=[]):
             close_firefox(radar, profile=Path(temporary))
         self.assertTrue(radar.terminated); self.assertTrue(radar.killed); self.assertEqual(radar.wait_calls, 2)
+
+    def test_close_drains_only_remaining_radar_profile_processes(self):
+        radar = self.FakeProcess()
+        with tempfile.TemporaryDirectory() as temporary, patch("acquire.radar_firefox_pids", side_effect=[[456], [], []]), patch("acquire.os.kill") as kill:
+            close_firefox(radar, profile=Path(temporary))
+        kill.assert_called_once_with(456, __import__("signal").SIGTERM)
 
     def test_stale_profile_lock_is_removed_only_when_unheld(self):
         with tempfile.TemporaryDirectory() as temporary:
