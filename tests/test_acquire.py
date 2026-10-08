@@ -34,6 +34,29 @@ class AcquireTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 validate_csv(candidate.read_bytes(), ["id", "summary"])
 
+    def test_observed_report_headers_are_normalized(self):
+        body = "__group__,ticket,summary,owner,component,_version,priority,severity,milestone,type,_status,workflow,_created,modified,_description,_reporter\nNext Release,65638,AI support,,AI,,normal,normal,7.2,enhancement,new,has-patch,2026-07-15T11:35:42Z,2026-10-01T23:36:28Z,description,reporter\n".encode()
+        count, rows = validate_csv(body, ["id", "summary", "status", "component", "owner", "type", "priority", "milestone", "version", "keywords", "time", "changetime", "comments", "_comments"])
+        self.assertEqual(count, 1)
+        self.assertEqual(rows[0]["id"], "65638")
+        self.assertEqual(rows[0]["status"], "new")
+        self.assertEqual(rows[0]["keywords"], "has-patch")
+        self.assertEqual(rows[0]["time"], "2026-07-15T11:35:42Z")
+        self.assertEqual(rows[0]["changetime"], "2026-10-01T23:36:28Z")
+        self.assertEqual(rows[0]["comments"], "")
+
+    def test_observed_custom_query_headers_are_normalized(self):
+        body = b"\xef\xbb\xbfid,Summary,Status,Keywords,Owner,Type,Priority\n123,Fix it,new,needs-testing,,defect (bug),normal\n"
+        count, rows = validate_csv(body, ["id", "summary", "status", "keywords"])
+        self.assertEqual(count, 1)
+        self.assertEqual(rows[0]["id"], "123")
+        self.assertEqual(rows[0]["summary"], "Fix it")
+        self.assertEqual(rows[0]["keywords"], "needs-testing")
+
+    def test_missing_required_semantic_header_still_fails(self):
+        with self.assertRaisesRegex(ValueError, "status"):
+            validate_csv(b"ticket,summary,workflow\n123,Fix it,needs-testing\n", ["id", "summary", "status", "keywords"])
+
     def test_firefox_profile_is_configured_for_radar_downloads(self):
         with tempfile.TemporaryDirectory() as temporary:
             downloads = Path(temporary) / "downloads"

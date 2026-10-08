@@ -15,6 +15,24 @@ FIREFOX_PROFILE = ROOT / "data/.firefox-profile"
 PRIMARY_ROLES = {"DIRECT_OPPORTUNITY", "SIGNAL", "RECONCILIATION"}
 CSV_NAME = re.compile(r"^(?:query|report_[0-9]+)(?: \([0-9]+\))?\.csv$")
 DEFAULT_TIMEOUT = 90
+REQUIRED_CSV_FIELDS = {"id", "summary", "status", "keywords"}
+OPTIONAL_CSV_FIELDS = {"component", "owner", "type", "priority", "milestone", "version", "time", "changetime", "comments", "_comments"}
+CSV_FIELD_ALIASES = {
+    "id": "id", "ticket": "id",
+    "summary": "summary",
+    "status": "status", "_status": "status",
+    "component": "component",
+    "owner": "owner",
+    "type": "type",
+    "priority": "priority", "_priority": "priority",
+    "milestone": "milestone",
+    "version": "version", "_version": "version",
+    "keywords": "keywords", "workflow": "keywords",
+    "time": "time", "created": "time", "_created": "time",
+    "changetime": "changetime", "modified": "changetime",
+    "comments": "comments",
+    "_comments": "_comments",
+}
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -69,15 +87,34 @@ def open_firefox(url: str, browser: str = "Firefox") -> None:
     subprocess.run(["open", "-n", "-a", browser, "--args", "-no-remote", "-profile", str(FIREFOX_PROFILE), url], check=True)
 def close_firefox(browser: str = "Firefox") -> None:
     subprocess.run(["osascript", "-e", f'tell application "{browser}" to quit'], check=False)
+def normalize_csv_header(header: str) -> str | None:
+    return CSV_FIELD_ALIASES.get(header.lstrip("\ufeff").strip().casefold())
+
+
 def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dict[str, str]]]:
     if not body.strip(): raise ValueError("acquired CSV is empty")
     try:
         reader = csv.DictReader(body.decode("utf-8-sig").splitlines(), strict=True)
-        missing = [field for field in expected_fields if field not in (reader.fieldnames or [])]
+        headers = reader.fieldnames or []
+        normalized_headers = [normalize_csv_header(header) for header in headers]
+        available = {field for field in normalized_headers if field}
+        missing = [field for field in expected_fields if field not in available and field not in OPTIONAL_CSV_FIELDS]
+        missing_required = [field for field in expected_fields if field in REQUIRED_CSV_FIELDS and field not in available]
+        if missing_required:
+            missing.extend(missing_required)
         if missing: raise ValueError(f"acquired CSV is missing expected fields: {', '.join(missing)}")
-        rows = list(reader)
-        if any(None in row for row in rows): raise ValueError("acquired CSV has a row with the wrong number of fields")
-        if any("id" in row and not str(row["id"] or "").strip() for row in rows): raise ValueError("acquired CSV has a row without a ticket id")
+        rows = []
+        for raw_row in reader:
+            if None in raw_row: raise ValueError("acquired CSV has a row with the wrong number of fields")
+            row: dict[str, str] = {}
+            for header, value in raw_row.items():
+                field = normalize_csv_header(header)
+                if field and field not in row:
+                    row[field] = value
+            for field in expected_fields:
+                row.setdefault(field, "")
+            rows.append(row)
+        if any(not str(row.get("id") or "").strip() for row in rows): raise ValueError("acquired CSV has a row without a ticket id")
         return len(rows), [dict(row) for row in rows]
     except (UnicodeDecodeError, csv.Error) as error:
         raise ValueError(f"acquired CSV is unreadable: {error}") from error
