@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Acquire approved Radar V2 sources into one canonical observation set."""
 from __future__ import annotations
-import argparse, csv, hashlib, json, os, re, subprocess, time
+import argparse, csv, hashlib, json, os, re, signal, subprocess, time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -87,9 +87,42 @@ def prepare_firefox_profile(downloads: Path = DEFAULT_DOWNLOADS, profile: Path =
     (profile / "user.js").write_text(prefs, encoding="utf-8")
 
 def firefox_command(url: str, profile: Path = FIREFOX_PROFILE) -> list[str]:
-    return [str(FIREFOX_EXECUTABLE), "-foreground", "-no-remote", "-profile", str(profile), url]
+    return [str(FIREFOX_EXECUTABLE), "-no-remote", "-profile", str(profile), url]
 
-_RADAR_FIREFOX_PROCESS: subprocess.Popen | None = None
+class RadarFirefoxProcess:
+    """Track the profile-specific process after Firefox's macOS launcher hands off."""
+    def __init__(self, launcher: subprocess.Popen, pid: int | None = None) -> None:
+        self.launcher = launcher
+        self.pid = pid
+
+    def poll(self) -> int | None:
+        if self.pid is None:
+            return self.launcher.poll()
+        return None if self.pid in radar_firefox_pids() else 0
+
+    def terminate(self) -> None:
+        if self.pid is None:
+            self.launcher.terminate()
+        else:
+            os.kill(self.pid, signal.SIGTERM)
+
+    def kill(self) -> None:
+        if self.pid is None:
+            self.launcher.kill()
+        else:
+            os.kill(self.pid, signal.SIGKILL)
+
+    def wait(self, timeout: float | None = None) -> int:
+        if self.pid is None:
+            return self.launcher.wait(timeout=timeout)
+        deadline = None if timeout is None else time.monotonic() + timeout
+        while self.pid in radar_firefox_pids():
+            if deadline is not None and time.monotonic() >= deadline:
+                raise subprocess.TimeoutExpired("Radar Firefox", timeout)
+            time.sleep(0.1)
+        return 0
+
+_RADAR_FIREFOX_PROCESS: RadarFirefoxProcess | subprocess.Popen | None = None
 
 def radar_firefox_pids(profile: Path = FIREFOX_PROFILE) -> list[int]:
     result = subprocess.run(["ps", "-axo", "pid=,command="], capture_output=True, text=True, check=False)
@@ -120,11 +153,23 @@ def ensure_firefox_profile_available(profile: Path = FIREFOX_PROFILE, timeout: f
             raise RuntimeError(f"Radar Firefox profile is still held by process(es): {', '.join(map(str, pids))}")
         time.sleep(0.1)
 
-def open_firefox(url: str, *, downloads: Path = DEFAULT_DOWNLOADS, profile: Path = FIREFOX_PROFILE) -> subprocess.Popen:
+def open_firefox(url: str, *, downloads: Path = DEFAULT_DOWNLOADS, profile: Path = FIREFOX_PROFILE) -> RadarFirefoxProcess | subprocess.Popen:
     global _RADAR_FIREFOX_PROCESS
     prepare_firefox_profile(downloads, profile)
     ensure_firefox_profile_available(profile)
-    _RADAR_FIREFOX_PROCESS = subprocess.Popen(firefox_command(url, profile), start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    launcher = subprocess.Popen(firefox_command(url, profile), start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    deadline = time.monotonic() + 5
+    tracked_pid = None
+    while time.monotonic() < deadline:
+        pids = radar_firefox_pids(profile)
+        if pids:
+            tracked_pid = pids[0]
+            break
+        if launcher.poll() is not None:
+            time.sleep(0.1)
+        else:
+            time.sleep(0.1)
+    _RADAR_FIREFOX_PROCESS = RadarFirefoxProcess(launcher, tracked_pid) if tracked_pid else launcher
     return _RADAR_FIREFOX_PROCESS
 
 def close_firefox(process: subprocess.Popen | None = None, *, profile: Path = FIREFOX_PROFILE) -> None:
