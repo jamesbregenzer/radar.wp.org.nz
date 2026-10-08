@@ -1,6 +1,7 @@
 from __future__ import annotations
 import tempfile
 import json
+import subprocess
 from pathlib import Path
 import sys
 import unittest
@@ -8,10 +9,20 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from acquire import FIREFOX_EXECUTABLE, acquire_core_trac, acquire_run, acquire_wave2, download_is_incomplete, firefox_command, new_csv_file, open_firefox, prepare_firefox_profile, validate_csv
+from acquire import FIREFOX_EXECUTABLE, acquire_core_trac, acquire_run, acquire_wave2, close_firefox, download_is_incomplete, ensure_firefox_profile_available, firefox_command, new_csv_file, open_firefox, prepare_firefox_profile, radar_firefox_pids, validate_csv
 from process import build_feed
 
 class AcquireTests(unittest.TestCase):
+    class FakeProcess:
+        def __init__(self, running=True, waits_until_exit=True):
+            self.running = running; self.waits_until_exit = waits_until_exit; self.terminated = False; self.killed = False; self.wait_calls = 0
+        def poll(self): return None if self.running else 0
+        def terminate(self): self.terminated = True; self.running = not self.waits_until_exit
+        def kill(self): self.killed = True; self.running = False
+        def wait(self, timeout=None):
+            self.wait_calls += 1
+            if self.running: raise subprocess.TimeoutExpired("firefox", timeout)
+
     def test_report_46_uses_direct_csv_query(self):
         registry = json.loads((ROOT / "config/core-trac-v2-source-registry.json").read_text())
         source = next(item for item in registry["sources"] if item["id"] == "core-trac-report-46-patches-defects-needing-review")
@@ -27,16 +38,66 @@ class AcquireTests(unittest.TestCase):
     def test_open_firefox_runs_direct_executable(self):
         with tempfile.TemporaryDirectory() as temporary:
             downloads = Path(temporary) / "downloads"; profile = Path(temporary) / "profile"
-            with patch("acquire.subprocess.Popen") as process:
+            with patch("acquire.subprocess.Popen") as process, patch("acquire.radar_firefox_pids", return_value=[]):
                 open_firefox("https://example.test/report?format=csv", downloads=downloads, profile=profile)
-            process.assert_called_once_with([str(FIREFOX_EXECUTABLE), "-no-remote", "-profile", str(profile), "https://example.test/report?format=csv"], start_new_session=True)
+            process.assert_called_once_with([str(FIREFOX_EXECUTABLE), "-no-remote", "-profile", str(profile), "https://example.test/report?format=csv"], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             prefs = (profile / "user.js").read_text()
             self.assertIn(f'"browser.download.dir", {json.dumps(str(downloads))}', prefs)
+
+    def test_close_firefox_targets_only_tracked_process_and_waits(self):
+        radar = self.FakeProcess(); unrelated = self.FakeProcess()
+        with tempfile.TemporaryDirectory() as temporary, patch("acquire.radar_firefox_pids", return_value=[]):
+            close_firefox(radar, profile=Path(temporary))
+        self.assertTrue(radar.terminated); self.assertEqual(radar.wait_calls, 1); self.assertFalse(unrelated.terminated)
+
+    def test_normal_firefox_profile_is_not_targeted(self):
+        ps = f" 111 {FIREFOX_EXECUTABLE} -no-remote -profile /Users/thor/Sites/wp-core-radar/data/.firefox-profile https://example\n 222 {FIREFOX_EXECUTABLE} -profile /Users/thor/Library/Application Support/Firefox/Profiles/default https://example\n"
+        result = type("Result", (), {"stdout": ps})()
+        with patch("acquire.subprocess.run", return_value=result):
+            self.assertEqual(radar_firefox_pids(Path("/Users/thor/Sites/wp-core-radar/data/.firefox-profile")), [111])
+
+    def test_close_firefox_escalates_only_tracked_process_after_bounded_wait(self):
+        radar = self.FakeProcess(waits_until_exit=False)
+        with tempfile.TemporaryDirectory() as temporary, patch("acquire.radar_firefox_pids", return_value=[]):
+            close_firefox(radar, profile=Path(temporary))
+        self.assertTrue(radar.terminated); self.assertTrue(radar.killed); self.assertEqual(radar.wait_calls, 2)
+
+    def test_stale_profile_lock_is_removed_only_when_unheld(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            profile = Path(temporary); lock = profile / "parent.lock"; lock.write_text("stale")
+            with patch("acquire.radar_firefox_pids", return_value=[]):
+                ensure_firefox_profile_available(profile, timeout=0)
+            self.assertFalse(lock.exists())
+
+    def test_live_held_profile_fails_boundedly_without_lock_deletion(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            profile = Path(temporary); lock = profile / "parent.lock"; lock.write_text("held")
+            with patch("acquire.radar_firefox_pids", return_value=[12345]), self.assertRaisesRegex(RuntimeError, "12345"):
+                ensure_firefox_profile_available(profile, timeout=0)
+            self.assertTrue(lock.exists())
+
+    def test_live_held_profile_prevents_launch_without_gui_prompt(self):
+        with tempfile.TemporaryDirectory() as temporary, patch("acquire.radar_firefox_pids", return_value=[12345]), patch("acquire.subprocess.Popen") as process:
+            with self.assertRaisesRegex(RuntimeError, "12345"):
+                open_firefox("https://example.test/report?format=csv", downloads=Path(temporary) / "downloads", profile=Path(temporary) / "profile")
+            process.assert_not_called()
+
+    def test_sequential_acquisitions_close_and_relaunch_cleanly(self):
+        with tempfile.TemporaryDirectory() as temporary, patch("acquire.radar_firefox_pids", return_value=[]):
+            root = Path(temporary); downloads = root / "downloads"; downloads.mkdir(); processes = [self.FakeProcess(), self.FakeProcess()]; started = list(processes); opened = []
+            source = {"id": "sequential", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}
+            def opener(url): opened.append(url); return processes.pop(0)
+            def waiter(*_):
+                path = downloads / f"report_{len(opened)}.csv"; path.write_text("id,summary,status\n123,Fix it,new\n"); return path
+            for _ in range(2):
+                record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=opener, waiter=waiter, closer=lambda process: close_firefox(process, profile=root / "profile"))
+                self.assertEqual(record["acquisitionResult"], "success")
+            self.assertEqual(len(opened), 2); self.assertTrue(all(process.terminated for process in started))
 
     def test_core_trac_writes_canonical_observation_and_keeps_raw_csv(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); source = {"id": "core-trac-report", "sourceRole": "DIRECT_OPPORTUNITY", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary"], "candidateFamilyMappings": [{"familyId": "TEST", "confidence": "high"}], "identityField": "id"}; body = b"id,summary\n123,Fix it\n"; (downloads / "report_1.csv").write_bytes(body)
-            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda _: None, waiter=lambda *_: downloads / "report_1.csv", closer=lambda: None)
+            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda _: None, waiter=lambda *_: downloads / "report_1.csv", closer=lambda *_: None)
             self.assertEqual(record["schema"], "radar-observation.v2"); self.assertEqual(record["acquisitionResult"], "success"); self.assertEqual(record["rows"][0]["id"], "123"); self.assertEqual(record["rawArtifacts"][0]["sha256"], __import__("hashlib").sha256(body).hexdigest())
             self.assertFalse((downloads / "report_1.csv").exists())
 
@@ -47,7 +108,7 @@ class AcquireTests(unittest.TestCase):
                 result = next(waits)
                 if isinstance(result, Exception): raise result
                 return result
-            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda url: opens.append(url), waiter=waiter, closer=lambda: closes.append(True))
+            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda url: opens.append(url), waiter=waiter, closer=lambda *_: closes.append(True))
             self.assertEqual(record["acquisitionResult"], "success"); self.assertEqual(len(opens), 2); self.assertEqual(len(closes), 2)
 
     def test_core_trac_retries_timeout_once_then_fails_without_blocking_next_source(self):
@@ -55,15 +116,15 @@ class AcquireTests(unittest.TestCase):
             root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); bad = {"id": "bad", "csvUrl": "https://example.test/bad", "expectedFields": ["id", "summary", "status"]}; good = {"id": "good", "csvUrl": "https://example.test/good", "expectedFields": ["id", "summary", "status"]}; path = downloads / "report_1.csv"; path.write_text("id,summary,status\n123,Fix it,new\n"); timeout_waits = {"bad": 0}
             def acquirer(source, run_dir, observed, directory, timeout):
                 if source["id"] == "bad":
-                    return acquire_core_trac(source, run_dir, observed, directory, timeout, waiter=lambda *_: (_ for _ in ()).throw(TimeoutError("no download")), opener=lambda _: None, closer=lambda: None)
-                return acquire_core_trac(source, run_dir, observed, directory, timeout, waiter=lambda *_: path, opener=lambda _: None, closer=lambda: None)
+                    return acquire_core_trac(source, run_dir, observed, directory, timeout, waiter=lambda *_: (_ for _ in ()).throw(TimeoutError("no download")), opener=lambda _: None, closer=lambda *_: None)
+                return acquire_core_trac(source, run_dir, observed, directory, timeout, waiter=lambda *_: path, opener=lambda _: None, closer=lambda *_: None)
             manifest = acquire_run(raw_root=root / "raw", observed_at="2026-10-07T12:00:00Z", downloads=downloads, trac_sources=[bad, good], wave2_sources=[], trac_acquirer=acquirer)
             self.assertEqual([item["acquisitionResult"] for item in manifest["observations"]], ["failed", "success"])
 
     def test_malformed_csv_is_not_retried(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); source = {"id": "malformed", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}; path = downloads / "report_1.csv"; path.write_text("id,summary\n123,Missing status\n"); opens = []
-            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda url: opens.append(url), waiter=lambda *_: path, closer=lambda: None)
+            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda url: opens.append(url), waiter=lambda *_: path, closer=lambda *_: None)
             self.assertEqual(record["acquisitionResult"], "failed"); self.assertEqual(len(opens), 1); self.assertIn("ValueError", record["error"])
             self.assertTrue(path.exists())
 
@@ -71,13 +132,13 @@ class AcquireTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); source = {"id": "write-failure", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}; path = downloads / "report_1.csv"; path.write_text("id,summary,status\n123,Fix it,new\n")
             with patch("acquire.Path.write_bytes", side_effect=OSError("artifact write failed")):
-                record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda _: None, waiter=lambda *_: path, closer=lambda: None)
+                record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda _: None, waiter=lambda *_: path, closer=lambda *_: None)
             self.assertEqual(record["acquisitionResult"], "failed"); self.assertTrue(path.exists())
 
     def test_successful_acquisition_leaves_unrelated_downloads_untouched(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); unrelated = downloads / "notes.csv"; unrelated.write_text("unrelated\n"); consumed = downloads / "report_1.csv"; consumed.write_text("id,summary,status\n123,Fix it,new\n"); source = {"id": "cleanup", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}
-            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda _: None, waiter=lambda *_: consumed, closer=lambda: None)
+            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda _: None, waiter=lambda *_: consumed, closer=lambda *_: None)
             self.assertEqual(record["acquisitionResult"], "success"); self.assertFalse(consumed.exists()); self.assertTrue(unrelated.exists())
 
     def test_report_names_are_detected(self):
