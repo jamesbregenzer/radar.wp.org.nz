@@ -8,6 +8,7 @@ from typing import Any, Callable
 
 ROOT = Path(__file__).resolve().parents[1]
 TRAC_REGISTRY = ROOT / "config/core-trac-v2-source-registry.json"
+META_TRAC_REGISTRY = ROOT / "config/meta-trac-v2-source-registry.json"
 WAVE2_CONFIG = ROOT / "config/wave2-sources.json"
 DEFAULT_RAW_ROOT = ROOT / "data/raw"
 DEFAULT_DOWNLOADS = ROOT / "data/downloads"
@@ -20,7 +21,7 @@ CORE_TRAC_RETRY_DELAY = 1
 FIREFOX_STOP_TIMEOUT = 15
 FIREFOX_PROFILE_WAIT_TIMEOUT = 5
 REQUIRED_CSV_FIELDS = {"id", "summary", "status"}
-OPTIONAL_CSV_FIELDS = {"keywords", "workflow", "component", "owner", "type", "priority", "milestone", "version", "time", "changetime", "comments", "_comments"}
+OPTIONAL_CSV_FIELDS = {"keywords", "workflow", "component", "owner", "type", "priority", "milestone", "version", "time", "changetime", "comments", "_comments", "description"}
 CSV_FIELD_ALIASES = {
     "id": "id", "ticket": "id",
     "summary": "summary",
@@ -55,6 +56,11 @@ def primary_core_trac_sources(registry_path: Path = TRAC_REGISTRY) -> list[dict[
     registry = load_json(registry_path)
     if registry.get("schema") != "radar-core-trac-source-registry.v2": raise ValueError("unsupported Core Trac source registry schema")
     return [source for source in registry.get("sources", []) if source.get("sourceRole") in PRIMARY_ROLES]
+def load_meta_trac_sources(registry_path: Path = META_TRAC_REGISTRY) -> list[dict[str, Any]]:
+    """Load the bounded Meta registry for an explicit opt-in acquisition."""
+    registry = load_json(registry_path)
+    if registry.get("schema") != "radar-meta-trac-source-registry.v2": raise ValueError("unsupported Meta Trac source registry schema")
+    return [source for source in registry.get("sources", []) if source.get("sourceFamily") == "META_TRAC"]
 def download_state(downloads: Path) -> dict[Path, tuple[int, int]]:
     if not downloads.exists(): return {}
     return {p: (p.stat().st_size, p.stat().st_mtime_ns) for p in downloads.iterdir() if p.is_file() and CSV_NAME.fullmatch(p.name)}
@@ -168,19 +174,31 @@ def close_firefox(session: FirefoxSession | None = None, *, profile: Path = FIRE
             except ProcessLookupError:
                 pass
     ensure_firefox_profile_available(profile)
-def normalize_csv_header(header: str) -> str | None:
-    return CSV_FIELD_ALIASES.get(header.lstrip("\ufeff").strip().casefold())
+def normalize_csv_header(header: str, *, include_description: bool = False) -> str | None:
+    normalized = header.lstrip("\ufeff").strip().casefold()
+    if normalized in {"description", "_description"}:
+        return "description" if include_description else None
+    return CSV_FIELD_ALIASES.get(normalized)
+
+def valid_timestamp(value: Any) -> bool:
+    try:
+        datetime.fromisoformat(str(value).strip().replace("Z", "+00:00"))
+        return True
+    except (TypeError, ValueError):
+        return False
 
 
-def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dict[str, str]]]:
+def validate_csv(body: bytes, expected_fields: list[str], required_fields: list[str] | None = None, required_headers: list[str] | None = None) -> tuple[int, list[dict[str, str]]]:
     if not body.strip(): raise ValueError("acquired CSV is empty")
     try:
         reader = csv.DictReader(body.decode("utf-8-sig").splitlines(), strict=True)
         headers = reader.fieldnames or []
-        normalized_headers = [normalize_csv_header(header) for header in headers]
+        include_description = "description" in expected_fields or "description" in (required_headers or [])
+        normalized_headers = [normalize_csv_header(header, include_description=include_description) for header in headers]
         available = {field for field in normalized_headers if field}
         missing = [field for field in expected_fields if field not in available and field not in OPTIONAL_CSV_FIELDS]
-        missing_required = [field for field in expected_fields if field in REQUIRED_CSV_FIELDS and field not in available]
+        mandatory_headers = set(required_headers or []) | {field for field in expected_fields if field in REQUIRED_CSV_FIELDS}
+        missing_required = [field for field in mandatory_headers if field not in available]
         if missing_required:
             missing.extend(missing_required)
         if missing: raise ValueError(f"acquired CSV is missing expected fields: {', '.join(missing)}")
@@ -189,9 +207,15 @@ def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dic
             if None in raw_row: raise ValueError("acquired CSV has a row with the wrong number of fields")
             row: dict[str, str] = {}
             for header, value in raw_row.items():
-                field = normalize_csv_header(header)
+                field = normalize_csv_header(header, include_description=include_description)
                 if field and field not in row:
                     row[field] = value
+            empty_required = sorted(field for field in (required_fields or ["id"]) if not str(row.get(field) or "").strip())
+            if empty_required:
+                raise ValueError(f"acquired CSV has a row with empty required fields: {', '.join(empty_required)}")
+            invalid_dates = sorted(field for field in (required_fields or []) if field in {"time", "changetime"} and not valid_timestamp(row.get(field)))
+            if invalid_dates:
+                raise ValueError(f"acquired CSV has invalid timestamps: {', '.join(invalid_dates)}")
             rows.append(row)
         if any(not str(row.get("id") or "").strip() for row in rows): raise ValueError("acquired CSV has a row without a ticket id")
         return len(rows), [dict(row) for row in rows]
@@ -201,6 +225,8 @@ def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dic
 def make_observation(source: dict[str, Any], observed_at: str, *, rows: list[dict[str, Any]], result: str, revision: str | None, raw_artifacts: list[dict[str, Any]], error: str | None = None) -> dict[str, Any]:
     record = {"schema": "radar-observation.v2", "version": 2, "sourceId": source["id"], "sourceFamily": source.get("sourceFamily", "CORE_TRAC"), "sourceRole": source.get("sourceRole", "DIRECT_OPPORTUNITY"), "semanticMeaning": source.get("semanticMeaning", "Public source observation."), "candidateFamilyMappings": source.get("candidateFamilyMappings", []), "identityField": source.get("identityField"), "resourceType": source.get("resourceType", "PUBLIC_RESOURCE"), "exactUpstreamUrl": source.get("csvUrl") or source.get("authoritativeSource"), "observedAt": observed_at, "sourceRevision": revision, "acquisitionResult": result, "rows": rows, "rawArtifacts": raw_artifacts}
     if source.get("semanticValidation") is not None: record["semanticValidation"] = source["semanticValidation"]
+    for field in ("expectedFields", "requiredRowFields", "requiredSemanticColumns", "selectorKeywordRequirements", "selectorRequiredColumns", "selectorTextRequirements", "limitations", "freshnessExpectation", "enforceObservationFreshness"):
+        if source.get(field) is not None: record[field] = source[field]
     if error: record["error"] = error
     return record
 
@@ -223,7 +249,7 @@ def acquire_core_trac(source: dict[str, Any], run_dir: Path, observed_at: str, d
                 last_error = None
             if not retry and last_error is None:
                 body = downloaded.read_bytes()
-                row_count, rows = validate_csv(body, list(source.get("expectedFields") or [])); artifact = run_dir / f"{source_slug(source['id'])}.csv"; artifact.write_bytes(body); sha = sha256_bytes(body)
+                row_count, rows = validate_csv(body, list(source.get("expectedFields") or []), list(source.get("requiredCsvFields") or []) or None, list(source.get("requiredCsvHeaders") or []) or None); artifact = run_dir / f"{source_slug(source['id'])}.csv"; artifact.write_bytes(body); sha = sha256_bytes(body)
                 artifact_path = str(artifact.relative_to(ROOT)) if artifact.is_relative_to(ROOT) else artifact.name
                 downloaded.unlink()
                 return make_observation(source, observed_at, rows=rows, result="success", revision=sha, raw_artifacts=[{"path": artifact_path, "sha256": sha, "byteLength": len(body), "contentType": "text/csv", "rowCount": row_count}])
@@ -276,9 +302,86 @@ def acquire_wave2(config: dict[str, Any], run_dir: Path, observed_at: str, *, fe
     source = {"id": config["sourceFamily"], "sourceFamily": config["sourceFamily"], "sourceRole": config.get("sourceRole", "DIRECT_OPPORTUNITY"), "semanticMeaning": config.get("semanticMeaning", config.get("label", "Public source observation.")), "candidateFamilyMappings": config.get("candidateFamilyMappings", []), "identityField": "id", "resourceType": "PUBLIC_RESOURCE", "authoritativeSource": config.get("authoritativeSource")}
     return make_observation(source, observed_at, rows=rows, result="success", revision=sha256_bytes(json.dumps(resources, sort_keys=True).encode()), raw_artifacts=raw_artifacts)
 
-def acquire_run(*, raw_root: Path = DEFAULT_RAW_ROOT, observed_at: str | None = None, downloads: Path | None = None, timeout: int = DEFAULT_TIMEOUT, trac_sources: list[dict[str, Any]] | None = None, wave2_sources: list[dict[str, Any]] | None = None, trac_acquirer: Callable[..., dict[str, Any]] = acquire_core_trac, wave2_acquirer: Callable[..., dict[str, Any]] = acquire_wave2) -> dict[str, Any]:
+def acquire_meta_trac(source: dict[str, Any], run_dir: Path, observed_at: str, downloads: Path, timeout: int, *, csv_acquirer: Callable[..., dict[str, Any]] = acquire_core_trac) -> dict[str, Any]:
+    """Acquire all selectors of one logical Meta Trac source atomically.
+
+    Each selector can have multiple CSV URLs (for example, Trac exports that
+    ignore pagination parameters). A single failed selector fails the logical
+    union so callers can retain last-known-good evidence instead of publishing
+    a misleading partial result.
+    """
+    run_dir.mkdir(parents=True, exist_ok=True)
+    selectors = source.get("selectors") or []
+    if not selectors:
+        raise ValueError(f"Meta Trac source {source.get('id')} has no selectors")
+    artifacts: list[dict[str, Any]] = []
+    row_candidates: list[tuple[str, dict[str, Any]]] = []
+    failures: list[str] = []
+    for selector in selectors:
+        selector_id = str(selector.get("id") or "").strip()
+        urls = list(selector.get("csvUrls") or [])
+        if not selector_id or not urls:
+            failures.append(f"invalid selector definition: {selector!r}")
+            continue
+        for page_index, url in enumerate(urls, start=1):
+            internal_source = dict(source)
+            internal_source.update({
+                "id": f"{source['id']}-selector-{source_slug(selector_id)}-export-{page_index}",
+                "csvUrl": url,
+            })
+            for field in ("expectedFields", "requiredCsvHeaders", "requiredCsvFields"):
+                if field in selector:
+                    internal_source[field] = selector[field]
+            observation = csv_acquirer(internal_source, run_dir, observed_at, downloads, timeout)
+            artifacts.extend({**artifact, "selectorId": selector_id, "url": url} for artifact in observation.get("rawArtifacts") or [])
+            if observation.get("acquisitionResult") != "success":
+                failures.append(f"{selector_id} export {page_index}: {observation.get('error') or 'acquisition failed'}")
+                continue
+            row_candidates.extend((selector_id, row) for row in observation.get("rows") or [])
+    if failures:
+        return make_observation(source, observed_at, rows=[], result="failed", revision=None, raw_artifacts=artifacts, error="; ".join(failures))
+
+    # Trac can return the same complete export for different page parameters.
+    # Deduplicate by the host-qualified ticket identity while retaining only
+    # distinct logical selector memberships.
+    rows_by_identity: dict[str, dict[str, Any]] = {}
+    for selector_id, candidate in row_candidates:
+        ticket_id = str(candidate.get("id") or "").strip()
+        if not ticket_id:
+            return make_observation(source, observed_at, rows=[], result="failed", revision=None, raw_artifacts=artifacts, error="Meta Trac CSV row has no ticket id")
+        identity = f"meta.trac.wordpress.org/ticket/{ticket_id}"
+        existing = rows_by_identity.get(identity)
+        candidate_time = str(candidate.get("changetime") or "")
+        existing_time = str((existing or {}).get("changetime") or "")
+        if existing is None or candidate_time > existing_time:
+            previous_memberships = set((existing or {}).get("selectorMemberships") or [])
+            merged = dict(candidate) if existing is None else dict(existing)
+            if existing is not None:
+                merged.update({key: value for key, value in candidate.items() if value not in (None, "")})
+            merged["canonicalIdentity"] = identity
+            merged["url"] = f"https://meta.trac.wordpress.org/ticket/{ticket_id}"
+            merged["selectorMemberships"] = sorted(previous_memberships | {selector_id})
+            rows_by_identity[identity] = merged
+        else:
+            for key, value in candidate.items():
+                if value not in (None, ""):
+                    rows_by_identity[identity].setdefault(key, value)
+            memberships = rows_by_identity[identity]["selectorMemberships"]
+            if selector_id not in memberships:
+                memberships.append(selector_id)
+                memberships.sort()
+    rows = [rows_by_identity[key] for key in sorted(rows_by_identity)]
+    revision_material = {"rows": rows, "artifacts": sorted(item.get("sha256", "") for item in artifacts)}
+    return make_observation(source, observed_at, rows=rows, result="success", revision=sha256_bytes(json.dumps(revision_material, sort_keys=True).encode()), raw_artifacts=artifacts)
+
+def acquire_run(*, raw_root: Path = DEFAULT_RAW_ROOT, observed_at: str | None = None, downloads: Path | None = None, timeout: int = DEFAULT_TIMEOUT, trac_sources: list[dict[str, Any]] | None = None, meta_sources: list[dict[str, Any]] | None = None, wave2_sources: list[dict[str, Any]] | None = None, trac_acquirer: Callable[..., dict[str, Any]] = acquire_core_trac, meta_acquirer: Callable[..., dict[str, Any]] = acquire_meta_trac, wave2_acquirer: Callable[..., dict[str, Any]] = acquire_wave2) -> dict[str, Any]:
     observed = observed_at or utc_now(); run_dir = raw_root / run_slug(observed); run_dir.mkdir(parents=True, exist_ok=True); downloads_path = downloads or DEFAULT_DOWNLOADS
-    trac_sources = trac_sources if trac_sources is not None else primary_core_trac_sources(); wave2_sources = wave2_sources if wave2_sources is not None else load_json(WAVE2_CONFIG).get("sources", []); observations = []
+    trac_sources = trac_sources if trac_sources is not None else primary_core_trac_sources()
+    if meta_sources is None:
+        # Keep this adapter opt-in until the unattended HTTP acquisition path
+        # for Meta Trac has been independently verified.
+        meta_sources = []
+    wave2_sources = wave2_sources if wave2_sources is not None else load_json(WAVE2_CONFIG).get("sources", []); observations = []
     if trac_acquirer is acquire_core_trac:
         session = None
         try:
@@ -292,6 +395,11 @@ def acquire_run(*, raw_root: Path = DEFAULT_RAW_ROOT, observed_at: str | None = 
     else:
         for source in trac_sources:
             observations.append(trac_acquirer(source, run_dir, observed, downloads_path, timeout))
+    for source in meta_sources:
+        try: observations.append(meta_acquirer(source, run_dir, observed, downloads_path, timeout))
+        except Exception as error:
+            fallback = dict(source); fallback["authoritativeSource"] = source.get("htmlUrl")
+            observations.append(make_observation(fallback, observed, rows=[], result="failed", revision=None, raw_artifacts=[], error=f"{type(error).__name__}: {error}"))
     for source in wave2_sources:
         try: observations.append(wave2_acquirer(source, run_dir, observed))
         except Exception as error:

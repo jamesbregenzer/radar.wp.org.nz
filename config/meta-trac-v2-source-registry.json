@@ -1,0 +1,95 @@
+{
+  "schema": "radar-meta-trac-source-registry.v2",
+  "version": 2,
+  "sourceFamily": "META_TRAC",
+  "sources": [
+    {
+      "id": "meta-trac-report-10-good-first-bugs",
+      "sourceFamily": "META_TRAC",
+      "sourceRole": "SIGNAL",
+      "resourceType": "META_TRAC_TICKET",
+      "identityField": "canonicalIdentity",
+      "htmlUrl": "https://meta.trac.wordpress.org/report/10",
+      "authoritativeSource": "https://meta.trac.wordpress.org/report/10",
+      "semanticMeaning": "Open tickets listed in Meta Trac Good First Bugs report 10; report membership is a discovery signal and does not establish an unclaimed, actionable increment.",
+      "expectedFields": ["id", "summary", "status", "keywords", "time", "changetime"],
+      "requiredCsvHeaders": ["id", "summary", "status", "keywords", "time", "changetime"],
+      "requiredCsvFields": ["id", "summary", "status", "time", "changetime"],
+      "requiredSemanticColumns": ["keywords"],
+      "requiredRowFields": ["id", "summary", "status", "time", "changetime"],
+      "semanticValidation": {
+        "statusNot": ["closed", "resolved", "fixed", "invalid", "wontfix", "wont-fix"]
+      },
+      "freshnessExpectation": {"maxAgeHours": 24},
+      "enforceObservationFreshness": true,
+      "candidateFamilyMappings": [
+        {"familyId": "WPORG_BUG_GARDENING", "confidence": "low"}
+      ],
+      "limitations": [
+        "Good First Bugs membership is a discovery cue, not confirmation that a ticket is unclaimed, correctly scoped, or still actionable.",
+        "Official ticket and SVN commit semantics take precedence over GitHub pull request state or keywords."
+      ],
+      "selectors": [
+        {
+          "id": "report_10_good_first_bugs",
+          "csvUrls": ["https://meta.trac.wordpress.org/report/10?format=csv&status=!closed"]
+        }
+      ]
+    },
+    {
+      "id": "meta-trac-accessibility-open-union",
+      "sourceFamily": "META_TRAC",
+      "sourceRole": "SIGNAL",
+      "resourceType": "META_TRAC_TICKET",
+      "identityField": "canonicalIdentity",
+      "htmlUrl": "https://meta.trac.wordpress.org/report/16",
+      "authoritativeSource": "https://meta.trac.wordpress.org/report/16",
+      "semanticMeaning": "Open Meta Trac tickets found by description accessibility or accessibility/a11y keyword selectors; selector membership is discovery evidence, not guaranteed actionability.",
+      "expectedFields": ["id", "summary", "status", "keywords", "time", "changetime"],
+      "requiredCsvHeaders": ["id", "summary", "status", "keywords", "time", "changetime"],
+      "requiredCsvFields": ["id", "summary", "status", "time", "changetime"],
+      "requiredSemanticColumns": ["keywords"],
+      "requiredRowFields": ["id", "summary", "status", "time", "changetime"],
+      "selectorKeywordRequirements": {
+        "keyword_accessibility": ["accessibility"],
+        "keyword_a11y": ["a11y"]
+      },
+      "selectorRequiredColumns": {
+        "description_accessibility": ["description"]
+      },
+      "selectorTextRequirements": {
+        "description_accessibility": {"field": "description", "anyTerms": ["accessibility"]}
+      },
+      "semanticValidation": {
+        "statusNot": ["closed", "resolved", "fixed", "invalid", "wontfix", "wont-fix"]
+      },
+      "freshnessExpectation": {"maxAgeHours": 24},
+      "enforceObservationFreshness": true,
+      "candidateFamilyMappings": [
+        {"familyId": "ACCESSIBILITY_TEST", "confidence": "low"}
+      ],
+      "limitations": [
+        "Report 16 includes closed tickets; the adapter uses explicit open-status query selectors instead of its broad export.",
+        "Description and keyword matches are discovery signals. Re-read official ticket and repository evidence before treating a ticket as actionable.",
+        "Official ticket and SVN commit semantics take precedence over GitHub pull request state or keywords."
+      ],
+      "selectors": [
+        {
+          "id": "description_accessibility",
+          "expectedFields": ["id", "summary", "status", "keywords", "time", "changetime", "description"],
+          "requiredCsvHeaders": ["id", "summary", "status", "keywords", "time", "changetime", "description"],
+          "requiredCsvFields": ["id", "summary", "status", "time", "changetime", "description"],
+          "csvUrls": ["https://meta.trac.wordpress.org/query?format=csv&status=!closed&description=~accessibility&col=id&col=summary&col=status&col=keywords&col=time&col=changetime&col=description"]
+        },
+        {
+          "id": "keyword_accessibility",
+          "csvUrls": ["https://meta.trac.wordpress.org/query?format=csv&status=!closed&keywords=~accessibility&col=id&col=summary&col=status&col=keywords&col=time&col=changetime"]
+        },
+        {
+          "id": "keyword_a11y",
+          "csvUrls": ["https://meta.trac.wordpress.org/query?format=csv&status=!closed&keywords=~a11y&col=id&col=summary&col=status&col=keywords&col=time&col=changetime"]
+        }
+      ]
+    }
+  ]
+}
