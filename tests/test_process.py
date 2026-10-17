@@ -8,7 +8,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from process import SCHEMA, build_feed, load_scoring
+from process import SCHEMA, SOURCE_INDEX_MAX_BYTES, SOURCE_INDEX_MAX_CANDIDATES, build_feed, build_source_index, digest, load_scoring
 
 
 FIXTURE = ROOT / "tests" / "fixtures" / "raw" / "v2" / "observations.json"
@@ -101,6 +101,32 @@ class ProcessingTests(unittest.TestCase):
         self.assertNotIn("v1", json.dumps(feed).lower())
         required = {"candidateId", "opportunityId", "resourceRefs", "relationships", "sourceRevision", "observedAt", "sourceMemberships", "familyCandidates", "freshness", "whyNow", "derivedPriority", "sourceHealth"}
         self.assertTrue(required.issubset(feed["candidates"][0]))
+
+    def test_source_index_is_revisions_bound_and_contains_only_the_selected_source(self):
+        feed = build_feed(self.payload)
+        encoded = build_source_index(feed, "core-trac-report-15-has-patch-needs-testing")
+        index = json.loads(encoded)
+        self.assertEqual(index["schema"], SCHEMA)
+        self.assertEqual(index["sourceIndex"], {"schema": "radar-source-candidate-index.v1", "sourceId": "core-trac-report-15-has-patch-needs-testing"})
+        self.assertEqual(index["candidateCount"], len(index["candidates"]))
+        self.assertEqual(index["feedRevision"], "candidate-feed-revision-v2-" + digest({key: value for key, value in index.items() if key != "feedRevision"}))
+        self.assertTrue(all(any(item["sourceId"] == "core-trac-report-15-has-patch-needs-testing" for item in candidate["sourceMemberships"]) for candidate in index["candidates"]))
+        self.assertLessEqual(len(encoded), SOURCE_INDEX_MAX_BYTES)
+
+    def test_source_index_fails_closed_on_record_and_byte_overflow(self):
+        feed = build_feed(self.payload)
+        candidate = feed["candidates"][0]
+        membership = candidate["sourceMemberships"][0]
+        source_id = membership["sourceId"]
+        many = dict(feed)
+        many["candidates"] = [dict(candidate, id=f"copy-{index}", sourceMemberships=[membership]) for index in range(SOURCE_INDEX_MAX_CANDIDATES + 1)]
+        many["candidateCount"] = len(many["candidates"])
+        with self.assertRaisesRegex(ValueError, "record limit"):
+            build_source_index(many, source_id)
+        huge_candidate = dict(candidate, sourceMemberships=[dict(membership, evidence={"id": "x", "summary": "x" * SOURCE_INDEX_MAX_BYTES})])
+        huge = dict(feed, candidates=[huge_candidate], candidateCount=1)
+        with self.assertRaisesRegex(ValueError, "byte limit"):
+            build_source_index(huge, source_id)
 
 
 if __name__ == "__main__":

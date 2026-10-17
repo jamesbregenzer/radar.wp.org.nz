@@ -15,6 +15,9 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "config" / "core-trac-v2-source-registry.json"
 SCORING_PATH = ROOT / "config" / "scoring.json"
 SCHEMA = "radar-candidate-feed.v2"
+SOURCE_INDEX_SOURCE_ID = "THEME_CHECK_GITHUB"
+SOURCE_INDEX_MAX_CANDIDATES = 256
+SOURCE_INDEX_MAX_BYTES = 512 * 1024
 CORE_FAMILY = "CORE_TRAC"
 DIRECT = "DIRECT_OPPORTUNITY"
 SIGNAL = "SIGNAL"
@@ -280,6 +283,32 @@ def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, 
     }
     output["feedRevision"] = f"candidate-feed-revision-v2-{digest(output)}"
     return output
+
+
+def build_source_index(feed: dict[str, Any], source_id: str = SOURCE_INDEX_SOURCE_ID) -> bytes:
+    """Return a deterministic, bounded candidate-feed snapshot for one source."""
+    if feed.get("schema") != SCHEMA or feed.get("version") != 2 or not isinstance(feed.get("candidates"), list):
+        raise ValueError("cannot index an invalid candidate feed")
+    if feed.get("candidateCount") != len(feed["candidates"]):
+        raise ValueError("cannot index a candidate feed with an invalid count")
+    candidates = [candidate for candidate in feed["candidates"]
+                  if any(item.get("sourceId") == source_id for item in candidate.get("sourceMemberships", []))]
+    if len(candidates) > SOURCE_INDEX_MAX_CANDIDATES:
+        raise ValueError("source candidate index exceeds the safe record limit")
+    index = {
+        "schema": SCHEMA,
+        "version": 2,
+        "sourceIndex": {"schema": "radar-source-candidate-index.v1", "sourceId": source_id},
+        "referenceTime": feed.get("referenceTime"),
+        "candidateCount": len(candidates),
+        "sourceHealth": [item for item in feed.get("sourceHealth", []) if item.get("sourceId") == source_id],
+        "candidates": candidates,
+    }
+    index["feedRevision"] = f"candidate-feed-revision-v2-{digest(index)}"
+    encoded = (canonical_json(index) + "\n").encode("utf-8")
+    if len(encoded) > SOURCE_INDEX_MAX_BYTES:
+        raise ValueError("source candidate index exceeds the safe byte limit")
+    return encoded
 
 
 def load_input(path: Path) -> dict[str, Any]:

@@ -45,7 +45,11 @@ the newest prior usable observation as explicitly stale evidence.
 `scripts/process.py` reads the observation set, revalidates rows against the
 approved registry rules, deduplicates by source family and native identity,
 preserves every source membership, excludes non-actionable resources, and
-emits `data/candidate-feed.json`.
+emits `data/candidate-feed.json`. The run also writes a bounded derived
+`data/source-intake/theme-check.json` snapshot for the Theme Check consumer.
+It contains only candidates with a `THEME_CHECK_GITHUB` membership and its
+matching source-health record; it is capped at 256 candidates and 512 KiB.
+The aggregate candidate feed remains canonical.
 
 `config/scoring.json` is the single scoring policy. It contains the exact V2
 base, bonuses, caps, stale penalty, and tier thresholds used by the processor.
@@ -55,6 +59,6 @@ reference time.
 ## Unattended runtime
 
 `scripts/run.py` takes a local non-overlap lock, runs acquisition and
-processing, validates the candidate feed, stages the current raw run and feed,
-commits when either changes, then pulls with rebase and pushes. It does not
-deploy or modify WordPress.org.
+processing, validates the candidate feed, stages the current raw run, feed and
+bounded Theme Check snapshot, commits when any changes, then pulls with rebase
+and pushes. It does not deploy or modify WordPress.org.
