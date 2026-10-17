@@ -24,21 +24,35 @@ class RunnerTests(unittest.TestCase):
 
     def test_fresh_raw_run_is_staged_when_feed_is_unchanged(self):
         with tempfile.TemporaryDirectory() as temporary:
-            lock = Path(temporary) / "lock"; feed_path = Path(temporary) / "candidate-feed.json"
+            lock = Path(temporary) / "lock"; feed_path = Path(temporary) / "candidate-feed.json"; index_path = Path(temporary) / "theme-check.json"
             feed = json.loads((ROOT / "data/candidate-feed.json").read_text())
             feed_path.write_text(json.dumps(feed, indent=2, sort_keys=True) + "\n")
             manifest = {"success": True, "runId": "fresh-run", "observations": []}
             calls = []
-            with patch.object(run, "LOCK", lock), patch.object(run, "FEED", feed_path), patch.object(run, "acquire_run", return_value=manifest), patch.object(run, "build_feed", return_value=feed), patch.object(run, "prior_observation_run", return_value=None), patch.object(run, "git", side_effect=lambda *args: calls.append(args)), patch.object(run.subprocess, "run", return_value=type("Result", (), {"returncode": 1})()):
+            with patch.object(run, "LOCK", lock), patch.object(run, "FEED", feed_path), patch.object(run, "SOURCE_INDEX", index_path), patch.object(run, "acquire_run", return_value=manifest), patch.object(run, "build_feed", return_value=feed), patch.object(run, "prior_observation_run", return_value=None), patch.object(run, "git", side_effect=lambda *args: calls.append(args)), patch.object(run.subprocess, "run", return_value=type("Result", (), {"returncode": 1})()):
                 self.assertEqual(run.run_once(), 0)
             self.assertIn(("add", "data/raw/fresh-run"), calls)
+            self.assertIn(("add", "data/source-intake/theme-check.json"), calls)
+            self.assertTrue(index_path.is_file())
             self.assertIn(("commit", "-m", "Update Radar V2 candidate feed"), calls)
 
     def test_invalid_feed_is_not_staged(self):
         with tempfile.TemporaryDirectory() as temporary:
             calls = []
-            with patch.object(run, "LOCK", Path(temporary) / "lock"), patch.object(run, "FEED", Path(temporary) / "candidate-feed.json"), patch.object(run, "acquire_run", return_value={"success": True, "runId": "bad", "observations": []}), patch.object(run, "build_feed", return_value={"schema": "invalid"}), patch.object(run, "git", side_effect=lambda *args: calls.append(args)):
+            with patch.object(run, "LOCK", Path(temporary) / "lock"), patch.object(run, "FEED", Path(temporary) / "candidate-feed.json"), patch.object(run, "SOURCE_INDEX", Path(temporary) / "theme-check.json"), patch.object(run, "acquire_run", return_value={"success": True, "runId": "bad", "observations": []}), patch.object(run, "build_feed", return_value={"schema": "invalid"}), patch.object(run, "git", side_effect=lambda *args: calls.append(args)):
                 with self.assertRaises(ValueError): run.run_once()
+            self.assertEqual(calls, [])
+
+    def test_oversized_source_index_is_not_written_or_staged(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); calls = []
+            feed = json.loads((ROOT / "data/candidate-feed.json").read_text())
+            feed_path = root / "candidate-feed.json"; index_path = root / "theme-check.json"
+            with patch.object(run, "LOCK", root / "lock"), patch.object(run, "FEED", feed_path), patch.object(run, "SOURCE_INDEX", index_path), patch.object(run, "acquire_run", return_value={"success": True, "runId": "bounded-failure", "observations": []}), patch.object(run, "build_feed", return_value=feed), patch.object(run, "build_source_index", side_effect=ValueError("source candidate index exceeds the safe byte limit")), patch.object(run, "prior_observation_run", return_value=None), patch.object(run, "git", side_effect=lambda *args: calls.append(args)):
+                with self.assertRaisesRegex(ValueError, "safe byte limit"):
+                    run.run_once()
+            self.assertFalse(feed_path.exists())
+            self.assertFalse(index_path.exists())
             self.assertEqual(calls, [])
 
     def test_local_overlap_lock_returns_two(self):

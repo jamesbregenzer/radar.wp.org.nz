@@ -7,10 +7,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from acquire import acquire_run  # noqa: E402
-from process import build_feed  # noqa: E402
+from process import build_feed, build_source_index  # noqa: E402
 
 LOCK = ROOT / "data" / ".radar-run.lock"
 FEED = ROOT / "data" / "candidate-feed.json"
+SOURCE_INDEX = ROOT / "data" / "source-intake" / "theme-check.json"
 
 def prior_observation_run(raw_root: Path, current_run_id: str) -> dict | None:
     runs = []
@@ -43,8 +44,12 @@ def run_once() -> int:
         previous = prior_observation_run(ROOT / "data" / "raw", manifest["runId"])
         feed = build_feed(manifest, previous=previous)
         validate_feed(feed)
+        source_index = build_source_index(feed)
         FEED.write_text(json.dumps(feed, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        SOURCE_INDEX.parent.mkdir(parents=True, exist_ok=True)
+        SOURCE_INDEX.write_bytes(source_index)
         git("add", "data/candidate-feed.json")
+        git("add", "data/source-intake/theme-check.json")
         git("add", f"data/raw/{manifest['runId']}")
         changed = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=ROOT).returncode != 0
         if changed:
