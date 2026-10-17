@@ -25,6 +25,9 @@ Every source observation is represented as `radar-observation.v2` with:
 - `observedAt` and a content-derived `sourceRevision`;
 - `acquisitionResult` of `success` or `failed`;
 - normalized `rows` and raw artifact hashes;
+- optional acquisition counts for fetched rows, deduplicated resources, and
+  adapter-emitted family signals and observational categories;
+- an optional source completeness label;
 - an optional truthful error.
 
 `scripts/acquire.py` writes one observation set containing these records. Core
@@ -39,6 +42,14 @@ the only source registries. They define public URLs, expected semantics,
 source roles, identity fields, and candidate-family mappings. A source failure
 is recorded in the current run; healthy sources continue. Processing may retain
 the newest prior usable observation as explicitly stale evidence.
+
+Each source-health record reports fetched-row, deduplicated-resource, emitted
+family-signal, and observational-category counts plus a fixed, bounded
+exclusion-reason map.
+Acquisition result and source coverage remain separate: a healthy successful
+zero-row observation reports zero counts, while failures and stale retained
+evidence remain visibly degraded. Older observations without acquisition
+counts are processed using the normalized rows already present.
 
 ## Processing and scoring
 

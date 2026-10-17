@@ -8,7 +8,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from process import SCHEMA, SOURCE_INDEX_MAX_BYTES, SOURCE_INDEX_MAX_CANDIDATES, build_feed, build_source_index, digest, load_scoring
+from process import SCHEMA, SOURCE_INDEX_MAX_BYTES, SOURCE_INDEX_MAX_CANDIDATES, build_feed, build_source_index, digest, load_scoring, validate_observability_categories
 
 
 FIXTURE = ROOT / "tests" / "fixtures" / "raw" / "v2" / "observations.json"
@@ -47,6 +47,38 @@ class ProcessingTests(unittest.TestCase):
         failed = next(item for item in feed["sourceHealth"] if item["sourceId"] == "core-trac-report-16-needs-patch")
         self.assertEqual(failed["state"], "degraded")
         self.assertEqual(failed["freshness"], "stale")
+        self.assertEqual(failed["acquisitionResult"], "failed")
+        self.assertEqual(failed["coverage"], "PARTIAL")
+        self.assertEqual(failed["counts"]["excludedByReason"]["acquisition_failed"], 1)
+
+    def test_source_counts_distinguish_healthy_zero_from_partial_coverage(self):
+        feed = build_feed({"observations": [{"sourceId": "empty-source", "sourceFamily": "TEST", "sourceCompleteness": "PARTIAL", "acquisitionResult": "success", "rows": [], "acquisitionCounts": {"fetchedRows": 0, "deduplicatedResources": 0}}]})
+        source = next(item for item in feed["sourceHealth"] if item["sourceId"] == "empty-source")
+        self.assertEqual((source["state"], source["acquisitionResult"], source["coverage"]), ("healthy", "success", "PARTIAL"))
+        self.assertEqual(source["counts"], {"fetchedRows": 0, "deduplicatedResources": 0, "emittedFamilySignals": 0, "observationalCategories": 0, "excludedByReason": {reason: 0 for reason in source["counts"]["excludedByReason"]}})
+
+    def test_dataform_crosspost_observations_keep_distinct_work_identity(self):
+        def observation(source_id, family, post_id, mapped_family):
+            return {"sourceId": source_id, "sourceFamily": family, "sourceRole": "DIRECT_OPPORTUNITY", "semanticMeaning": "Explicit public testing observation.", "acquisitionResult": "success", "rows": [{"id": f"wordpress_make_post/{post_id}", "title": "Call for testing: DataForm editor inspector", "url": f"https://make.wordpress.org/{'test' if family == 'MAKE_TEST_RELEASE_SIGNALS' else 'accessibility'}/dataform/", "status": "published", "candidateFamilyMappings": [{"familyId": mapped_family, "confidence": "medium"}]}]}
+        feed = build_feed({"observations": [
+            observation("MAKE_TEST_RELEASE_SIGNALS", "MAKE_TEST_RELEASE_SIGNALS", 12659, "GUTENBERG_TEST"),
+            observation("ACCESSIBILITY_REQUESTS", "ACCESSIBILITY_REQUESTS", 17724, "ACCESSIBILITY_TEST"),
+        ]})
+        self.assertEqual(feed["candidateCount"], 2)
+        self.assertEqual({item["resource"]["id"] for item in feed["candidates"]}, {
+            "make-test-release-signals:wordpress_make_post/12659",
+            "accessibility-requests:wordpress_make_post/17724",
+        })
+        self.assertTrue(all(not item["relationships"] for item in feed["candidates"]))
+        self.assertTrue(all(not item.get("assignees") for item in feed["candidates"]))
+
+    def test_added_configured_category_requires_explicit_observability_policy(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "sources.json"
+            path.write_text(json.dumps({"sources": [{"sourceFamily": "NEW_PUBLIC_CATEGORY"}]}))
+            with self.assertRaisesRegex(ValueError, "count/exclusion handling: NEW_PUBLIC_CATEGORY"):
+                validate_observability_categories(path)
 
     def test_score_and_order_are_deterministic(self):
         first = build_feed(self.payload)
@@ -71,7 +103,12 @@ class ProcessingTests(unittest.TestCase):
 
     def test_closed_resources_are_excluded(self):
         payload = {"observations": [{"observedAt": "2026-10-07T11:00:00Z", "sourceId": "generic-source", "sourceFamily": "GENERIC", "sourceRole": "DIRECT_OPPORTUNITY", "candidateFamilyMappings": [{"familyId": "GENERIC_REVIEW", "confidence": "high"}], "acquisitionResult": "success", "rows": [{"id": "closed-1", "title": "Already closed", "status": "closed"}]}]}
-        self.assertEqual(build_feed(payload)["candidateCount"], 0)
+        feed = build_feed(payload)
+        self.assertEqual(feed["candidateCount"], 0)
+        source = next(item for item in feed["sourceHealth"] if item["sourceId"] == "generic-source")
+        exclusions = source["counts"]["excludedByReason"]
+        self.assertEqual(exclusions["non_actionable_status"], 1)
+        self.assertLessEqual(len(exclusions), 8)
 
     def test_semantic_validation_is_processor_owned(self):
         row = {"id": "bad", "summary": "Missing required keyword", "status": "new", "component": "Editor", "owner": "", "type": "defect", "priority": "normal", "milestone": "6.9", "version": "trunk", "keywords": "has-patch", "time": "2026-10-01T00:00:00Z", "changetime": "2026-10-06T00:00:00Z", "comments": "1", "_comments": "1"}

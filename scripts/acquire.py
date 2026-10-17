@@ -198,8 +198,12 @@ def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dic
     except (UnicodeDecodeError, csv.Error) as error:
         raise ValueError(f"acquired CSV is unreadable: {error}") from error
 
-def make_observation(source: dict[str, Any], observed_at: str, *, rows: list[dict[str, Any]], result: str, revision: str | None, raw_artifacts: list[dict[str, Any]], error: str | None = None) -> dict[str, Any]:
+def make_observation(source: dict[str, Any], observed_at: str, *, rows: list[dict[str, Any]], result: str, revision: str | None, raw_artifacts: list[dict[str, Any]], error: str | None = None, acquisition_counts: dict[str, int] | None = None) -> dict[str, Any]:
     record = {"schema": "radar-observation.v2", "version": 2, "sourceId": source["id"], "sourceFamily": source.get("sourceFamily", "CORE_TRAC"), "sourceRole": source.get("sourceRole", "DIRECT_OPPORTUNITY"), "semanticMeaning": source.get("semanticMeaning", "Public source observation."), "candidateFamilyMappings": source.get("candidateFamilyMappings", []), "identityField": source.get("identityField"), "resourceType": source.get("resourceType", "PUBLIC_RESOURCE"), "exactUpstreamUrl": source.get("csvUrl") or source.get("authoritativeSource"), "observedAt": observed_at, "sourceRevision": revision, "acquisitionResult": result, "rows": rows, "rawArtifacts": raw_artifacts}
+    if source.get("sourceCompleteness"):
+        record["sourceCompleteness"] = source["sourceCompleteness"]
+    if acquisition_counts is not None:
+        record["acquisitionCounts"] = acquisition_counts
     if source.get("semanticValidation") is not None: record["semanticValidation"] = source["semanticValidation"]
     if error: record["error"] = error
     return record
@@ -226,7 +230,9 @@ def acquire_core_trac(source: dict[str, Any], run_dir: Path, observed_at: str, d
                 row_count, rows = validate_csv(body, list(source.get("expectedFields") or [])); artifact = run_dir / f"{source_slug(source['id'])}.csv"; artifact.write_bytes(body); sha = sha256_bytes(body)
                 artifact_path = str(artifact.relative_to(ROOT)) if artifact.is_relative_to(ROOT) else artifact.name
                 downloaded.unlink()
-                return make_observation(source, observed_at, rows=rows, result="success", revision=sha, raw_artifacts=[{"path": artifact_path, "sha256": sha, "byteLength": len(body), "contentType": "text/csv", "rowCount": row_count}])
+                identities = {str(row.get(source.get("identityField") or "id") or "").strip() for row in rows}
+                identities.discard("")
+                return make_observation(source, observed_at, rows=rows, result="success", revision=sha, raw_artifacts=[{"path": artifact_path, "sha256": sha, "byteLength": len(body), "contentType": "text/csv", "rowCount": row_count}], acquisition_counts={"fetchedRows": row_count, "deduplicatedResources": len(identities)})
         except Exception as error:
             last_error = error; fatal = True
         finally:
@@ -272,9 +278,20 @@ def acquire_wave2(config: dict[str, Any], run_dir: Path, observed_at: str, *, fe
         artifact_path = str(artifact.relative_to(ROOT)) if artifact.is_relative_to(ROOT) else artifact.name
         raw_artifacts.append({"path": artifact_path, "sha256": sha, "byteLength": len(body), "contentType": "application/json", "url": url, "httpStatus": status}); payloads.append((url, body, {}, status))
     resources = normalize_resources(config, payloads, observed_at)
+    fetched_rows = 0
+    for _url, body, _headers, _status in payloads:
+        payload = json.loads(body.decode("utf-8"))
+        if config.get("adapter") == "wordpress_releases":
+            fetched_rows += len(payload.get("offers") or [])
+        elif isinstance(payload, list):
+            fetched_rows += len(payload)
+        elif isinstance(payload, dict):
+            fetched_rows += 1
     rows = [{"id": item.get("nativeIdentity"), "title": item.get("title"), "url": item.get("url"), "status": item.get("state") or item.get("status"), "candidateFamilyMappings": [{"familyId": signal["familyId"], "confidence": signal.get("confidence", "medium")} for signal in item.get("candidateSignals", []) if signal.get("state") in {"CLEAR_OPPORTUNITY", "POSSIBLE_OPPORTUNITY"}], "resource": item} for item in resources]
-    source = {"id": config["sourceFamily"], "sourceFamily": config["sourceFamily"], "sourceRole": config.get("sourceRole", "DIRECT_OPPORTUNITY"), "semanticMeaning": config.get("semanticMeaning", config.get("label", "Public source observation.")), "candidateFamilyMappings": config.get("candidateFamilyMappings", []), "identityField": "id", "resourceType": "PUBLIC_RESOURCE", "authoritativeSource": config.get("authoritativeSource")}
-    return make_observation(source, observed_at, rows=rows, result="success", revision=sha256_bytes(json.dumps(resources, sort_keys=True).encode()), raw_artifacts=raw_artifacts)
+    source = {"id": config["sourceFamily"], "sourceFamily": config["sourceFamily"], "sourceRole": config.get("sourceRole", "DIRECT_OPPORTUNITY"), "semanticMeaning": config.get("semanticMeaning", config.get("label", "Public source observation.")), "candidateFamilyMappings": config.get("candidateFamilyMappings", []), "identityField": "id", "resourceType": "PUBLIC_RESOURCE", "authoritativeSource": config.get("authoritativeSource"), "sourceCompleteness": config.get("completeness")}
+    emitted_signals = sum(len(item.get("candidateSignals") or []) for item in resources)
+    observational_categories = sum(len(item.get("observationalCategories") or []) for item in resources)
+    return make_observation(source, observed_at, rows=rows, result="success", revision=sha256_bytes(json.dumps(resources, sort_keys=True).encode()), raw_artifacts=raw_artifacts, acquisition_counts={"fetchedRows": fetched_rows, "deduplicatedResources": len(resources), "emittedFamilySignals": emitted_signals, "observationalCategories": observational_categories})
 
 def acquire_run(*, raw_root: Path = DEFAULT_RAW_ROOT, observed_at: str | None = None, downloads: Path | None = None, timeout: int = DEFAULT_TIMEOUT, trac_sources: list[dict[str, Any]] | None = None, wave2_sources: list[dict[str, Any]] | None = None, trac_acquirer: Callable[..., dict[str, Any]] = acquire_core_trac, wave2_acquirer: Callable[..., dict[str, Any]] = acquire_wave2) -> dict[str, Any]:
     observed = observed_at or utc_now(); run_dir = raw_root / run_slug(observed); run_dir.mkdir(parents=True, exist_ok=True); downloads_path = downloads or DEFAULT_DOWNLOADS
