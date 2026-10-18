@@ -50,6 +50,10 @@ def parse_time(value: Any) -> datetime | None:
         return None
 
 
+def valid_timestamp(value: Any) -> bool:
+    return parse_time(value) is not None
+
+
 def latest_by_source(observations: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     latest: dict[str, dict[str, Any]] = {}
     for observation in observations:
@@ -84,11 +88,20 @@ def validate_rows(source: dict[str, Any], rows: list[dict[str, Any]], result: st
         return {"state": "passed", "findings": []}
     findings: list[str] = []
     expected = set(source.get("expectedFields") or [])
+    required_columns = set(source.get("requiredSemanticColumns") or [])
+    required_rows = set(source.get("requiredRowFields") or [])
     forbidden_statuses = {str(item).lower() for item in rules.get("statusNot", [])}
     for index, row in enumerate(rows):
         missing = sorted(field for field in expected if field in REQUIRED_ROW_FIELDS and field not in row)
+        missing.extend(sorted(field for field in required_columns if field not in row))
         if missing:
-            findings.append(f"row {index} missing fields: {', '.join(missing)}")
+            findings.append(f"row {index} missing fields: {', '.join(sorted(set(missing)))}")
+        empty = sorted(field for field in required_rows if not str(row.get(field) or "").strip())
+        if empty:
+            findings.append(f"row {index} has empty required fields: {', '.join(empty)}")
+        for field in (required_rows & {"time", "changetime"}):
+            if field in row and not valid_timestamp(row.get(field)):
+                findings.append(f"row {index} has invalid timestamp field: {field}")
         if "keywords" in row:
             keywords = row_keywords(row)
             missing_all = [item for item in rules.get("requiredKeywordsAll", []) if item.lower() not in keywords]
@@ -100,6 +113,24 @@ def validate_rows(source: dict[str, Any], rows: list[dict[str, Any]], result: st
             forbidden = [item for item in rules.get("forbiddenKeywordsAny", []) if item.lower() in keywords]
             if forbidden:
                 findings.append(f"row {index} contains forbidden keyword: {', '.join(forbidden)}")
+        selector_memberships = set(row.get("selectorMemberships") or [])
+        for selector, expected_keywords in (source.get("selectorKeywordRequirements") or {}).items():
+            if selector in selector_memberships and not set(expected_keywords).intersection(row_keywords(row)):
+                findings.append(f"row {index} selector {selector} lacks its keyword evidence")
+        for selector, fields in (source.get("selectorRequiredColumns") or {}).items():
+            if selector not in selector_memberships:
+                continue
+            missing_selector_fields = sorted(field for field in fields if not str(row.get(field) or "").strip())
+            if missing_selector_fields:
+                findings.append(f"row {index} selector {selector} lacks required fields: {', '.join(missing_selector_fields)}")
+        for selector, requirement in (source.get("selectorTextRequirements") or {}).items():
+            if selector not in selector_memberships:
+                continue
+            field = requirement.get("field")
+            content = str(row.get(field) or "").casefold()
+            terms = [str(term).casefold() for term in requirement.get("anyTerms", [])]
+            if not content or (terms and not any(term in content for term in terms)):
+                findings.append(f"row {index} selector {selector} lacks matching {field} evidence")
         if str(row.get("status", "")).lower() in forbidden_statuses:
             findings.append(f"row {index} has forbidden status: {row.get('status')}")
     return {"state": "passed" if not findings else "failed", "findings": findings}
@@ -116,25 +147,47 @@ def source_definition(observation: dict[str, Any], registry: dict[str, Any]) -> 
         "semanticMeaning": observation.get("semanticMeaning", "Public source observation."),
         "candidateFamilyMappings": observation.get("candidateFamilyMappings", []),
         "semanticValidation": observation.get("semanticValidation", {}),
+        "expectedFields": observation.get("expectedFields", []),
+        "requiredRowFields": observation.get("requiredRowFields", []),
+        "requiredSemanticColumns": observation.get("requiredSemanticColumns", []),
+        "selectorKeywordRequirements": observation.get("selectorKeywordRequirements", {}),
+        "selectorRequiredColumns": observation.get("selectorRequiredColumns", {}),
+        "selectorTextRequirements": observation.get("selectorTextRequirements", {}),
+        "limitations": observation.get("limitations", []),
+        "freshnessExpectation": observation.get("freshnessExpectation", {}),
+        "enforceObservationFreshness": observation.get("enforceObservationFreshness", False),
         "identityField": observation.get("identityField"),
         "resourceType": observation.get("resourceType", "PUBLIC_RESOURCE"),
     }
 
 
-def source_health(source: dict[str, Any], observation: dict[str, Any] | None, prior: dict[str, Any] | None) -> dict[str, Any]:
+def source_health(source: dict[str, Any], observation: dict[str, Any] | None, prior: dict[str, Any] | None, reference_time: str | None = None) -> dict[str, Any]:
     result = str((observation or {}).get("acquisitionResult", "failed"))
     semantic = validate_rows(source, list((observation or {}).get("rows") or []), result)
-    healthy = result == "success" and semantic.get("state") == "passed"
+    age_expectation = source.get("freshnessExpectation") or {}
+    max_age_hours = age_expectation.get("maxAgeHours") if source.get("enforceObservationFreshness") else None
+    observed_at = parse_time((observation or {}).get("observedAt"))
+    reference = parse_time(reference_time)
+    too_old = False
+    if max_age_hours is not None:
+        too_old = observed_at is None or reference is None or (reference - observed_at).total_seconds() > float(max_age_hours) * 3600
+    healthy = result == "success" and semantic.get("state") == "passed" and not too_old
     had_prior = bool(prior and prior.get("rows"))
+    stale = not healthy and (had_prior or too_old)
+    failure = None if healthy else (
+        "SOURCE_OBSERVATION_STALE" if too_old and result == "success" and semantic.get("state") == "passed"
+        else "SOURCE_OBSERVATION_FAILED_LAST_KNOWN_GOOD_RETAINED" if had_prior
+        else "SOURCE_OBSERVATION_FAILED"
+    )
     return {
         "sourceId": source["id"],
         "sourceFamily": source.get("sourceFamily", CORE_FAMILY if source["id"].startswith("core-trac-") else "UNKNOWN"),
         "sourceRole": source.get("sourceRole", DIRECT),
-        "state": "healthy" if healthy else ("degraded" if had_prior else "failed"),
-        "freshness": "fresh" if healthy else ("stale" if had_prior else "none"),
+        "state": "healthy" if healthy else ("degraded" if stale else "failed"),
+        "freshness": "fresh" if healthy else ("stale" if stale else "none"),
         "observedAt": (observation or {}).get("observedAt") or (prior or {}).get("observedAt"),
         "sourceRevision": (observation or {}).get("sourceRevision") or (prior or {}).get("sourceRevision"),
-        "failure": None if healthy else ("SOURCE_OBSERVATION_FAILED_LAST_KNOWN_GOOD_RETAINED" if had_prior else "SOURCE_OBSERVATION_FAILED"),
+        "failure": failure,
         "semanticValidation": semantic,
     }
 
@@ -174,6 +227,7 @@ def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, 
     definitions = {source["id"]: source for source in registry.get("sources", [])}
     definitions.update({item["sourceId"]: source_definition(item, registry) for item in observations if item.get("sourceId")})
     definitions.update({item["sourceId"]: source_definition(item, registry) for item in prior_observations if item.get("sourceId")})
+    reference_time = payload.get("referenceTime") or max((item.get("observedAt") or "" for item in observations), default=None)
     health = []
     resources: dict[str, dict[str, Any]] = {}
     for source_id in sorted(definitions):
@@ -183,7 +237,7 @@ def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, 
         result = str((observation or {}).get("acquisitionResult", "failed"))
         rows = list((observation or {}).get("rows") or [])
         semantic = validate_rows(source, rows, result)
-        health_record = source_health(source, observation, old)
+        health_record = source_health(source, observation, old, reference_time)
         health.append(health_record)
         usable = result == "success" and semantic.get("state") == "passed"
         evidence_observation = observation if usable else (old if old and health_record["freshness"] == "stale" else None)
@@ -215,7 +269,6 @@ def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, 
             resource["observedAt"] = max(resource.get("observedAt") or "", evidence_observation.get("observedAt") or "") or None
 
     candidates = []
-    reference_time = payload.get("referenceTime") or max((item.get("observedAt") or "" for item in observations), default=None)
     for resource in resources.values():
         mappings: dict[str, dict[str, Any]] = {}
         for item in resource["sourceMemberships"]:

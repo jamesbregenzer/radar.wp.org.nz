@@ -25,6 +25,8 @@ needed by the V2 pipeline.
 
 - [`config/core-trac-v2-source-registry.json`](config/core-trac-v2-source-registry.json)
   defines approved Core Trac V2 sources.
+- [`config/meta-trac-v2-source-registry.json`](config/meta-trac-v2-source-registry.json)
+  defines the bounded Meta Trac discovery sources.
 - [`config/wave2-sources.json`](config/wave2-sources.json) defines approved
   WordPress observatory sources.
 - [`config/scoring.json`](config/scoring.json) is the executable scoring policy.
@@ -47,3 +49,6 @@ The same inputs, configuration, and reference time produce the same result.
   `data/candidate-feed.json`.
 - `scripts/run.py` performs the locked acquire/process/validate/commit/pull/push
   cycle for unattended execution.
+- Meta Trac sources in `config/meta-trac-v2-source-registry.json` require
+  explicit `acquire_run(meta_sources=load_meta_trac_sources())` opt-in; keep
+  them out of unattended acquisition until the HTTP path is verified.
