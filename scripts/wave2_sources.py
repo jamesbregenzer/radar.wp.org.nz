@@ -257,6 +257,20 @@ def post_signals(
     return results
 
 
+def post_observational_categories(source_family: str, links: list[str]) -> list[dict[str, Any]]:
+    """Record authoritative accessibility references without creating a candidate signal."""
+    if source_family != "MAKE_TEST_RELEASE_SIGNALS":
+        return []
+    accessibility_links = [
+        link for link in links
+        if urlparse(link).hostname in {"make.wordpress.org", "wpaccessibility.org"}
+        and ("/accessibility/" in urlparse(link).path or urlparse(link).hostname == "wpaccessibility.org")
+    ]
+    if not accessibility_links:
+        return []
+    return [{"categoryId": "ACCESSIBILITY_TEST", "evidenceLinks": accessibility_links[:3]}]
+
+
 def normalize_wp_item(item: dict[str, Any], source_family: str, resource_type: str, observed_at: str | None = None) -> dict[str, Any]:
     title = unescape(str((item.get("title") or {}).get("rendered") or "")).strip()
     html = str((item.get("content") or {}).get("rendered") or "")
@@ -264,7 +278,7 @@ def normalize_wp_item(item: dict[str, Any], source_family: str, resource_type: s
     link = str(item.get("link") or "")
     identity = f"{resource_type.lower()}/{item['id']}"
     revision = item.get("modified_gmt") or item.get("date_gmt")
-    return {
+    resource = {
         "resourceType": resource_type,
         "nativeIdentity": identity,
         "nativeId": item["id"],
@@ -289,6 +303,10 @@ def normalize_wp_item(item: dict[str, Any], source_family: str, resource_type: s
             observed_at,
         ),
     }
+    observational_categories = post_observational_categories(source_family, links)
+    if observational_categories:
+        resource["observationalCategories"] = observational_categories
+    return resource
 
 
 def github_links(item: dict[str, Any]) -> list[str]:

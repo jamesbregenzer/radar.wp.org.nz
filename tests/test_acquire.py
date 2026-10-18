@@ -218,16 +218,23 @@ class AcquireTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             observation = acquire_wave2(config, Path(temporary), "2026-10-06T12:00:00Z", fetcher=lambda _: [("https://example.test", body, {}, 200)])
         self.assertEqual(observation["acquisitionResult"], "success")
+        self.assertEqual(observation["acquisitionCounts"], {"fetchedRows": 1, "deduplicatedResources": 1, "emittedFamilySignals": 2, "observationalCategories": 0})
         self.assertEqual(observation["rows"][0]["candidateFamilyMappings"][0]["familyId"], "BETA_RC_TEST")
-        self.assertEqual(build_feed({"observations": [observation]})["candidateCount"], 1)
+        feed = build_feed({"observations": [observation]})
+        self.assertEqual(feed["candidateCount"], 1)
+        self.assertEqual(feed["sourceHealth"][0]["counts"]["emittedFamilySignals"], 2)
 
     def test_no_clear_contribution_does_not_map_to_candidate(self):
         config = {"sourceFamily": "MAKE_TEST_RELEASE_SIGNALS", "adapter": "wp_rest_posts"}
         body = json.dumps([{ "id": 11, "link": "https://make.wordpress.org/test/post", "slug": "routine-update", "date_gmt": "2026-10-01T00:00:00", "modified_gmt": "2026-10-02T00:00:00", "title": {"rendered": "Routine update"}, "content": {"rendered": "<p>No clear contribution request.</p>"}, "tags": [] }]).encode()
         with tempfile.TemporaryDirectory() as temporary:
-            observation = acquire_wave2(config, Path(temporary), "2026-10-06T12:00:00Z", fetcher=lambda _: [("https://example.test", body, {}, 200)])
+            observation = acquire_wave2(config, Path(temporary), "2026-10-06T12:00:00Z", fetcher=lambda _: [("https://example.test", body, {}, 200), ("https://example.test/duplicate", body, {}, 200)])
         self.assertEqual(observation["rows"][0]["candidateFamilyMappings"], [])
-        self.assertEqual(build_feed({"observations": [observation]})["candidateCount"], 0)
+        self.assertEqual(observation["acquisitionCounts"], {"fetchedRows": 2, "deduplicatedResources": 1, "emittedFamilySignals": 0, "observationalCategories": 0})
+        feed = build_feed({"observations": [observation]})
+        self.assertEqual(feed["candidateCount"], 0)
+        source = next(item for item in feed["sourceHealth"] if item["sourceId"] == "MAKE_TEST_RELEASE_SIGNALS")
+        self.assertEqual(source["counts"]["excludedByReason"]["no_family_signal"], 1)
 
     def test_partial_failure_keeps_successful_observation(self):
         with tempfile.TemporaryDirectory() as temporary:

@@ -15,6 +15,27 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "config" / "core-trac-v2-source-registry.json"
 SCORING_PATH = ROOT / "config" / "scoring.json"
 SCHEMA = "radar-candidate-feed.v2"
+SOURCE_INDEX_SOURCE_ID = "THEME_CHECK_GITHUB"
+SOURCE_INDEX_MAX_CANDIDATES = 256
+SOURCE_INDEX_MAX_BYTES = 512 * 1024
+OBSERVABILITY_SOURCE_FAMILIES = {
+    "CORE_TRAC",
+    "MAKE_TEST_RELEASE_SIGNALS",
+    "CONTRIBUTOR_PATHWAYS",
+    "CORE_DEVELOPER_DOCS",
+    "ACCESSIBILITY_REQUESTS",
+    "THEME_CHECK_GITHUB",
+    "MAKE_THEMES_REQUESTS",
+    "WORDPRESS_RELEASES",
+}
+EXCLUSION_REASONS = (
+    "missing_identity",
+    "reconciliation_only",
+    "non_actionable_status",
+    "no_family_signal",
+    "acquisition_failed",
+    "semantic_validation_failed",
+)
 CORE_FAMILY = "CORE_TRAC"
 DIRECT = "DIRECT_OPPORTUNITY"
 SIGNAL = "SIGNAL"
@@ -39,6 +60,13 @@ def load_scoring(path: Path = SCORING_PATH) -> dict[str, Any]:
     if value.get("version") != "radar-scoring-v2":
         raise ValueError("unsupported scoring configuration")
     return value
+
+
+def validate_observability_categories(path: Path = ROOT / "config" / "wave2-sources.json") -> None:
+    configured = {str(item.get("sourceFamily") or "") for item in json.loads(path.read_text(encoding="utf-8")).get("sources", [])}
+    missing = sorted(configured - OBSERVABILITY_SOURCE_FAMILIES)
+    if missing:
+        raise ValueError(f"source categories lack explicit count/exclusion handling: {', '.join(missing)}")
 
 
 def parse_time(value: Any) -> datetime | None:
@@ -118,10 +146,11 @@ def source_definition(observation: dict[str, Any], registry: dict[str, Any]) -> 
         "semanticValidation": observation.get("semanticValidation", {}),
         "identityField": observation.get("identityField"),
         "resourceType": observation.get("resourceType", "PUBLIC_RESOURCE"),
+        "sourceCompleteness": observation.get("sourceCompleteness"),
     }
 
 
-def source_health(source: dict[str, Any], observation: dict[str, Any] | None, prior: dict[str, Any] | None) -> dict[str, Any]:
+def source_health(source: dict[str, Any], observation: dict[str, Any] | None, prior: dict[str, Any] | None, coverage_by_family: dict[str, str] | None = None) -> dict[str, Any]:
     result = str((observation or {}).get("acquisitionResult", "failed"))
     semantic = validate_rows(source, list((observation or {}).get("rows") or []), result)
     healthy = result == "success" and semantic.get("state") == "passed"
@@ -134,6 +163,8 @@ def source_health(source: dict[str, Any], observation: dict[str, Any] | None, pr
         "freshness": "fresh" if healthy else ("stale" if had_prior else "none"),
         "observedAt": (observation or {}).get("observedAt") or (prior or {}).get("observedAt"),
         "sourceRevision": (observation or {}).get("sourceRevision") or (prior or {}).get("sourceRevision"),
+        "acquisitionResult": result,
+        "coverage": (observation or {}).get("sourceCompleteness") or (prior or {}).get("sourceCompleteness") or source.get("sourceCompleteness") or (coverage_by_family or {}).get(source.get("sourceFamily") or (CORE_FAMILY if source["id"].startswith("core-trac-") else "UNKNOWN"), "UNKNOWN"),
         "failure": None if healthy else ("SOURCE_OBSERVATION_FAILED_LAST_KNOWN_GOOD_RETAINED" if had_prior else "SOURCE_OBSERVATION_FAILED"),
         "semanticValidation": semantic,
     }
@@ -164,8 +195,15 @@ def membership(source: dict[str, Any], observation: dict[str, Any], row: dict[st
 
 def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, previous: dict[str, Any] | None = None) -> dict[str, Any]:
     registry = registry or load_registry()
+    validate_observability_categories()
     scoring = load_scoring()
     observations = list(payload.get("observations") or [])
+    coverage_by_family = {
+        str(item.get("sourceFamily")): str(item.get("completeness") or "UNKNOWN")
+        for item in json.loads((ROOT / "config" / "wave2-sources.json").read_text(encoding="utf-8")).get("sources", [])
+        if item.get("sourceFamily")
+    }
+    coverage_by_family.setdefault(CORE_FAMILY, "PARTIAL")
     prior_observations = list((payload.get("previous") or {}).get("observations") or [])
     if previous:
         prior_observations.extend(previous.get("observations") or [])
@@ -183,18 +221,51 @@ def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, 
         result = str((observation or {}).get("acquisitionResult", "failed"))
         rows = list((observation or {}).get("rows") or [])
         semantic = validate_rows(source, rows, result)
-        health_record = source_health(source, observation, old)
-        health.append(health_record)
+        health_record = source_health(source, observation, old, coverage_by_family)
         usable = result == "success" and semantic.get("state") == "passed"
         evidence_observation = observation if usable else (old if old and health_record["freshness"] == "stale" else None)
+        acquired_counts = (observation or {}).get("acquisitionCounts") or {}
+        fetched_rows = acquired_counts.get("fetchedRows", len(rows) if result == "success" else 0)
+        identity_rows = rows if usable else list((old or {}).get("rows") or []) if evidence_observation is not None else []
+        deduplicated_resources = acquired_counts.get("deduplicatedResources")
+        if deduplicated_resources is None:
+            deduplicated_resources = len({row_identity(row, source) for row in identity_rows if row_identity(row, source)})
+        observational_category_count = acquired_counts.get("observationalCategories")
+        if observational_category_count is None:
+            observational_category_count = sum(
+                len((row.get("resource") or {}).get("observationalCategories") or row.get("observationalCategories") or [])
+                for row in identity_rows
+            )
+        health_record["counts"] = {
+            "fetchedRows": int(fetched_rows),
+            "deduplicatedResources": int(deduplicated_resources),
+            "emittedFamilySignals": 0,
+            "observationalCategories": int(observational_category_count),
+            "excludedByReason": {reason: 0 for reason in EXCLUSION_REASONS},
+        }
+        if observation is None or result != "success":
+            health_record["counts"]["excludedByReason"]["acquisition_failed"] = 1
+        elif observation is not None and semantic.get("state") != "passed":
+            health_record["counts"]["excludedByReason"]["semantic_validation_failed"] = 1
+        health.append(health_record)
         if not evidence_observation:
             continue
         evidence_rows = list(evidence_observation.get("rows") or [])
         evidence_semantic = semantic if usable else validate_rows(source, evidence_rows, "success")
         for row in evidence_rows:
             identity = row_identity(row, source)
-            if not identity or source.get("sourceRole") == RECONCILIATION or str(row.get("status") or row.get("state") or "").strip().lower() in NON_ACTIONABLE_STATUSES:
+            exclusions = health_record["counts"]["excludedByReason"]
+            if not identity:
+                exclusions["missing_identity"] += 1
                 continue
+            if source.get("sourceRole") == RECONCILIATION:
+                exclusions["reconciliation_only"] += 1
+                continue
+            if str(row.get("status") or row.get("state") or "").strip().lower() in NON_ACTIONABLE_STATUSES:
+                exclusions["non_actionable_status"] += 1
+                continue
+            if not (source.get("candidateFamilyMappings") or evidence_observation.get("candidateFamilyMappings") or row.get("candidateFamilyMappings")):
+                exclusions["no_family_signal"] += 1
             family = source.get("sourceFamily") or evidence_observation.get("sourceFamily") or "UNKNOWN"
             resource_id = f"{str(family).lower().replace('_', '-')}:" + identity
             url = row.get("url") or row.get("htmlUrl") or (f"https://core.trac.wordpress.org/ticket/{identity}" if family == CORE_FAMILY else None)
@@ -213,6 +284,13 @@ def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, 
             resource["sourceMemberships"].append(membership(source, evidence_observation, row, evidence_semantic, health_record["freshness"], usable))
             resource["sourceMemberships"].sort(key=lambda item: item["sourceId"])
             resource["observedAt"] = max(resource.get("observedAt") or "", evidence_observation.get("observedAt") or "") or None
+
+    for resource in resources.values():
+        for membership_item in resource["sourceMemberships"]:
+            source_health_item = next(item for item in health if item["sourceId"] == membership_item["sourceId"])
+            source_health_item["counts"]["emittedFamilySignals"] += len({
+                mapping.get("familyId") for mapping in membership_item.get("candidateFamilyMappings", []) if mapping.get("familyId")
+            })
 
     candidates = []
     reference_time = payload.get("referenceTime") or max((item.get("observedAt") or "" for item in observations), default=None)
@@ -280,6 +358,32 @@ def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, 
     }
     output["feedRevision"] = f"candidate-feed-revision-v2-{digest(output)}"
     return output
+
+
+def build_source_index(feed: dict[str, Any], source_id: str = SOURCE_INDEX_SOURCE_ID) -> bytes:
+    """Return a deterministic, bounded candidate-feed snapshot for one source."""
+    if feed.get("schema") != SCHEMA or feed.get("version") != 2 or not isinstance(feed.get("candidates"), list):
+        raise ValueError("cannot index an invalid candidate feed")
+    if feed.get("candidateCount") != len(feed["candidates"]):
+        raise ValueError("cannot index a candidate feed with an invalid count")
+    candidates = [candidate for candidate in feed["candidates"]
+                  if any(item.get("sourceId") == source_id for item in candidate.get("sourceMemberships", []))]
+    if len(candidates) > SOURCE_INDEX_MAX_CANDIDATES:
+        raise ValueError("source candidate index exceeds the safe record limit")
+    index = {
+        "schema": SCHEMA,
+        "version": 2,
+        "sourceIndex": {"schema": "radar-source-candidate-index.v1", "sourceId": source_id},
+        "referenceTime": feed.get("referenceTime"),
+        "candidateCount": len(candidates),
+        "sourceHealth": [item for item in feed.get("sourceHealth", []) if item.get("sourceId") == source_id],
+        "candidates": candidates,
+    }
+    index["feedRevision"] = f"candidate-feed-revision-v2-{digest(index)}"
+    encoded = (canonical_json(index) + "\n").encode("utf-8")
+    if len(encoded) > SOURCE_INDEX_MAX_BYTES:
+        raise ValueError("source candidate index exceeds the safe byte limit")
+    return encoded
 
 
 def load_input(path: Path) -> dict[str, Any]:
