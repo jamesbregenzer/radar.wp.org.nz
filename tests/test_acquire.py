@@ -113,6 +113,17 @@ class AcquireTests(unittest.TestCase):
             self.assertEqual(record["schema"], "radar-observation.v2"); self.assertEqual(record["acquisitionResult"], "success"); self.assertEqual(record["rows"][0]["id"], "123"); self.assertEqual(record["rawArtifacts"][0]["sha256"], __import__("hashlib").sha256(body).hexdigest())
             self.assertFalse((downloads / "report_1.csv").exists())
 
+    def test_core_trac_keeps_multiline_description_only_in_raw_archive(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir()
+            source = {"id": "core-trac-report", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}
+            body = b'id,summary,status,_description\r\n123,Fix it,new,"First\r\nsecond"\r\n'
+            path = downloads / "report.csv"; path.write_bytes(body)
+            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1,
+                                       opener=lambda _: None, waiter=lambda *_: path, closer=lambda *_: None)
+            self.assertEqual(record["rows"], [{"id": "123", "summary": "Fix it", "status": "new"}])
+            self.assertEqual((root / "run/core-trac-report.csv").read_bytes(), body)
+
     def test_core_trac_retries_one_download_timeout(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); source = {"id": "retry", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}; body = b"id,summary,status\n123,Fix it,new\n"; path = downloads / "report_1.csv"; path.write_bytes(body); waits = iter([TimeoutError("no download"), path]); opens = []; closes = []

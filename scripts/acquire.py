@@ -208,6 +208,10 @@ def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dic
     except (UnicodeDecodeError, csv.Error) as error:
         raise ValueError(f"acquired CSV is unreadable: {error}") from error
 
+def rows_for_observation(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Keep full descriptions in the verified raw CSV, not a second run copy."""
+    return [{key: value for key, value in row.items() if key != "description"} for row in rows]
+
 def make_observation(source: dict[str, Any], observed_at: str, *, rows: list[dict[str, Any]], result: str, revision: str | None, raw_artifacts: list[dict[str, Any]], error: str | None = None) -> dict[str, Any]:
     record = {"schema": "radar-observation.v2", "version": 2, "sourceId": source["id"], "sourceFamily": source.get("sourceFamily", "CORE_TRAC"), "sourceRole": source.get("sourceRole", "DIRECT_OPPORTUNITY"), "semanticMeaning": source.get("semanticMeaning", "Public source observation."), "candidateFamilyMappings": source.get("candidateFamilyMappings", []), "identityField": source.get("identityField"), "resourceType": source.get("resourceType", "PUBLIC_RESOURCE"), "exactUpstreamUrl": source.get("csvUrl") or source.get("authoritativeSource"), "observedAt": observed_at, "sourceRevision": revision, "acquisitionResult": result, "rows": rows, "rawArtifacts": raw_artifacts}
     if source.get("semanticValidation") is not None: record["semanticValidation"] = source["semanticValidation"]
@@ -236,7 +240,7 @@ def acquire_core_trac(source: dict[str, Any], run_dir: Path, observed_at: str, d
                 row_count, rows = validate_csv(body, list(source.get("expectedFields") or [])); artifact = run_dir / f"{source_slug(source['id'])}.csv"; artifact.write_bytes(body); sha = sha256_bytes(body)
                 artifact_path = str(artifact.relative_to(ROOT)) if artifact.is_relative_to(ROOT) else artifact.name
                 downloaded.unlink()
-                return make_observation(source, observed_at, rows=rows, result="success", revision=sha, raw_artifacts=[{"path": artifact_path, "sha256": sha, "byteLength": len(body), "contentType": "text/csv", "rowCount": row_count}])
+                return make_observation(source, observed_at, rows=rows_for_observation(rows), result="success", revision=sha, raw_artifacts=[{"path": artifact_path, "sha256": sha, "byteLength": len(body), "contentType": "text/csv", "rowCount": row_count}])
         except Exception as error:
             last_error = error; fatal = True
         finally:
