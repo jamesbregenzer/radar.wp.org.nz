@@ -113,6 +113,17 @@ class AcquireTests(unittest.TestCase):
             self.assertEqual(record["schema"], "radar-observation.v2"); self.assertEqual(record["acquisitionResult"], "success"); self.assertEqual(record["rows"][0]["id"], "123"); self.assertEqual(record["rawArtifacts"][0]["sha256"], __import__("hashlib").sha256(body).hexdigest())
             self.assertFalse((downloads / "report_1.csv").exists())
 
+    def test_core_trac_keeps_multiline_description_only_in_raw_archive(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir()
+            source = {"id": "core-trac-report", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}
+            body = b'id,summary,status,_description\r\n123,Fix it,new,"First\r\nsecond"\r\n'
+            path = downloads / "report.csv"; path.write_bytes(body)
+            record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1,
+                                       opener=lambda _: None, waiter=lambda *_: path, closer=lambda *_: None)
+            self.assertEqual(record["rows"], [{"id": "123", "summary": "Fix it", "status": "new"}])
+            self.assertEqual((root / "run/core-trac-report.csv").read_bytes(), body)
+
     def test_core_trac_retries_one_download_timeout(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); source = {"id": "retry", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}; body = b"id,summary,status\n123,Fix it,new\n"; path = downloads / "report_1.csv"; path.write_bytes(body); waits = iter([TimeoutError("no download"), path]); opens = []; closes = []
@@ -182,7 +193,52 @@ class AcquireTests(unittest.TestCase):
         self.assertNotIn("keywords", rows[0])
         self.assertEqual(rows[0]["time"], "2026-07-15T11:35:42Z")
         self.assertEqual(rows[0]["changetime"], "2026-10-01T23:36:28Z")
+        self.assertEqual(rows[0]["description"], "description")
         self.assertNotIn("comments", rows[0])
+
+    def test_multiline_description_preserves_original_csv_line_endings(self):
+        description = "First line\r\nSecond line, with comma\nThird line"
+        for header in ("_description", "Description"):
+            with self.subTest(header=header):
+                body = f'id,summary,status,{header}\r\n123,Fix it,new,"{description}"\r\n'.encode("utf-8")
+                count, rows = validate_csv(body, ["id", "summary", "status", "description"])
+                self.assertEqual(count, 1)
+                self.assertEqual(rows[0]["description"], description)
+                self.assertNotIn("discussion", rows[0])
+                self.assertNotIn("contextComplete", rows[0])
+
+    def test_description_aliases_select_only_unambiguous_body(self):
+        for first, second in (("description", "_description"), ("_description", "description")):
+            for left, right, expected in (
+                ("", "Line one\nLine two", "Line one\nLine two"),
+                ("Line one\r\nLine two", "", "Line one\r\nLine two"),
+                ("Line one\nLine two", "Line one\nLine two", "Line one\nLine two"),
+                ("", "", ""),
+            ):
+                with self.subTest(first=first, second=second, left=left, right=right):
+                    body = f'id,summary,status,{first},{second}\r\n123,Fix it,new,"{left}","{right}"\r\n'.encode("utf-8")
+                    _, rows = validate_csv(body, ["id", "summary", "status"])
+                    self.assertEqual(rows[0]["description"], expected)
+
+    def test_description_aliases_reject_conflicting_nonempty_bodies(self):
+        for first, second in (("description", "_description"), ("_description", "description")):
+            for line_ending in ("\n", "\r\n"):
+                with self.subTest(first=first, second=second, line_ending=repr(line_ending)):
+                    left = f"Line one{line_ending}left"
+                    right = f"Line one{line_ending}right"
+                    body = f'id,summary,status,{first},{second}\r\n123,Fix it,new,"{left}","{right}"\r\n'.encode("utf-8")
+                    with self.assertRaisesRegex(ValueError, "conflicting description columns"):
+                        validate_csv(body, ["id", "summary", "status"])
+
+    def test_pinned_release_blocker_csv_keeps_provider_description_bytes(self):
+        fixture = ROOT / "tests/fixtures/raw/v2/release-blockers-20261031.csv"
+        count, rows = validate_csv(fixture.read_bytes(), ["id", "summary", "status", "description"])
+        self.assertEqual(count, 1)
+        self.assertEqual(rows[0]["id"], "65415")
+        self.assertIn("PHPMailer/issues/3342\r\n\r\nBut the gist", rows[0]["description"])
+        self.assertTrue(rows[0]["description"].endswith("}}}\r\n"))
+        self.assertNotIn("discussion", rows[0])
+        self.assertNotIn("contextComplete", rows[0])
 
     def test_observed_custom_query_headers_are_normalized(self):
         body = b"\xef\xbb\xbfid,Summary,Status,Keywords,Owner,Type,Priority\n123,Fix it,new,needs-testing,,defect (bug),normal\n"

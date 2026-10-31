@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Acquire approved Radar V2 sources into one canonical observation set."""
 from __future__ import annotations
-import argparse, csv, hashlib, json, os, re, signal, subprocess, time
+import argparse, csv, hashlib, io, json, os, re, signal, subprocess, time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -20,7 +20,7 @@ CORE_TRAC_RETRY_DELAY = 1
 FIREFOX_STOP_TIMEOUT = 15
 FIREFOX_PROFILE_WAIT_TIMEOUT = 5
 REQUIRED_CSV_FIELDS = {"id", "summary", "status"}
-OPTIONAL_CSV_FIELDS = {"keywords", "workflow", "component", "owner", "type", "priority", "milestone", "version", "time", "changetime", "comments", "_comments"}
+OPTIONAL_CSV_FIELDS = {"keywords", "workflow", "component", "owner", "type", "priority", "milestone", "version", "time", "changetime", "comments", "_comments", "description"}
 CSV_FIELD_ALIASES = {
     "id": "id", "ticket": "id",
     "summary": "summary",
@@ -36,6 +36,7 @@ CSV_FIELD_ALIASES = {
     "changetime": "changetime", "modified": "changetime",
     "comments": "comments",
     "_comments": "_comments",
+    "description": "description", "_description": "description",
 }
 
 def utc_now() -> str:
@@ -175,7 +176,7 @@ def normalize_csv_header(header: str) -> str | None:
 def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dict[str, str]]]:
     if not body.strip(): raise ValueError("acquired CSV is empty")
     try:
-        reader = csv.DictReader(body.decode("utf-8-sig").splitlines(), strict=True)
+        reader = csv.DictReader(io.StringIO(body.decode("utf-8-sig"), newline=""), strict=True)
         headers = reader.fieldnames or []
         normalized_headers = [normalize_csv_header(header) for header in headers]
         available = {field for field in normalized_headers if field}
@@ -190,6 +191,15 @@ def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dic
             row: dict[str, str] = {}
             for header, value in raw_row.items():
                 field = normalize_csv_header(header)
+                if field == "description" and not isinstance(value, str):
+                    raise ValueError("acquired CSV has a missing description column")
+                if field == "description" and field in row:
+                    if row[field] == value or value == "":
+                        continue
+                    if row[field] == "":
+                        row[field] = value
+                        continue
+                    raise ValueError("acquired CSV has conflicting description columns")
                 if field and field not in row:
                     row[field] = value
             rows.append(row)
@@ -197,6 +207,10 @@ def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dic
         return len(rows), [dict(row) for row in rows]
     except (UnicodeDecodeError, csv.Error) as error:
         raise ValueError(f"acquired CSV is unreadable: {error}") from error
+
+def rows_for_observation(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Keep full descriptions in the verified raw CSV, not a second run copy."""
+    return [{key: value for key, value in row.items() if key != "description"} for row in rows]
 
 def make_observation(source: dict[str, Any], observed_at: str, *, rows: list[dict[str, Any]], result: str, revision: str | None, raw_artifacts: list[dict[str, Any]], error: str | None = None) -> dict[str, Any]:
     record = {"schema": "radar-observation.v2", "version": 2, "sourceId": source["id"], "sourceFamily": source.get("sourceFamily", "CORE_TRAC"), "sourceRole": source.get("sourceRole", "DIRECT_OPPORTUNITY"), "semanticMeaning": source.get("semanticMeaning", "Public source observation."), "candidateFamilyMappings": source.get("candidateFamilyMappings", []), "identityField": source.get("identityField"), "resourceType": source.get("resourceType", "PUBLIC_RESOURCE"), "exactUpstreamUrl": source.get("csvUrl") or source.get("authoritativeSource"), "observedAt": observed_at, "sourceRevision": revision, "acquisitionResult": result, "rows": rows, "rawArtifacts": raw_artifacts}
@@ -226,7 +240,7 @@ def acquire_core_trac(source: dict[str, Any], run_dir: Path, observed_at: str, d
                 row_count, rows = validate_csv(body, list(source.get("expectedFields") or [])); artifact = run_dir / f"{source_slug(source['id'])}.csv"; artifact.write_bytes(body); sha = sha256_bytes(body)
                 artifact_path = str(artifact.relative_to(ROOT)) if artifact.is_relative_to(ROOT) else artifact.name
                 downloaded.unlink()
-                return make_observation(source, observed_at, rows=rows, result="success", revision=sha, raw_artifacts=[{"path": artifact_path, "sha256": sha, "byteLength": len(body), "contentType": "text/csv", "rowCount": row_count}])
+                return make_observation(source, observed_at, rows=rows_for_observation(rows), result="success", revision=sha, raw_artifacts=[{"path": artifact_path, "sha256": sha, "byteLength": len(body), "contentType": "text/csv", "rowCount": row_count}])
         except Exception as error:
             last_error = error; fatal = True
         finally:

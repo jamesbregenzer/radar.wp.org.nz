@@ -145,6 +145,11 @@ def material_resource(resource: dict[str, Any]) -> str:
 
 
 def membership(source: dict[str, Any], observation: dict[str, Any], row: dict[str, Any], semantic: dict[str, Any], freshness: str = "fresh", present: bool = True) -> dict[str, Any]:
+    evidence = deepcopy(row)
+    if source.get("sourceFamily", CORE_FAMILY) == CORE_FAMILY:
+        # Descriptions remain in the raw observation. The candidate feed is a
+        # discovery projection, and adding full bodies would change revisions.
+        evidence.pop("description", None)
     return {
         "sourceId": source["id"],
         "sourceFamily": source.get("sourceFamily", CORE_FAMILY),
@@ -157,7 +162,7 @@ def membership(source: dict[str, Any], observation: dict[str, Any], row: dict[st
         "presentInCurrentObservation": present,
         "semanticValidation": semantic,
         "candidateFamilyMappings": deepcopy(source.get("candidateFamilyMappings") or observation.get("candidateFamilyMappings") or row.get("candidateFamilyMappings") or []),
-        "evidence": deepcopy(row),
+        "evidence": evidence,
         "limitations": list(source.get("limitations") or []),
     }
 
