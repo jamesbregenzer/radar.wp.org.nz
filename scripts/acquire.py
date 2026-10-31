@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Acquire approved Radar V2 sources into one canonical observation set."""
 from __future__ import annotations
-import argparse, csv, hashlib, json, os, re, signal, subprocess, time
+import argparse, csv, hashlib, io, json, os, re, signal, subprocess, time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -20,7 +20,7 @@ CORE_TRAC_RETRY_DELAY = 1
 FIREFOX_STOP_TIMEOUT = 15
 FIREFOX_PROFILE_WAIT_TIMEOUT = 5
 REQUIRED_CSV_FIELDS = {"id", "summary", "status"}
-OPTIONAL_CSV_FIELDS = {"keywords", "workflow", "component", "owner", "type", "priority", "milestone", "version", "time", "changetime", "comments", "_comments"}
+OPTIONAL_CSV_FIELDS = {"keywords", "workflow", "component", "owner", "type", "priority", "milestone", "version", "time", "changetime", "comments", "_comments", "description"}
 CSV_FIELD_ALIASES = {
     "id": "id", "ticket": "id",
     "summary": "summary",
@@ -36,6 +36,7 @@ CSV_FIELD_ALIASES = {
     "changetime": "changetime", "modified": "changetime",
     "comments": "comments",
     "_comments": "_comments",
+    "description": "description", "_description": "description",
 }
 
 def utc_now() -> str:
@@ -175,7 +176,7 @@ def normalize_csv_header(header: str) -> str | None:
 def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dict[str, str]]]:
     if not body.strip(): raise ValueError("acquired CSV is empty")
     try:
-        reader = csv.DictReader(body.decode("utf-8-sig").splitlines(), strict=True)
+        reader = csv.DictReader(io.StringIO(body.decode("utf-8-sig"), newline=""), strict=True)
         headers = reader.fieldnames or []
         normalized_headers = [normalize_csv_header(header) for header in headers]
         available = {field for field in normalized_headers if field}
@@ -190,6 +191,15 @@ def validate_csv(body: bytes, expected_fields: list[str]) -> tuple[int, list[dic
             row: dict[str, str] = {}
             for header, value in raw_row.items():
                 field = normalize_csv_header(header)
+                if field == "description" and not isinstance(value, str):
+                    raise ValueError("acquired CSV has a missing description column")
+                if field == "description" and field in row:
+                    if row[field] == value or value == "":
+                        continue
+                    if row[field] == "":
+                        row[field] = value
+                        continue
+                    raise ValueError("acquired CSV has conflicting description columns")
                 if field and field not in row:
                     row[field] = value
             rows.append(row)

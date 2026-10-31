@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from pathlib import Path
 import sys
 import unittest
@@ -33,6 +34,20 @@ class ProcessingTests(unittest.TestCase):
         self.assertEqual(membership["sourceRole"], "DIRECT_OPPORTUNITY")
         self.assertIn("patch", membership["semanticMeaning"])
         self.assertEqual(membership["evidence"]["id"], "123")
+
+    def test_optional_description_reaches_candidate_evidence_without_completeness_claim(self):
+        payload = deepcopy(self.payload)
+        description = "First line\r\nSecond line, with comma"
+        payload["observations"][0]["rows"][0]["description"] = description
+        feed = build_feed(payload)
+        candidate = next(item for item in feed["candidates"] if item["resource"]["id"] == "core-trac:123")
+        baseline = next(item for item in build_feed(self.payload)["candidates"] if item["resource"]["id"] == "core-trac:123")
+        membership = next(item for item in candidate["sourceMemberships"] if item["sourceId"].endswith("15-has-patch-needs-testing"))
+        self.assertEqual(membership["evidence"]["description"], description)
+        self.assertEqual(candidate["opportunityId"], baseline["opportunityId"])
+        self.assertEqual(candidate["score"], baseline["score"])
+        self.assertNotIn("contextComplete", membership["evidence"])
+        self.assertNotIn("discussionComplete", membership["evidence"])
 
     def test_direct_non_trac_mapping_is_a_candidate(self):
         candidate = next(item for item in build_feed(self.payload)["candidates"] if item["resource"]["id"] == "accessibility-requests:a-1")
