@@ -7,8 +7,10 @@ import argparse
 from datetime import datetime
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
+import stat
 import sys
 from typing import Any
 
@@ -30,16 +32,45 @@ def fail(code: str) -> None:
     raise DescriptionLookupError(code)
 
 
-def read_bounded(path: Path, limit: int) -> bytes:
+def read_bounded(path: Path, limit: int, *, anchor: Path) -> bytes:
+    """Read a regular file beneath a trusted directory without following links."""
+    descriptors: list[int] = []
     try:
-        if not path.is_file() or path.stat().st_size > limit:
+        parts = path.relative_to(anchor).parts
+        if not parts or any(part in {"", ".", ".."} for part in parts):
             fail("description_archive_missing_or_oversized")
-        body = path.read_bytes()
-        if len(body) > limit:
+        if not stat.S_ISDIR(os.lstat(anchor).st_mode):
             fail("description_archive_missing_or_oversized")
-        return body
-    except OSError:
+        directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+        descriptors.append(os.open(anchor, directory_flags))
+        for part in parts[:-1]:
+            descriptors.append(os.open(part, directory_flags, dir_fd=descriptors[-1]))
+        file_flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+        descriptors.append(os.open(parts[-1], file_flags, dir_fd=descriptors[-1]))
+        before = os.fstat(descriptors[-1])
+        if not stat.S_ISREG(before.st_mode) or before.st_size > limit:
+            fail("description_archive_missing_or_oversized")
+        chunks: list[bytes] = []
+        length = 0
+        while True:
+            chunk = os.read(descriptors[-1], min(65_536, limit + 1 - length))
+            if not chunk:
+                break
+            length += len(chunk)
+            if length > limit:
+                fail("description_archive_missing_or_oversized")
+            chunks.append(chunk)
+        after = os.fstat(descriptors[-1])
+        identity = lambda info: (info.st_dev, info.st_ino, info.st_size,
+                                 info.st_mtime_ns, info.st_ctime_ns)
+        if identity(before) != identity(after) or length != after.st_size:
+            fail("description_archive_changed_during_read")
+        return b"".join(chunks)
+    except (OSError, ValueError):
         fail("description_archive_missing_or_oversized")
+    finally:
+        for descriptor in reversed(descriptors):
+            os.close(descriptor)
 
 
 def lookup_description(
@@ -68,7 +99,7 @@ def lookup_description(
     run_id = observed_at.replace(":", "-")
     run_dir = raw_root / run_id
     try:
-        run = json.loads(read_bounded(run_dir / "run.json", MAX_RUN_BYTES))
+        run = json.loads(read_bounded(run_dir / "run.json", MAX_RUN_BYTES, anchor=raw_root))
     except (ValueError, UnicodeDecodeError):
         fail("description_archive_invalid")
     if (not isinstance(run, dict) or run.get("schema") != "radar-observation-set.v2"
@@ -97,7 +128,7 @@ def lookup_description(
             or artifacts[0].get("contentType") != "text/csv"):
         fail("description_artifact_mismatch")
     artifact = artifacts[0]
-    body = read_bounded(run_dir / filename, MAX_CSV_BYTES)
+    body = read_bounded(run_dir / filename, MAX_CSV_BYTES, anchor=raw_root)
     if (type(artifact.get("byteLength")) is not int
             or artifact["byteLength"] != len(body)
             or hashlib.sha256(body).hexdigest() != source_revision):
@@ -147,7 +178,7 @@ def lookup_candidate_description(
             or type(candidate_id) is not str or len(candidate_id) > 100
             or type(source_id) is not str):
         fail("description_binding_invalid")
-    feed_bytes = read_bounded(feed_path, MAX_FEED_BYTES)
+    feed_bytes = read_bounded(feed_path, MAX_FEED_BYTES, anchor=feed_path.parent)
     if hashlib.sha256(feed_bytes).hexdigest() != feed_sha256:
         fail("description_feed_hash_mismatch")
     try:

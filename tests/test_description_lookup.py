@@ -2,16 +2,18 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from acquire import rows_for_observation, validate_csv
-from description_lookup import DescriptionLookupError, lookup_candidate_description, lookup_description
+from description_lookup import DescriptionLookupError, lookup_candidate_description, lookup_description, read_bounded
 
 SOURCE_ID = "core-trac-report-18-release-blockers"
 TICKET_ID = 65415
@@ -177,6 +179,78 @@ class DescriptionLookupTests(unittest.TestCase):
             lookup_description(source_id="../other", source_revision="a" * 64,
                                ticket_id=TICKET_ID, observed_at="2026-10-31T17:26:03Z",
                                raw_root=self.raw_root)
+
+    def test_archive_file_and_directory_symlinks_refuse(self):
+        time = "2026-10-31T17:26:03Z"
+        sha, _, raw = self.archive(time, b'id,summary,status,_description\n65415,Issue,new,Body\n')
+        outside = Path(self.temporary.name) / "outside.csv"
+        outside.write_bytes(raw.read_bytes())
+        raw.unlink()
+        raw.symlink_to(outside)
+        with self.assertRaisesRegex(DescriptionLookupError, "description_archive_missing_or_oversized"):
+            self.read(time, sha)
+        raw.unlink()
+        run_dir = self.raw_root / time.replace(":", "-")
+        moved = Path(self.temporary.name) / "moved-run"
+        run_dir.rename(moved)
+        run_dir.symlink_to(moved, target_is_directory=True)
+        with self.assertRaisesRegex(DescriptionLookupError, "description_archive_missing_or_oversized"):
+            self.read(time, sha)
+
+    def test_run_and_feed_symlinks_refuse(self):
+        time = "2026-10-31T17:26:03Z"
+        sha, run, _ = self.archive(time, b'id,summary,status,_description\n65415,Issue,new,Body\n')
+        run_path = self.raw_root / time.replace(":", "-") / "run.json"
+        outside = Path(self.temporary.name) / "outside-run.json"
+        run_path.rename(outside)
+        run_path.symlink_to(outside)
+        with self.assertRaisesRegex(DescriptionLookupError, "description_archive_missing_or_oversized"):
+            self.read(time, sha)
+        run_path.unlink()
+        outside.rename(run_path)
+        feed, feed_sha, _ = self.feed([self.membership(time, sha, run["observations"][0]["rows"][0])])
+        other = Path(self.temporary.name) / "outside-feed.json"
+        feed.rename(other)
+        feed.symlink_to(other)
+        with self.assertRaisesRegex(DescriptionLookupError, "description_archive_missing_or_oversized"):
+            self.candidate_read(feed, feed_sha)
+
+    def test_archive_root_symlink_and_nonregular_file_refuse(self):
+        time = "2026-10-31T17:26:03Z"
+        sha, _, _ = self.archive(time, b'id,summary,status,_description\n65415,Issue,new,Body\n')
+        alias = Path(self.temporary.name) / "linked-raw"
+        alias.symlink_to(self.raw_root, target_is_directory=True)
+        with self.assertRaisesRegex(DescriptionLookupError, "description_archive_missing_or_oversized"):
+            lookup_description(source_id=SOURCE_ID, source_revision=sha, ticket_id=TICKET_ID,
+                               observed_at=time, raw_root=alias)
+        fifo = Path(self.temporary.name) / "special"
+        os.mkfifo(fifo)
+        with self.assertRaisesRegex(DescriptionLookupError, "description_archive_missing_or_oversized"):
+            read_bounded(fifo, 16, anchor=fifo.parent)
+
+    def test_growth_during_read_is_bounded_and_smaller_change_refuses(self):
+        target = Path(self.temporary.name) / "changing.bin"
+        target.write_bytes(b"original")
+        original_read = os.read
+        def grow(fd, count):
+            with target.open("ab") as output:
+                output.write(b"X" * 100)
+            return original_read(fd, count)
+        with patch("description_lookup.os.read", side_effect=grow):
+            with self.assertRaisesRegex(DescriptionLookupError, "description_archive_missing_or_oversized"):
+                read_bounded(target, 16, anchor=target.parent)
+        target.write_bytes(b"original")
+        changed = False
+        def change(fd, count):
+            nonlocal changed
+            if not changed:
+                changed = True
+                with target.open("ab") as output:
+                    output.write(b"!")
+            return original_read(fd, count)
+        with patch("description_lookup.os.read", side_effect=change):
+            with self.assertRaisesRegex(DescriptionLookupError, "description_archive_changed_during_read"):
+                read_bounded(target, 16, anchor=target.parent)
 
     def test_cli_returns_exact_pinned_raw_description_and_incomplete_context(self):
         time = "2026-10-31T17:26:03Z"

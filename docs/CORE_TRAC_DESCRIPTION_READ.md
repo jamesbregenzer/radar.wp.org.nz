@@ -20,6 +20,10 @@ ambiguous, conflicting, corrupt, or oversized content is refused. The current
 bound is 65,536 UTF-8 bytes for one description, 32 MB for a raw CSV, 40 MB for
 a run record, and 50 MB for the candidate feed. This is a local read contract;
 no Controller admission or public publication follows from a successful read.
+Archive reads are anchored to the supplied raw directory. Every descendant
+directory and file is opened without following symbolic links, regular files
+are required, and the byte limit is enforced as bytes are read. A file that
+changes while being read is refused.
 
 Example using the pinned public archive (the feed hash must come from an
 independently trusted source):
