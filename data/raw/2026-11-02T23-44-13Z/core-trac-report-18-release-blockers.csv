@@ -1,0 +1,16 @@
+﻿__group__,ticket,summary,owner,component,_version,priority,severity,milestone,type,_status,workflow,_created,modified,_description,_reporter
+7.2,65415,WordPress 7.0 inclusion of PHPMailer 7.0.2 breaks .user.ini override of sendmail_from,,Mail,7.0,normal,critical,7.2,defect (bug),new,close,2026-06-05T01:11:30Z,2026-10-08T19:01:21Z,"I have created a ticket on PHPMailer here: https://github.com/PHPMailer/PHPMailer/issues/3342
+
+But the gist is, the recent patch in PHPMailer 7.0.2 prevents the .user.ini from overriding an existing -f flag in the sendmail command. Which prevents sites from fixing the incorrect domain on certain hosts (like Nexcess/LiquidWeb) and causing all mail to no longer be deliverable. I have a workaround for now with this simple patch, but ideally PHPMailer needs to be fixed in order to allow the flexibility to override the default sendmail command.
+
+Here is my workaround:
+{{{#!php
+<?php
+add_action('phpmailer_init', function ($phpmailer) {
+    $phpmailer->isSendmail();
+    $sendmail_from_value = ini_get('sendmail_from');
+    if (empty($sendmail_from_value)) return;
+    $phpmailer->Sender = $sendmail_from_value;
+}, 999);
+}}}
+",gmariani405
