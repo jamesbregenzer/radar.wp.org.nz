@@ -21,7 +21,8 @@ def prior_observation_run(raw_root: Path, current_run_id: str) -> dict | None:
             value = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             continue
-        if value.get("schema") == "radar-observation-set.v2" and value.get("success") and value.get("observations"):
+        if (value.get("schema") == "radar-observation-set.v2" and value.get("success")
+                and value.get("observations") and not is_explicitly_nonpublishable(value)):
             runs.append((value.get("observedAt") or "", path, value))
     return max(runs, key=lambda item: item[0])[2] if runs else None
 
@@ -29,6 +30,32 @@ def validate_feed(feed: dict) -> None:
     if feed.get("schema") != "radar-candidate-feed.v2": raise ValueError("invalid candidate feed schema")
     if not isinstance(feed.get("candidates"), list) or feed.get("candidateCount") != len(feed["candidates"]): raise ValueError("invalid candidate feed candidate count")
     if not feed.get("feedRevision"): raise ValueError("candidate feed has no revision")
+
+def is_explicitly_nonpublishable(manifest: dict) -> bool:
+    """Return whether any supported manifest-level marker explicitly forbids publication."""
+    if not isinstance(manifest, dict):
+        return False
+    if manifest.get("publicationEligible") is False:
+        return True
+    coverage = manifest.get("sourceCoverage")
+    if isinstance(coverage, dict) and coverage.get("publicationEligible") is False:
+        return True
+    observations = manifest.get("observations") or []
+    if not isinstance(observations, list):
+        return False
+    for observation in observations:
+        if not isinstance(observation, dict):
+            continue
+        diagnostics = observation.get("acquisitionDiagnostics")
+        if (observation.get("publicationEligible") is False
+                or (isinstance(diagnostics, dict) and diagnostics.get("publicationEligible") is False)):
+            return True
+    return False
+
+def reject_explicitly_nonpublishable(manifest: dict) -> None:
+    """Reject private/nonpublishable markers before feed or Git publication."""
+    if is_explicitly_nonpublishable(manifest):
+        raise RuntimeError("acquisition input is explicitly marked publicationEligible=false")
 
 def git(*args: str) -> None:
     subprocess.run(["git", *args], cwd=ROOT, check=True)
@@ -39,6 +66,7 @@ def run_once() -> int:
         try: fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError: return 2
         manifest = acquire_run()
+        reject_explicitly_nonpublishable(manifest)
         if not manifest.get("success"): raise RuntimeError("no source acquired successfully")
         previous = prior_observation_run(ROOT / "data" / "raw", manifest["runId"])
         feed = build_feed(manifest, previous=previous)
