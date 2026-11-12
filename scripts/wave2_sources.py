@@ -87,13 +87,13 @@ def github_headers() -> dict[str, str]:
     return headers
 
 
-def fetch_public(url: str) -> tuple[bytes, dict[str, str], int]:
+def fetch_public(url: str, *, timeout: float = 45) -> tuple[bytes, dict[str, str], int]:
     headers = github_headers() if urlparse(url).netloc == "api.github.com" else {
         "accept": "application/json",
         "user-agent": "wp-core-radar-public-source-collector",
     }
     request = urllib.request.Request(url, headers=headers)
-    with urllib.request.urlopen(request, timeout=45) as response:
+    with urllib.request.urlopen(request, timeout=timeout) as response:
         body = response.read()
         response_headers = {key.lower(): value for key, value in response.headers.items()}
         return body, response_headers, int(response.status)

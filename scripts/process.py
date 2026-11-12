@@ -73,23 +73,47 @@ def row_keywords(row: dict[str, Any]) -> set[str]:
     value = row.get("keywords", row.get("labels", ""))
     if isinstance(value, list):
         return {str(item).strip().lower() for item in value if str(item).strip()}
-    return {item for item in str(value or "").replace(",", " ").split() if item}
+    return {item.lower() for item in str(value or "").replace(",", " ").split() if item}
 
 
-def validate_rows(source: dict[str, Any], rows: list[dict[str, Any]], result: str) -> dict[str, Any]:
+def validate_rows(source: dict[str, Any], rows: list[dict[str, Any]], result: str, observed_url: str | None = None) -> dict[str, Any]:
     rules = source.get("semanticValidation") or {}
     if result != "success":
         return {"state": "failed", "findings": ["acquisition did not succeed"]}
     if not rows and rules.get("allowEmpty", False):
-        return {"state": "passed", "findings": []}
+        return {"state": "passed", "verification": "row", "findings": []}
     findings: list[str] = []
     expected = set(source.get("expectedFields") or [])
     forbidden_statuses = {str(item).lower() for item in rules.get("statusNot", [])}
+    missing_report_keyword_rows = 0
+    has_keyword_rules = bool(rules.get("requiredKeywordsAll") or rules.get("requiredKeywordsAny") or rules.get("forbiddenKeywordsAny"))
+    report_membership_is_exact = (
+        source.get("locator", {}).get("kind") == "trac-report"
+        and bool(source.get("csvUrl"))
+        and observed_url == source.get("csvUrl")
+    )
     for index, row in enumerate(rows):
         missing = sorted(field for field in expected if field in REQUIRED_ROW_FIELDS and field not in row)
         if missing:
             findings.append(f"row {index} missing fields: {', '.join(missing)}")
-        if "keywords" in row:
+        if has_keyword_rules and "keywords" not in row:
+            if report_membership_is_exact:
+                # A named Trac report can define membership, but cannot prove
+                # the omitted per-row keyword values. Keep that distinction in
+                # the result instead of treating absence as a successful test.
+                missing_report_keyword_rows += 1
+            else:
+                findings.append(f"row {index} missing keyword evidence required by source rules")
+        elif has_keyword_rules and row.get("keywords") is None:
+            # A present null can come from a malformed/short CSV row. Unlike an
+            # explicit empty token list, it does not prove absence of keywords.
+            findings.append(f"row {index} has null keyword evidence")
+        elif has_keyword_rules and not (
+            isinstance(row.get("keywords"), str)
+            or (isinstance(row.get("keywords"), list) and all(isinstance(item, str) for item in row["keywords"]))
+        ):
+            findings.append(f"row {index} has malformed keyword evidence")
+        elif has_keyword_rules:
             keywords = row_keywords(row)
             missing_all = [item for item in rules.get("requiredKeywordsAll", []) if item.lower() not in keywords]
             if missing_all:
@@ -102,7 +126,34 @@ def validate_rows(source: dict[str, Any], rows: list[dict[str, Any]], result: st
                 findings.append(f"row {index} contains forbidden keyword: {', '.join(forbidden)}")
         if str(row.get("status", "")).lower() in forbidden_statuses:
             findings.append(f"row {index} has forbidden status: {row.get('status')}")
-    return {"state": "passed" if not findings else "failed", "findings": findings}
+    if findings:
+        return {"state": "failed", "verification": "row", "findings": findings}
+    if missing_report_keyword_rows:
+        return {
+            "state": "source_defined",
+            "verification": "configured_report_membership",
+            "rowKeywordChecks": "not_performed",
+            "unverifiedFields": ["keywords"],
+            "unverifiedRowCount": missing_report_keyword_rows,
+            "findings": [],
+        }
+    return {"state": "passed", "verification": "row", "findings": []}
+
+
+def semantic_validation_usable(semantic: dict[str, Any]) -> bool:
+    return semantic.get("state") in {"passed", "source_defined"}
+
+
+def observation_is_validated(source: dict[str, Any], observation: dict[str, Any] | None) -> bool:
+    if not observation or observation.get("acquisitionResult") != "success":
+        return False
+    semantic = validate_rows(
+        source,
+        list(observation.get("rows") or []),
+        "success",
+        observation.get("exactUpstreamUrl"),
+    )
+    return semantic_validation_usable(semantic)
 
 
 def source_definition(observation: dict[str, Any], registry: dict[str, Any]) -> dict[str, Any]:
@@ -123,9 +174,9 @@ def source_definition(observation: dict[str, Any], registry: dict[str, Any]) -> 
 
 def source_health(source: dict[str, Any], observation: dict[str, Any] | None, prior: dict[str, Any] | None) -> dict[str, Any]:
     result = str((observation or {}).get("acquisitionResult", "failed"))
-    semantic = validate_rows(source, list((observation or {}).get("rows") or []), result)
-    healthy = result == "success" and semantic.get("state") == "passed"
-    had_prior = bool(prior and prior.get("rows"))
+    semantic = validate_rows(source, list((observation or {}).get("rows") or []), result, (observation or {}).get("exactUpstreamUrl"))
+    healthy = result == "success" and semantic_validation_usable(semantic)
+    had_prior = observation_is_validated(source, prior)
     return {
         "sourceId": source["id"],
         "sourceFamily": source.get("sourceFamily", CORE_FAMILY if source["id"].startswith("core-trac-") else "UNKNOWN"),
@@ -187,15 +238,16 @@ def build_feed(payload: dict[str, Any], registry: dict[str, Any] | None = None, 
         old = prior.get(source_id)
         result = str((observation or {}).get("acquisitionResult", "failed"))
         rows = list((observation or {}).get("rows") or [])
-        semantic = validate_rows(source, rows, result)
+        semantic = validate_rows(source, rows, result, (observation or {}).get("exactUpstreamUrl"))
+        old_is_validated = observation_is_validated(source, old)
         health_record = source_health(source, observation, old)
         health.append(health_record)
-        usable = result == "success" and semantic.get("state") == "passed"
-        evidence_observation = observation if usable else (old if old and health_record["freshness"] == "stale" else None)
+        usable = result == "success" and semantic_validation_usable(semantic)
+        evidence_observation = observation if usable else (old if old_is_validated and health_record["freshness"] == "stale" else None)
         if not evidence_observation:
             continue
         evidence_rows = list(evidence_observation.get("rows") or [])
-        evidence_semantic = semantic if usable else validate_rows(source, evidence_rows, "success")
+        evidence_semantic = semantic if usable else validate_rows(source, evidence_rows, "success", evidence_observation.get("exactUpstreamUrl"))
         for row in evidence_rows:
             identity = row_identity(row, source)
             if not identity or source.get("sourceRole") == RECONCILIATION or str(row.get("status") or row.get("state") or "").strip().lower() in NON_ACTIONABLE_STATUSES:
