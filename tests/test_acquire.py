@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from acquire import FIREFOX_EXECUTABLE, FirefoxSession, acquire_core_trac, acquire_run, acquire_wave2, close_firefox, download_is_incomplete, ensure_firefox_profile_available, firefox_command, navigate_firefox, new_csv_file, open_firefox, prepare_firefox_profile, radar_firefox_pids, validate_csv
+from acquire import FIREFOX_EXECUTABLE, FirefoxSession, acquire_core_trac, acquire_run, acquire_wave2, close_firefox, download_is_incomplete, ensure_firefox_profile_available, fetch_wave2_source, firefox_command, navigate_firefox, new_csv_file, open_firefox, prepare_firefox_profile, radar_firefox_pids, validate_csv
 from process import build_feed
 
 class AcquireTests(unittest.TestCase):
@@ -59,14 +59,44 @@ class AcquireTests(unittest.TestCase):
         self.assertEqual(command[:3], [str(FIREFOX_EXECUTABLE), "-profile", "/tmp/radar-profile"])
         self.assertNotIn("-no-remote", command)
 
-    def test_close_firefox_uses_one_graceful_quit_and_waits_for_lock_release(self):
+    def test_first_download_baseline_is_captured_before_firefox_launch(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            downloads = root / "downloads"
+            downloads.mkdir()
+            source = {"id": "first-report", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/report", "expectedFields": ["id", "summary", "status"]}
+
+            def opener(_url, *, downloads):
+                (downloads / "report_12.csv").write_text("id,summary,status\n12,Example,new\n", encoding="utf-8")
+                return FirefoxSession(self.FakeProcess(), root / "profile")
+
+            def waiter(directory, before, _timeout):
+                path = new_csv_file(before, directory)
+                if path is None:
+                    raise TimeoutError("no new download")
+                return path
+
+            with patch("acquire.open_firefox", side_effect=opener), patch("acquire.close_firefox"), patch("acquire.navigate_firefox"):
+                manifest = acquire_run(
+                    raw_root=root / "raw",
+                    observed_at="2026-10-07T12:00:00Z",
+                    downloads=downloads,
+                    timeout=1,
+                    trac_sources=[source],
+                    wave2_sources=[],
+                    trac_acquirer=acquire_core_trac,
+                )
+            self.assertTrue(manifest["observations"][0]["acquisitionResult"] == "success")
+            self.assertEqual(manifest["observations"][0]["rows"][0]["id"], "12")
+
+    def test_close_firefox_terminates_only_the_dedicated_profile_processes(self):
         session = FirefoxSession(self.FakeProcess(), Path("/tmp/radar-profile"))
-        with patch("acquire.radar_firefox_pids", side_effect=[[123], [], [], []]), patch("acquire.subprocess.run") as run:
+        with patch("acquire.radar_firefox_pids", side_effect=[[123], [], [], []]), patch("acquire.os.kill") as kill, patch("acquire.subprocess.run") as run:
             close_firefox(session)
         self.assertEqual(session.graceful_quit_count, 1)
         self.assertFalse(session.emergency_kill_used)
-        self.assertEqual(run.call_count, 1)
-        self.assertIn('tell application "Firefox" to quit', run.call_args.args[0][-1])
+        kill.assert_called_once_with(123, __import__("signal").SIGTERM)
+        run.assert_not_called()
 
     def test_one_session_handles_multiple_sources_and_retries_in_session(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -81,10 +111,13 @@ class AcquireTests(unittest.TestCase):
                     raise value
                 value.write_text("id,summary,status\n123,Fix it,new\n")
                 return value
+            def navigate(url, *, timeout):
+                navigations.append((url, timeout))
             for index, source in enumerate(sources):
-                record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, session=session, first_in_session=index == 0, navigator=navigations.append, waiter=waiter)
+                record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, session=session, first_in_session=index == 0, navigator=navigate, waiter=waiter)
                 self.assertEqual(record["acquisitionResult"], "success")
-            self.assertEqual(navigations, ["https://example.test/two", "https://example.test/two"])
+            self.assertEqual([item[0] for item in navigations], ["https://example.test/two", "https://example.test/two"])
+            self.assertTrue(all(item[1] > 0 for item in navigations))
 
     def test_stale_profile_lock_is_removed_only_when_unheld(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -105,6 +138,23 @@ class AcquireTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "12345"):
                 open_firefox("https://example.test/report?format=csv", downloads=Path(temporary) / "downloads", profile=Path(temporary) / "profile")
             process.assert_not_called()
+
+    def test_profile_process_inspection_error_fails_closed(self):
+        result = type("Result", (), {"returncode": 1, "stdout": "", "stderr": "permission denied"})()
+        with patch("acquire.subprocess.run", return_value=result):
+            with self.assertRaisesRegex(RuntimeError, "cannot verify processes"):
+                radar_firefox_pids(Path("/tmp/radar-profile"))
+
+    def test_profile_process_matching_uses_exact_profile_argument(self):
+        result = type("Result", (), {
+            "returncode": 0,
+            "stdout": (
+                f"101 {FIREFOX_EXECUTABLE} -no-remote -profile /tmp/radar-profile https://example.test/one\n"
+                f"202 {FIREFOX_EXECUTABLE} -no-remote -profile /tmp/radar-profile-extra https://example.test/two\n"
+            ),
+        })()
+        with patch("acquire.subprocess.run", return_value=result):
+            self.assertEqual(radar_firefox_pids(Path("/tmp/radar-profile")), [101])
 
     def test_core_trac_writes_canonical_observation_and_keeps_raw_csv(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -134,6 +184,78 @@ class AcquireTests(unittest.TestCase):
             record = acquire_core_trac(source, root / "run", "2026-10-07T12:00:00Z", downloads, 1, opener=lambda url: opens.append(url), waiter=waiter, closer=lambda *_: closes.append(True))
             self.assertEqual(record["acquisitionResult"], "success"); self.assertEqual(len(opens), 2); self.assertEqual(len(closes), 2)
 
+    def test_core_source_deadline_bounds_each_retry_deterministically(self):
+        class Clock:
+            value = 0.0
+            def __call__(self): return self.value
+            def sleep(self, duration): self.value += duration
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir()
+            source = {"id": "bounded", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}
+            clock = Clock(); wait_timeouts = []; path = downloads / "report_1.csv"
+            def waiter(_directory, _before, timeout):
+                wait_timeouts.append(timeout)
+                if len(wait_timeouts) == 1:
+                    clock.value += timeout
+                    raise TimeoutError("first bounded attempt timed out")
+                path.write_text("id,summary,status\n123,Fix it,new\n", encoding="utf-8")
+                return path
+            result = acquire_core_trac(
+                source, root / "run", "2026-10-07T12:00:00Z", downloads, 10,
+                opener=lambda _url: None, waiter=waiter, closer=lambda _process: None,
+                deadline=3.0, source_started_at=0.0, clock=clock, sleep=clock.sleep,
+            )
+            self.assertEqual(result["acquisitionResult"], "success")
+            self.assertEqual(len(wait_timeouts), 2)
+            self.assertAlmostEqual(wait_timeouts[0], 1.5)
+            self.assertGreater(wait_timeouts[1], 0)
+            self.assertLessEqual(clock(), 3.0)
+
+    def test_source_diagnostics_record_actual_deadline_overrun(self):
+        class Clock:
+            value = 0.0
+            def __call__(self): return self.value
+            def sleep(self, duration): self.value += duration
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir()
+            source = {"id": "overrun", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}
+            clock = Clock(); wait_timeouts = []
+            def waiter(_directory, _before, timeout):
+                wait_timeouts.append(timeout)
+                clock.value += timeout + (0.25 if len(wait_timeouts) == 1 else 0.1)
+                raise TimeoutError("mocked wait crossed its deadline")
+            result = acquire_core_trac(
+                source, root / "run", "2026-10-07T12:00:00Z", downloads, 1,
+                opener=lambda _url: None, waiter=waiter, closer=lambda _process: None,
+                clock=clock, sleep=clock.sleep,
+            )
+            diagnostics = result["acquisitionDiagnostics"]
+            self.assertEqual(result["acquisitionResult"], "failed")
+            self.assertEqual(diagnostics["attemptsUsed"], 2)
+            self.assertAlmostEqual(diagnostics["sourceElapsedSeconds"], 1.1)
+            self.assertGreater(diagnostics["sourceElapsedSeconds"], diagnostics["sourceBudgetSeconds"])
+
+    def test_zero_source_budget_begins_no_attempt(self):
+        class Clock:
+            def __call__(self): return 0.0
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir()
+            source = {"id": "zero-budget", "csvUrl": "https://example.test/query", "expectedFields": ["id", "summary", "status"]}
+            opened = []
+            result = acquire_core_trac(
+                source, root / "run", "2026-10-07T12:00:00Z", downloads, 0,
+                opener=lambda url: opened.append(url), closer=lambda _process: None,
+                clock=Clock(), sleep=lambda _duration: None,
+            )
+            diagnostics = result["acquisitionDiagnostics"]
+            self.assertEqual(opened, [])
+            self.assertEqual(diagnostics["attemptsUsed"], 0)
+            self.assertEqual(diagnostics["sourceBudgetSeconds"], 0)
+            self.assertEqual(diagnostics["sourceElapsedSeconds"], 0)
+
     def test_core_trac_retries_timeout_once_then_fails_without_blocking_next_source(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); downloads = root / "Downloads"; downloads.mkdir(); bad = {"id": "bad", "csvUrl": "https://example.test/bad", "expectedFields": ["id", "summary", "status"]}; good = {"id": "good", "csvUrl": "https://example.test/good", "expectedFields": ["id", "summary", "status"]}; path = downloads / "report_1.csv"; path.write_text("id,summary,status\n123,Fix it,new\n"); timeout_waits = {"bad": 0}
@@ -143,6 +265,95 @@ class AcquireTests(unittest.TestCase):
                 return acquire_core_trac(source, run_dir, observed, directory, timeout, waiter=lambda *_: path, opener=lambda _: None, closer=lambda *_: None)
             manifest = acquire_run(raw_root=root / "raw", observed_at="2026-10-07T12:00:00Z", downloads=downloads, trac_sources=[bad, good], wave2_sources=[], trac_acquirer=acquirer)
             self.assertEqual([item["acquisitionResult"] for item in manifest["observations"]], ["failed", "success"])
+
+    def test_failed_core_download_records_bounded_process_and_file_diagnostics(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            downloads = root / "downloads"
+            downloads.mkdir()
+            (downloads / "query.csv").write_text("id,summary,status\n1,Old,new\n", encoding="utf-8")
+            (downloads / "query.csv.part").write_text("partial", encoding="utf-8")
+            source = {"id": "timeout", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/query?format=csv", "expectedFields": ["id", "summary", "status"]}
+            with patch("acquire.time.sleep"):
+                observation = acquire_core_trac(
+                    source,
+                    root / "run",
+                    "2026-10-07T12:00:00Z",
+                    downloads,
+                    1,
+                    opener=lambda _url: self.FakeProcess(),
+                    waiter=lambda *_: (_ for _ in ()).throw(TimeoutError("no new CSV")),
+                    closer=lambda _process: None,
+                )
+            self.assertEqual(observation["acquisitionResult"], "failed")
+            diagnostics = observation["acquisitionDiagnostics"]
+            self.assertEqual({key: diagnostics[key] for key in (
+                "matchingCsvCountBefore", "matchingCsvCountAfter", "changedMatchingCsvCount",
+                "incompleteMatchingCsvCount", "firefoxLauncherExitCode", "attemptsUsed",
+                "failureClass", "humanVerification",
+            )}, {
+                "matchingCsvCountBefore": 1, "matchingCsvCountAfter": 1,
+                "changedMatchingCsvCount": 0, "incompleteMatchingCsvCount": 1,
+                "firefoxLauncherExitCode": None, "attemptsUsed": 2,
+                "failureClass": "timeout", "humanVerification": "unobserved",
+            })
+            self.assertAlmostEqual(diagnostics["sourceBudgetSeconds"], 1.0)
+            self.assertGreaterEqual(diagnostics["sourceElapsedSeconds"], 0)
+            self.assertLessEqual(diagnostics["sourceElapsedSeconds"], 1.0)
+
+    def test_acquire_run_budget_skips_sources_after_deadline(self):
+        class Clock:
+            value = 0.0
+            def __call__(self): return self.value
+
+        with tempfile.TemporaryDirectory() as temporary:
+            clock = Clock(); calls = []
+            sources = [
+                {"id": "first", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/first"},
+                {"id": "second", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/second"},
+            ]
+            def fake_acquirer(source, _run_dir, observed, _downloads, timeout):
+                calls.append((source["id"], timeout))
+                clock.value += 1.0
+                return {"sourceId": source["id"], "sourceFamily": "CORE_TRAC", "observedAt": observed, "acquisitionResult": "success", "rows": [{"id": source["id"]}]}
+            manifest = acquire_run(
+                raw_root=Path(temporary), observed_at="2026-10-07T12:00:00Z", trac_sources=sources,
+                wave2_sources=[], trac_acquirer=fake_acquirer, run_timeout=1.0, clock=clock,
+            )
+            self.assertEqual([item[0] for item in calls], ["first"])
+            self.assertEqual(manifest["observations"][1]["acquisitionResult"], "failed")
+            self.assertIn("run deadline exhausted", manifest["observations"][1]["error"])
+            self.assertEqual(manifest["sourceCoverage"]["overallState"], "degraded")
+
+    def test_wave2_requests_share_remaining_run_budget(self):
+        class Clock:
+            value = 0.0
+            def __call__(self): return self.value
+
+        clock = Clock(); timeouts = []
+        def fetch(_url, *, timeout):
+            timeouts.append(timeout)
+            clock.value += 3.0
+            return b"[]", {}, 200
+        config = {"adapter": "github_issues", "urls": ["https://example.test/one", "https://example.test/two", "https://example.test/three"]}
+        with patch("wave2_sources.fetch_public", side_effect=fetch), self.assertRaisesRegex(TimeoutError, "deadline exceeded"):
+            fetch_wave2_source(config, deadline=5.0, clock=clock)
+        self.assertEqual(timeouts, [5.0, 2.0])
+
+    def test_wave2_socket_timeout_retains_45_second_cap(self):
+        class Clock:
+            value = 0.0
+            def __call__(self): return self.value
+
+        clock = Clock(); timeouts = []
+        def fetch(_url, *, timeout):
+            timeouts.append(timeout)
+            clock.value += 5.0
+            return b"[]", {}, 200
+        config = {"adapter": "github_issues", "urls": ["https://example.test/one", "https://example.test/two"]}
+        with patch("wave2_sources.fetch_public", side_effect=fetch):
+            fetch_wave2_source(config, deadline=90.0, clock=clock)
+        self.assertEqual(timeouts, [45.0, 45.0])
 
     def test_malformed_csv_is_not_retried(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -293,5 +504,83 @@ class AcquireTests(unittest.TestCase):
                 return {"schema": "radar-observation.v2", "version": 2, "sourceId": item["id"], "sourceFamily": "CORE_TRAC", "sourceRole": "DIRECT_OPPORTUNITY", "candidateFamilyMappings": [], "identityField": "id", "observedAt": observed, "acquisitionResult": "success", "rows": [{"id": "1"}]} if item["id"] == "good" else {"schema": "radar-observation.v2", "version": 2, "sourceId": "bad", "sourceFamily": "CORE_TRAC", "sourceRole": "DIRECT_OPPORTUNITY", "candidateFamilyMappings": [], "identityField": "id", "observedAt": observed, "acquisitionResult": "failed", "rows": [], "error": "network"}
             manifest = acquire_run(raw_root=Path(temporary), observed_at="2026-10-07T12:00:00Z", trac_sources=[source, good], wave2_sources=[], trac_acquirer=acquirer)
             self.assertTrue(manifest["success"])
+            coverage = manifest["sourceCoverage"]
+            self.assertEqual(coverage["overallState"], "degraded")
+            self.assertEqual(coverage["families"]["CORE_TRAC"], {
+                "state": "degraded",
+                "configuredSourceCount": 2,
+                "successfulSourceCount": 1,
+                "failedSourceCount": 1,
+                "failedSourceIds": ["bad"],
+            })
+            self.assertEqual(manifest["observations"][1]["rows"], [{"id": "1"}])
+
+    def test_unavailable_core_coverage_keeps_successful_other_families(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            core_sources = [
+                {"id": "core-one", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/one"},
+                {"id": "core-two", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/two"},
+            ]
+            public_source = {"sourceFamily": "PUBLIC_SOURCE"}
+
+            def failed_core(source, _run_dir, observed, _downloads, _timeout):
+                return {"sourceId": source["id"], "sourceFamily": "CORE_TRAC", "acquisitionResult": "failed", "rows": [], "observedAt": observed}
+
+            def successful_public(source, _run_dir, observed):
+                return {"sourceId": source["sourceFamily"], "sourceFamily": source["sourceFamily"], "acquisitionResult": "success", "rows": [{"id": "retained"}], "observedAt": observed}
+
+            manifest = acquire_run(
+                raw_root=Path(temporary),
+                observed_at="2026-10-07T12:00:00Z",
+                trac_sources=core_sources,
+                wave2_sources=[public_source],
+                trac_acquirer=failed_core,
+                wave2_acquirer=successful_public,
+            )
+            self.assertTrue(manifest["success"])
+            self.assertEqual(manifest["sourceCoverage"]["overallState"], "degraded")
+            self.assertEqual(manifest["sourceCoverage"]["families"]["CORE_TRAC"]["state"], "unavailable")
+            self.assertEqual(manifest["sourceCoverage"]["families"]["PUBLIC_SOURCE"]["state"], "complete")
+            self.assertEqual(manifest["observations"][-1]["rows"], [{"id": "retained"}])
+
+    def test_firefox_startup_failure_marks_core_unavailable_but_keeps_healthy_sources(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            core_sources = [
+                {"id": "core-one", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/one"},
+                {"id": "core-two", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/two"},
+            ]
+            public_source = {"sourceFamily": "PUBLIC_SOURCE"}
+
+            def successful_public(source, _run_dir, observed):
+                return {"sourceId": source["sourceFamily"], "sourceFamily": source["sourceFamily"], "acquisitionResult": "success", "rows": [{"id": "retained"}], "observedAt": observed}
+
+            with patch("acquire.open_firefox", side_effect=RuntimeError("dedicated profile is held")):
+                manifest = acquire_run(
+                    raw_root=Path(temporary),
+                    observed_at="2026-10-07T12:00:00Z",
+                    trac_sources=core_sources,
+                    wave2_sources=[public_source],
+                    wave2_acquirer=successful_public,
+                )
+            self.assertTrue(manifest["success"])
+            self.assertEqual([item["acquisitionResult"] for item in manifest["observations"]], ["failed", "failed", "success"])
+            self.assertEqual(manifest["sourceCoverage"]["families"]["CORE_TRAC"]["state"], "unavailable")
+            self.assertEqual(manifest["observations"][-1]["rows"], [{"id": "retained"}])
+
+    def test_all_configured_sources_unavailable_reports_unavailable_overall(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            sources = [
+                {"id": "core-one", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/one"},
+                {"id": "core-two", "sourceFamily": "CORE_TRAC", "csvUrl": "https://example.test/two"},
+            ]
+            with patch("acquire.open_firefox", side_effect=RuntimeError("dedicated profile is held")):
+                manifest = acquire_run(
+                    raw_root=Path(temporary),
+                    observed_at="2026-10-07T12:00:00Z",
+                    trac_sources=sources,
+                    wave2_sources=[],
+                )
+            self.assertFalse(manifest["success"])
+            self.assertEqual(manifest["sourceCoverage"]["overallState"], "unavailable")
 
 if __name__ == "__main__": unittest.main()
