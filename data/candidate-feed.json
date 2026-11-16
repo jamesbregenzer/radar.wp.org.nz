@@ -18,19 +18,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:39702134e2dc37884e9578152dde31b2",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:wordpress-releases:offer/development/en_US/7.2-beta5-65530/development",
       "relationships": [],
       "resource": {
         "id": "wordpress-releases:offer/development/en_US/7.2-beta5-65530/development",
         "identity": "offer/development/en_US/7.2-beta5-65530/development",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-d2c88b2042ff9aca4743122ef738fabf",
+        "revision": "resource-revision-v2-8909724431c9ac2f9431e1259a6f9b48",
         "title": "WordPress 7.2-beta5-65530 (development)",
         "upstreamState": "development",
         "url": "https://wordpress.org/nightly-builds/wordpress-latest.zip"
@@ -38,10 +38,10 @@
       "resourceRefs": [
         {
           "id": "wordpress-releases:offer/development/en_US/7.2-beta5-65530/development",
-          "revision": "resource-revision-v2-d2c88b2042ff9aca4743122ef738fabf"
+          "revision": "resource-revision-v2-8909724431c9ac2f9431e1259a6f9b48"
         }
       ],
-      "revision": "candidate-revision-v2-0da5bbdc7f4481fc1c6071e1d0ab8930",
+      "revision": "candidate-revision-v2-9d25e7cb2a3932b05351b21b8b103d47",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -54,7 +54,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -121,7 +121,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "WordPress beta, release-candidate, and development builds",
           "semanticValidation": {
@@ -157,19 +157,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:5a33ad7e32cedc86385643759d7390bf",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:wordpress-releases:offer/development/en_US/7.2-beta5-65530/autoupdate",
       "relationships": [],
       "resource": {
         "id": "wordpress-releases:offer/development/en_US/7.2-beta5-65530/autoupdate",
         "identity": "offer/development/en_US/7.2-beta5-65530/autoupdate",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-f8c26c647821bb86268a1ebcbcc31309",
+        "revision": "resource-revision-v2-6523fba7e02d8df9f921a9ff51e9b8f6",
         "title": "WordPress 7.2-beta5-65530 (development)",
         "upstreamState": "autoupdate",
         "url": "https://wordpress.org/nightly-builds/wordpress-latest.zip"
@@ -177,10 +177,10 @@
       "resourceRefs": [
         {
           "id": "wordpress-releases:offer/development/en_US/7.2-beta5-65530/autoupdate",
-          "revision": "resource-revision-v2-f8c26c647821bb86268a1ebcbcc31309"
+          "revision": "resource-revision-v2-6523fba7e02d8df9f921a9ff51e9b8f6"
         }
       ],
-      "revision": "candidate-revision-v2-f503606c8e9401741951e6fa2e6acbb2",
+      "revision": "candidate-revision-v2-31254f67b45953f9bc6f52423d52a1fa",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -193,7 +193,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -260,7 +260,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "WordPress beta, release-candidate, and development builds",
           "semanticValidation": {
@@ -296,19 +296,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:afd4ed81376acc8a8a40dad7caa81f16",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:wordpress-releases:offer/beta/en_US/7.2-beta5/autoupdate",
       "relationships": [],
       "resource": {
         "id": "wordpress-releases:offer/beta/en_US/7.2-beta5/autoupdate",
         "identity": "offer/beta/en_US/7.2-beta5/autoupdate",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-6a0e0776429583f547b56b3063952fc3",
+        "revision": "resource-revision-v2-c5c17b739409f63130cd86cc58bdaa65",
         "title": "WordPress 7.2-beta5 (beta)",
         "upstreamState": "autoupdate",
         "url": "https://downloads.wordpress.org/release/wordpress-7.2-beta5.zip"
@@ -316,10 +316,10 @@
       "resourceRefs": [
         {
           "id": "wordpress-releases:offer/beta/en_US/7.2-beta5/autoupdate",
-          "revision": "resource-revision-v2-6a0e0776429583f547b56b3063952fc3"
+          "revision": "resource-revision-v2-c5c17b739409f63130cd86cc58bdaa65"
         }
       ],
-      "revision": "candidate-revision-v2-b7fb70a3221a514cd6b882f238b88f3e",
+      "revision": "candidate-revision-v2-43e516c8fa9097ce367070d47e332773",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -332,7 +332,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -399,7 +399,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "WordPress beta, release-candidate, and development builds",
           "semanticValidation": {
@@ -435,19 +435,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:bcd81d09e98e48b02f04e44bb147db5e",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:wordpress-releases:offer/beta/en_US/7.2-beta5/development",
       "relationships": [],
       "resource": {
         "id": "wordpress-releases:offer/beta/en_US/7.2-beta5/development",
         "identity": "offer/beta/en_US/7.2-beta5/development",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-7dd8b8043926af6568d3ab0b76389678",
+        "revision": "resource-revision-v2-a0138daa87d365d45e32c572891ca708",
         "title": "WordPress 7.2-beta5 (beta)",
         "upstreamState": "development",
         "url": "https://downloads.wordpress.org/release/wordpress-7.2-beta5.zip"
@@ -455,10 +455,10 @@
       "resourceRefs": [
         {
           "id": "wordpress-releases:offer/beta/en_US/7.2-beta5/development",
-          "revision": "resource-revision-v2-7dd8b8043926af6568d3ab0b76389678"
+          "revision": "resource-revision-v2-a0138daa87d365d45e32c572891ca708"
         }
       ],
-      "revision": "candidate-revision-v2-54af69286bb4a4a625d7aba9e197fdf7",
+      "revision": "candidate-revision-v2-74ed155c4c2836eacd94898bfd16e352",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -471,7 +471,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -538,7 +538,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "WordPress beta, release-candidate, and development builds",
           "semanticValidation": {
@@ -574,19 +574,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:cdb0fd7449e0dae013cfe1b6eccef3c7",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:contributor-pathways:wordpress_handbook_page/5968",
       "relationships": [],
       "resource": {
         "id": "contributor-pathways:wordpress_handbook_page/5968",
         "identity": "wordpress_handbook_page/5968",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-90f3fe38089de8d808c72eda8a879c9b",
+        "revision": "resource-revision-v2-f137a8e91bbaccb0013a17633931ffe6",
         "title": "Review a Pathway Guide",
         "upstreamState": "published",
         "url": "https://make.wordpress.org/handbook/pathways/test/review-a-pathway-guide/"
@@ -594,10 +594,10 @@
       "resourceRefs": [
         {
           "id": "contributor-pathways:wordpress_handbook_page/5968",
-          "revision": "resource-revision-v2-90f3fe38089de8d808c72eda8a879c9b"
+          "revision": "resource-revision-v2-f137a8e91bbaccb0013a17633931ffe6"
         }
       ],
-      "revision": "candidate-revision-v2-9965df7d1bf8264a15ed7a61410f8944",
+      "revision": "candidate-revision-v2-d51ae40a9e02f09f62367bb0b4481c3e",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -610,7 +610,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -680,7 +680,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Contributor Pathways handbook",
           "semanticValidation": {
@@ -716,19 +716,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:0c0b992d865367a88f84ce3fa4db7438",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABdBRfDQ",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABdBRfDQ",
         "identity": "github-node/I_kwDOF6pdiM8AAAABdBRfDQ",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-e52fd45fe9645f09707539271c53090e",
+        "revision": "resource-revision-v2-d20e6cafe8309a39907c381554b85e69",
         "title": "Enqueuing: unquoted dependency handle and invalid version string in the code examples",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2549"
@@ -736,10 +736,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABdBRfDQ",
-          "revision": "resource-revision-v2-e52fd45fe9645f09707539271c53090e"
+          "revision": "resource-revision-v2-d20e6cafe8309a39907c381554b85e69"
         }
       ],
-      "revision": "candidate-revision-v2-eb5eeacc1dc0e6b4af24744eb5e1d0b5",
+      "revision": "candidate-revision-v2-6ce2be576c4bf380233ddb7c362c4efa",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -752,7 +752,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -824,7 +824,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -860,19 +860,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:136d0736b10798309489eb59d0a96853",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM5BlmCX",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM5BlmCX",
         "identity": "github-node/I_kwDOF6pdiM5BlmCX",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-379d63355dd38c6cbb2e7b8203a352c1",
+        "revision": "resource-revision-v2-0c57333a09000c967be7829ef5d24f2a",
         "title": "[Themes] New Pages for the Block themes",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/108"
@@ -880,10 +880,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM5BlmCX",
-          "revision": "resource-revision-v2-379d63355dd38c6cbb2e7b8203a352c1"
+          "revision": "resource-revision-v2-0c57333a09000c967be7829ef5d24f2a"
         }
       ],
-      "revision": "candidate-revision-v2-d046801855451afdb31ebc2366d1bd46",
+      "revision": "candidate-revision-v2-fadb50cbf0df7fefe2de2267e769b857",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -896,7 +896,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -970,7 +970,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -1006,19 +1006,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:1b25bc78249c2ee3124ea5ec0c9003ad",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM6HGPXp",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM6HGPXp",
         "identity": "github-node/I_kwDOF6pdiM6HGPXp",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-81c0bebd26e880be4fd17139a2720abb",
+        "revision": "resource-revision-v2-66838dbedaeaff162ab31bdd48100c63",
         "title": "[DevHub] WXR file standard",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/1541"
@@ -1026,10 +1026,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM6HGPXp",
-          "revision": "resource-revision-v2-81c0bebd26e880be4fd17139a2720abb"
+          "revision": "resource-revision-v2-66838dbedaeaff162ab31bdd48100c63"
         }
       ],
-      "revision": "candidate-revision-v2-b4bf0c63c004b587d07663e6b86bf4e0",
+      "revision": "candidate-revision-v2-07b36838d88a7a1515d9e7bb2945a117",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -1042,7 +1042,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -1111,7 +1111,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -1147,19 +1147,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:2105b3b7897c9eef1ddf78f44be9aa8c",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:accessibility-requests:wordpress_make_post/17724",
       "relationships": [],
       "resource": {
         "id": "accessibility-requests:wordpress_make_post/17724",
         "identity": "wordpress_make_post/17724",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-f3d7abe516a212686815d9af43c93169",
+        "revision": "resource-revision-v2-65c775a5507609a7cf25ab72c44501b0",
         "title": "X-post: Call for testing: DataForm editor inspector",
         "upstreamState": "published",
         "url": "https://make.wordpress.org/accessibility/2026/09/23/xpost-call-for-testing-dataform-editor-inspector/"
@@ -1167,10 +1167,10 @@
       "resourceRefs": [
         {
           "id": "accessibility-requests:wordpress_make_post/17724",
-          "revision": "resource-revision-v2-f3d7abe516a212686815d9af43c93169"
+          "revision": "resource-revision-v2-65c775a5507609a7cf25ab72c44501b0"
         }
       ],
-      "revision": "candidate-revision-v2-b17a0566dbed1b034f51b60bcee3a20c",
+      "revision": "candidate-revision-v2-99fdff5361c0500e34e23cbc9b2919e0",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -1183,7 +1183,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -1249,7 +1249,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Make Accessibility public requests",
           "semanticValidation": {
@@ -1285,19 +1285,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:29da2dea273fd0e93b89deea5d019e2f",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3s98g",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3s98g",
         "identity": "github-node/I_kwDOF6pdiM8AAAABC3s98g",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-c1a4c652ffaea8440cc06aad2d4a5cac",
+        "revision": "resource-revision-v2-ad89a5389ee64f747ea78d9620545803",
         "title": "[DevHub] Correctly separate list item for `get_post_meta()`",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2294"
@@ -1305,10 +1305,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3s98g",
-          "revision": "resource-revision-v2-c1a4c652ffaea8440cc06aad2d4a5cac"
+          "revision": "resource-revision-v2-ad89a5389ee64f747ea78d9620545803"
         }
       ],
-      "revision": "candidate-revision-v2-d7f04a515f44aa121fef7eeecd7863a8",
+      "revision": "candidate-revision-v2-b83dcc92987280d7cfa10f882b3e58d7",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -1321,7 +1321,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -1392,7 +1392,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -1428,19 +1428,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:4686c0ef0f9d17bf84f75ec90a4e1f54",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3egaw",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3egaw",
         "identity": "github-node/I_kwDOF6pdiM8AAAABC3egaw",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-8d97ab6b0530481a98579d971146326b",
+        "revision": "resource-revision-v2-5af1d2c93fdf9f74f3030d4be1bd7f2a",
         "title": "[DevHub] Type of `add_shortcode()` callback's parameter is incorrect",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2289"
@@ -1448,10 +1448,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3egaw",
-          "revision": "resource-revision-v2-8d97ab6b0530481a98579d971146326b"
+          "revision": "resource-revision-v2-5af1d2c93fdf9f74f3030d4be1bd7f2a"
         }
       ],
-      "revision": "candidate-revision-v2-d85a9340ec0e2f73fedb0b1e1d2705e1",
+      "revision": "candidate-revision-v2-29231e22d388c309a3f60f06cd8747a6",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -1464,7 +1464,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -1535,7 +1535,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -1571,19 +1571,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:4bd407679e7d6e880b9a3604136cdf0c",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3pdkQ",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3pdkQ",
         "identity": "github-node/I_kwDOF6pdiM8AAAABC3pdkQ",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-76c1e827181d640ba9a798accc73b276",
+        "revision": "resource-revision-v2-41ffda415fda80d062f6180377af5fbd",
         "title": "[DevHub] Add missing return scenario to `get_user_meta()`",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2293"
@@ -1591,10 +1591,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3pdkQ",
-          "revision": "resource-revision-v2-76c1e827181d640ba9a798accc73b276"
+          "revision": "resource-revision-v2-41ffda415fda80d062f6180377af5fbd"
         }
       ],
-      "revision": "candidate-revision-v2-c5231bbd6ea6e3612e440041ba23d8e7",
+      "revision": "candidate-revision-v2-a55f417a830af10b54939e30a3291b4a",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -1607,7 +1607,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -1678,7 +1678,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -1714,19 +1714,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:50f283d56cb8d9134c7786ff23b53746",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:theme-check-github:github-node/I_kwDOAYmf-88AAAABH1AdeQ",
       "relationships": [],
       "resource": {
         "id": "theme-check-github:github-node/I_kwDOAYmf-88AAAABH1AdeQ",
         "identity": "github-node/I_kwDOAYmf-88AAAABH1AdeQ",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-4383e58911073bcf5e7185b7c8bfa648",
+        "revision": "resource-revision-v2-3fabcbc88d341d58a29b0c920d1a0124",
         "title": "Bug: \"License\" and \"License URI\" are missing from Theme Info summary when checking the active theme",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/theme-check/issues/494"
@@ -1734,10 +1734,10 @@
       "resourceRefs": [
         {
           "id": "theme-check-github:github-node/I_kwDOAYmf-88AAAABH1AdeQ",
-          "revision": "resource-revision-v2-4383e58911073bcf5e7185b7c8bfa648"
+          "revision": "resource-revision-v2-3fabcbc88d341d58a29b0c920d1a0124"
         }
       ],
-      "revision": "candidate-revision-v2-0f7f4000326dfadaf3b1ccabf31e0583",
+      "revision": "candidate-revision-v2-ad08adf51b2fbf3d71d6d6840d4ffeb5",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -1750,7 +1750,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -1818,7 +1818,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Theme Check issues and pull requests",
           "semanticValidation": {
@@ -1854,19 +1854,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:5bb07774e33557326a0386f6c56bc359",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABZ1Zugg",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABZ1Zugg",
         "identity": "github-node/I_kwDOF6pdiM8AAAABZ1Zugg",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-c9a4bf8ade07228a26a6ccead589f2aa",
+        "revision": "resource-revision-v2-ce3ee16b5c0e201cc44e53f4402101d0",
         "title": "Options API page content - formatting needs reworking",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2537"
@@ -1874,10 +1874,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABZ1Zugg",
-          "revision": "resource-revision-v2-c9a4bf8ade07228a26a6ccead589f2aa"
+          "revision": "resource-revision-v2-ce3ee16b5c0e201cc44e53f4402101d0"
         }
       ],
-      "revision": "candidate-revision-v2-9b124ee596a98fa704cd1da9f91bec5a",
+      "revision": "candidate-revision-v2-f910bf0b308c225284aa929b201fce16",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -1890,7 +1890,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -1964,7 +1964,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -2000,19 +2000,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:6159dc2107e7f23fce7a05da2706856f",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:theme-check-github:github-node/I_kwDOAYmf-88AAAABAjHOCw",
       "relationships": [],
       "resource": {
         "id": "theme-check-github:github-node/I_kwDOAYmf-88AAAABAjHOCw",
         "identity": "github-node/I_kwDOAYmf-88AAAABAjHOCw",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-7e33af89db1cc621c77420fc51f48082",
+        "revision": "resource-revision-v2-6886d8b6d133f81d353f19acee16b4d9",
         "title": "Success box upon the theme check has a broken link for GitHub repo",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/theme-check/issues/492"
@@ -2020,10 +2020,10 @@
       "resourceRefs": [
         {
           "id": "theme-check-github:github-node/I_kwDOAYmf-88AAAABAjHOCw",
-          "revision": "resource-revision-v2-7e33af89db1cc621c77420fc51f48082"
+          "revision": "resource-revision-v2-6886d8b6d133f81d353f19acee16b4d9"
         }
       ],
-      "revision": "candidate-revision-v2-d246e153374ea581c4ba49828b5cb123",
+      "revision": "candidate-revision-v2-522885f01769d03d32fb21d1e0e7d111",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -2036,7 +2036,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -2105,7 +2105,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Theme Check issues and pull requests",
           "semanticValidation": {
@@ -2141,19 +2141,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:67003929ff5c890ec22e43a9f23ea74f",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM5P78M3",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM5P78M3",
         "identity": "github-node/I_kwDOF6pdiM5P78M3",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-7c0797dcb341afeda7e3451e92ba40e6",
+        "revision": "resource-revision-v2-4e681d3a411cc9df8e5118bd163f8e4c",
         "title": "[DevHub] Suggest to add new Boilerplate (maintained) to the List of Plugin Boilerplates",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/412"
@@ -2161,10 +2161,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM5P78M3",
-          "revision": "resource-revision-v2-7c0797dcb341afeda7e3451e92ba40e6"
+          "revision": "resource-revision-v2-4e681d3a411cc9df8e5118bd163f8e4c"
         }
       ],
-      "revision": "candidate-revision-v2-680dcc16c64bce4e61d208e21d47798c",
+      "revision": "candidate-revision-v2-bbdbd645736af01b992d76818ffb3707",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -2177,7 +2177,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -2248,7 +2248,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -2284,19 +2284,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:6a2bf8ba65a5a8a37b6f8a29ceaf5efa",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:theme-check-github:github-node/I_kwDOAYmf-84_mFia",
       "relationships": [],
       "resource": {
         "id": "theme-check-github:github-node/I_kwDOAYmf-84_mFia",
         "identity": "github-node/I_kwDOAYmf-84_mFia",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-d7c19efd36006db212496e4aa7a674d3",
+        "revision": "resource-revision-v2-19ad8a677d6a94dfa355271901ebbb88",
         "title": "Git and other extraneous files are not checked",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/theme-check/issues/407"
@@ -2304,10 +2304,10 @@
       "resourceRefs": [
         {
           "id": "theme-check-github:github-node/I_kwDOAYmf-84_mFia",
-          "revision": "resource-revision-v2-d7c19efd36006db212496e4aa7a674d3"
+          "revision": "resource-revision-v2-19ad8a677d6a94dfa355271901ebbb88"
         }
       ],
-      "revision": "candidate-revision-v2-70c1e1f3fc12dcb86ec03475d1629bf4",
+      "revision": "candidate-revision-v2-714bd3ed38236dc4c101391f176c0e81",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -2320,7 +2320,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -2388,7 +2388,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Theme Check issues and pull requests",
           "semanticValidation": {
@@ -2424,19 +2424,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:71b6c6905d0c5f3e1f3b7ca667b8f621",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:theme-check-github:github-node/I_kwDOAYmf-88AAAABQelCqA",
       "relationships": [],
       "resource": {
         "id": "theme-check-github:github-node/I_kwDOAYmf-88AAAABQelCqA",
         "identity": "github-node/I_kwDOAYmf-88AAAABQelCqA",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-e19e7af9434629e1a03f9ea3e1fa9459",
+        "revision": "resource-revision-v2-2c128fea91b4724ca2aa434e88e30b9d",
         "title": "Theme Check flags \"wordpress\" identifier as REQUIRED \u2014 false positive, do not \"fix\" by renaming",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/theme-check/issues/505"
@@ -2444,10 +2444,10 @@
       "resourceRefs": [
         {
           "id": "theme-check-github:github-node/I_kwDOAYmf-88AAAABQelCqA",
-          "revision": "resource-revision-v2-e19e7af9434629e1a03f9ea3e1fa9459"
+          "revision": "resource-revision-v2-2c128fea91b4724ca2aa434e88e30b9d"
         }
       ],
-      "revision": "candidate-revision-v2-48ca7ec369d51ca23e6e20c5711863fa",
+      "revision": "candidate-revision-v2-35474738e3d7f8e37da7e085a7fb4041",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -2460,7 +2460,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -2526,7 +2526,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Theme Check issues and pull requests",
           "semanticValidation": {
@@ -2562,19 +2562,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:834d027ec2b20052a3bc0f6f14030f02",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM59qxwq",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM59qxwq",
         "identity": "github-node/I_kwDOF6pdiM59qxwq",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-5d7b2e534f19fea9eddaf78ecf2fa25e",
+        "revision": "resource-revision-v2-3cf1a6402b29946093fb632cdc3f6aa6",
         "title": "[DevHub] Broken link to `WpOrgRequestsUtilityCaseInsensitiveDictionary` documentation.",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/1451"
@@ -2582,10 +2582,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM59qxwq",
-          "revision": "resource-revision-v2-5d7b2e534f19fea9eddaf78ecf2fa25e"
+          "revision": "resource-revision-v2-3cf1a6402b29946093fb632cdc3f6aa6"
         }
       ],
-      "revision": "candidate-revision-v2-64c8fad5d92884d572ac4810c8b1dfea",
+      "revision": "candidate-revision-v2-ad0e512fef524e6d2d183a49f20fe775",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -2598,7 +2598,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -2669,7 +2669,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -2705,19 +2705,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:90a69f7a68e5e44dd8849ed4004f97f8",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABR36mxg",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABR36mxg",
         "identity": "github-node/I_kwDOF6pdiM8AAAABR36mxg",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-5dba83dc3e00da66069a186714eab195",
+        "revision": "resource-revision-v2-568c9905c9534dc492fea00f67992f93",
         "title": "[Plugin Handbook] Link update needed in plugin handbook",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2511"
@@ -2725,10 +2725,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABR36mxg",
-          "revision": "resource-revision-v2-5dba83dc3e00da66069a186714eab195"
+          "revision": "resource-revision-v2-568c9905c9534dc492fea00f67992f93"
         }
       ],
-      "revision": "candidate-revision-v2-2b8bec5a413b8df3a65008ca2182cff7",
+      "revision": "candidate-revision-v2-e4f83b677545c45add2b4900561a3d57",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -2741,7 +2741,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -2820,7 +2820,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -2856,19 +2856,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:9c2b98fe761d9dfcfb7c358186c992fd",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:theme-check-github:github-node/I_kwDOAYmf-88AAAABPfjr0Q",
       "relationships": [],
       "resource": {
         "id": "theme-check-github:github-node/I_kwDOAYmf-88AAAABPfjr0Q",
         "identity": "github-node/I_kwDOAYmf-88AAAABPfjr0Q",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-86ba142531161a6ae733b9ad43d07070",
+        "revision": "resource-revision-v2-3d5622e5ea242995e5d5afe10beb3b6a",
         "title": "Blocklisted file-extension patterns are unanchored, so ordinary filenames fail the check",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/theme-check/issues/504"
@@ -2876,10 +2876,10 @@
       "resourceRefs": [
         {
           "id": "theme-check-github:github-node/I_kwDOAYmf-88AAAABPfjr0Q",
-          "revision": "resource-revision-v2-86ba142531161a6ae733b9ad43d07070"
+          "revision": "resource-revision-v2-3d5622e5ea242995e5d5afe10beb3b6a"
         }
       ],
-      "revision": "candidate-revision-v2-d6640fcdb310abb851f3b9f2a4fe8788",
+      "revision": "candidate-revision-v2-615ac689136cbcc1c2e4a0016a42f718",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -2892,7 +2892,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -2958,7 +2958,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Theme Check issues and pull requests",
           "semanticValidation": {
@@ -2994,19 +2994,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:9ecbffae9323c1eaad589d734b9d9832",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABFzxXhw",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABFzxXhw",
         "identity": "github-node/I_kwDOF6pdiM8AAAABFzxXhw",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-b3ddf6318b68c5de319becce1e95f048",
+        "revision": "resource-revision-v2-a33103ca5310b82c4572cf44049b63dc",
         "title": "[DevHub] add_image_size links to an external page that has poor information",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2344"
@@ -3014,10 +3014,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABFzxXhw",
-          "revision": "resource-revision-v2-b3ddf6318b68c5de319becce1e95f048"
+          "revision": "resource-revision-v2-a33103ca5310b82c4572cf44049b63dc"
         }
       ],
-      "revision": "candidate-revision-v2-a29a0b25f91053425c47b4334595a7da",
+      "revision": "candidate-revision-v2-8bda2828b1129c41f4a8c18805e52e29",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -3030,7 +3030,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -3102,7 +3102,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -3138,19 +3138,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:a54cff71e17139b5f5369a04efe245c0",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:make-test-release-signals:wordpress_make_post/12659",
       "relationships": [],
       "resource": {
         "id": "make-test-release-signals:wordpress_make_post/12659",
         "identity": "wordpress_make_post/12659",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-38b863c6922d9d49f437a5424ad33170",
+        "revision": "resource-revision-v2-443f38663a3aba919e1a7f8e07b1061d",
         "title": "Call for testing: DataForm editor inspector",
         "upstreamState": "published",
         "url": "https://make.wordpress.org/test/2026/09/17/xpost-call-for-testing-dataform-editor-inspector/"
@@ -3158,10 +3158,10 @@
       "resourceRefs": [
         {
           "id": "make-test-release-signals:wordpress_make_post/12659",
-          "revision": "resource-revision-v2-38b863c6922d9d49f437a5424ad33170"
+          "revision": "resource-revision-v2-443f38663a3aba919e1a7f8e07b1061d"
         }
       ],
-      "revision": "candidate-revision-v2-3d1ceea8058bec6cac6d2840e9a7bffb",
+      "revision": "candidate-revision-v2-2ae1f182bb497a71b54d666cc4365a71",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -3174,7 +3174,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -3241,7 +3241,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Make Test calls for testing and release signals",
           "semanticValidation": {
@@ -3277,19 +3277,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:ac852a7880cf0e7abe63de7dc38636b3",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABRVBCIA",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABRVBCIA",
         "identity": "github-node/I_kwDOF6pdiM8AAAABRVBCIA",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-bef1447e70e7db67f05afcaaadc4c665",
+        "revision": "resource-revision-v2-9d72c0b677ba099ee7ba225be1c07f03",
         "title": "Plugin Handbook contains outdated links",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2510"
@@ -3297,10 +3297,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABRVBCIA",
-          "revision": "resource-revision-v2-bef1447e70e7db67f05afcaaadc4c665"
+          "revision": "resource-revision-v2-9d72c0b677ba099ee7ba225be1c07f03"
         }
       ],
-      "revision": "candidate-revision-v2-6deb4cde919b17631950875a5633284c",
+      "revision": "candidate-revision-v2-0640b12f76f3c831fc4b1fa71a70ff2a",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -3313,7 +3313,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -3392,7 +3392,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -3428,19 +3428,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:ba94b44cca9adb73ae8f540c0b205e9a",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3nZwg",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3nZwg",
         "identity": "github-node/I_kwDOF6pdiM8AAAABC3nZwg",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-a3c3bb6ddf5d93d495e93655a9b76d18",
+        "revision": "resource-revision-v2-f0d46ab654243ade01c6b0c251662736",
         "title": "[DevHub] Acknowledge difference between `get_user_meta()` and `get_usermeta()`",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2292"
@@ -3448,10 +3448,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3nZwg",
-          "revision": "resource-revision-v2-a3c3bb6ddf5d93d495e93655a9b76d18"
+          "revision": "resource-revision-v2-f0d46ab654243ade01c6b0c251662736"
         }
       ],
-      "revision": "candidate-revision-v2-364a113a721d1410fba391750070dcf4",
+      "revision": "candidate-revision-v2-0099c48d3a568f33aeb9b9ce94971c71",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -3464,7 +3464,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -3535,7 +3535,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -3571,19 +3571,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:c27e18e0b94b2205300e14434793ede7",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:theme-check-github:github-node/I_kwDOAYmf-86-ThhJ",
       "relationships": [],
       "resource": {
         "id": "theme-check-github:github-node/I_kwDOAYmf-86-ThhJ",
         "identity": "github-node/I_kwDOAYmf-86-ThhJ",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-3f9e799abf7bda137e31ae81357ac323",
+        "revision": "resource-revision-v2-4432f7267c73d793c74beb909c6aa657",
         "title": "Text Domain Check False Positive on Child Theme",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/theme-check/issues/480"
@@ -3591,10 +3591,10 @@
       "resourceRefs": [
         {
           "id": "theme-check-github:github-node/I_kwDOAYmf-86-ThhJ",
-          "revision": "resource-revision-v2-3f9e799abf7bda137e31ae81357ac323"
+          "revision": "resource-revision-v2-4432f7267c73d793c74beb909c6aa657"
         }
       ],
-      "revision": "candidate-revision-v2-e2801ce5cd5582cb6e052fd2b1946d04",
+      "revision": "candidate-revision-v2-77f2eb56d829929185ad24cd0dc7707b",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -3607,7 +3607,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -3675,7 +3675,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Theme Check issues and pull requests",
           "semanticValidation": {
@@ -3711,19 +3711,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:cbe9843ddfd1372cbaa8f1bbe726c15a",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABG0zsIw",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABG0zsIw",
         "identity": "github-node/I_kwDOF6pdiM8AAAABG0zsIw",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-29030c242d9a5b63377ce72b4dbf4ca0",
+        "revision": "resource-revision-v2-db88f39465c76c7d672068946d447eb8",
         "title": "[DevHub] Outdated external link in Plugin Handbook - \"Using Subversion\" page",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2370"
@@ -3731,10 +3731,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABG0zsIw",
-          "revision": "resource-revision-v2-29030c242d9a5b63377ce72b4dbf4ca0"
+          "revision": "resource-revision-v2-db88f39465c76c7d672068946d447eb8"
         }
       ],
-      "revision": "candidate-revision-v2-72ad11c93bf37ff132fe5d35057f5f7a",
+      "revision": "candidate-revision-v2-32d0ac74d50f8230c81ac8967cedca3c",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -3747,7 +3747,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -3820,7 +3820,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -3856,19 +3856,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:d61a0561235671e603573efed177a5a1",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM5BhWVL",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM5BhWVL",
         "identity": "github-node/I_kwDOF6pdiM5BhWVL",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-2228687029f68d9b5aa59f1cf15b1cd9",
+        "revision": "resource-revision-v2-942dd1de197db46c96dd6805b7db2833",
         "title": "[Themes] Add How to create a child theme in the Block theme handbook",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/105"
@@ -3876,10 +3876,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM5BhWVL",
-          "revision": "resource-revision-v2-2228687029f68d9b5aa59f1cf15b1cd9"
+          "revision": "resource-revision-v2-942dd1de197db46c96dd6805b7db2833"
         }
       ],
-      "revision": "candidate-revision-v2-2e45199cdb3a85fbfdbef2715c015120",
+      "revision": "candidate-revision-v2-3ca945c33aa1610c906104695b879ace",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -3892,7 +3892,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -3964,7 +3964,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -4000,19 +4000,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:ddb73397feda6d9fda75eea4e5af97b9",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABJgNCcQ",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABJgNCcQ",
         "identity": "github-node/I_kwDOF6pdiM8AAAABJgNCcQ",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-112f7db0e4450b386c9dd2632af05487",
+        "revision": "resource-revision-v2-e3a5c903574ff4d26b6cd8371031aa6e",
         "title": "[7.1][Misc Dev Note] DataViews and DataForm view configuration",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2425"
@@ -4020,10 +4020,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABJgNCcQ",
-          "revision": "resource-revision-v2-112f7db0e4450b386c9dd2632af05487"
+          "revision": "resource-revision-v2-e3a5c903574ff4d26b6cd8371031aa6e"
         }
       ],
-      "revision": "candidate-revision-v2-13d91e7edf510a3fccafb84c06950440",
+      "revision": "candidate-revision-v2-67c45cdee6c7a8d31ad0dcc69dd8c168",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -4036,7 +4036,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -4110,7 +4110,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -4146,19 +4146,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:e111257bfb973f4637a6679bff32fde1",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3ixvQ",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3ixvQ",
         "identity": "github-node/I_kwDOF6pdiM8AAAABC3ixvQ",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-82dd845e2c19ab9b4d7e3caecb0331c3",
+        "revision": "resource-revision-v2-7749c42feecf57e1178f155b40326b92",
         "title": "[DevHub] Inaccurate description of logic for `is_single()`",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2291"
@@ -4166,10 +4166,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABC3ixvQ",
-          "revision": "resource-revision-v2-82dd845e2c19ab9b4d7e3caecb0331c3"
+          "revision": "resource-revision-v2-7749c42feecf57e1178f155b40326b92"
         }
       ],
-      "revision": "candidate-revision-v2-e25e010192f4fc5cd839bc85596c196a",
+      "revision": "candidate-revision-v2-03825dda1a654974852cf43fa4d74334",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -4182,7 +4182,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -4253,7 +4253,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -4289,19 +4289,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:eed615c880aa86a5d4bb9b194847c638",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:make-test-release-signals:wordpress_make_post/12904",
       "relationships": [],
       "resource": {
         "id": "make-test-release-signals:wordpress_make_post/12904",
         "identity": "wordpress_make_post/12904",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-31ec50357a4a795bcf428113eb21f575",
+        "revision": "resource-revision-v2-5a3fdf4a805126b6339564571aaea9c2",
         "title": "Call for Testing: Presence API",
         "upstreamState": "published",
         "url": "https://make.wordpress.org/test/2026/11/09/call-for-testing-presence-api/"
@@ -4309,10 +4309,10 @@
       "resourceRefs": [
         {
           "id": "make-test-release-signals:wordpress_make_post/12904",
-          "revision": "resource-revision-v2-31ec50357a4a795bcf428113eb21f575"
+          "revision": "resource-revision-v2-5a3fdf4a805126b6339564571aaea9c2"
         }
       ],
-      "revision": "candidate-revision-v2-4b6964afc70c801c32cf57b41a0bd62b",
+      "revision": "candidate-revision-v2-6777dfa277f7f58d50da67c22b25aa6d",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -4325,7 +4325,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -4407,7 +4407,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Make Test calls for testing and release signals",
           "semanticValidation": {
@@ -4443,19 +4443,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:f02e5613bf3c8f22c1404f51c38a95b0",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM5JSc3W",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM5JSc3W",
         "identity": "github-node/I_kwDOF6pdiM5JSc3W",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-83f9c985cfd5e166859b087dbc5e6252",
+        "revision": "resource-revision-v2-a3c17fc09adc41faa6e94302b48744f3",
         "title": "[Codex]  Migrate Stepping into Templates from Codex to DevHub",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/331"
@@ -4463,10 +4463,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM5JSc3W",
-          "revision": "resource-revision-v2-83f9c985cfd5e166859b087dbc5e6252"
+          "revision": "resource-revision-v2-a3c17fc09adc41faa6e94302b48744f3"
         }
       ],
-      "revision": "candidate-revision-v2-8e986af461969c303a65fbe2cc02402c",
+      "revision": "candidate-revision-v2-d863c690d358e9b3c5a41259c9bc5669",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -4479,7 +4479,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -4554,7 +4554,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -4590,19 +4590,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:f2daff067a301dc65baaf55e2079c1a4",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:theme-check-github:github-node/PR_kwDOAYmf-843bM5j",
       "relationships": [],
       "resource": {
         "id": "theme-check-github:github-node/PR_kwDOAYmf-843bM5j",
         "identity": "github-node/PR_kwDOAYmf-843bM5j",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-c3cea528862c717ca0947378a1c24267",
+        "revision": "resource-revision-v2-203664997a0cf60de38901c4969bc9c8",
         "title": "Add a jQuery usage check",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/theme-check/pull/423"
@@ -4610,10 +4610,10 @@
       "resourceRefs": [
         {
           "id": "theme-check-github:github-node/PR_kwDOAYmf-843bM5j",
-          "revision": "resource-revision-v2-c3cea528862c717ca0947378a1c24267"
+          "revision": "resource-revision-v2-203664997a0cf60de38901c4969bc9c8"
         }
       ],
-      "revision": "candidate-revision-v2-020a3caddab9657597d289e7a0f36246",
+      "revision": "candidate-revision-v2-e8a699c3dd4d1b8558968c15ff140e94",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -4626,7 +4626,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -4697,7 +4697,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Theme Check issues and pull requests",
           "semanticValidation": {
@@ -4733,19 +4733,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:f5c7de3bcc54054593aadd6a4ac1977a",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABJgNFRw",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABJgNFRw",
         "identity": "github-node/I_kwDOF6pdiM8AAAABJgNFRw",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-9381a0bb994b137b91efcb7706321343",
+        "revision": "resource-revision-v2-dfcc6a34fb26fa2696099cde8f2e3a08",
         "title": "[7.1][Misc Dev Note] HTML API parsing changes",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2426"
@@ -4753,10 +4753,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABJgNFRw",
-          "revision": "resource-revision-v2-9381a0bb994b137b91efcb7706321343"
+          "revision": "resource-revision-v2-dfcc6a34fb26fa2696099cde8f2e3a08"
         }
       ],
-      "revision": "candidate-revision-v2-75283e2b971491642a8d9e614b4f6469",
+      "revision": "candidate-revision-v2-8a8140838c06e885683c0a48178e89a5",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -4769,7 +4769,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -4845,7 +4845,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -4881,19 +4881,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:f93aeb47330c2f7d1922deb4e8b3109f",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM8AAAABZot4LA",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABZot4LA",
         "identity": "github-node/I_kwDOF6pdiM8AAAABZot4LA",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-5d27def7fa8bf76b1a097c288ed22ae5",
+        "revision": "resource-revision-v2-74a12aed149eab51d62dd8fdb72106e0",
         "title": "Add \"sanitize early\" best practice to plugin security handbook",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2535"
@@ -4901,10 +4901,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM8AAAABZot4LA",
-          "revision": "resource-revision-v2-5d27def7fa8bf76b1a097c288ed22ae5"
+          "revision": "resource-revision-v2-74a12aed149eab51d62dd8fdb72106e0"
         }
       ],
-      "revision": "candidate-revision-v2-47fac48656d9a89fac5e8b71ee92e49b",
+      "revision": "candidate-revision-v2-380b2e107644635db2ac77f21b27677d",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -4917,7 +4917,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -4989,7 +4989,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -5025,19 +5025,19 @@
         }
       ],
       "freshness": {
-        "observedAt": "2026-11-16T02:32:42Z",
-        "referenceTime": "2026-11-16T02:32:42Z",
+        "observedAt": "2026-11-16T09:27:37Z",
+        "referenceTime": "2026-11-16T09:27:37Z",
         "state": "fresh"
       },
       "id": "candidate:v2:fc201188a68d13960a625854d6aa8282",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "opportunityId": "opportunity:v2:core-developer-docs:github-node/I_kwDOF6pdiM73baXI",
       "relationships": [],
       "resource": {
         "id": "core-developer-docs:github-node/I_kwDOF6pdiM73baXI",
         "identity": "github-node/I_kwDOF6pdiM73baXI",
         "resourceType": "PUBLIC_RESOURCE",
-        "revision": "resource-revision-v2-5c82db1a9b6d961abc546b08c9e98bc8",
+        "revision": "resource-revision-v2-e25e891b42babac6d286482814b91874",
         "title": "[DevHub] WP_Query::get_posts use case clarification",
         "upstreamState": "open",
         "url": "https://github.com/WordPress/Documentation-Issue-Tracker/issues/2210"
@@ -5045,10 +5045,10 @@
       "resourceRefs": [
         {
           "id": "core-developer-docs:github-node/I_kwDOF6pdiM73baXI",
-          "revision": "resource-revision-v2-5c82db1a9b6d961abc546b08c9e98bc8"
+          "revision": "resource-revision-v2-e25e891b42babac6d286482814b91874"
         }
       ],
-      "revision": "candidate-revision-v2-8edfd250157de92e2e85ef8e003155b2",
+      "revision": "candidate-revision-v2-ed5458c3c9f6484980596b4a53f374ed",
       "score": {
         "reasons": [
           "1 direct opportunity source membership(s)",
@@ -5061,7 +5061,7 @@
         {
           "failure": null,
           "freshness": "fresh",
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "semanticValidation": {
             "findings": [],
             "state": "passed"
@@ -5131,7 +5131,7 @@
           },
           "freshness": "fresh",
           "limitations": [],
-          "observedAt": "2026-11-16T02:32:42Z",
+          "observedAt": "2026-11-16T09:27:37Z",
           "presentInCurrentObservation": true,
           "semanticMeaning": "Core and developer documentation opportunities",
           "semanticValidation": {
@@ -5151,14 +5151,14 @@
       ]
     }
   ],
-  "feedRevision": "candidate-feed-revision-v2-c99c0496dcb0e3090f577a0cbe45baea",
-  "referenceTime": "2026-11-16T02:32:42Z",
+  "feedRevision": "candidate-feed-revision-v2-5d5d66c5f1b53c66e79cffb1c601f67e",
+  "referenceTime": "2026-11-16T09:27:37Z",
   "schema": "radar-candidate-feed.v2",
   "sourceHealth": [
     {
       "failure": null,
       "freshness": "fresh",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [],
         "state": "passed"
@@ -5172,7 +5172,7 @@
     {
       "failure": null,
       "freshness": "fresh",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [],
         "state": "passed"
@@ -5186,7 +5186,7 @@
     {
       "failure": null,
       "freshness": "fresh",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [],
         "state": "passed"
@@ -5200,7 +5200,7 @@
     {
       "failure": null,
       "freshness": "fresh",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [],
         "state": "passed"
@@ -5214,7 +5214,7 @@
     {
       "failure": null,
       "freshness": "fresh",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [],
         "state": "passed"
@@ -5228,7 +5228,7 @@
     {
       "failure": null,
       "freshness": "fresh",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [],
         "state": "passed"
@@ -5242,7 +5242,7 @@
     {
       "failure": null,
       "freshness": "fresh",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [],
         "state": "passed"
@@ -5256,7 +5256,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5272,7 +5272,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5288,7 +5288,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5304,7 +5304,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5320,7 +5320,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5336,7 +5336,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5352,7 +5352,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5368,7 +5368,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5384,7 +5384,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5400,7 +5400,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5416,7 +5416,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5432,7 +5432,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5448,7 +5448,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5464,7 +5464,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5480,7 +5480,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5496,7 +5496,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
@@ -5512,7 +5512,7 @@
     {
       "failure": "SOURCE_OBSERVATION_FAILED",
       "freshness": "none",
-      "observedAt": "2026-11-16T02:32:42Z",
+      "observedAt": "2026-11-16T09:27:37Z",
       "semanticValidation": {
         "findings": [
           "acquisition did not succeed"
