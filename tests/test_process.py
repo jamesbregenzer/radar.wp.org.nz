@@ -9,7 +9,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from process import SCHEMA, build_feed, load_scoring
+from process import SCHEMA, build_feed, load_registry, load_scoring, validate_rows
 
 
 FIXTURE = ROOT / "tests" / "fixtures" / "raw" / "v2" / "observations.json"
@@ -106,8 +106,107 @@ class ProcessingTests(unittest.TestCase):
 
     def test_report_membership_is_usable_without_workflow_as_keywords(self):
         for source_id in ("core-trac-report-15-has-patch-needs-testing", "core-trac-report-16-needs-patch"):
-            payload = {"observations": [{"observedAt": "2026-10-07T11:00:00Z", "sourceId": source_id, "acquisitionResult": "success", "rows": [{"id": source_id, "summary": "Report member", "status": "new", "workflow": "has-patch"}]}]}
-            self.assertEqual(build_feed(payload)["candidateCount"], 1)
+            source = next(item for item in load_registry()["sources"] if item["id"] == source_id)
+            row = {"id": source_id, "summary": "Report member", "status": "new", "workflow": "has-patch"}
+            observation = {"observedAt": "2026-10-07T11:00:00Z", "sourceId": source_id, "acquisitionResult": "success", "exactUpstreamUrl": source["csvUrl"], "rows": [row]}
+            semantic = validate_rows(source, [row], "success", source["csvUrl"])
+            self.assertEqual(semantic["state"], "source_defined")
+            self.assertEqual(semantic["verification"], "configured_report_membership")
+            self.assertEqual(semantic["rowKeywordChecks"], "not_performed")
+            self.assertEqual(semantic["unverifiedFields"], ["keywords"])
+            feed = build_feed({"observations": [observation]})
+            self.assertEqual(feed["candidateCount"], 1)
+            health = next(item for item in feed["sourceHealth"] if item["sourceId"] == source_id)
+            self.assertEqual(health["semanticValidation"]["state"], "source_defined")
+
+    def test_report_membership_requires_exact_configured_csv_url(self):
+        source = next(item for item in load_registry()["sources"] if item["id"] == "core-trac-report-15-has-patch-needs-testing")
+        row = {"id": "report-row", "summary": "Missing row keywords", "status": "new"}
+        for observed_url in (None, "https://core.trac.wordpress.org/report/16?format=csv"):
+            with self.subTest(observed_url=observed_url):
+                result = validate_rows(source, [row], "success", observed_url)
+                self.assertEqual(result["state"], "failed")
+                self.assertIn("missing keyword evidence", result["findings"][0])
+
+    def test_missing_query_keywords_fail_closed_but_explicit_empty_is_checked(self):
+        registry = load_registry()
+        query = next(item for item in registry["sources"] if item["id"] == "core-trac-query-needs-testing-no-patch")
+        report = next(item for item in registry["sources"] if item["id"] == "core-trac-report-15-has-patch-needs-testing")
+        missing = {"id": "missing", "summary": "No keyword field", "status": "new", "workflow": "needs-testing"}
+        empty = {"id": "empty", "summary": "Present but empty keyword field", "status": "new", "keywords": ""}
+        null = {"id": "null", "summary": "Present but null keyword field", "status": "new", "keywords": None}
+
+        query_result = validate_rows(query, [missing], "success", query["csvUrl"])
+        self.assertEqual(query_result["state"], "failed")
+        self.assertIn("missing keyword evidence", query_result["findings"][0])
+        null_result = validate_rows(query, [null], "success", query["csvUrl"])
+        self.assertEqual(null_result["state"], "failed")
+        self.assertIn("null keyword evidence", null_result["findings"][0])
+        report_result = validate_rows(report, [empty], "success", report["csvUrl"])
+        self.assertEqual(report_result["state"], "failed")
+        self.assertIn("missing required keywords", report_result["findings"][0])
+
+    def test_null_is_not_empty_for_forbidden_only_filter(self):
+        query = next(item for item in load_registry()["sources"] if item["id"] == "core-trac-query-needs-testing-no-patch")
+        forbidden_only = deepcopy(query)
+        forbidden_only["semanticValidation"] = {"forbiddenKeywordsAny": ["has-patch"]}
+        null = {"id": "null", "summary": "Null keywords", "status": "new", "keywords": None}
+        empty_string = {"id": "empty-string", "summary": "Empty keywords", "status": "new", "keywords": ""}
+        empty_list = {"id": "empty-list", "summary": "Empty keyword list", "status": "new", "keywords": []}
+
+        self.assertEqual(validate_rows(forbidden_only, [null], "success", query["csvUrl"])["state"], "failed")
+        self.assertEqual(validate_rows(forbidden_only, [empty_string], "success", query["csvUrl"])["state"], "passed")
+        self.assertEqual(validate_rows(forbidden_only, [empty_list], "success", query["csvUrl"])["state"], "passed")
+
+    def test_malformed_keyword_values_fail_for_forbidden_only_filter(self):
+        query = next(item for item in load_registry()["sources"] if item["id"] == "core-trac-query-needs-testing-no-patch")
+        forbidden_only = deepcopy(query)
+        forbidden_only["semanticValidation"] = {"forbiddenKeywordsAny": ["has-patch"]}
+        malformed_values = ({"has-patch": True}, 17, True, [None], ["needs-testing", 17])
+        for value in malformed_values:
+            with self.subTest(value=value):
+                row = {"id": "malformed", "summary": "Malformed keyword evidence", "status": "new", "keywords": value}
+                result = validate_rows(forbidden_only, [row], "success", query["csvUrl"])
+                self.assertEqual(result["state"], "failed")
+                self.assertIn("malformed keyword evidence", result["findings"][0])
+
+    def test_exact_keyword_tokens_enforce_required_and_forbidden_rules(self):
+        registry = load_registry()
+        report = next(item for item in registry["sources"] if item["id"] == "core-trac-report-15-has-patch-needs-testing")
+        query = next(item for item in registry["sources"] if item["id"] == "core-trac-query-needs-testing-no-patch")
+        report_row = {"id": "required", "summary": "Token match", "status": "new", "keywords": "has-patch, Needs-Testing"}
+        wrong_token = {"id": "substring", "summary": "Not a token match", "status": "new", "keywords": "has-patch needs-testing-later"}
+        query_good = {"id": "query-good", "summary": "No patch", "status": "new", "keywords": "needs-testing"}
+        query_forbidden = {"id": "query-forbidden", "summary": "Has patch", "status": "new", "keywords": "needs-testing has-patch"}
+
+        self.assertEqual(validate_rows(report, [report_row], "success", report["csvUrl"])["state"], "passed")
+        self.assertEqual(validate_rows(report, [wrong_token], "success", report["csvUrl"])["state"], "failed")
+        self.assertEqual(validate_rows(query, [query_good], "success", query["csvUrl"])["state"], "passed")
+        forbidden_result = validate_rows(query, [query_forbidden], "success", query["csvUrl"])
+        self.assertEqual(forbidden_result["state"], "failed")
+        self.assertTrue(any("forbidden keyword" in item for item in forbidden_result["findings"]))
+
+    def test_report_membership_and_row_keyword_verification_are_distinguished(self):
+        report = next(item for item in load_registry()["sources"] if item["id"] == "core-trac-report-15-has-patch-needs-testing")
+        row = {"id": "row-verified", "summary": "Row fields present", "status": "new", "keywords": "has-patch needs-testing"}
+        result = validate_rows(report, [row], "success", report["csvUrl"])
+        self.assertEqual(result["state"], "passed")
+        self.assertEqual(result["verification"], "row")
+
+    def test_invalid_prior_query_observation_is_not_retained_as_last_known_good(self):
+        source = next(item for item in load_registry()["sources"] if item["id"] == "core-trac-query-needs-testing-no-patch")
+        for value in (None, {"needs-testing": True}, ["needs-testing", None]):
+            with self.subTest(prior_keywords=value):
+                prior_row = {"id": "bad-prior", "summary": "Malformed keyword evidence", "status": "new", "keywords": value}
+                payload = {
+                    "observations": [{"sourceId": source["id"], "observedAt": "2026-10-07T12:00:00Z", "acquisitionResult": "failed", "rows": []}],
+                    "previous": {"observations": [{"sourceId": source["id"], "observedAt": "2026-10-06T12:00:00Z", "acquisitionResult": "success", "exactUpstreamUrl": source["csvUrl"], "rows": [prior_row]}]},
+                }
+                feed = build_feed(payload)
+                self.assertFalse(any(item["resource"]["id"] == "core-trac:bad-prior" for item in feed["candidates"]))
+                health = next(item for item in feed["sourceHealth"] if item["sourceId"] == source["id"])
+                self.assertEqual(health["state"], "failed")
+                self.assertEqual(health["freshness"], "none")
 
     def test_literal_keywords_are_validated_for_report_69_and_custom_query(self):
         for source_id in ("core-trac-report-69-bugs-needing-reproduction", "core-trac-query-needs-testing-no-patch"):
